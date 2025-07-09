@@ -133,7 +133,7 @@
       "alias": "asikalun asikaguan asiqialun asiqiaguan esikalun esikaguan esiqialun esiqiaguan askl askg asql asqg eskl eskg esql esqg 阿斯卡綸",
       "rarity": 6,
       "alt_name": "Ascalon",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_277_sqrrel",
@@ -458,6 +458,16 @@
       "alias": "beitandepuyi beitandipuyi btdpy 悲歎的仆役",
       "rarity": 0,
       "alt_name": "The Servant of Lament"
+    },
+    {
+      "id": "token_10054_phatm2_encdool",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Blood's whisper",
+      "name": "本能的召唤",
+      "alias": "bennengdezhaohuan bennengdeshaohuan bennengdizhaohuan bennengdishaohuan bennaidezhaohuan bennaideshaohuan bennaidizhaohuan bennaidishaohuan bndzh bndsh 本能的召喚",
+      "rarity": 0,
+      "alt_name": "Blood's whisper"
     },
     {
       "id": "char_265_sophia",
@@ -806,6 +816,16 @@
       "modules": ["", "Y"]
     },
     {
+      "id": "char_4191_tippi",
+      "prof": "SPECIAL",
+      "subProf": "skywalker",
+      "name_en": "Tippi",
+      "name": "蒂比",
+      "alias": "dibi db 蒂比",
+      "rarity": 5,
+      "alt_name": "Tippi"
+    },
+    {
       "id": "char_1034_jesca2",
       "prof": "TANK",
       "subProf": "shotprotector",
@@ -912,7 +932,7 @@
       "alias": "duoluoxi dlx 多蘿西",
       "rarity": 6,
       "alt_name": "Dorothy",
-      "modules": ["", "Y"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "token_10036_lasher_mcbird",
@@ -1746,6 +1766,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1042_phatm2",
+      "prof": "SUPPORT",
+      "subProf": "ritualist",
+      "name_en": "Tragodia",
+      "name": "酒神",
+      "alias": "jiushen js 酒神",
+      "rarity": 6,
+      "alt_name": "Tragodia",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_328_cammou",
       "prof": "CASTER",
       "subProf": "funnel",
@@ -2477,6 +2508,16 @@
       "alt_name": "Beagle"
     },
     {
+      "id": "token_10055_phatm2_mndclv",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Cage of chaos",
+      "name": "迷狂牢笼",
+      "alias": "mikuanglaolong mkll 迷狂牢籠",
+      "rarity": 0,
+      "alt_name": "Cage of chaos"
+    },
+    {
       "id": "char_344_beewax",
       "prof": "CASTER",
       "subProf": "phalanx",
@@ -2539,6 +2580,16 @@
       "rarity": 6,
       "alt_name": "Misery",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_4198_christ",
+      "prof": "CASTER",
+      "subProf": "primcaster",
+      "name_en": "Miss.Christine",
+      "name": "Miss.Christine",
+      "alias": "Miss.Christine",
+      "rarity": 5,
+      "alt_name": "Miss.Christine"
     },
     {
       "id": "char_154_morgan",
@@ -3030,7 +3081,7 @@
       "alias": "shan s 山",
       "rarity": 6,
       "alt_name": "Mountain",
-      "modules": ["", "Y"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_457_blitz",
@@ -3354,7 +3405,8 @@
       "name": "死芒",
       "alias": "simang sm 死芒",
       "rarity": 6,
-      "alt_name": "Necrass"
+      "alt_name": "Necrass",
+      "modules": ["", "X"]
     },
     {
       "id": "char_427_vigil",
@@ -3504,7 +3556,8 @@
       "name": "特克诺",
       "alias": "tekenuo tkn 特克諾",
       "rarity": 5,
-      "alt_name": "Tecno"
+      "alt_name": "Tecno",
+      "modules": ["", "Y"]
     },
     {
       "id": "char_411_tomimi",
@@ -3574,11 +3627,11 @@
       "id": "token_10056_angel2_target",
       "prof": "TOKEN",
       "subProf": "notchar1",
-      "name_en": "临时命名",
+      "name_en": "Delivery coordinates",
       "name": "投递坐标",
       "alias": "toudizuobiao tdzb 投遞坐標",
       "rarity": 0,
-      "alt_name": "临时命名"
+      "alt_name": "Delivery coordinates"
     },
     {
       "id": "char_510_amedic",
