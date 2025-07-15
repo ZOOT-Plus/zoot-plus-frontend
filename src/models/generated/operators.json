@@ -329,7 +329,7 @@
       "alias": "bailianjiaweier bljwe 百煉嘉維爾",
       "rarity": 6,
       "alt_name": "Gavial the Invincible",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_128_plosis",
@@ -619,7 +619,7 @@
       "alias": "chengshan dengshan cs ds 澄閃",
       "rarity": 6,
       "alt_name": "Goldenglow",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_1027_greyy2",
@@ -783,6 +783,16 @@
       "modules": ["", "Y"]
     },
     {
+      "id": "token_10051_radian_tower1",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "dive",
+      "name": "戴乌",
+      "alias": "daiwu dw 戴烏",
+      "rarity": 0,
+      "alt_name": "dive"
+    },
+    {
       "id": "char_4032_provs",
       "prof": "SUPPORT",
       "subProf": "slower",
@@ -846,6 +856,17 @@
       "rarity": 4,
       "alt_name": "Earthspirit",
       "modules": ["", "Y"]
+    },
+    {
+      "id": "char_4195_radian",
+      "prof": "SUPPORT",
+      "subProf": "summoner",
+      "name_en": "Raidian",
+      "name": "电弧",
+      "alias": "dianhu dh 電弧",
+      "rarity": 6,
+      "alt_name": "Raidian",
+      "modules": ["", "A"]
     },
     {
       "id": "char_452_bstalk",
@@ -2334,6 +2355,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_4196_reckpr",
+      "prof": "MEDIC",
+      "subProf": "physician",
+      "name_en": "Record Keeper",
+      "name": "录武官",
+      "alias": "luwuguan lwg 錄武官",
+      "rarity": 5,
+      "alt_name": "Record Keeper",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_433_windft",
       "prof": "SUPPORT",
       "subProf": "craftsman",
@@ -3009,6 +3041,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "token_10052_radian_tower2",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "cycle",
+      "name": "赛柯",
+      "alias": "saike sk 賽柯",
+      "rarity": 0,
+      "alt_name": "cycle"
+    },
+    {
       "id": "char_202_demkni",
       "prof": "TANK",
       "subProf": "guardian",
@@ -3029,6 +3071,16 @@
       "rarity": 5,
       "alt_name": "Mulberry",
       "modules": ["", "X"]
+    },
+    {
+      "id": "token_10053_radian_tower3",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "centre",
+      "name": "桑特拉",
+      "alias": "sangtela stl 桑特拉",
+      "rarity": 0,
+      "alt_name": "centre"
     },
     {
       "id": "char_416_zumama",
@@ -3409,6 +3461,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1043_leizi2",
+      "prof": "WARRIOR",
+      "subProf": "librator",
+      "name_en": "Leizi the Thunderbringer",
+      "name": "司霆惊蛰",
+      "alias": "sitingjingzhe stjz 司霆驚蟄",
+      "rarity": 6,
+      "alt_name": "Leizi the Thunderbringer",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_427_vigil",
       "prof": "PIONEER",
       "subProf": "tactician",
@@ -3589,7 +3652,7 @@
       "alias": "tifeng difeng tf df 提豐",
       "rarity": 6,
       "alt_name": "Typhon",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_166_skfire",
@@ -4975,7 +5038,7 @@
         { "id": "chain", "name": "链术师", "name_en": "Chain Caster" },
         { "id": "blastcaster", "name": "轰击术师", "name_en": "Blast Caster" },
         { "id": "primcaster", "name": "本源术师", "name_en": "Primal Caster" },
-        { "id": "soulcaster", "name": "塑灵术师", "name_en": "Soulcaster" }
+        { "id": "soulcaster", "name": "塑灵术师", "name_en": "Shaper Caster" }
       ]
     },
     {
