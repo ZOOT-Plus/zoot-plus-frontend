@@ -225,6 +225,10 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         }}
         popoverProps={{
           minimal: true,
+          onClosed() {
+            // 关闭下拉框时重置输入框，防止用户在未手动选择关卡时，误以为已输入的内容就是已选择的关卡
+            updateQuery('', false)
+          },
         }}
       />
       <Tooltip2

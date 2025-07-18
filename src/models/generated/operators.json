@@ -133,7 +133,7 @@
       "alias": "asikalun asikaguan asiqialun asiqiaguan esikalun esikaguan esiqialun esiqiaguan askl askg asql asqg eskl eskg esql esqg 阿斯卡綸",
       "rarity": 6,
       "alt_name": "Ascalon",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_277_sqrrel",
@@ -329,7 +329,7 @@
       "alias": "bailianjiaweier bljwe 百煉嘉維爾",
       "rarity": 6,
       "alt_name": "Gavial the Invincible",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_128_plosis",
@@ -458,6 +458,16 @@
       "alias": "beitandepuyi beitandipuyi btdpy 悲歎的仆役",
       "rarity": 0,
       "alt_name": "The Servant of Lament"
+    },
+    {
+      "id": "token_10054_phatm2_encdool",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Blood's whisper",
+      "name": "本能的召唤",
+      "alias": "bennengdezhaohuan bennengdeshaohuan bennengdizhaohuan bennengdishaohuan bennaidezhaohuan bennaideshaohuan bennaidizhaohuan bennaidishaohuan bndzh bndsh 本能的召喚",
+      "rarity": 0,
+      "alt_name": "Blood's whisper"
     },
     {
       "id": "char_265_sophia",
@@ -609,7 +619,7 @@
       "alias": "chengshan dengshan cs ds 澄閃",
       "rarity": 6,
       "alt_name": "Goldenglow",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_1027_greyy2",
@@ -773,6 +783,16 @@
       "modules": ["", "Y"]
     },
     {
+      "id": "token_10051_radian_tower1",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "dive",
+      "name": "戴乌",
+      "alias": "daiwu dw 戴烏",
+      "rarity": 0,
+      "alt_name": "dive"
+    },
+    {
       "id": "char_4032_provs",
       "prof": "SUPPORT",
       "subProf": "slower",
@@ -806,6 +826,16 @@
       "modules": ["", "Y"]
     },
     {
+      "id": "char_4191_tippi",
+      "prof": "SPECIAL",
+      "subProf": "skywalker",
+      "name_en": "Tippi",
+      "name": "蒂比",
+      "alias": "dibi db 蒂比",
+      "rarity": 5,
+      "alt_name": "Tippi"
+    },
+    {
       "id": "char_1034_jesca2",
       "prof": "TANK",
       "subProf": "shotprotector",
@@ -826,6 +856,17 @@
       "rarity": 4,
       "alt_name": "Earthspirit",
       "modules": ["", "Y"]
+    },
+    {
+      "id": "char_4195_radian",
+      "prof": "SUPPORT",
+      "subProf": "summoner",
+      "name_en": "Raidian",
+      "name": "电弧",
+      "alias": "dianhu dh 電弧",
+      "rarity": 6,
+      "alt_name": "Raidian",
+      "modules": ["", "A"]
     },
     {
       "id": "char_452_bstalk",
@@ -912,7 +953,7 @@
       "alias": "duoluoxi dlx 多蘿西",
       "rarity": 6,
       "alt_name": "Dorothy",
-      "modules": ["", "Y"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "token_10036_lasher_mcbird",
@@ -1746,6 +1787,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1042_phatm2",
+      "prof": "SUPPORT",
+      "subProf": "ritualist",
+      "name_en": "Tragodia",
+      "name": "酒神",
+      "alias": "jiushen js 酒神",
+      "rarity": 6,
+      "alt_name": "Tragodia",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_328_cammou",
       "prof": "CASTER",
       "subProf": "funnel",
@@ -2303,6 +2355,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_4196_reckpr",
+      "prof": "MEDIC",
+      "subProf": "physician",
+      "name_en": "Record Keeper",
+      "name": "录武官",
+      "alias": "luwuguan lwg 錄武官",
+      "rarity": 5,
+      "alt_name": "Record Keeper",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_433_windft",
       "prof": "SUPPORT",
       "subProf": "craftsman",
@@ -2477,6 +2540,16 @@
       "alt_name": "Beagle"
     },
     {
+      "id": "token_10055_phatm2_mndclv",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Cage of chaos",
+      "name": "迷狂牢笼",
+      "alias": "mikuanglaolong mkll 迷狂牢籠",
+      "rarity": 0,
+      "alt_name": "Cage of chaos"
+    },
+    {
       "id": "char_344_beewax",
       "prof": "CASTER",
       "subProf": "phalanx",
@@ -2539,6 +2612,16 @@
       "rarity": 6,
       "alt_name": "Misery",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_4198_christ",
+      "prof": "CASTER",
+      "subProf": "primcaster",
+      "name_en": "Miss.Christine",
+      "name": "Miss.Christine",
+      "alias": "Miss.Christine",
+      "rarity": 5,
+      "alt_name": "Miss.Christine"
     },
     {
       "id": "char_154_morgan",
@@ -2958,6 +3041,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "token_10052_radian_tower2",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "cycle",
+      "name": "赛柯",
+      "alias": "saike sk 賽柯",
+      "rarity": 0,
+      "alt_name": "cycle"
+    },
+    {
       "id": "char_202_demkni",
       "prof": "TANK",
       "subProf": "guardian",
@@ -2978,6 +3071,16 @@
       "rarity": 5,
       "alt_name": "Mulberry",
       "modules": ["", "X"]
+    },
+    {
+      "id": "token_10053_radian_tower3",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "centre",
+      "name": "桑特拉",
+      "alias": "sangtela stl 桑特拉",
+      "rarity": 0,
+      "alt_name": "centre"
     },
     {
       "id": "char_416_zumama",
@@ -3030,7 +3133,7 @@
       "alias": "shan s 山",
       "rarity": 6,
       "alt_name": "Mountain",
-      "modules": ["", "Y"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_457_blitz",
@@ -3354,7 +3457,19 @@
       "name": "死芒",
       "alias": "simang sm 死芒",
       "rarity": 6,
-      "alt_name": "Necrass"
+      "alt_name": "Necrass",
+      "modules": ["", "X"]
+    },
+    {
+      "id": "char_1043_leizi2",
+      "prof": "WARRIOR",
+      "subProf": "librator",
+      "name_en": "Leizi the Thunderbringer",
+      "name": "司霆惊蛰",
+      "alias": "sitingjingzhe stjz 司霆驚蟄",
+      "rarity": 6,
+      "alt_name": "Leizi the Thunderbringer",
+      "modules": ["", "X"]
     },
     {
       "id": "char_427_vigil",
@@ -3504,7 +3619,8 @@
       "name": "特克诺",
       "alias": "tekenuo tkn 特克諾",
       "rarity": 5,
-      "alt_name": "Tecno"
+      "alt_name": "Tecno",
+      "modules": ["", "Y"]
     },
     {
       "id": "char_411_tomimi",
@@ -3536,7 +3652,7 @@
       "alias": "tifeng difeng tf df 提豐",
       "rarity": 6,
       "alt_name": "Typhon",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_166_skfire",
@@ -3574,11 +3690,11 @@
       "id": "token_10056_angel2_target",
       "prof": "TOKEN",
       "subProf": "notchar1",
-      "name_en": "临时命名",
+      "name_en": "Delivery coordinates",
       "name": "投递坐标",
       "alias": "toudizuobiao tdzb 投遞坐標",
       "rarity": 0,
-      "alt_name": "临时命名"
+      "alt_name": "Delivery coordinates"
     },
     {
       "id": "char_510_amedic",
@@ -4922,7 +5038,7 @@
         { "id": "chain", "name": "链术师", "name_en": "Chain Caster" },
         { "id": "blastcaster", "name": "轰击术师", "name_en": "Blast Caster" },
         { "id": "primcaster", "name": "本源术师", "name_en": "Primal Caster" },
-        { "id": "soulcaster", "name": "塑灵术师", "name_en": "Soulcaster" }
+        { "id": "soulcaster", "name": "塑灵术师", "name_en": "Shaper Caster" }
       ]
     },
     {

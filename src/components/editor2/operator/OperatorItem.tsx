@@ -311,6 +311,26 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                 : skillLevels[skillNumber] ??
                   getDefaultRequirements(info?.rarity).skillLevel
 
+              const selectSkill = () => {
+                if (operator.skill !== skillNumber) {
+                  edit(() => {
+                    onChange?.({
+                      ...operator,
+                      skill: skillNumber,
+                      requirements: {
+                        ...operator.requirements,
+                        // override with the current skill level
+                        skillLevel,
+                      },
+                    })
+                    return {
+                      action: 'set-operator-skill',
+                      desc: i18n.actions.editor2.set_operator_skill,
+                    }
+                  })
+                }
+              }
+
               return (
                 <li
                   key={index}
@@ -337,23 +357,11 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       '!w-8 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current [&:not(:focus)]:cursor-pointer',
                       skillLevel > 7 && '!pl-4',
                     )}
-                    onFocus={() => {
-                      if (operator.skill !== skillNumber) {
-                        edit(() => {
-                          onChange?.({
-                            ...operator,
-                            skill: skillNumber,
-                            requirements: {
-                              ...operator.requirements,
-                              // override with the current skill level
-                              skillLevel,
-                            },
-                          })
-                          return {
-                            action: 'set-operator-skill',
-                            desc: i18n.actions.editor2.set_operator_skill,
-                          }
-                        })
+                    onClick={selectSkill}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        selectSkill()
                       }
                     }}
                     onValueChange={(_, valueStr) => {
