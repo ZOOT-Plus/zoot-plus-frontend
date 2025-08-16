@@ -1614,6 +1614,17 @@
       "alt_name": "Mibo"
     },
     {
+      "id": "char_4203_kichi",
+      "prof": "SNIPER",
+      "subProf": "reaperrange",
+      "name_en": "Kichisei",
+      "name": "吉星",
+      "alias": "jixing jx 吉星",
+      "rarity": 5,
+      "alt_name": "Kichisei",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_1013_chen2",
       "prof": "SNIPER",
       "subProf": "reaperrange",
@@ -1622,7 +1633,7 @@
       "alias": "jiariweilongchen jrwlc 假日威龍陳",
       "rarity": 6,
       "alt_name": "Ch'en the Holungday",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_349_chiave",
@@ -2204,7 +2215,7 @@
       "alias": "linlangshihuaiya llshy 琳琅詩懷雅",
       "rarity": 6,
       "alt_name": "Swire the Elegant Wit",
-      "modules": ["", "X", "Y"]
+      "modules": ["", "X", "Y", "A"]
     },
     {
       "id": "char_4102_threye",
@@ -2621,7 +2632,8 @@
       "name": "Miss.Christine",
       "alias": "Miss.Christine",
       "rarity": 5,
-      "alt_name": "Miss.Christine"
+      "alt_name": "Miss.Christine",
+      "modules": ["", "X"]
     },
     {
       "id": "char_154_morgan",
@@ -2769,7 +2781,8 @@
       "name": "妮芙",
       "alias": "nifu nf 妮芙",
       "rarity": 6,
-      "alt_name": "Nymph"
+      "alt_name": "Nymph",
+      "modules": ["", "X"]
     },
     {
       "id": "char_311_mudrok",
@@ -2865,7 +2878,7 @@
       "alias": "peipei pp 佩佩",
       "rarity": 6,
       "alt_name": "Pepe",
-      "modules": ["", "X"]
+      "modules": ["", "X", "A"]
     },
     {
       "id": "char_4136_phonor",
@@ -3505,6 +3518,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_4199_makiri",
+      "prof": "PIONEER",
+      "subProf": "counsellor",
+      "name_en": "Matsukiri",
+      "name": "松桐",
+      "alias": "songtong st 鬆桐",
+      "rarity": 5,
+      "alt_name": "Matsukiri"
+    },
+    {
       "id": "char_279_excu",
       "prof": "SNIPER",
       "subProf": "reaperrange",
@@ -3856,7 +3879,8 @@
       "name": "温米",
       "alias": "wenmi wm 溫米",
       "rarity": 5,
-      "alt_name": "Warmy"
+      "alt_name": "Warmy",
+      "modules": ["", "X"]
     },
     {
       "id": "char_4145_ulpia",
@@ -4248,6 +4272,17 @@
       "rarity": 5,
       "alt_name": "Cement",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_4202_haruka",
+      "prof": "SUPPORT",
+      "subProf": "blessing",
+      "name_en": "Haruka",
+      "name": "遥",
+      "alias": "yao y 遙",
+      "rarity": 6,
+      "alt_name": "Haruka",
+      "modules": ["", "Y"]
     },
     {
       "id": "char_1014_nearl2",
@@ -4776,6 +4811,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1044_hsgma2",
+      "prof": "TANK",
+      "subProf": "artsprotector",
+      "name_en": "Hoshiguma the Breacher",
+      "name": "斩业星熊",
+      "alias": "zhanyexingxiong zyxx 斬業星熊",
+      "rarity": 6,
+      "alt_name": "Hoshiguma the Breacher"
+    },
+    {
       "id": "char_499_kaitou",
       "prof": "CASTER",
       "subProf": "primcaster",
@@ -4783,7 +4828,8 @@
       "name": "折光",
       "alias": "zheguang sheguang zg sg 折光",
       "rarity": 5,
-      "alt_name": "Diamante"
+      "alt_name": "Diamante",
+      "modules": ["", "X"]
     },
     {
       "id": "char_195_glassb",
@@ -4867,7 +4913,8 @@
       "name": "烛煌",
       "alias": "zhuhuang zh 燭煌",
       "rarity": 6,
-      "alt_name": "Blaze the Igniting Spark"
+      "alt_name": "Blaze the Igniting Spark",
+      "modules": ["", "X"]
     },
     {
       "id": "char_333_sidero",
@@ -4955,7 +5002,8 @@
         { "id": "charger", "name": "冲锋手", "name_en": "Charger" },
         { "id": "tactician", "name": "战术家", "name_en": "Tactician" },
         { "id": "bearer", "name": "执旗手", "name_en": "Standard Bearer" },
-        { "id": "agent", "name": "情报官", "name_en": "Agent" }
+        { "id": "agent", "name": "情报官", "name_en": "Agent" },
+        { "id": "counsellor", "name": "策士", "name_en": "Counsellor" }
       ]
     },
     {
