@@ -73,7 +73,7 @@ export const IndexPage: ComponentType = withGlobalErrorBoundary(() => {
   )
 })
 
-const Ad = dayjs().isBefore('2099-12-31 00:00:00+8')
+const Ad = dayjs().isBefore('2025-09-08 00:00:00+8')
   ? () => {
       const t = useTranslation()
       const sendEvent = () => {
