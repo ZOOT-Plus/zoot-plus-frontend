@@ -2545,6 +2545,10 @@
         "reverse_list": {
           "cn": "反转列表",
           "en": "Reverse List"
+        },
+        "private_usage_warning": {
+          "cn": "您勾选了「对所有人可见」且标题中含有「自用」关键字，请取消勾选「对所有人可见」然后再次创建。",
+          "en": "You have selected 'Visible to everyone', and your title contains the keyword '自用'. Please uncheck 'Visible to everyone' before creating again."
         }
       }
     },

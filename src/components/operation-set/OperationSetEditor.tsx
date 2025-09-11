@@ -200,6 +200,13 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
 
   const localOnSubmit = handleSubmit(async (values) => {
     try {
+      // 检查是否标题含有"自用"且状态为PUBLIC
+      if (values.name.includes('自用') && values.status === 'PUBLIC') {
+        // 显示警告对话框，禁止提交
+        setGlobalError(t.components.operationSet.OperationSetEditor.private_usage_warning)
+        return
+      }
+
       await onSubmit(
         {
           ...values,
