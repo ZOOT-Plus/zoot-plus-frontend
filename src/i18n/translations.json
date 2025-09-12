@@ -2498,9 +2498,13 @@
           "cn": "描述",
           "en": "Description"
         },
-        "visible_to_all": {
-          "cn": "对所有人可见",
-          "en": "Visible to everyone"
+        "for_personal_use": {
+          "cn": "仅对自己可见（自用）",
+          "en": "For Personal Use"
+        },
+        "personal_use_warning": {
+          "cn": "自用作业集请勾选「仅对自己可见（自用）」哦",
+          "en": "Personal use job sets should be marked as 'For Personal Use'"
         },
         "click_save": {
           "cn": "修改后请点击保存按钮",
@@ -2547,8 +2551,12 @@
           "en": "Reverse List"
         },
         "private_usage_warning": {
-          "cn": "您勾选了「对所有人可见」且标题中含有「自用」关键字，请取消勾选「对所有人可见」然后再次创建。",
-          "en": "You have selected 'Visible to everyone', and your title contains the keyword '自用'. Please uncheck 'Visible to everyone' before creating again."
+          "cn": "自用作业集请勾选「自用」哦",
+          "en": "Personal use job sets should be marked as 'For Personal Use'"
+        },
+        "private_usage_public_warning": {
+          "cn": "标题含有「自用」关键字且勾选了公开，请取消勾选公开再次提交",
+          "en": "Title contains 'personal use' keyword and is marked as public, please uncheck public and submit again"
         }
       }
     },

@@ -200,10 +200,15 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
 
   const localOnSubmit = handleSubmit(async (values) => {
     try {
-      // 检查是否标题含有"自用"且状态为PUBLIC
-      if (values.name.includes('自用') && values.status === 'PUBLIC') {
-        // 显示警告对话框，禁止提交
-        setGlobalError(t.components.operationSet.OperationSetEditor.private_usage_warning)
+
+      // 方便以后拓展关键字
+      const titleHasPersonal = values.name.includes('自用')
+
+      // 标题含“自用”，但未勾选“自用”(status !== PRIVATE) → 提示
+      if (titleHasPersonal && values.status !== 'PRIVATE') {
+        setGlobalError(
+          t.components.operationSet.OperationSetEditor.personal_use_warning
+        )
         return
       }
 
@@ -295,17 +300,15 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
               <Checkbox
                 {...field}
                 value={undefined}
-                checked={field.value === 'PUBLIC'}
+                checked={field.value === 'PRIVATE'}
                 onChange={(e) =>
                   field.onChange(
                     (e.target as HTMLInputElement).checked
-                      ? 'PUBLIC'
-                      : 'PRIVATE',
+                      ? 'PRIVATE'
+                      : 'PUBLIC'
                   )
                 }
-                label={
-                  t.components.operationSet.OperationSetEditor.visible_to_all
-                }
+                label={t.components.operationSet.OperationSetEditor.for_personal_use}
               />
             )}
           />
