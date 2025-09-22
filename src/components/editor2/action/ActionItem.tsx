@@ -14,7 +14,6 @@ import clsx from 'clsx'
 import { Draft } from 'immer'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
-import { selectAtom } from 'jotai/utils'
 import { FC, ReactNode, memo, useEffect, useRef, useState } from 'react'
 
 import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
@@ -642,12 +641,6 @@ export const ActionItem: FC<ActionItemProps> = memo(
 )
 ActionItem.displayName = 'ActionItem'
 
-const groupNamesAtom = selectAtom(
-  editorAtoms.groups,
-  (groups) => groups.map((g) => g.name),
-  (a, b) => a.join() === b.join(),
-)
-
 const ActionTarget: FC<{
   actionAtom: PrimitiveAtom<
     Extract<
@@ -667,29 +660,19 @@ const ActionTarget: FC<{
   const t = useTranslation()
   const edit = useEdit()
   const [{ name }, setAction] = useAtom(actionAtom)
-  const groupNames = useAtomValue(groupNamesAtom)
-
-  const isGroup = (name?: string) =>
-    name !== undefined && groupNames.includes(name)
 
   let displayName: string | undefined
   let subtitle = '<<<'
 
-  if (name !== undefined) {
-    if (isGroup(name)) {
-      displayName = name || t.components.editor2.ActionItem.unnamed_group
-      subtitle = t.components.editor2.label.operation.groups._item
-    } else {
-      displayName = getLocalizedOperatorName(name, language)
+  if (name) {
+    displayName = getLocalizedOperatorName(name, language)
 
-      const operatorInfo = findOperatorByName(name)
-      subtitle = operatorInfo
-        ? operatorInfo.prof === 'TOKEN'
-          ? t.components.editor2.ActionItem.token
-          : t.components.editor2.label.opers._item
-        : // 自定义干员、关卡里的道具之类
-          t.components.editor2.ActionItem.unknown_target
-    }
+    const operatorInfo = findOperatorByName(name)
+    subtitle = operatorInfo
+      ? operatorInfo.prof === 'TOKEN'
+        ? t.components.editor2.ActionItem.token
+        : t.components.editor2.label.opers._item
+      : t.components.editor2.ActionItem.unknown_target
   }
 
   return (
@@ -697,9 +680,9 @@ const ActionTarget: FC<{
       liftPicked
       className="shrink-0"
       value={name}
-      onSelect={(name) => {
+      onSelect={(selected) => {
         edit(() => {
-          setAction((prev) => ({ ...prev, name }))
+          setAction((prev) => ({ ...prev, name: selected }))
           return {
             action: 'set-action-name',
             desc: i18n.actions.editor2.set_action_target,
@@ -711,24 +694,24 @@ const ActionTarget: FC<{
         <div className="flex items-center">
           <OperatorAvatar
             className="w-16 h-16"
-            name={isGroup(name) ? undefined : name}
-            fallback={isGroup(name) ? <Icon icon="people" size={32} /> : name}
+            name={name}
+            fallback={
+              name ?? t.components.editor2.ActionItem.select_target
+            }
             sourceSize={96}
           />
           <div className="ml-1 w-[6.5em]">
             <div
               className={clsx(
                 'leading-4 tracking-tighter',
-                displayName && displayName?.length > 6 && 'text-xs',
+                displayName && displayName.length > 6 && 'text-xs',
               )}
               title={displayName}
             >
-              {displayName === undefined ? (
+              {displayName ?? (
                 <span className="text-gray-500">
                   {t.components.editor2.ActionItem.select_target}
                 </span>
-              ) : (
-                displayName
               )}
             </div>
             <Divider className="m-0 mr-1" />

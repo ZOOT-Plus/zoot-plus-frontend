@@ -5,7 +5,6 @@ import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
-import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
 import {
@@ -48,16 +47,6 @@ export function createAction(
     action.skillUsage = CopilotDocV1.SkillUsageType.ReadyToUse
   }
   return action
-}
-
-export function createGroup(
-  initialValues: Partial<Omit<EditorGroup, 'id' | 'opers'>> = {},
-): EditorGroup {
-  const group: EditorGroup = defaults({ id: uniqueId() }, initialValues, {
-    name: '',
-    opers: [],
-  })
-  return group
 }
 
 export function createOperator(
@@ -110,65 +99,6 @@ export const editorFavOperatorsAtom = atom(
     // 检查有没有多余的属性
     0 as unknown as FavOperator[] satisfies typeof newOperators
     set(favOperatorAtom, newOperators)
-  },
-)
-
-const favGroupCache = new WeakMap<FavGroup, WithId<FavGroup>>()
-const favGroupReverseCache = new WeakMap<
-  WithId<FavGroup> | EditorGroup,
-  FavGroup
->()
-export const editorFavGroupsAtom = atom(
-  (get) =>
-    get(favGroupAtom).map((group) => {
-      const cached = favGroupCache.get(group)
-      if (cached) {
-        return cached
-      }
-      const newGroup = { ...group, id: uniqueId() }
-      favGroupCache.set(group, newGroup)
-      favGroupReverseCache.set(newGroup, group)
-      return newGroup
-    }),
-  (
-    get,
-    set,
-    update:
-      | (WithId<FavGroup> | EditorGroup)[]
-      | ((prev: WithId<FavGroup>[]) => (WithId<FavGroup> | EditorGroup)[]),
-  ) => {
-    if (typeof update === 'function') {
-      update = update(get(editorFavGroupsAtom))
-    }
-    const newGroups = update.map((group) => {
-      const cached = favGroupReverseCache.get(group)
-      if (cached) {
-        return cached
-      }
-      const { id, ...newGroup } = {
-        ...group,
-        id: '',
-        opers: group.opers?.map(
-          (operator: CopilotDocV1.Operator | EditorOperator) => {
-            const { id, ...newOperator } = {
-              ...operator,
-              id: '',
-            }
-            return newOperator
-          },
-        ),
-      }
-      favGroupCache.set(newGroup, group)
-      favGroupReverseCache.set(group, newGroup)
-      return newGroup
-    })
-
-    // 检查有没有多余的属性
-    0 as unknown as FavGroup satisfies SetOptional<
-      (typeof newGroups)[number],
-      'opers'
-    >
-    set(favGroupAtom, newGroups)
   },
 )
 

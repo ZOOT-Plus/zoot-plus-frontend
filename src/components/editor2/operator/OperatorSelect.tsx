@@ -18,17 +18,7 @@ const operatorNamesAtom = selectAtom(
   (operators) => operators.map((op) => op.name),
   (a, b) => a.join() === b.join(),
 )
-const groupNamesAtom = selectAtom(
-  editorAtoms.groups,
-  (groups) => groups.map((g) => g.name),
-  (a, b) => a.join() === b.join(),
-)
-const groupedOperatorNamesAtom = selectAtom(
-  editorAtoms.groups,
-  (groups) => groups.flatMap((g) => g.opers).map((op) => op.name),
-  (a, b) => a.join() === b.join(),
-)
-// 不需要某个 atom 时用来占位，避免不必要的渲染
+// 需要占位的 atom，避免在下拉未展开时触发订阅
 const dummyArrayAtom = atom<string[]>([])
 
 interface OperatorSelectProps {
@@ -48,16 +38,6 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
     const operatorNames = useAtomValue(
       isOpen ? operatorNamesAtom : dummyArrayAtom,
     )
-    const groupNames = useAtomValue(
-      isOpen && liftPicked ? groupNamesAtom : dummyArrayAtom,
-    )
-    const groupedOperatorNames = useAtomValue(
-      isOpen && markPicked ? groupedOperatorNamesAtom : dummyArrayAtom,
-    )
-    const overallOperatorNames = [...operatorNames, ...groupedOperatorNames]
-
-    const isGroup = (name?: string) =>
-      name !== undefined && groupNames.includes(name)
 
     type Item = {
       key: string
@@ -68,6 +48,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
     }
     const items: Item[] = useMemo(() => {
       if (!isOpen) return []
+
       if (!liftPicked)
         return OPERATORS.map((op) => ({
           key: op.id,
@@ -76,7 +57,6 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
           value: op.name,
         }))
 
-      // 把已选择的干员和干员组放在前面
       const pickedOperators = operatorNames.map((name) => ({
         key: name,
         name: getLocalizedOperatorName(name, language),
@@ -94,21 +74,14 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
         value: op.name,
       }))
 
-      const items: Item[] = [
-        ...groupNames.map((name, index) => ({
-          key: name + index,
-          name,
-          value: name,
-        })),
-        ...pickedOperators,
-      ]
+      const result: Item[] = [...pickedOperators]
 
-      if (items.length > 0) {
-        items.push({ key: '__header__', isHeader: true })
+      if (result.length > 0) {
+        result.push({ key: '__header__', isHeader: true })
       }
-      items.push(...unpickedOperators)
-      return items
-    }, [operatorNames, groupNames, isOpen, language, liftPicked])
+      result.push(...unpickedOperators)
+      return result
+    }, [isOpen, liftPicked, operatorNames, language])
 
     const fuse = useMemo(
       () =>
@@ -150,25 +123,12 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
               key={item.key}
               text={
                 <div className="flex items-center gap-2">
-                  {isGroup(item.name) ? (
-                    <OperatorAvatar
-                      className="w-8 h-8 leading-3"
-                      fallback={
-                        <Icon
-                          icon="people"
-                          size={20}
-                          className="align-middle"
-                        />
-                      }
-                    />
-                  ) : (
-                    <OperatorAvatar
-                      className="w-8 h-8 leading-3"
-                      id={item.operatorId}
-                      name={item.value}
-                      fallback={item.name}
-                    />
-                  )}
+                  <OperatorAvatar
+                    className="w-8 h-8 leading-3"
+                    id={item.operatorId}
+                    name={item.value}
+                    fallback={item.name}
+                  />
                   {item.name}
                 </div>
               }
@@ -179,12 +139,12 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
                 value === item.value ||
                 (markPicked &&
                   !!item.value &&
-                  overallOperatorNames.includes(item.value))
+                  operatorNames.includes(item.value))
               }
               labelElement={
                 markPicked &&
                 item.value &&
-                overallOperatorNames.includes(item.value) ? (
+                operatorNames.includes(item.value) ? (
                   <Icon icon="tick" />
                 ) : undefined
               }
