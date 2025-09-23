@@ -5,21 +5,12 @@ import clsx from 'clsx'
 import { useSetAtom } from 'jotai'
 import { FC, memo } from 'react'
 
-import { CopilotDocV1 } from 'models/copilot.schema'
-
 import { i18n, useTranslation } from '../../../i18n/i18n'
-import {
-  OPERATORS,
-  getDefaultRequirements,
-  getModuleName,
-  useLocalizedOperatorName,
-  withDefaultRequirements,
-} from '../../../models/operator'
+import { OPERATORS, useLocalizedOperatorName } from '../../../models/operator'
 import { OperatorAvatar } from '../../OperatorAvatar'
-import { Select } from '../../Select'
 import { AppToaster } from '../../Toaster'
 import { SortableItemProps } from '../../dnd'
-import { EditorOperator, useEdit } from '../editor-state'
+import { EditorOperator } from '../editor-state'
 import { editorFavOperatorsAtom } from '../reconciliation'
 
 interface OperatorItemProps extends Partial<SortableItemProps> {
@@ -30,26 +21,11 @@ interface OperatorItemProps extends Partial<SortableItemProps> {
 }
 
 export const OperatorItem: FC<OperatorItemProps> = memo(
-  ({
-    operator,
-    onChange,
-    onRemove,
-    onOverlay,
-    isDragging,
-    isSorting,
-    attributes,
-    listeners,
-  }) => {
+  ({ operator, onRemove, isDragging, attributes, listeners }) => {
     const t = useTranslation()
-    const edit = useEdit()
     const displayName = useLocalizedOperatorName(operator.name)
     const setFavOperators = useSetAtom(editorFavOperatorsAtom)
     const info = OPERATORS.find(({ name }) => name === operator.name)
-    const requirements = withDefaultRequirements(
-      operator.requirements,
-      info?.rarity,
-    )
-    const controlsEnabled = !onOverlay && !isDragging && !isSorting
 
     return (
       <div
@@ -112,103 +88,6 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
             </Card>
           </Popover2>
         </div>
-
-        {controlsEnabled && info?.modules && (
-          <Select
-            className="mt-2"
-            filterable={false}
-            items={[
-              CopilotDocV1.Module.Default,
-              ...info.modules
-                .map((m) =>
-                  m
-                    ? (CopilotDocV1.Module[m] as
-                        | CopilotDocV1.Module
-                        | undefined)
-                    : CopilotDocV1.Module.Original,
-                )
-                .filter((m) => m !== undefined),
-            ]}
-            itemRenderer={(
-              value,
-              { handleClick, handleFocus, modifiers },
-            ) => (
-              <MenuItem
-                roleStructure="listoption"
-                key={value}
-                className={clsx(
-                  'min-w-12 !rounded-none text-base font-serif font-bold text-center text-slate-600 dark:text-slate-300',
-                  modifiers.active && Classes.ACTIVE,
-                )}
-                text={
-                  value === CopilotDocV1.Module.Default ? (
-                    <Icon icon="disable" />
-                  ) : value === CopilotDocV1.Module.Original ? (
-                    <Icon icon="small-square" />
-                  ) : (
-                    getModuleName(value)
-                  )
-                }
-                title={t.components.editor2.OperatorItem.module_title({
-                  count: value,
-                  name: getModuleName(value),
-                })}
-                onClick={handleClick}
-                onFocus={handleFocus}
-                selected={value === requirements.module}
-              />
-            )}
-            onItemSelect={(value) => {
-              edit(() => {
-                onChange?.({
-                  ...operator,
-                  requirements: {
-                    ...operator.requirements,
-                    module: value,
-                  },
-                })
-                return {
-                  action: 'set-operator-module',
-                  desc: i18n.actions.editor2.set_operator_module,
-                  squashBy: operator.id,
-                }
-              })
-            }}
-            popoverProps={{
-              placement: 'top',
-              popoverClassName:
-                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-0 [&_li]:!mb-0',
-            }}
-          >
-            <Button
-              small
-              minimal
-              title={
-                t.components.editor2.OperatorItem.module +
-                ': ' +
-                t.components.editor2.OperatorItem.module_title({
-                  count: requirements.module,
-                  name: getModuleName(requirements.module),
-                })
-              }
-              className={clsx(
-                'w-4 h-4 !p-0 flex items-center justify-center font-serif !font-bold !text-base !rounded-none !border-2 !border-current',
-                requirements.module !== CopilotDocV1.Module.Default
-                  ? '!bg-purple-100 dark:!bg-purple-900 dark:!text-purple-200 !text-purple-800'
-                  : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
-              )}
-            >
-              {requirements.module === CopilotDocV1.Module.Default ? (
-                null
-              ) : requirements.module === CopilotDocV1.Module.Original ? (
-                <Icon icon="small-square" />
-              ) : (
-                getModuleName(requirements.module)
-              )}
-            </Button>
-          </Select>
-        )}
-
       </div>
     )
   },
