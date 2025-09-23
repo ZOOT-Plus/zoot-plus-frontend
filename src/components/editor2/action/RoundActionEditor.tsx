@@ -73,12 +73,12 @@ function ensureRoundKey(roundKey: string, input: RoundActionsInput) {
 function normalizeRoundActions(input: RoundActionsInput): RoundActionsInput {
   const cleaned: RoundActionsInput = {}
   Object.entries(input)
-    .filter(([, actions]) => actions.length > 0)
     .sort(([a], [b]) => Number(a) - Number(b))
     .forEach(([round, actions]) => {
-      cleaned[round] = actions
+      const filtered = actions
         .map((entry) => entry.filter((token) => token.trim()) as string[])
         .filter((entry) => entry.length > 0)
+      cleaned[round] = filtered.length > 0 ? filtered : []
     })
   return cleaned
 }
