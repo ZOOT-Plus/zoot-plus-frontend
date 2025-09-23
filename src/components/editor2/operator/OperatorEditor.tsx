@@ -12,7 +12,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 
 import { produce } from 'immer'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { selectAtom, useAtomCallback } from 'jotai/utils'
 import { FC, memo, useCallback, useMemo } from 'react'
 
@@ -53,8 +53,6 @@ export const OperatorEditor: FC = memo(() => {
     }),
   )
   const [operatorAtoms, dispatchOperators] = useAtom(editorAtoms.operatorAtoms)
-  const { toggleSelectorPanel } = useAtomValue(editorAtoms.config)
-  const setSelectorMode = useSetAtom(editorAtoms.selectorPanelMode)
 
   const handleDragEnd = useAtomCallback(
     useCallback(
@@ -87,12 +85,7 @@ export const OperatorEditor: FC = memo(() => {
   )
 
   return (
-    <div
-      className="h-full flex flex-col"
-      onMouseDownCapture={() =>
-        toggleSelectorPanel && setSelectorMode('operator')
-      }
-    >
+    <div className="h-full flex flex-col">
       <div className="flex items-center border-b border-gray-200 dark:border-gray-600">
         <CreateOperatorButton />
       </div>
@@ -251,5 +244,4 @@ const OperatorError = () => {
     </Callout>
   )
 }
-
 

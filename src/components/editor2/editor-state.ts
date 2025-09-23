@@ -262,7 +262,6 @@ export const editorAtoms = {
   newlyAddedGroupIdAtom: atom<string | undefined>(undefined),
   activeActionIdAtom: atom<string | undefined>(undefined),
   sourceEditorIsOpen: atom(false),
-  selectorPanelMode: atom<'operator' | 'map'>('operator'),
   // this atom will cause some memory leak as it does not clean up until the editor is reset,
   // but generally it's not a big deal
 

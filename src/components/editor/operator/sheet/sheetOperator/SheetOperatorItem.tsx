@@ -19,9 +19,13 @@ import { useSheet } from '../SheetProvider'
 
 export interface SheetOperatorItemProp {
   name: string
+  showSkillTrigger?: boolean
 }
 
-export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
+export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({
+  name,
+  showSkillTrigger = true,
+}) => {
   const t = useTranslation()
   const {
     existedOperators,
@@ -163,7 +167,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
           </div>
         )}
       </>
-      {selected && (
+      {selected && showSkillTrigger && (
         <SkillAboutTrigger
           {...{
             operator,
