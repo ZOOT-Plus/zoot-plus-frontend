@@ -119,7 +119,15 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
 
   useEffect(() => {
     const next = editorActionsToRoundActions(actions)
-    setRoundActions((prev) => (isEqual(prev, next) ? prev : next))
+    setRoundActions((prev) => {
+      const merged: RoundActionsInput = { ...next }
+      Object.entries(prev).forEach(([roundKey, entries]) => {
+        if (!merged[roundKey] && entries.length === 0) {
+          merged[roundKey] = []
+        }
+      })
+      return isEqual(prev, merged) ? prev : merged
+    })
   }, [actions])
 
   useEffect(() => {
