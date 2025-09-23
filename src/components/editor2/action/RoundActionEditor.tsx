@@ -32,6 +32,11 @@ const BASIC_ACTION_OPTIONS = [
   { value: '大', label: '大招' },
   { value: '下', label: '下拉' },
 ] as const
+const BASIC_ACTION_LABEL_MAP: Record<RoundFormState['basicAction'], string> = {
+  普: '普攻',
+  大: '大招',
+  下: '下拉',
+}
 const EXTRA_TYPES = [
   { value: 'again', label: '再次行动' },
   { value: 'wait', label: '等待' },
@@ -272,6 +277,50 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [handleAddToken, roundForms],
   )
 
+  const formatTokenLabel = useCallback(
+    (rawToken: string) => {
+      const token = rawToken.trim()
+      if (!token) {
+        return '未设定动作'
+      }
+
+      const buildSlotLabel = (slot: number, actionLabel?: string) => {
+        const name = slotAssignments?.[slot]?.name?.trim()
+        const prefix = name ? `${slot}号位·${name}` : `${slot}号位`
+        return actionLabel ? `${prefix}（${actionLabel}）` : prefix
+      }
+
+      const baseMatch = token.match(/^(\d)([普大下])$/)
+      if (baseMatch) {
+        const slot = Number(baseMatch[1])
+        const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
+        const actionLabel = BASIC_ACTION_LABEL_MAP[actionSymbol]
+        return buildSlotLabel(slot, actionLabel)
+      }
+
+      if (token.startsWith('额外:')) {
+        const extraPayload = token.slice('额外:'.length)
+        const againMatch = extraPayload.match(/^(\d)([普大下])$/)
+        if (againMatch) {
+          const slot = Number(againMatch[1])
+          const actionSymbol = againMatch[2] as RoundFormState['basicAction']
+          const actionLabel = BASIC_ACTION_LABEL_MAP[actionSymbol]
+          return `额外:${buildSlotLabel(slot, actionLabel)}`
+        }
+
+        if (extraPayload.startsWith('等待:')) {
+          const wait = extraPayload.split(':')[1] ?? ''
+          return `额外:等待 ${wait}ms`
+        }
+
+        return token
+      }
+
+      return token
+    },
+    [slotAssignments],
+  )
+
   return (
     <div className={clsx('px-4 pb-24 space-y-6', className)}>
       <div className="flex flex-wrap gap-4 items-center justify-between">
@@ -326,7 +375,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                     large
                     intent="primary"
                   >
-                    {entry[0]}
+                    {formatTokenLabel(entry[0] ?? '')}
                   </Tag>
                 ))}
                 {actions.length === 0 && (
