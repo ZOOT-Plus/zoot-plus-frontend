@@ -860,6 +860,10 @@
           "cn": "干员 \"{{name}}\" 已存在",
           "en": "Operator \"{{name}}\" already exists"
         },
+        "operator_limit_reached": {
+          "cn": "干员数量已达上限（{{limit}}）",
+          "en": "You can select up to {{limit}} operators"
+        },
         "autosave_error": {
           "cn": "自动保存失败：{{error}}",
           "en": "Failed to autosave: {{error}}"

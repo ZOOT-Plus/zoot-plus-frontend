@@ -5,13 +5,24 @@ import { i18n } from '../../../i18n/i18n'
 import { getLocalizedOperatorName } from '../../../models/operator'
 import { AppToaster } from '../../Toaster'
 import { EditorOperator, editorAtoms, useEdit } from '../editor-state'
+import { MAX_ACTIVE_OPERATORS } from './constants'
 
 export function useAddOperator() {
   const edit = useEdit()
   return useAtomCallback(
     useCallback(
       (get, set, operator: EditorOperator) => {
-        const operatorNames = get(editorAtoms.operators).map((op) => op.name)
+        const operators = get(editorAtoms.operators)
+        if (operators.length >= MAX_ACTIVE_OPERATORS) {
+          AppToaster.show({
+            message: i18n.components.editor2.misc.operator_limit_reached({
+              limit: MAX_ACTIVE_OPERATORS,
+            }),
+            intent: 'danger',
+          })
+          return
+        }
+        const operatorNames = operators.map((op) => op.name)
         if (operatorNames.includes(operator.name)) {
           AppToaster.show({
             message: i18n.components.editor2.misc.already_exists({
@@ -39,4 +50,3 @@ export function useAddOperator() {
     ),
   )
 }
-

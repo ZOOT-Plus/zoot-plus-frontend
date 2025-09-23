@@ -2,6 +2,8 @@ import { produce } from 'immer'
 import { useAtom } from 'jotai'
 import { uniqueId } from 'lodash-es'
 
+import { AppToaster } from 'components/Toaster'
+
 import { i18n } from '../../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../../models/copilot.schema'
 import { SheetProvider } from '../../../editor/operator/sheet/SheetProvider'
@@ -13,6 +15,7 @@ import {
   useEdit,
 } from '../../editor-state'
 import { createOperator } from '../../reconciliation'
+import { MAX_ACTIVE_OPERATORS } from '../constants'
 import { SheetList } from './SheetList'
 
 // TODO: 兼容旧数据，目前仍保留重建逻辑
@@ -42,6 +45,19 @@ export const OperatorSheet = () => {
       let checkpoint = skip
       const operation = get(editorAtoms.operation)
       const operator = ensureEditorOperator(operation, _operator)
+      const existingOperator = operation.opers.find(
+        (op) => op.id === operator.id,
+      )
+
+      if (!existingOperator && operation.opers.length >= MAX_ACTIVE_OPERATORS) {
+        AppToaster.show({
+          message: i18n.components.editor2.misc.operator_limit_reached({
+            limit: MAX_ACTIVE_OPERATORS,
+          }),
+          intent: 'danger',
+        })
+        return false
+      }
 
       const newOperation = produce(operation, (draft) => {
         const targetOperator = draft.opers.find((op) => op.id === operator.id)

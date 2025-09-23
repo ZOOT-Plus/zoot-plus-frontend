@@ -2,6 +2,8 @@ import { Button } from '@blueprintjs/core'
 
 import { FC, useMemo } from 'react'
 
+import { MAX_ACTIVE_OPERATORS } from 'components/editor2/operator/constants'
+
 import { useTranslation } from '../../../../../../i18n/i18n'
 import { useSheet } from '../../SheetProvider'
 import { useOperatorFilterProvider } from '../SheetOperatorFilterProvider'
@@ -15,22 +17,35 @@ export const OperatorMutipleSelect: FC<OperatorMutipleSelectProp> = () => {
   } = useOperatorFilterProvider()
   const { existedOperators, submitOperatorInSheet, removeOperator } = useSheet()
 
-  const { cancelAllDisabled, selectAllDisabled } = useMemo(() => {
-    const existedOperatorsNames = existedOperators.map(({ name }) => name)
-    return {
-      cancelAllDisabled: !operatorFilteredData.some(({ name }) =>
-        existedOperatorsNames.includes(name),
-      ),
-      selectAllDisabled: operatorFilteredData.every(({ name }) =>
-        existedOperatorsNames.includes(name),
-      ),
-    }
-  }, [existedOperators, operatorFilteredData])
+  const { cancelAllDisabled, selectAllDisabled, existedOperatorsNames } =
+    useMemo(() => {
+      const existedOperatorsNames = existedOperators.map(({ name }) => name)
+      return {
+        cancelAllDisabled: !operatorFilteredData.some(({ name }) =>
+          existedOperatorsNames.includes(name),
+        ),
+        selectAllDisabled:
+          MAX_ACTIVE_OPERATORS - existedOperators.length <= 0 ||
+          operatorFilteredData.every(({ name }) =>
+            existedOperatorsNames.includes(name),
+          ),
+        existedOperatorsNames,
+      }
+    }, [existedOperators, operatorFilteredData])
 
-  const selectAll = () =>
+  const selectAll = () => {
+    let remainingSlots = MAX_ACTIVE_OPERATORS - existedOperators.length
     operatorFilteredData.forEach((item) => {
-      submitOperatorInSheet(item)
+      const isExisting = existedOperatorsNames.includes(item.name)
+      if (!isExisting && remainingSlots <= 0) {
+        return
+      }
+      const success = submitOperatorInSheet(item)
+      if (!isExisting && success) {
+        remainingSlots -= 1
+      }
     })
+  }
 
   const cancelAll = () => {
     const deleteIndexList: number[] = []
