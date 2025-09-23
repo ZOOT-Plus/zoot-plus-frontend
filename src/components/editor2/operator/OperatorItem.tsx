@@ -10,9 +10,7 @@ import { CopilotDocV1 } from 'models/copilot.schema'
 import { i18n, useTranslation } from '../../../i18n/i18n'
 import {
   OPERATORS,
-  adjustOperatorLevel,
   getDefaultRequirements,
-  getEliteIconUrl,
   getModuleName,
   useLocalizedOperatorName,
   withDefaultRequirements,
@@ -21,7 +19,6 @@ import { OperatorAvatar } from '../../OperatorAvatar'
 import { Select } from '../../Select'
 import { AppToaster } from '../../Toaster'
 import { SortableItemProps } from '../../dnd'
-import { NumericInput2 } from '../../editor/NumericInput2'
 import { EditorOperator, useEdit } from '../editor-state'
 import { editorFavOperatorsAtom } from '../reconciliation'
 
@@ -114,89 +111,6 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               )}
             </Card>
           </Popover2>
-
-          {info?.prof !== 'TOKEN' && (
-            <>
-              <div className="absolute top-2 -left-5 ml-[2px] px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)] pointer-events-none">
-                <Button
-                  small
-                  minimal
-                  className="!p-0 !border-0 pointer-events-auto hover:opacity-80"
-                  onClick={() => {
-                    edit(() => {
-                      onChange?.({
-                        ...operator,
-                        requirements: {
-                          ...operator.requirements,
-                          elite: (requirements.elite - 1 + 3) % 3,
-                        },
-                      })
-                      return {
-                        action: 'set-operator-level',
-                        desc: i18n.actions.editor2.set_operator_level,
-                        squashBy: operator.id,
-                      }
-                    })
-                  }}
-                >
-                  <img
-                    className="w-8 h-7 object-contain"
-                    src={getEliteIconUrl(requirements.elite)}
-                    alt={t.components.editor2.OperatorItem.elite({
-                      level: requirements.elite,
-                    })}
-                  />
-                </Button>
-              </div>
-              <div className="absolute -top-2 -left-2 flex flex-col items-center">
-                <NumericInput2
-                  intOnly
-                  min={1}
-                  buttonPosition="none"
-                  value={requirements.level}
-                  inputClassName="!w-9 h-9 !p-0 !leading-9 !rounded-full !border-2 !border-yellow-300 !bg-black/50 text-lg text-white font-semibold text-center !shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-                  onValueChange={(value) => {
-                    edit(() => {
-                      onChange?.({
-                        ...operator,
-                        requirements: {
-                          ...operator.requirements,
-                          level: value,
-                        },
-                      })
-                      return {
-                        action: 'set-operator-level',
-                        desc: i18n.actions.editor2.set_operator_level,
-                        squashBy: operator.id,
-                      }
-                    })
-                  }}
-                  onWheelFocused={(e) => {
-                    e.preventDefault()
-                    edit(() => {
-                      onChange?.({
-                        ...operator,
-                        requirements: {
-                          ...operator.requirements,
-                          ...adjustOperatorLevel({
-                            rarity: info?.rarity,
-                            level: requirements.level,
-                            elite: requirements.elite,
-                            delta: e.deltaY > 0 ? -10 : 10,
-                          }),
-                        },
-                      })
-                      return {
-                        action: 'set-operator-level',
-                        desc: i18n.actions.editor2.set_operator_level,
-                        squashBy: operator.id,
-                      }
-                    })
-                  }}
-                />
-              </div>
-            </>
-          )}
         </div>
 
         {controlsEnabled && info?.modules && (
