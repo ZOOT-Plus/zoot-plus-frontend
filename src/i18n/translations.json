@@ -587,6 +587,22 @@
           "cn": "编辑后的 JSON 内容会自动同步到编辑器里",
           "en": "Edited JSON content will automatically sync to the editor"
         },
+        "view_json_mode": {
+          "cn": "JSON 展示模式",
+          "en": "JSON View Mode"
+        },
+        "view_json_mode_maa": {
+          "cn": "标准格式",
+          "en": "Standard"
+        },
+        "view_json_mode_siming": {
+          "cn": "司命格式",
+          "en": "Siming"
+        },
+        "siming_view_readonly": {
+          "cn": "司命格式仅供查看与复制，编辑仍需使用标准格式。",
+          "en": "Siming format is read-only; switch back to Standard to edit."
+        },
         "has_errors": {
           "cn": "存在错误",
           "en": "Has Errors"

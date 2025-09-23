@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   ButtonProps,
   Callout,
   Drawer,
@@ -22,6 +23,7 @@ import { DrawerLayout } from '../../drawer/DrawerLayout'
 import { SourceEditorHeader } from '../../editor/source/SourceEditorHeader'
 import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
+import { toSimingOperation } from '../siming-export'
 import { ZodIssue, operationLooseSchema } from '../validation/schema'
 
 interface SourceEditorProps {
@@ -38,9 +40,15 @@ const SourceEditor = withSuspensable(
     const [text, setText] = useState(() =>
       JSON.stringify(toMaaOperation(operation), null, 2),
     )
+    const [viewMode, setViewMode] = useState<'maa' | 'siming'>('siming')
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [pending, setPending] = useState(false)
     const [errors, setErrors] = useState<(ZodIssue | string)[]>([])
+
+    const simingText = useMemo(() => {
+      const base = toMaaOperation(operation)
+      return JSON.stringify(toSimingOperation(base, operation), null, 2)
+    }, [operation])
 
     const update = useMemo(
       () =>
@@ -85,6 +93,9 @@ const SourceEditor = withSuspensable(
     )
 
     const handleChange = (text: string) => {
+      if (viewMode !== 'maa') {
+        return
+      }
       setPending(true)
       setText(text)
       update(text)
@@ -92,9 +103,13 @@ const SourceEditor = withSuspensable(
       onUnsavedChanges?.(true)
     }
 
+    const displayedText = viewMode === 'maa' ? text : simingText
+
     return (
       <DrawerLayout
-        title={<SourceEditorHeader text={text} onChange={handleChange} />}
+        title={
+          <SourceEditorHeader text={displayedText} onChange={handleChange} />
+        }
       >
         <div className="px-8 py-4 flex-grow flex flex-col gap-2 bg-zinc-50 dark:bg-slate-900 dark:text-white">
           <Callout
@@ -110,6 +125,37 @@ const SourceEditor = withSuspensable(
               )
             }
           />
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-slate-600 dark:text-slate-300">
+              {t.components.editor2.SourceEditor.view_json_mode}
+            </span>
+            <ButtonGroup minimal>
+              <Button
+                small
+                active={viewMode === 'maa'}
+                onClick={() => {
+                  if (viewMode !== 'maa') {
+                    setText(JSON.stringify(toMaaOperation(operation), null, 2))
+                    setViewMode('maa')
+                  }
+                }}
+              >
+                {t.components.editor2.SourceEditor.view_json_mode_maa}
+              </Button>
+              <Button
+                small
+                active={viewMode === 'siming'}
+                onClick={() => {
+                  if (viewMode !== 'siming') {
+                    update.flush()
+                    setViewMode('siming')
+                  }
+                }}
+              >
+                {t.components.editor2.SourceEditor.view_json_mode_siming}
+              </Button>
+            </ButtonGroup>
+          </div>
           <Callout
             title={
               errors.length
@@ -147,10 +193,16 @@ const SourceEditor = withSuspensable(
           </Callout>
           <textarea
             className="p-1 flex-grow bg-white border text-xm font-mono resize-none focus:outline focus:outline-2 focus:outline-purple-300 dark:bg-slate-900 dark:text-white"
-            value={text}
+            value={displayedText}
             onChange={(e) => handleChange(e.target.value)}
-            onBlur={() => update.flush()}
+            onBlur={() => viewMode === 'maa' && update.flush()}
+            readOnly={viewMode !== 'maa'}
           />
+          {viewMode === 'siming' ? (
+            <Callout intent="primary" icon="info-sign">
+              {t.components.editor2.SourceEditor.siming_view_readonly}
+            </Callout>
+          ) : null}
         </div>
       </DrawerLayout>
     )
