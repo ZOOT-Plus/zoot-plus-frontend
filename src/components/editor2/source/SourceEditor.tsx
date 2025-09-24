@@ -12,7 +12,7 @@ import {
 
 import { useAtom } from 'jotai'
 import { debounce } from 'lodash-es'
-import { FC, memo, useMemo, useRef, useState } from 'react'
+import { FC, memo, useCallback, useMemo, useRef, useState } from 'react'
 import { ZodError } from 'zod'
 
 import { i18n, useTranslation } from '../../../i18n/i18n'
@@ -92,23 +92,43 @@ const SourceEditor = withSuspensable(
       [edit, setOperation],
     )
 
-    const handleChange = (text: string) => {
-      if (viewMode !== 'maa') {
-        return
-      }
-      setPending(true)
-      setText(text)
-      update(text)
-      setHasUnsavedChanges(true)
-      onUnsavedChanges?.(true)
-    }
+    const applyText = useCallback(
+      (nextText: string, { force = false, flush = false } = {}) => {
+        if (!force && viewMode !== 'maa') {
+          return
+        }
+        setPending(true)
+        setText(nextText)
+        update(nextText)
+        setHasUnsavedChanges(true)
+        onUnsavedChangesRef.current?.(true)
+        if (flush) {
+          update.flush()
+        }
+      },
+      [update, viewMode],
+    )
+
+    const handleChange = useCallback(
+      (text: string) => {
+        applyText(text)
+      },
+      [applyText],
+    )
+
+    const handleImport = useCallback(
+      (text: string) => {
+        applyText(text, { force: true, flush: true })
+      },
+      [applyText],
+    )
 
     const displayedText = viewMode === 'maa' ? text : simingText
 
     return (
       <DrawerLayout
         title={
-          <SourceEditorHeader text={displayedText} onChange={handleChange} />
+          <SourceEditorHeader text={displayedText} onChange={handleChange} onImport={handleImport} />
         }
       >
         <div className="px-8 py-4 flex-grow flex flex-col gap-2 bg-zinc-50 dark:bg-slate-900 dark:text-white">

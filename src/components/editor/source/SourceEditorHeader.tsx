@@ -12,18 +12,24 @@ import { ShortCodeImporter } from './ShortCodeImporter'
 interface SourceEditorHeaderProps {
   text: string
   onChange: (text: string) => void
+  onImport?: (text: string) => void
 }
 
 export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
   text,
   onChange,
+  onImport,
 }) => {
   const t = useTranslation()
   const [importDropdownOpen, setImportDropdownOpen] = useState(false)
 
   const handleImport = (text: string) => {
     setImportDropdownOpen(false)
-    onChange(text)
+    if (onImport) {
+      onImport(text)
+    } else {
+      onChange(text)
+    }
   }
 
   const handleCopy = () => {

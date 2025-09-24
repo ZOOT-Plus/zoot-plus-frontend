@@ -298,6 +298,11 @@ function normalizeOperationLooseInput(raw: unknown): unknown {
   }
 
   const normalized: Record<string, unknown> = { ...raw }
+  const camelSimingActions = normalized['simingActions']
+  if (isRecord(camelSimingActions)) {
+    normalized['siming_actions'] = camelSimingActions
+    delete normalized['simingActions']
+  }
   const actions = normalized['actions']
 
   if (Array.isArray(actions)) {
