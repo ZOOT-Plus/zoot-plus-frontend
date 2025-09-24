@@ -7,11 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { OperationEditor } from 'components/editor2/Editor'
 
-import {
-  createOperation,
-  updateOperation,
-  useOperation,
-} from '../apis/operation'
+import { createOperation, updateOperation, useOperation } from '../apis/operation'
 import { withSuspensable } from '../components/Suspensable'
 import { AppToaster } from '../components/Toaster'
 import {
@@ -21,7 +17,7 @@ import {
 } from '../components/editor2/editor-state'
 import { toEditorOperation } from '../components/editor2/reconciliation'
 import { toSimingOperation } from '../components/editor2/siming-export'
-import { operationLooseSchema } from '../components/editor2/validation/schema'
+import { parseOperationLoose } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
 import { formatError } from '../utils/error'
@@ -51,7 +47,7 @@ export const EditorPage = withSuspensable(() => {
     if (apiOperation) {
       resetEditor({
         operation: toEditorOperation(
-          operationLooseSchema.parse(JSON.parse(apiOperation.content)),
+          parseOperationLoose(JSON.parse(apiOperation.content)),
         ),
         metadata: {
           visibility:

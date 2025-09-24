@@ -11,6 +11,10 @@ import cn from './error-map-cn'
 
 export type ZodIssue = z.core.$ZodIssue
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 const version = z.number().optional()
 const stage_name = z.string().optional()
 const difficulty = z.enum(OpDifficulty).optional()
@@ -239,6 +243,55 @@ export const operationLooseSchema = z.object({
   groups: z.array(group).default([]),
   actions: z.array(action).default([]),
 })
+
+function normalizeOperationLooseInput(raw: unknown): unknown {
+  if (!isRecord(raw)) {
+    return raw
+  }
+
+  const normalized: Record<string, unknown> = { ...raw }
+  const actions = normalized['actions']
+
+  if (Array.isArray(actions)) {
+    return normalized
+  }
+
+  if (isRecord(actions)) {
+    const existingSimingActions = (() => {
+      const snakeCase = normalized['siming_actions']
+      if (isRecord(snakeCase)) {
+        return snakeCase
+      }
+      const camelCase = normalized['simingActions']
+      if (isRecord(camelCase)) {
+        return camelCase
+      }
+      return {}
+    })()
+
+    normalized['siming_actions'] = {
+      ...existingSimingActions,
+      ...actions,
+    }
+    normalized['actions'] = []
+    if ('simingActions' in normalized) {
+      delete normalized['simingActions']
+    }
+    return normalized
+  }
+
+  if (actions === undefined || actions === null) {
+    normalized['actions'] = []
+    return normalized
+  }
+
+  normalized['actions'] = []
+  return normalized
+}
+
+export function parseOperationLoose(raw: unknown): CopilotOperationLoose {
+  return operationLooseSchema.parse(normalizeOperationLooseInput(raw))
+}
 
 export type CopilotOperation = z.infer<typeof operationSchema>
 export const operationSchema = z.object({

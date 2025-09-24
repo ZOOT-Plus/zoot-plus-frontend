@@ -18,7 +18,7 @@ import {
   WithPartialCoordinates,
   toEditorOperation,
 } from './reconciliation'
-import { ZodIssue, operationLooseSchema } from './validation/schema'
+import { ZodIssue, parseOperationLoose } from './validation/schema'
 import { EntityIssue } from './validation/validation'
 
 export interface EditorState {
@@ -26,7 +26,7 @@ export interface EditorState {
   metadata: EditorMetadata
 }
 
-const defaultOperation = operationLooseSchema.parse({
+const defaultOperation = parseOperationLoose({
   version: CopilotDocV1.VERSION,
 })
 
