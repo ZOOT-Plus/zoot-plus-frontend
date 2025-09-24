@@ -53,16 +53,13 @@ import { createCustomLevel, findLevelByStageName } from '../../models/level'
 import { Level } from '../../models/operation'
 import {
   OPERATORS,
-  getEliteIconUrl,
   getModuleName,
-  getSkillCount,
   useLocalizedOperatorName,
   withDefaultRequirements,
 } from '../../models/operator'
 import { formatError } from '../../utils/error'
 import { ActionCard } from '../ActionCard'
 import { Confirm } from '../Confirm'
-import { MasteryIcon } from '../MasteryIcon'
 import { OperatorAvatar } from '../OperatorAvatar'
 import { ReLinkRenderer } from '../ReLink'
 import { UserName } from '../UserName'
@@ -336,18 +333,14 @@ export const OperationViewer: ComponentType<{
 
 const OperatorCard: FC<{
   operator: CopilotDocV1.Operator
-  version?: number
-}> = ({ operator, version = 1 }) => {
+}> = ({ operator }) => {
   const t = useTranslation()
   const displayName = useLocalizedOperatorName(operator.name)
   const info = OPERATORS.find((o) => o.name === operator.name)
-  const { level, elite, skillLevel, module } = withDefaultRequirements(
+  const { module } = withDefaultRequirements(
     operator.requirements,
     info?.rarity,
   )
-  const skillCount = info
-    ? Math.max(getSkillCount(info), operator.skill ?? 1)
-    : 3
 
   return (
     <div className="relative flex items-start">
@@ -387,57 +380,6 @@ const OperatorCard: FC<{
           />
         )}
       </div>
-      {version >= 2 && info?.prof !== 'TOKEN' && (
-        <>
-          <div className="absolute top-1 -left-5 ml-[2px] px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_30%,rgba(0,0,0,0)_45%)] pointer-events-none">
-            <img
-              className="w-7 h-6 object-contain"
-              src={getEliteIconUrl(elite)}
-              alt={t.models.operator.elite({ level: elite })}
-            />
-          </div>
-          <div className="absolute -top-2 -left-2 w-8 h-8 pr-px leading-7 rounded-full border-2 border-yellow-300 bg-black/50 text-lg text-white font-semibold text-center shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-            {level}
-          </div>
-        </>
-      )}
-
-      <ul className="flex flex-col gap-1 ml-1">
-        {Array.from({ length: skillCount }, (_, index) => {
-          const skillNumber = index + 1
-          const selected = operator.skill === skillNumber
-          return (
-            <li
-              key={index}
-              className={clsx(
-                'relative',
-                selected
-                  ? 'bg-purple-100 dark:bg-purple-900 dark:text-purple-200 text-purple-800'
-                  : 'bg-gray-300 dark:bg-gray-600 opacity-15 dark:opacity-25',
-              )}
-              title={t.models.operator.skill_number({ count: skillNumber })}
-            >
-              <div className="w-6 h-6 flex items-center justify-center font-bold text-xl border-2 border-current">
-                {version >= 2 ? (
-                  selected ? (
-                    skillLevel <= 7 ? (
-                      skillLevel
-                    ) : (
-                      <MasteryIcon
-                        className="w-4 h-4"
-                        mastery={skillLevel - 7}
-                        subClassName="fill-gray-300 dark:fill-gray-500"
-                      />
-                    )
-                  ) : undefined
-                ) : (
-                  skillNumber
-                )}
-              </div>
-            </li>
-          )
-        })}
-      </ul>
     </div>
   )
 }
@@ -647,7 +589,6 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
             <OperatorCard
               key={operator.name}
               operator={operator}
-              version={operation.parsedContent.version}
             />
           ))}
         </div>
@@ -666,7 +607,6 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
                     <OperatorCard
                       key={operator.name}
                       operator={operator}
-                      version={operation.parsedContent.version}
                     />
                   ))}
 
