@@ -249,9 +249,52 @@ export const operationLooseSchema = z.object({
   siming_actions,
 })
 
+const KNOWN_OPERATION_KEYS = new Set([
+  'version',
+  'stage_name',
+  'stageName',
+  'difficulty',
+  'minimum_required',
+  'minimumRequired',
+  'doc',
+  'opers',
+  'groups',
+  'actions',
+  'siming_actions',
+  'simingActions',
+])
+
+function isLikelySimingActionEntry(
+  value: unknown,
+): value is Record<string, unknown> {
+  if (!isRecord(value)) {
+    return false
+  }
+  return (
+    'next' in value ||
+    'action' in value ||
+    'recognition' in value ||
+    'expected' in value ||
+    'text_doc' in value ||
+    'textDoc' in value
+  )
+}
+
 function normalizeOperationLooseInput(raw: unknown): unknown {
   if (!isRecord(raw)) {
     return raw
+  }
+
+  const keys = Object.keys(raw)
+  const hasKnownKey = keys.some((key) => KNOWN_OPERATION_KEYS.has(key))
+  if (!hasKnownKey && keys.length > 0) {
+    const entries = Object.values(raw)
+    if (entries.length > 0 && entries.every(isLikelySimingActionEntry)) {
+      return {
+        siming_actions: Object.fromEntries(Object.entries(raw)),
+        actions: [],
+      }
+    }
   }
 
   const normalized: Record<string, unknown> = { ...raw }

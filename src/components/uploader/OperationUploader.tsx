@@ -83,10 +83,13 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
           const parsed = await parseOperationFile(file)
           const patched = patchOperation(parsed, levels)
 
-          validateOperation(patched)
-
           const baseOperation = parseOperationLoose(patched)
           const editorOperation = toEditorOperation(baseOperation)
+
+          if (Array.isArray((patched as { actions?: unknown }).actions)) {
+            validateOperation(patched)
+          }
+
           entry.operation = toSimingOperation(baseOperation, editorOperation)
         } catch (e) {
           entry.error = formatError(e)
