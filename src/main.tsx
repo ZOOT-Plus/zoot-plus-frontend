@@ -51,9 +51,6 @@ if (navigator.userAgent.includes('Win')) {
 
 clearOutdatedSwrCache()
 
-const CreatePageLazy = withSuspensable(
-  lazy(() => import('./pages/create').then((m) => ({ default: m.CreatePage }))),
-)
 const EditorPageLazy = withSuspensable(
   lazy(() => import('./pages/editor').then((m) => ({ default: m.EditorPage }))),
 )
@@ -72,8 +69,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AppLayout>
         <Routes>
           <Route path="/" element={<IndexPage />} />
-          <Route path="/create/:id" element={<CreatePageLazy />} />
-          <Route path="/create" element={<CreatePageLazy />} />
           <Route path="/about" element={<AboutPageLazy />} />
           <Route path="/profile/:id" element={<ProfilePageLazy />} />
           <Route path="/operation/:id" element={<ViewPage />} />

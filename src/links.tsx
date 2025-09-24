@@ -12,11 +12,6 @@ export const NAV_CONFIG = [
     icon: <Icon icon="home" />,
   },
   {
-    to: '/create',
-    labelKey: i18nDefer.links.create_job,
-    icon: <Icon icon="add" />,
-  },
-  {
     to: '/editor',
     labelKey: i18nDefer.links.editor,
     icon: <Icon icon="annotation" />,

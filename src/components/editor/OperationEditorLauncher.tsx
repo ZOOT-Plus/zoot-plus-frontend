@@ -10,7 +10,7 @@ export const OperationEditorLauncher: FC = () => {
 
   return (
     <>
-      <Link to="/create" className="!no-underline">
+      <Link to="/editor" className="!no-underline">
         <Button large fill icon="open-application">
           {t.components.editor.OperationEditorLauncher.launch_job_editor}
         </Button>
