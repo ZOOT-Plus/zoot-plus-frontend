@@ -200,6 +200,18 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
 
   const localOnSubmit = handleSubmit(async (values) => {
     try {
+
+      // 方便以后拓展关键字
+      const titleHasPersonal = values.name.includes('自用')
+
+      // 标题含“自用”，但未勾选“自用”(status !== PRIVATE) → 提示
+      if (titleHasPersonal && values.status !== 'PRIVATE') {
+        setGlobalError(
+          t.components.operationSet.OperationSetEditor.personal_use_warning
+        )
+        return
+      }
+
       await onSubmit(
         {
           ...values,
@@ -288,17 +300,15 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
               <Checkbox
                 {...field}
                 value={undefined}
-                checked={field.value === 'PUBLIC'}
+                checked={field.value === 'PRIVATE'}
                 onChange={(e) =>
                   field.onChange(
                     (e.target as HTMLInputElement).checked
-                      ? 'PUBLIC'
-                      : 'PRIVATE',
+                      ? 'PRIVATE'
+                      : 'PUBLIC'
                   )
                 }
-                label={
-                  t.components.operationSet.OperationSetEditor.visible_to_all
-                }
+                label={t.components.operationSet.OperationSetEditor.for_personal_use}
               />
             )}
           />
