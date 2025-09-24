@@ -265,18 +265,22 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
   }
 
   return (
-    <div>
-      {opers?.map(({ name: operatorName, skill }, index) => {
+    <div className="flex flex-wrap items-center">
+      {opers?.map(({ name: operatorName }, index) => {
         const displayName = getLocalizedOperatorName(operatorName, language)
-        const skillNumber = skill ?? 1
 
         return (
           <Tag
-            key={`${operatorName}-${skillNumber}-${index}`}
+            key={`${operatorName}-${index}`}
+            minimal
             className="mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
           >
-            <OperatorAvatar name={operatorName} size="small" className="shrink-0" />
-            <span>{`${displayName} ${skillNumber}`}</span>
+            <OperatorAvatar
+              name={operatorName}
+              size="small"
+              className="shrink-0 self-center"
+            />
+            <span>{displayName}</span>
           </Tag>
         )
       })}
@@ -287,14 +291,13 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           placement="top"
           content={
             groupOpers
-              ?.map(
-                ({ name: operatorName, skill }) =>
-                  `${getLocalizedOperatorName(operatorName, language)} ${skill ?? 1}`,
+              ?.map(({ name: operatorName }) =>
+                getLocalizedOperatorName(operatorName, language),
               )
               .join(', ') || t.components.OperationCard.no_operators
           }
         >
-          <Tag>[{groupName}]</Tag>
+          <Tag minimal>[{groupName}]</Tag>
         </Tooltip2>
       ))}
     </div>
