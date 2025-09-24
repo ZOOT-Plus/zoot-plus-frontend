@@ -3062,6 +3062,14 @@
           "cn": "动作序列",
           "en": "Action Sequence"
         },
+        "round_title": {
+          "cn": "第 {{round}} 回合",
+          "en": "Round {{round}}"
+        },
+        "round_action_count": {
+          "cn": "共 {{count}} 个动作",
+          "en": "Actions: {{count}}"
+        },
         "siming_actions_hint": {
           "cn": "检测到司命动作格式，下方展示为原始节点数据。",
           "en": "Siming action format detected; displaying raw node data below."

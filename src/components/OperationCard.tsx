@@ -16,6 +16,7 @@ import { languageAtom, useTranslation } from '../i18n/i18n'
 import { createCustomLevel, findLevelByStageName } from '../models/level'
 import { getLocalizedOperatorName } from '../models/operator'
 import { Paragraphs } from './Paragraphs'
+import { OperatorAvatar } from './OperatorAvatar'
 import { ReLinkRenderer } from './ReLink'
 import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
@@ -91,7 +92,6 @@ export const NeoOperationCard = ({
               {t.components.OperationCard.operators_and_groups}
             </div>
             <OperatorTags operation={operation} />
-
             <div className="flex">
               <div className="flex items-center gap-1.5">
                 <Icon icon="star" />
@@ -260,33 +260,44 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
   const language = useAtomValue(languageAtom)
   const { opers, groups } = operation.parsedContent
 
-  return opers?.length || groups?.length ? (
+  if (!(opers?.length || groups?.length)) {
+    return <div className="text-gray-500">{t.components.OperationCard.no_records}</div>
+  }
+
+  return (
     <div>
-      {opers?.map(({ name, skill }, index) => (
-        <Tag key={index} className="mr-2 last:mr-0 mb-1 last:mb-0">
-          {`${getLocalizedOperatorName(name, language)} ${skill ?? 1}`}
-        </Tag>
-      ))}
-      {groups?.map(({ name, opers }, index) => (
+      {opers?.map(({ name: operatorName, skill }, index) => {
+        const displayName = getLocalizedOperatorName(operatorName, language)
+        const skillNumber = skill ?? 1
+
+        return (
+          <Tag
+            key={`${operatorName}-${skillNumber}-${index}`}
+            className="mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
+          >
+            <OperatorAvatar name={operatorName} size="small" className="shrink-0" />
+            <span>{`${displayName} ${skillNumber}`}</span>
+          </Tag>
+        )
+      })}
+      {groups?.map(({ name: groupName, opers: groupOpers }, index) => (
         <Tooltip2
-          key={index}
+          key={`group-${groupName}-${index}`}
           className="mr-2 last:mr-0 mb-1 last:mb-0"
           placement="top"
           content={
-            opers
+            groupOpers
               ?.map(
-                ({ name, skill }) =>
-                  `${getLocalizedOperatorName(name, language)} ${skill ?? 1}`,
+                ({ name: operatorName, skill }) =>
+                  `${getLocalizedOperatorName(operatorName, language)} ${skill ?? 1}`,
               )
               .join(', ') || t.components.OperationCard.no_operators
           }
         >
-          <Tag>[{name}]</Tag>
+          <Tag>[{groupName}]</Tag>
         </Tooltip2>
       ))}
     </div>
-  ) : (
-    <div className="text-gray-500">{t.components.OperationCard.no_records}</div>
   )
 }
 
