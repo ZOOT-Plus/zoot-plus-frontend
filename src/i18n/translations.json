@@ -154,67 +154,67 @@
         "en": "Delete Action Condition: {{title}}"
       },
       "update_operator": {
-        "cn": "更新干员",
+        "cn": "更新密探",
         "en": "Update Operator"
       },
       "add_operator": {
-        "cn": "添加干员",
+        "cn": "添加密探",
         "en": "Add Operator"
       },
       "delete_operator": {
-        "cn": "删除干员",
+        "cn": "删除密探",
         "en": "Delete Operator"
       },
       "move_operator": {
-        "cn": "移动干员",
+        "cn": "移动密探",
         "en": "Move Operator"
       },
       "set_operator_level": {
-        "cn": "修改干员等级",
+        "cn": "修改密探等级",
         "en": "Change Operator Level"
       },
       "set_operator_module": {
-        "cn": "修改干员模组",
+        "cn": "修改密探模组",
         "en": "Change Operator Module"
       },
       "set_operator_skill": {
-        "cn": "修改干员技能",
+        "cn": "修改密探技能",
         "en": "Change Operator Skill"
       },
       "set_operator_skill_level": {
-        "cn": "修改干员技能等级",
+        "cn": "修改密探技能等级",
         "en": "Change Operator Skill Level"
       },
       "set_operator_skill_count": {
-        "cn": "修改干员技能次数",
+        "cn": "修改密探技能次数",
         "en": "Change Operator Skill Usage Count"
       },
       "set_operator_skill_usage": {
-        "cn": "修改干员技能用法",
+        "cn": "修改密探技能用法",
         "en": "Change Operator Skill Usage"
       },
       "update_group": {
-        "cn": "更新干员组",
+        "cn": "更新密探组",
         "en": "Update Operator Group"
       },
       "add_group": {
-        "cn": "添加干员组",
+        "cn": "添加密探组",
         "en": "Add Operator Group"
       },
       "delete_group": {
-        "cn": "删除干员组",
+        "cn": "删除密探组",
         "en": "Delete Operator Group"
       },
       "move_group": {
-        "cn": "移动干员组",
+        "cn": "移动密探组",
         "en": "Move Operator Group"
       },
       "set_group_name": {
-        "cn": "修改干员组名称",
+        "cn": "修改密探组名称",
         "en": "Change Operator Group Name"
       },
       "set_group_from_fav": {
-        "cn": "从收藏中读取干员组",
+        "cn": "从收藏中读取密探组",
         "en": "Load Operator Group from Favorites"
       },
       "set_json": {
@@ -267,7 +267,7 @@
           },
           "groups": {
             "_item": {
-              "cn": "干员组",
+              "cn": "密探组",
               "en": "Group"
             },
             "name": {
@@ -321,7 +321,7 @@
               "en": "DP Change"
             },
             "cooling": {
-              "cn": "冷却中的干员",
+              "cn": "冷却中的密探",
               "en": "Operators on Cooldown"
             },
             "pre_delay": {
@@ -348,7 +348,7 @@
         },
         "opers": {
           "_item": {
-            "cn": "干员",
+            "cn": "密探",
             "en": "Operator"
           },
           "name": {
@@ -562,7 +562,7 @@
           "en": "Always Show Buttons Between Actions"
         },
         "auto_toggle_selector_panel": {
-          "cn": "自动在干员列表与关卡地图之间切换",
+          "cn": "自动在密探列表与关卡地图之间切换",
           "en": "Automatically Toggle Between Operator List and Level Map"
         },
         "show_errors_by_default": {
@@ -637,7 +637,7 @@
       },
       "SelectorPanel": {
         "operator": {
-          "cn": "干员",
+          "cn": "密探",
           "en": "Operator"
         },
         "map": {
@@ -661,7 +661,7 @@
       },
       "ActionItem": {
         "unnamed_group": {
-          "cn": "(未命名干员组)",
+          "cn": "(未命名密探组)",
           "en": "(Unnamed Group)"
         },
         "select_target": {
@@ -669,11 +669,11 @@
           "en": "Select Target"
         },
         "group": {
-          "cn": "干员组",
+          "cn": "密探组",
           "en": "Operator Group"
         },
         "operator": {
-          "cn": "干员",
+          "cn": "密探",
           "en": "Operator"
         },
         "token": {
@@ -741,15 +741,15 @@
       },
       "OperatorEditor": {
         "no_operators": {
-          "cn": "暂无干员",
+          "cn": "暂无密探",
           "en": "No Operators"
         },
         "add_operator": {
-          "cn": "干员",
+          "cn": "密探",
           "en": "Operator"
         },
         "add_group": {
-          "cn": "干员组",
+          "cn": "密探组",
           "en": "Operator Group"
         },
         "operator_error": {
@@ -779,11 +779,11 @@
           "en": "Move Right"
         },
         "select_operator_from_list": {
-          "cn": "从列表中选择干员",
+          "cn": "从列表中选择密探",
           "en": "Select operator from list"
         },
         "guide": {
-          "cn": "点击快捷编辑|点击添加干员|拖动上方的干员到这里",
+          "cn": "点击快捷编辑|点击添加密探|拖动上方的密探到这里",
           "en": "Click Quick Edit|Click Add Operator|Drag Operators Here"
         },
         "quick_edit": {
@@ -795,15 +795,15 @@
           "en": "Finish"
         },
         "add_operator": {
-          "cn": "添加干员...",
+          "cn": "添加密探...",
           "en": "Add Operator..."
         },
         "group_name": {
-          "cn": "干员组名称",
+          "cn": "密探组名称",
           "en": "Operator Group Name"
         },
         "replace_existing_operators": {
-          "cn": "是否要替换掉已有的干员？",
+          "cn": "是否要替换掉已有的密探？",
           "en": "Do you want to replace the existing operators?"
         },
         "append": {
@@ -815,15 +815,15 @@
           "en": "Overwrite"
         },
         "load_operator_group_from_favorites": {
-          "cn": "从收藏中读取干员组",
+          "cn": "从收藏中读取密探组",
           "en": "Load operator group from favorites"
         },
         "no_matching_groups": {
-          "cn": "没有匹配的干员组",
+          "cn": "没有匹配的密探组",
           "en": "No matching operator groups"
         },
         "no_fav_groups": {
-          "cn": "没有已收藏的干员组",
+          "cn": "没有已收藏的密探组",
           "en": "No favorite operator groups"
         }
       },
@@ -863,7 +863,7 @@
       },
       "OperatorSelect": {
         "search_operator": {
-          "cn": "搜索干员",
+          "cn": "搜索密探",
           "en": "Search Operator"
         },
         "use_custom_name": {
@@ -873,11 +873,11 @@
       },
       "misc": {
         "already_exists": {
-          "cn": "干员 \"{{name}}\" 已存在",
+          "cn": "密探 \"{{name}}\" 已存在",
           "en": "Operator \"{{name}}\" already exists"
         },
         "operator_limit_reached": {
-          "cn": "干员数量已达上限（{{limit}}）",
+          "cn": "密探数量已达上限（{{limit}}）",
           "en": "You can select up to {{limit}} operators"
         },
         "autosave_error": {
@@ -1176,23 +1176,23 @@
             "en": "Action Type"
           },
           "operator_group_name": {
-            "cn": "干员或干员组名",
+            "cn": "密探或密探组名",
             "en": "Operator or Group Name"
           },
           "select_operator_description": {
-            "cn": "选择干员、使用干员名、或使用干员组名引用",
+            "cn": "选择密探、使用密探名、或使用密探组名引用",
             "en": "Select an operator, use operator name, or reference an operator group"
           },
           "search_operator_hint": {
-            "cn": "键入干员名、拼音或拼音首字母以搜索干员列表",
+            "cn": "键入密探名、拼音或拼音首字母以搜索密探列表",
             "en": "Enter operator name, initials to start search"
           },
           "reference_group_hint": {
-            "cn": "键入干员组名以引用干员组配置",
+            "cn": "键入密探组名以引用密探组配置",
             "en": "Type group name to reference operator group configuration"
           },
           "operator_required": {
-            "cn": "必须填写干员或干员组名",
+            "cn": "必须填写密探或密探组名",
             "en": "Operator or group name is required"
           },
           "skill_usage": {
@@ -1304,7 +1304,7 @@
             "en": "DP Change Condition"
           },
           "cost_change_description": {
-            "cn": "如果没达到就一直等待。可选，默认为 0，直接执行。注意：费用变化量是从开始执行本动作时开始计算的（即：使用前一个动作结束时的费用作为基准）。支持负数，即费用变少了（例如\"孑\"等吸费干员使得费用变少了）。另外仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
+            "cn": "如果没达到就一直等待。可选，默认为 0，直接执行。注意：费用变化量是从开始执行本动作时开始计算的（即：使用前一个动作结束时的费用作为基准）。支持负数，即费用变少了（例如\"孑\"等吸费密探使得费用变少了）。另外仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
             "en": "If not reached, will wait. Optional, defaults to 0. Note: DP Change is calculated from the start of this action (using the DP at the end of the previous action as baseline). Supports negative values (e.g., when DP decreases due to operators like Jaye). Recognition is more reliable with two-digit DP costs; three-digit costs may be recognized incorrectly and are not recommended."
           },
           "dp_change_amount": {
@@ -1312,7 +1312,7 @@
             "en": "DP Change Amount"
           },
           "cooldown_operator_condition": {
-            "cn": "CD 中干员数量条件",
+            "cn": "CD 中密探数量条件",
             "en": "Operators on Cooldown Condition"
           },
           "cooldown_description": {
@@ -1320,7 +1320,7 @@
             "en": "If not reached, will wait. Optional, defaults to -1 (not recognized)"
           },
           "cooldown_count": {
-            "cn": "CD 中干员数量",
+            "cn": "CD 中密探数量",
             "en": "N° of Ops on Cooldown"
           }
         },
@@ -1330,11 +1330,11 @@
             "en": "Direction is required"
           },
           "operator_direction": {
-            "cn": "干员朝向",
+            "cn": "密探朝向",
             "en": "Operator Direction"
           },
           "direction_description": {
-            "cn": "部署干员的干员朝向",
+            "cn": "部署密探的密探朝向",
             "en": "Direction the operator will face when deployed"
           }
         },
@@ -1356,7 +1356,7 @@
             "en": "Y coordinate out of map range (0-{{max}})"
           },
           "operator_location": {
-            "cn": "干员位置",
+            "cn": "密探位置",
             "en": "Operator Location"
           },
           "map_location_description": {
@@ -1442,21 +1442,21 @@
           "sheetGroup": {
             "CollapseButton": {
               "collapse": {
-                "cn": "折叠所包含干员",
+                "cn": "折叠所包含密探",
                 "en": "Collapse included operators"
               },
               "expand": {
-                "cn": "展开所包含干员",
+                "cn": "展开所包含密探",
                 "en": "Expand included operators"
               }
             },
             "SheetGroupItem": {
               "unsaved_changes": {
-                "cn": "当前干员组名修改未保存，是否放弃修改？",
+                "cn": "当前密探组名修改未保存，是否放弃修改？",
                 "en": "Current operator group name changes are not saved, discard changes?"
               },
               "edit_group_name": {
-                "cn": "修改干员组名称",
+                "cn": "修改密探组名称",
                 "en": "Edit operator group name"
               },
               "cancel": {
@@ -1472,7 +1472,7 @@
                 "en": "Remove from favourite groups"
               },
               "will_replace_same_name": {
-                "cn": "此操作会替换同名干员组",
+                "cn": "此操作会替换同名密探组",
                 "en": "This operation will replace the operator group with the same name"
               },
               "add_to_favorites": {
@@ -1484,7 +1484,7 @@
                 "en": "Already added"
               },
               "same_name_detected": {
-                "cn": "检测到同名干员组",
+                "cn": "检测到同名密探组",
                 "en": "Found operator group with the same name"
               },
               "use_recommended_group": {
@@ -1494,23 +1494,23 @@
             },
             "SheetOperatorEditor": {
               "edit_operator_info": {
-                "cn": "编辑干员组中干员信息",
+                "cn": "编辑密探组中密探信息",
                 "en": "Edit operator information in the group"
               },
               "select_operator": {
-                "cn": "选择干员",
+                "cn": "选择密探",
                 "en": "Select operator"
               },
               "selected_operators": {
-                "cn": "已选择干员",
+                "cn": "已选择密探",
                 "en": "Selected operators"
               },
               "unselected_operators": {
-                "cn": "未选择干员",
+                "cn": "未选择密探",
                 "en": "Unselected operators"
               },
               "operators_in_other_groups": {
-                "cn": "其他分组干员",
+                "cn": "其他分组密探",
                 "en": "Operators in other groups"
               },
               "select_all": {
@@ -1549,17 +1549,17 @@
               },
               "OperatorMutipleSelect": {
                 "deselect_all_operators": {
-                  "cn": "取消选择全部{{count}}位干员",
+                  "cn": "取消选择全部{{count}}位密探",
                   "en": "Deselect all {{count}} operators"
                 },
                 "select_all_operators": {
-                  "cn": "全选{{count}}位干员",
+                  "cn": "全选{{count}}位密探",
                   "en": "Select all {{count}} operators"
                 }
               },
               "OperatorRaritySelect": {
                 "display_by_rarity": {
-                  "cn": "按干员星级展示",
+                  "cn": "按密探星级展示",
                   "en": "Display by operator rarity"
                 },
                 "reset_selection": {
@@ -1596,7 +1596,7 @@
             },
             "SheetOperatorItem": {
               "operator_in_group": {
-                "cn": "干员 {{name}} 已被编组",
+                "cn": "密探 {{name}} 已被编组",
                 "en": "Operator {{name}} is already in a group"
               },
               "remove_from_favorites": {
@@ -1604,7 +1604,7 @@
                 "en": "Remove from favourites"
               },
               "will_replace_operator": {
-                "cn": "此操作会覆盖已有干员",
+                "cn": "此操作会覆盖已有密探",
                 "en": "This will replace the existing operator"
               },
               "in_group": {
@@ -1614,7 +1614,7 @@
             },
             "ShowMore": {
               "showing_all_operators": {
-                "cn": "已经展示全部干员了({{total}})",
+                "cn": "已经展示全部密探了({{total}})",
                 "en": "Showing all operators ({{total}})"
               },
               "collapse": {
@@ -1622,22 +1622,22 @@
                 "en": "Collapse"
               },
               "show_more": {
-                "cn": "显示更多干员(剩余{{remaining}})",
+                "cn": "显示更多密探(剩余{{remaining}})",
                 "en": "Show more operators ({{remaining}} remaining)"
               }
             }
           },
           "SheetGroup": {
             "add_operator_group": {
-              "cn": "添加干员组",
+              "cn": "添加密探组",
               "en": "Add Operator Group"
             },
             "configured_groups": {
-              "cn": "已设置的干员组",
+              "cn": "已设置的密探组",
               "en": "Configured Operator Groups"
             },
             "group_count": {
-              "cn": "已显示全部 {{count}} 个干员组",
+              "cn": "已显示全部 {{count}} 个密探组",
               "en": "Showing all {{count}} operator groups"
             },
             "recommended_groups": {
@@ -1649,15 +1649,15 @@
               "en": "Favourite Groups"
             },
             "set_operator_groups": {
-              "cn": "设置干员组",
+              "cn": "设置密探组",
               "en": "Configure Operator Groups"
             },
             "group_name_empty": {
-              "cn": "干员组名不能为空",
+              "cn": "密探组名不能为空",
               "en": "Operator group name cannot be empty"
             },
             "enter_group_name": {
-              "cn": "输入干员组名",
+              "cn": "输入密探组名",
               "en": "Enter operator group name"
             },
             "add": {
@@ -1671,17 +1671,17 @@
           },
           "SheetNoneData": {
             "no_operators": {
-              "cn": "暂无干员",
+              "cn": "暂无密探",
               "en": "No operators yet"
             },
             "no_groups": {
-              "cn": "暂无干员组",
+              "cn": "暂无密探组",
               "en": "No operator groups yet"
             }
           },
           "SheetOperator": {
             "select_operator": {
-              "cn": "选择干员",
+              "cn": "选择密探",
               "en": "Select Operator"
             }
           },
@@ -1714,17 +1714,17 @@
         },
         "EditorGroupItem": {
           "drag_operators_here": {
-            "cn": "将干员拖拽到此处",
+            "cn": "将密探拖拽到此处",
             "en": "Drag operators here"
           }
         },
         "EditorOperator": {
           "operator_or_group": {
-            "cn": "干员或干员组",
+            "cn": "密探或密探组",
             "en": "Operator or operator group"
           },
           "operator": {
-            "cn": "干员",
+            "cn": "密探",
             "en": "Operator"
           },
           "please_enter_name": {
@@ -1746,15 +1746,15 @@
         },
         "EditorOperatorGroupSelect": {
           "create_new_group": {
-            "cn": "创建新的干员组 \"{{query}}\"",
+            "cn": "创建新的密探组 \"{{query}}\"",
             "en": "Create new operator group \"{{query}}\""
           },
           "no_matching_groups": {
-            "cn": "没有匹配的干员组",
+            "cn": "没有匹配的密探组",
             "en": "No matching operator groups"
           },
           "group_name": {
-            "cn": "干员组名",
+            "cn": "密探组名",
             "en": "Operator group name"
           }
         },
@@ -1776,11 +1776,11 @@
         },
         "EditorOperatorSelect": {
           "please_select_operator": {
-            "cn": "请选择干员",
+            "cn": "请选择密探",
             "en": "Please select operator"
           },
           "operator_deploy_retreat": {
-            "cn": "干员上/退场",
+            "cn": "密探上/退场",
             "en": "Operator Deploy/Retreat"
           },
           "deploy": {
@@ -1788,7 +1788,7 @@
             "en": "Deploy"
           },
           "deploy_description": {
-            "cn": "部署干员至指定位置。当费用不够时，会一直等待到费用够（除非 timeout）",
+            "cn": "部署密探至指定位置。当费用不够时，会一直等待到费用够（除非 timeout）",
             "en": "Deploy operator to specified location. When DP is insufficient, will wait until enough (unless timeout)"
           },
           "retreat": {
@@ -1796,11 +1796,11 @@
             "en": "Retreat"
           },
           "retreat_description": {
-            "cn": "将干员从作战中撤出",
+            "cn": "将密探从作战中撤出",
             "en": "Withdraw operator from battle"
           },
           "operator_skills": {
-            "cn": "干员技能",
+            "cn": "密探技能",
             "en": "Operator Skills"
           },
           "use_skill": {
@@ -1816,7 +1816,7 @@
             "en": "Switch Skill Usage"
           },
           "switch_skill_usage_description": {
-            "cn": "切换干员技能用法。例如，刚下桃金娘、需要她帮忙打几个怪，但此时不能自动开技能否则会漏怪，等中后期平稳了才需要她自动开技能，则可以在对应时刻后，将桃金娘的技能用法从「不自动使用」改为「好了就用」。",
+            "cn": "切换密探技能用法。例如，刚下桃金娘、需要她帮忙打几个怪，但此时不能自动开技能否则会漏怪，等中后期平稳了才需要她自动开技能，则可以在对应时刻后，将桃金娘的技能用法从「不自动使用」改为「好了就用」。",
             "en": "Switch operator skill usage. For example, when Perfumer is just deployed and needs to help defeat some enemies, but automatic skill activation would miss enemies, and only in mid/late game should she activate skills automatically, you can change Perfumer's skill usage from 'Don't use automatically' to 'Use when ready'."
           },
           "battle_control": {
@@ -1836,7 +1836,7 @@
             "en": "Enter Bullet Time"
           },
           "bullet_time_description": {
-            "cn": "执行后将点击任意干员，进入 1/5 速度状态；再进行任意动作会恢复正常速度",
+            "cn": "执行后将点击任意密探，进入 1/5 速度状态；再进行任意动作会恢复正常速度",
             "en": "After execution, click any operator to enter 1/5 speed state; any further action will restore normal speed"
           },
           "auto_mode": {
@@ -1860,7 +1860,7 @@
             "en": "Has no actual effect on battle, only outputs description content (for subtitles, etc.)"
           },
           "select_operator": {
-            "cn": "选择干员",
+            "cn": "选择密探",
             "en": "Select Operator"
           }
         },
@@ -1894,39 +1894,39 @@
         },
         "EditorPerformer": {
           "no_operators": {
-            "cn": "暂无干员",
+            "cn": "暂无密探",
             "en": "No operators yet"
           },
           "no_operator_groups": {
-            "cn": "暂无干员组",
+            "cn": "暂无密探组",
             "en": "No operator groups yet"
           },
           "operators": {
-            "cn": "干员",
+            "cn": "密探",
             "en": "Operators"
           },
           "operator_groups": {
-            "cn": "干员组",
+            "cn": "密探组",
             "en": "Operator Groups"
           },
           "update_operator_not_found": {
-            "cn": "未能找到要更新的干员",
+            "cn": "未能找到要更新的密探",
             "en": "Could not find the operator to update"
           },
           "update_group_not_found": {
-            "cn": "未能找到要更新的干员组",
+            "cn": "未能找到要更新的密探组",
             "en": "Could not find the operator group to update"
           },
           "operator_already_exists": {
-            "cn": "干员已存在",
+            "cn": "密探已存在",
             "en": "Operator already exists"
           },
           "group_already_exists": {
-            "cn": "干员组已存在",
+            "cn": "密探组已存在",
             "en": "Operator group already exists"
           },
           "ungrouped_operators": {
-            "cn": "未加入干员",
+            "cn": "未加入密探",
             "en": "Ungrouped operators"
           }
         },
@@ -1936,29 +1936,29 @@
             "en": "Add"
           },
           "operator": {
-            "cn": "干员",
+            "cn": "密探",
             "en": "Operator"
           },
           "operator_group": {
-            "cn": "干员组",
+            "cn": "密探组",
             "en": "Operator Group"
           }
         },
         "EditorPerformerGroup": {
           "editing_operator_group": {
-            "cn": "正在编辑的干员组",
+            "cn": "正在编辑的密探组",
             "en": "Operator group being edited"
           },
           "what_is_group": {
-            "cn": "什么是干员组？",
+            "cn": "什么是密探组？",
             "en": "What is an operator group?"
           },
           "group_explanation": {
-            "cn": "编队时将选择组内练度最高的一位干员；组内前后顺序并不影响判断",
+            "cn": "编队时将选择组内练度最高的一位密探；组内前后顺序并不影响判断",
             "en": "When forming a team, the operator with the highest level in the group will be selected; order within the group does not affect selection"
           },
           "group_name": {
-            "cn": "干员组名",
+            "cn": "密探组名",
             "en": "Operator Group Name"
           },
           "name_description": {
@@ -1966,11 +1966,11 @@
             "en": "Any name, used for reference in actions. Examples: Fast-Snipers, AoE-Healers"
           },
           "name_required": {
-            "cn": "请输入干员组名",
+            "cn": "请输入密探组名",
             "en": "Please enter an operator group name"
           },
           "name_placeholder": {
-            "cn": "干员组名",
+            "cn": "密探组名",
             "en": "Operator group name"
           },
           "add": {
@@ -1988,27 +1988,27 @@
         },
         "EditorPerformerOperator": {
           "editing_operator": {
-            "cn": "正在编辑的干员",
+            "cn": "正在编辑的密探",
             "en": "Operator being edited"
           },
           "operator_name": {
-            "cn": "干员名",
+            "cn": "密探名",
             "en": "Operator Name"
           },
           "operator_description": {
-            "cn": "选择干员或直接使用搜索内容创建干员",
+            "cn": "选择密探或直接使用搜索内容创建密探",
             "en": "Select an operator or create one directly using the search content"
           },
           "search_hint": {
-            "cn": "键入干员名、拼音或拼音首字母以从干员列表中搜索",
+            "cn": "键入密探名、拼音或拼音首字母以从密探列表中搜索",
             "en": "Enter operator name, initials to start search"
           },
           "group_membership": {
-            "cn": "所属干员组",
+            "cn": "所属密探组",
             "en": "Operator Group Membership"
           },
           "group_membership_description": {
-            "cn": "该干员的所属干员组，如果不存在则会自动创建",
+            "cn": "该密探的所属密探组，如果不存在则会自动创建",
             "en": "The operator group this operator belongs to; if it doesn't exist, it will be created automatically"
           },
           "skill": {
@@ -2251,7 +2251,7 @@
           "en": "For main story or event stages: Type stage code, stage name or event name"
         },
         "for_paradox_stages": {
-          "cn": "对于悖论模拟关卡：键入关卡名或干员名",
+          "cn": "对于悖论模拟关卡：键入关卡名或密探名",
           "en": "For paradox simulation stages: Type stage name or operator name"
         },
         "custom": {
@@ -2331,11 +2331,11 @@
           "en": "Drag to reorder"
         },
         "operators_and_groups": {
-          "cn": "干员与干员组",
+          "cn": "密探与密探组",
           "en": "Operators and Groups"
         },
         "drag_to_reorder_operators": {
-          "cn": "拖拽以重新排序或分配干员",
+          "cn": "拖拽以重新排序或分配密探",
           "en": "Drag to reorder or assign operators"
         },
         "drag_too_fast_issue": {
@@ -2383,7 +2383,7 @@
       },
       "validation": {
         "empty_group": {
-          "cn": "干员组\"{{name}}\"不能为空",
+          "cn": "密探组\"{{name}}\"不能为空",
           "en": "Operator group \"{{name}}\" cannot be empty"
         },
         "bullet_time_error": {
@@ -3025,19 +3025,19 @@
           "en": "Experience tranquility..."
         },
         "operators_and_groups": {
-          "cn": "干员与干员组",
+          "cn": "密探与密探组",
           "en": "Operators and Operator Groups"
         },
         "operators_and_groups_note": {
-          "cn": "{{operators(干员)}}\n作业必需的干员。\n干员练度（等级、模组）仅供参考，MAA 的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(干员组)}}\n一系列可替换干员的编组。\n组内干员可以任选其一，MAA 自动编队时按最高练度来选择。",
+          "cn": "{{operators(密探)}}\n作业必需的密探。\n密探练度（等级、模组）仅供参考，MAA 的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(密探组)}}\n一系列可替换密探的编组。\n组内密探可以任选其一，MAA 自动编队时按最高练度来选择。",
           "en": "{{operators(Operators)}}\nOperators required for this Job. \nThe requirements (level and module) are for reference only. MAA's auto-formation only supports skill selection, and other information is not yet supported.\n\n{{groups(Operator Groups)}}\nGroups of interchangeable operators. \nYou can choose any operator in a group. MAA's auto-formation selects the one with the highest level."
         },
         "no_operators": {
-          "cn": "暂无干员",
+          "cn": "暂无密探",
           "en": "No Operators"
         },
         "no_operators_added": {
-          "cn": "作业并未添加干员",
+          "cn": "作业并未添加密探",
           "en": "No operators have been added to this Job"
         },
         "unknown": {
@@ -3045,7 +3045,7 @@
           "en": "Unknown"
         },
         "no_operator": {
-          "cn": "无干员",
+          "cn": "无密探",
           "en": "No Operator"
         },
         "module_title": {
@@ -3198,11 +3198,11 @@
         "en": "Private"
       },
       "operators_and_groups": {
-        "cn": "干员/干员组",
+        "cn": "密探/密探组",
         "en": "Operators/Groups"
       },
       "no_operators": {
-        "cn": "无干员",
+        "cn": "无密探",
         "en": "No operators"
       },
       "no_records": {
@@ -3332,27 +3332,27 @@
     },
     "OperatorFilter": {
       "disable_operator_selection": {
-        "cn": "禁用干员选择",
+        "cn": "禁用密探选择",
         "en": "Disable operator selection"
       },
       "operators": {
-        "cn": "干员",
+        "cn": "密探",
         "en": "Operators"
       },
       "select_operators": {
-        "cn": "选择干员",
+        "cn": "选择密探",
         "en": "Select Operators"
       },
       "included_operators": {
-        "cn": "包含的干员",
+        "cn": "包含的密探",
         "en": "Included Operators"
       },
       "excluded_operators": {
-        "cn": "排除的干员",
+        "cn": "排除的密探",
         "en": "Excluded Operators"
       },
       "search_help": {
-        "cn": "输入干员名、拼音或拼音首字母以搜索",
+        "cn": "输入密探名、拼音或拼音首字母以搜索",
         "en": "Enter operator name, initials to start search"
       },
       "cancel": {
@@ -3370,7 +3370,7 @@
     },
     "OperatorSelect": {
       "no_matching_operators": {
-        "cn": "没有匹配的干员",
+        "cn": "没有匹配的密探",
         "en": "No matching operators"
       }
     },
@@ -3452,11 +3452,11 @@
     },
     "operator": {
       "operator": {
-        "cn": "干员",
+        "cn": "密探",
         "en": "Operator"
       },
       "operator_group": {
-        "cn": "干员组",
+        "cn": "密探组",
         "en": "Operator Group"
       },
       "skill_number": {
@@ -3488,7 +3488,7 @@
             "en": "Manual Activation"
           },
           "description": {
-            "cn": "不由 MAA 自动开启技能、或干员技能并不需要操作开启（自动触发）。若需要手动开启技能，请添加「使用技能」动作",
+            "cn": "不由 MAA 自动开启技能、或密探技能并不需要操作开启（自动触发）。若需要手动开启技能，请添加「使用技能」动作",
             "en": "Skills won't be activated automatically by MAA, or for operators whose skills don't need manual activation (auto-trigger). If you need to manually activate a skill, add a 'Use Skill' action"
           }
         },
@@ -3666,11 +3666,11 @@
     "types": {
       "action_group": {
         "operator_deploy_retreat": {
-          "cn": "干员上/退场",
+          "cn": "密探上/退场",
           "en": "Operator Deploy/Retreat"
         },
         "operator_skills": {
-          "cn": "干员技能",
+          "cn": "密探技能",
           "en": "Operator Skills"
         },
         "battle_control": {
@@ -3697,7 +3697,7 @@
             "en": "Deploy"
           },
           "description": {
-            "cn": "部署干员至指定位置。当费用不够时，会一直等待到费用够（除非 timeout）",
+            "cn": "部署密探至指定位置。当费用不够时，会一直等待到费用够（除非 timeout）",
             "en": "Deploy operator to specified location. When DP is insufficient, will wait until enough (unless timeout)"
           }
         },
@@ -3711,7 +3711,7 @@
             "en": "Retreat"
           },
           "description": {
-            "cn": "将干员从作战中撤出",
+            "cn": "将密探从作战中撤出",
             "en": "Withdraw operator from battle"
           }
         },
@@ -3739,7 +3739,7 @@
             "en": "Skill Usage"
           },
           "description": {
-            "cn": "切换干员技能用法。例如，刚下桃金娘、需要她帮忙打几个怪，但此时不能自动开技能否则会漏怪，等中后期平稳了才需要她自动开技能，则可以在对应时刻后，将桃金娘的技能用法从「不自动使用」改为「好了就用」。",
+            "cn": "切换密探技能用法。例如，刚下桃金娘、需要她帮忙打几个怪，但此时不能自动开技能否则会漏怪，等中后期平稳了才需要她自动开技能，则可以在对应时刻后，将桃金娘的技能用法从「不自动使用」改为「好了就用」。",
             "en": "Switch operator skill usage. For example, when Perfumer is just deployed and needs to help defeat some enemies, but automatic skill activation would miss enemies, and only in mid/late game should she activate skills automatically, you can change Perfumer's skill usage from 'Don't use automatically' to 'Use when ready'."
           }
         },
@@ -3767,7 +3767,7 @@
             "en": "Bullet Time"
           },
           "description": {
-            "cn": "执行后将点击任意干员，进入 1/5 速度状态；再进行任意动作会恢复正常速度。下一个任务必须是\"部署\"、\"技能\"、\"撤退\"其中之一，此时会提前点开该干员，等待满足条件后再执行。",
+            "cn": "执行后将点击任意密探，进入 1/5 速度状态；再进行任意动作会恢复正常速度。下一个任务必须是\"部署\"、\"技能\"、\"撤退\"其中之一，此时会提前点开该密探，等待满足条件后再执行。",
             "en": "After execution, click any operator to enter 1/5 speed state; any further action will restore normal speed. The next task must be one of 'Deploy', 'Skill', or 'Retreat', which will select that operator in advance and wait until conditions are met before executing."
           }
         },
@@ -3865,7 +3865,7 @@
             "en": "DP Change"
           },
           "description": {
-            "cn": "从前一个动作结束时的费用开始计算，达到一定变化量后开始执行。支持负数，即费用变少了（例如“孑”等吸费干员使得费用变少了）。仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
+            "cn": "从前一个动作结束时的费用开始计算，达到一定变化量后开始执行。支持负数，即费用变少了（例如“孑”等吸费密探使得费用变少了）。仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
             "en": "Execute after reaching a certain change in DP from the previous action. Supports negative values (e.g., when DP decreases due to operators like Jaye). Recognition is more reliable with a two-digit DP; a three-digit DP may be recognized incorrectly and are not recommended."
           }
         },
@@ -3881,11 +3881,11 @@
         },
         "cooling": {
           "title": {
-            "cn": "冷却中的干员",
+            "cn": "冷却中的密探",
             "en": "Operators on cooldown"
           },
           "description": {
-            "cn": "冷却中的干员达到一定数量时开始执行",
+            "cn": "冷却中的密探达到一定数量时开始执行",
             "en": "Execute after reaching a certain number of operators on cooldown"
           }
         }
