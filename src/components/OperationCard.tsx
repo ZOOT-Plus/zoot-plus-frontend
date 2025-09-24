@@ -277,7 +277,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           >
             <OperatorAvatar
               name={operatorName}
-              size="small"
+              size="verylarge"
               className="shrink-0 self-center"
             />
             <span>{displayName}</span>

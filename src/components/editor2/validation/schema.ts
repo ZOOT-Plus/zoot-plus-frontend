@@ -232,6 +232,10 @@ const actionStrict = z
     }
   })
 
+const siming_actions = z
+  .record(z.string(), z.record(z.string(), z.unknown()))
+  .optional()
+
 export type CopilotOperationLoose = z.infer<typeof operationLooseSchema>
 export const operationLooseSchema = z.object({
   version,
@@ -242,6 +246,7 @@ export const operationLooseSchema = z.object({
   opers: z.array(operator).default([]),
   groups: z.array(group).default([]),
   actions: z.array(action).default([]),
+  siming_actions,
 })
 
 function normalizeOperationLooseInput(raw: unknown): unknown {

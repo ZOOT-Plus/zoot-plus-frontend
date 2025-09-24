@@ -1,35 +1,26 @@
 import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
-import { defaults, uniqueId } from 'lodash-es'
-import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
+import { uniqueId } from 'lodash-es'
+import { PartialDeep } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
+import { createAction, createOperator } from './factories'
 import {
   EditorAction,
   EditorGroup,
   EditorOperation,
   EditorOperator,
-} from './editor-state'
+  WithId,
+  WithPartialCoordinates,
+} from './types'
 import { CopilotOperationLoose } from './validation/schema'
+import { roundActionsToEditorActions } from './action/roundMapping'
+import { simingActionsToRoundActions } from './siming-export'
 
-export type WithPartialCoordinates<T> = T extends {
-  location?: [number, number]
-}
-  ? Omit<T, 'location'> & {
-      location?: [number | undefined, number | undefined]
-    }
-  : T extends {
-        distance?: [number, number]
-      }
-    ? Omit<T, 'distance'> & {
-        distance?: [number | undefined, number | undefined]
-      }
-    : T
-
-export type WithId<T = {}> = T extends never ? never : T & { id: string }
+export { createAction, createOperator } from './factories'
 
 type DehydratedEditorOperation = WithoutIdDeep<EditorOperation>
 
@@ -38,23 +29,6 @@ type WithoutIdDeep<T> = T extends unknown[]
   : T extends object
     ? Omit<{ [K in keyof T]: WithoutIdDeep<T[K]> }, 'id'>
     : T
-
-export function createAction(
-  initialValues: SetRequired<Partial<Omit<EditorAction, 'id'>>, 'type'>,
-) {
-  const action: EditorAction = defaults({ id: uniqueId() }, initialValues)
-  if (action.type === CopilotDocV1.Type.SkillUsage) {
-    action.skillUsage = CopilotDocV1.SkillUsageType.ReadyToUse
-  }
-  return action
-}
-
-export function createOperator(
-  initialValues: Omit<EditorOperator, 'id'>,
-): EditorOperator {
-  const operator: EditorOperator = defaults({ id: uniqueId() }, initialValues)
-  return operator
-}
 
 const favOperatorCache = new WeakMap<FavOperator, WithId<FavOperator>>()
 const favOperatorReverseCache = new WeakMap<
@@ -152,35 +126,55 @@ export function toEditorOperation(
   const operation = JSON.parse(
     JSON.stringify(migrateOperation(camelCased as CopilotDocV1.Operation)),
   ) as typeof camelCased
-  const converted = {
-    ...operation,
-    actions: operation.actions.map((action, index) => {
-      const {
-        preDelay,
-        postDelay,
-        rearDelay,
-        ...newAction
-      }: WithoutIdDeep<EditorAction> & (typeof operation)['actions'][number] =
-        action
-      // intermediatePostDelay 等于当前动作的 preDelay
-      if (preDelay !== undefined) {
-        newAction.intermediatePostDelay = preDelay
+  const simingActions = (
+    operation as { simingActions?: CopilotDocV1.SimingActionMap }
+  ).simingActions
+  const originalActions = Array.isArray(operation.actions)
+    ? operation.actions
+    : []
+  let convertedActions = originalActions.map((action, index) => {
+    const {
+      preDelay,
+      postDelay,
+      rearDelay,
+      ...newAction
+    }: WithoutIdDeep<EditorAction> & (typeof originalActions)[number] = action
+    if (preDelay !== undefined) {
+      newAction.intermediatePostDelay = preDelay
+    }
+    if (index > 0 && action.type === 'SpeedUp') {
+      const prevAction = originalActions[index - 1]
+      if (prevAction.rearDelay !== undefined) {
+        newAction.intermediatePreDelay = prevAction.rearDelay
       }
-      if (index > 0 && action.type === 'SpeedUp') {
-        // intermediatePreDelay 等于前一个动作的 postDelay
-        const prevAction = operation.actions![index - 1]
-        if (prevAction.rearDelay !== undefined) {
-          newAction.intermediatePreDelay = prevAction.rearDelay
-        }
-        if (prevAction.postDelay !== undefined) {
-          newAction.intermediatePreDelay = prevAction.postDelay
-        }
+      if (prevAction.postDelay !== undefined) {
+        newAction.intermediatePreDelay = prevAction.postDelay
       }
-      return newAction satisfies WithoutIdDeep<EditorAction>
-    }),
+    }
+    return newAction satisfies WithoutIdDeep<EditorAction>
+  })
+
+  let simingEditorActions: EditorAction[] | undefined
+  if (
+    convertedActions.length === 0 &&
+    simingActions &&
+    Object.keys(simingActions).length > 0
+  ) {
+    const roundActions = simingActionsToRoundActions(simingActions)
+    simingEditorActions = roundActionsToEditorActions(roundActions)
+    convertedActions = simingEditorActions.map(({ id, ...rest }) => rest)
   }
 
-  return hydrateOperation(converted)
+  const converted = {
+    ...operation,
+    actions: convertedActions,
+  }
+
+  const hydrated = hydrateOperation(converted)
+  if (simingEditorActions) {
+    hydrated.actions = simingEditorActions
+  }
+  return hydrated
 }
 
 /**

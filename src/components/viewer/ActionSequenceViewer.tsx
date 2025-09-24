@@ -4,18 +4,13 @@ import { FC, useMemo } from 'react'
 
 import { useTranslation, languageAtom } from '../../i18n/i18n'
 import { Language } from '../../i18n/i18n'
-import { CopilotDocV1 } from '../../models/copilot.schema'
 import { Operation } from '../../models/operation'
 import { getLocalizedOperatorName } from '../../models/operator'
 import {
   RoundActionsInput,
   editorActionsToRoundActions,
 } from '../editor2/action/roundMapping'
-
-const RESTART_FULL_TARGET = '抄作业全灭重开'
-const RESTART_MANUAL_TARGET = '抄作业点左上角重开'
-const RESTART_FULL_LABEL = '重开:全灭'
-const RESTART_MANUAL_LABEL = '重开:左上角'
+import { simingActionsToRoundActions } from '../editor2/siming-export'
 
 interface ActionSequenceViewerProps {
   operation: Operation
@@ -199,97 +194,6 @@ function buildSlotAssignments(
   return assignments
 }
 
-function simingActionsToRoundActions(
-  simingActions: CopilotDocV1.SimingActionMap,
-): RoundActionsInput {
-  const roundMap: Record<string, string[][]> = {}
-  const actionEntries = Object.entries(simingActions)
-    .map(([key, config]) => {
-      const match = key.match(/^回合(\d+)行动(\d+)$/)
-      if (!match) {
-        return null
-      }
-      return {
-        key,
-        roundKey: match[1],
-        order: Number(match[2]),
-        config,
-      }
-    })
-    .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
-    .sort((a, b) =>
-      a.roundKey === b.roundKey
-        ? a.order - b.order
-        : Number(a.roundKey) - Number(b.roundKey),
-    )
-
-  actionEntries.forEach(({ roundKey, config }) => {
-    if (!roundMap[roundKey]) {
-      roundMap[roundKey] = []
-    }
-    const tokens = roundMap[roundKey]
-    const token = inferSimingToken(config)
-    if (token) {
-      tokens.push([token])
-    }
-    const next = config.next ?? []
-    if (next.includes(RESTART_FULL_TARGET)) {
-      tokens.push([RESTART_FULL_LABEL])
-    }
-    if (next.includes(RESTART_MANUAL_TARGET)) {
-      tokens.push([RESTART_MANUAL_LABEL])
-    }
-  })
-
-  Object.entries(simingActions).forEach(([key, config]) => {
-    const match = key.match(/^检测回合(\d+)$/)
-    if (!match) {
-      return
-    }
-    const roundKey = match[1]
-    if (!roundMap[roundKey]) {
-      roundMap[roundKey] = []
-    }
-    const tokens = roundMap[roundKey]
-    const next = config.next ?? []
-    if (next.includes(RESTART_FULL_TARGET)) {
-      tokens.unshift([RESTART_FULL_LABEL])
-    }
-    if (next.includes(RESTART_MANUAL_TARGET)) {
-      tokens.unshift([RESTART_MANUAL_LABEL])
-    }
-  })
-
-  return roundMap
-}
-
-function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined {
-  const text = action.textDoc?.trim()
-  if (text && /^\d[普大下]$/.test(text)) {
-    return text
-  }
-  if (text && text.startsWith('再动')) {
-    const payload = text.slice(2)
-    return payload ? `额外:${payload}` : undefined
-  }
-  if (text === '等待') {
-    const wait = action.postDelay ?? action.rearDelay ?? 0
-    return `额外:等待:${Math.max(0, wait || 0)}`
-  }
-  if (text === '左侧目标') {
-    return '额外:左侧目标'
-  }
-  if (text === '右侧目标') {
-    return '额外:右侧目标'
-  }
-  if (text) {
-    return text
-  }
-  if (action.action) {
-    return action.action
-  }
-  return undefined
-}
 
 function formatTokenLabel(
   token: string,

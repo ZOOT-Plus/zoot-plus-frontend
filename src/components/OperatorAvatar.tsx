@@ -11,7 +11,7 @@ interface OperatorAvatarProps {
   id?: string
   name?: string
   rarity?: number
-  size?: 'small' | 'medium' | 'large'
+  size?: 'small' | 'medium' | 'large' | 'verylarge'
   sourceSize?: 32 | 96
   fallback?: ReactNode
   className?: string
@@ -42,6 +42,7 @@ export function OperatorAvatar({
       small: 'h-5 w-5',
       medium: 'h-6 w-6',
       large: 'h-8 w-8',
+      verylarge: 'h-12 w-12',
     }[size]
 
   const colorClassName =

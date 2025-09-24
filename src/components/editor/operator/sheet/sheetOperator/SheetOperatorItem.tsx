@@ -115,7 +115,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({
       onClick={onOperatorSelect}
     >
       <>
-        <OperatorAvatar className="mt-3" name={name} size="large" />
+        <OperatorAvatar className="mt-3" name={name} size="verylarge" />
         <p
           className={clsx(
             'mt-1 font-bold leading-tight text-center',

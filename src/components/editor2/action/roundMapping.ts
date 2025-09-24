@@ -1,7 +1,6 @@
 import { CopilotDocV1 } from '../../../models/copilot.schema'
-import { defaultEditorState, EditorAction, EditorOperation } from '../editor-state'
-import { createAction, toMaaOperation } from '../reconciliation'
-import { CopilotOperationLoose } from '../validation/schema'
+import { createAction } from '../factories'
+import { EditorAction } from '../types'
 
 export type RoundActionsInput = Record<string, string[][]>
 
@@ -89,31 +88,6 @@ export function roundActionsToEditorActions(
 /**
  * 直接生成 Copilot 协议结构，便于后续联调。
  */
-export function roundActionsToCopilotOperation(
-  roundActions: RoundActionsInput,
-  baseOperation: Partial<EditorOperation> = {},
-  options?: MappingOptions,
-): CopilotOperationLoose {
-  const actions = roundActionsToEditorActions(roundActions, options)
-  const template = JSON.parse(
-    JSON.stringify(defaultEditorState.operation),
-  ) as EditorOperation
-
-  const merged: EditorOperation = {
-    ...template,
-    ...baseOperation,
-    doc: {
-      ...template.doc,
-      ...(baseOperation.doc ?? {}),
-    },
-    opers: baseOperation.opers ?? template.opers,
-    groups: baseOperation.groups ?? template.groups,
-    actions,
-  }
-
-  return toMaaOperation(merged)
-}
-
 function parseToken(token: string): {
   kind: ParsedTokenKind
   slot?: number

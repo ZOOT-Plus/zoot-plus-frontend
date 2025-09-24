@@ -8,23 +8,34 @@ import {
 import { atomWithStorage, splitAtom } from 'jotai/utils'
 import { noop } from 'lodash-es'
 import { useMemo } from 'react'
-import { SetRequired, Simplify } from 'type-fest'
 
 import { CopilotDocV1 } from '../../models/copilot.schema'
-import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
+import { Simplify } from 'type-fest'
+import { toEditorOperation } from './reconciliation'
 import {
+  EditorAction,
+  EditorGroup,
+  EditorMetadata,
+  EditorOperation,
+  EditorOperationBase,
+  EditorOperator,
+  EditorState,
   WithId,
-  WithPartialCoordinates,
-  toEditorOperation,
-} from './reconciliation'
+} from './types'
 import { ZodIssue, parseOperationLoose } from './validation/schema'
 import { EntityIssue } from './validation/validation'
 
-export interface EditorState {
-  operation: EditorOperation
-  metadata: EditorMetadata
-}
+export type {
+  EditorAction,
+  EditorGroup,
+  EditorMetadata,
+  EditorOperation,
+  EditorOperationBase,
+  EditorOperator,
+  EditorState,
+  WithId,
+} from './types'
 
 const defaultOperation = parseOperationLoose({
   version: CopilotDocV1.VERSION,
@@ -35,53 +46,6 @@ export const defaultEditorState: EditorState = {
   metadata: {
     visibility: 'public',
   },
-}
-
-interface EditorMetadata {
-  visibility: 'public' | 'private'
-}
-
-type EditorOperationBase = Simplify<
-  Omit<
-    PartialDeep<CopilotDocV1.Operation>,
-    'doc' | 'opers' | 'groups' | 'actions'
-  > & {
-    minimumRequired: string
-    doc: PartialDeep<CopilotDocV1.Doc>
-  }
->
-
-export type EditorOperator = Simplify<
-  WithId<SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'>>
->
-export type EditorGroup = Simplify<
-  WithId<
-    PartialDeep<Omit<CopilotDocV1.Group, 'opers'>> & {
-      name: string
-      opers: EditorOperator[]
-    }
-  >
->
-export type EditorAction = GenerateEditorAction<CopilotDocV1.Action>
-type GenerateEditorAction<T extends CopilotDocV1.Action> = T extends never
-  ? never
-  : Simplify<
-      WithPartialCoordinates<
-        Omit<
-          SetRequired<PartialDeep<T>, 'type'>,
-          'preDelay' | 'postDelay' | 'rearDelay'
-        >
-      > &
-        WithId<{
-          intermediatePreDelay?: number
-          intermediatePostDelay?: number
-        }>
-    >
-
-export interface EditorOperation extends EditorOperationBase {
-  opers: EditorOperator[]
-  groups: EditorGroup[]
-  actions: EditorAction[]
 }
 
 // splitAtom() 有重载，无法用正常方法来构造类型
