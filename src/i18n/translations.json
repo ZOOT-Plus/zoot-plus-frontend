@@ -2843,8 +2843,8 @@
           "en": "Failed to refresh Job set: {{error}}"
         },
         "maa_copilot_task_set": {
-          "cn": "PRTS Plus 作业集",
-          "en": "PRTS Plus Job Set"
+          "cn": "MaaYuan Share 作业集",
+          "en": "MaaYuan Share Job Set"
         },
         "manage": {
           "cn": "管理",
@@ -2949,8 +2949,8 @@
           "en": "Failed to submit rating: {{error}}"
         },
         "maa_copilot_task": {
-          "cn": "PRTS Plus 作业",
-          "en": "PRTS Plus Job"
+          "cn": "MaaYuan Share 作业",
+          "en": "MaaYuan Share Job"
         },
         "manage": {
           "cn": "管理",
@@ -3102,8 +3102,8 @@
         "en": "Edit Information"
       },
       "maa_account": {
-        "cn": "PRTS Plus 账户",
-        "en": "PRTS Plus Account"
+        "cn": "MaaYuan Share 账户",
+        "en": "MaaYuan Share Account"
       },
       "login": {
         "cn": "登录",
