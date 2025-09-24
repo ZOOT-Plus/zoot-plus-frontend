@@ -14,7 +14,7 @@ export function toCopilotOperation(
     const operation: CopilotDocV1.Operation = camelcaseKeys(json, {
       deep: true,
     })
-    return migrateOperation(operation)
+    return normalizeOperation(migrateOperation(operation))
   } catch (e) {
     console.error('Failed to parse operation', apiOperation, e)
   }
@@ -61,5 +61,29 @@ export function migrateOperation(
       }),
     }
   }
+  return operation
+}
+
+function normalizeOperation(
+  operation: CopilotDocV1.Operation,
+): CopilotDocV1.Operation {
+  const { actions } = operation as { actions?: CopilotDocV1.Action[] | CopilotDocV1.SimingActionMap }
+  if (actions && !Array.isArray(actions) && typeof actions === 'object') {
+    const simingActions =
+      operation.simingActions ?? (actions as CopilotDocV1.SimingActionMap)
+    return {
+      ...operation,
+      actions: undefined,
+      simingActions,
+    }
+  }
+
+  if (operation.simingActions && Array.isArray(operation.simingActions)) {
+    return {
+      ...operation,
+      simingActions: undefined,
+    }
+  }
+
   return operation
 }

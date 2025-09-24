@@ -3062,6 +3062,10 @@
           "cn": "动作序列",
           "en": "Action Sequence"
         },
+        "siming_actions_hint": {
+          "cn": "检测到司命动作格式，下方展示为原始节点数据。",
+          "en": "Siming action format detected; displaying raw node data below."
+        },
         "no_actions": {
           "cn": "暂无动作",
           "en": "No Actions"

@@ -64,6 +64,7 @@ import { OperatorAvatar } from '../OperatorAvatar'
 import { ReLinkRenderer } from '../ReLink'
 import { UserName } from '../UserName'
 import { CommentArea } from './comment/CommentArea'
+import { SimingActionCard } from './SimingActionCard'
 
 const ManageMenu: FC<{
   operation: Operation
@@ -543,6 +544,21 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const [showOperators, setShowOperators] = useState(true)
   const [showActions, setShowActions] = useState(false)
 
+  const actions = Array.isArray(operation.parsedContent.actions)
+    ? operation.parsedContent.actions
+    : undefined
+  const simingActions =
+    operation.parsedContent.simingActions ??
+    (!actions &&
+    operation.parsedContent.actions &&
+    typeof operation.parsedContent.actions === 'object'
+      ? (operation.parsedContent.actions as CopilotDocV1.SimingActionMap)
+      : undefined)
+  const simingEntries = simingActions
+    ? Object.entries(simingActions)
+    : []
+  const hasSimingActions = simingEntries.length > 0
+
   return (
     <div>
       <H4
@@ -635,10 +651,19 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         />
       </H4>
       <Collapse isOpen={showActions}>
-        {operation.parsedContent.actions?.length ? (
+        {actions?.length ? (
           <div className="mt-2 flex flex-col pb-8">
-            {operation.parsedContent.actions.map((action, i) => (
+            {actions.map((action, i) => (
               <ActionCard action={action} key={i} />
+            ))}
+          </div>
+        ) : hasSimingActions ? (
+          <div className="mt-2 flex flex-col pb-8">
+            <Callout icon="graph" intent="primary" className="mb-3">
+              {t.components.viewer.OperationViewer.siming_actions_hint}
+            </Callout>
+            {simingEntries.map(([name, action]) => (
+              <SimingActionCard name={name} action={action} key={name} />
             ))}
           </div>
         ) : (

@@ -9,7 +9,7 @@ export namespace CopilotDocV1 {
 
   export interface Operation {
     version?: number
-    actions?: Action[]
+    actions?: Action[] | SimingActionMap
     doc: Doc
     groups?: Group[]
     minimumRequired: string
@@ -19,6 +19,7 @@ export namespace CopilotDocV1 {
      */
     stageName: string
     difficulty?: OpDifficulty
+    simingActions?: SimingActionMap
   }
 
   export type OperationSnakeCased =
@@ -80,6 +81,28 @@ export namespace CopilotDocV1 {
   export interface ActionMoveCamera extends ActionBase {
     type: Type.MoveCamera
     distance: [number, number]
+  }
+
+  export type SimingActionMap = Record<string, SimingAction>
+
+  export interface SimingAction {
+    action?: string
+    target?: number[]
+    begin?: number[]
+    end?: number[]
+    recognition?: string
+    expected?: string
+    roi?: number[]
+    preDelay?: number
+    postDelay?: number
+    rearDelay?: number
+    duration?: number
+    textDoc?: string
+    template?: string
+    timeout?: number
+    greenMask?: boolean
+    next?: string[]
+    [key: string]: unknown
   }
 
   export type Action =
