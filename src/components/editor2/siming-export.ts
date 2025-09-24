@@ -455,10 +455,14 @@ export function toSimingOperation(
   const cloned = JSON.parse(
     JSON.stringify(baseOperation),
   ) as CopilotOperationLoose
-  const { actions: _ignored, ...rest } = cloned
+
+  const rest = { ...cloned } as Record<string, unknown>
+  delete rest.actions
+  delete rest.siming_actions
+  delete rest.simingActions
 
   return {
-    ...rest,
+    ...(rest as Omit<CopilotOperationLoose, 'actions'>),
     actions,
   }
 }

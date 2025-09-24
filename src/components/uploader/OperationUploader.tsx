@@ -22,14 +22,16 @@ import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 
 import { useTranslation } from '../../i18n/i18n'
-import { CopilotDocV1 } from '../../models/copilot.schema'
 import { formatError } from '../../utils/error'
+import { toEditorOperation } from '../editor2/reconciliation'
+import { SimingOperation, toSimingOperation } from '../editor2/siming-export'
+import { parseOperationLoose } from '../editor2/validation/schema'
 import { parseOperationFile, patchOperation, validateOperation } from './utils'
 
 interface FileEntry {
   file: File
   error?: string
-  operation?: CopilotDocV1.OperationSnakeCased
+  operation?: SimingOperation
   uploaded?: boolean
 }
 
@@ -78,12 +80,14 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
         const entry: FileEntry = { file }
 
         try {
-          let content = await parseOperationFile(file)
-          content = patchOperation(content, levels)
+          const parsed = await parseOperationFile(file)
+          const patched = patchOperation(parsed, levels)
 
-          validateOperation(content)
+          validateOperation(patched)
 
-          entry.operation = content
+          const baseOperation = parseOperationLoose(patched)
+          const editorOperation = toEditorOperation(baseOperation)
+          entry.operation = toSimingOperation(baseOperation, editorOperation)
         } catch (e) {
           entry.error = formatError(e)
           console.warn(e)
