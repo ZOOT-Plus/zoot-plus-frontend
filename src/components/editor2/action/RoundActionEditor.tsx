@@ -383,6 +383,52 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [slotAssignments],
   )
 
+  const formatTokenSummary = useCallback(
+    (rawToken: string) => {
+      const token = rawToken.trim()
+      if (!token) {
+        return '未设定'
+      }
+
+      const baseMatch = token.match(/^(\d)([普大下])$/)
+      if (baseMatch) {
+        const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
+        return BASIC_ACTION_LABEL_MAP[actionSymbol]
+      }
+
+      if (token.startsWith('额外:')) {
+        const extraPayload = token.slice('额外:'.length)
+        const againMatch = extraPayload.match(/^(\d)([普大下])$/)
+        if (againMatch) {
+          const actionSymbol = againMatch[2] as RoundFormState['basicAction']
+          return `额外·${BASIC_ACTION_LABEL_MAP[actionSymbol]}`
+        }
+
+        if (extraPayload.startsWith('等待:')) {
+          const wait = extraPayload.split(':')[1] ?? ''
+          return `等待 ${wait}ms`
+        }
+
+        if (extraPayload === '左侧目标') {
+          return '切换至左侧目标'
+        }
+        if (extraPayload === '右侧目标') {
+          return '切换至右侧目标'
+        }
+
+        return extraPayload
+      }
+
+      if (token.startsWith('重开:')) {
+        const type = token.split(':')[1]
+        return type === '左上角' ? '左上角重开' : '全灭重开'
+      }
+
+      return token
+    },
+    [],
+  )
+
   const renderActionControls = (roundKey: string, form: RoundFormState) => (
     <div className="flex flex-wrap gap-4">
       <div className="space-y-2">
@@ -644,7 +690,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                   intent="primary"
                                   onRemove={() => handleRemoveToken(roundKey, entry.index)}
                                 >
-                                  {formatTokenLabel(entry.token)}
+                                  {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
                                 </Tag>
                               ))
                             ) : (
@@ -672,7 +718,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                           intent="primary"
                           onRemove={() => handleRemoveToken(roundKey, entry.index)}
                         >
-                          {formatTokenLabel(entry.token)}
+                          {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
                         </Tag>
                       ))}
                     </div>
