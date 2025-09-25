@@ -8,6 +8,7 @@ import { useTranslation } from '../../../i18n/i18n'
 import { parseShortCode } from '../../../models/shortCode'
 import { formatError } from '../../../utils/error'
 import { FormField2 } from '../../FormField'
+import { stripOperationExportFields } from '../../../services/operation'
 
 interface ShortCodeForm {
   code: string
@@ -66,7 +67,10 @@ export const ShortCodeImporter: FC<{
         return
       }
 
-      const prettifiedJson = JSON.stringify(operationContent, null, 2)
+      const sanitizedContent = stripOperationExportFields(
+        operationContent as unknown as Record<string, unknown>,
+      )
+      const prettifiedJson = JSON.stringify(sanitizedContent, null, 2)
 
       onImport(prettifiedJson)
       setDialogOpen(false)
