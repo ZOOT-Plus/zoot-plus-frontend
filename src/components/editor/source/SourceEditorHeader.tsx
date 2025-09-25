@@ -8,6 +8,7 @@ import { CopilotDocV1 } from '../../../models/copilot.schema'
 import { AppToaster } from '../../Toaster'
 import { FileImporter } from './FileImporter'
 import { ShortCodeImporter } from './ShortCodeImporter'
+import { XlsxImporter } from './XlsxImporter'
 
 interface SourceEditorHeaderProps {
   text: string
@@ -83,6 +84,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
         content={
           <Menu>
             <FileImporter onImport={handleImport} />
+            <XlsxImporter onImport={handleImport} />
             <ShortCodeImporter onImport={handleImport} />
           </Menu>
         }

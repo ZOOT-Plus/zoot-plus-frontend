@@ -2054,6 +2054,20 @@
             "en": "Import local file..."
           }
         },
+        "XlsxImporter": {
+          "import_xlsx": {
+            "cn": "导入 AutoFightGen 表格...",
+            "en": "Import AutoFightGen spreadsheet..."
+          },
+          "import_success": {
+            "cn": "已将表格转换为 JSON",
+            "en": "Spreadsheet converted to JSON"
+          },
+          "import_failed": {
+            "cn": "转换 Excel 为 JSON 失败",
+            "en": "Failed to convert spreadsheet to JSON"
+          }
+        },
         "ShortCodeImporter": {
           "enter_shortcode": {
             "cn": "请输入神秘代码",
