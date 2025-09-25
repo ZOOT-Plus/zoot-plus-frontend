@@ -1,4 +1,4 @@
-import { Button, Card, HTMLSelect, InputGroup, Tag } from '@blueprintjs/core'
+import { Button, ButtonGroup, Card, HTMLSelect, InputGroup, Tag } from '@blueprintjs/core'
 import clsx from 'clsx'
 import isEqual from 'lodash-es/isEqual'
 import { useAtomValue } from 'jotai'
@@ -48,6 +48,60 @@ const RESTART_TYPES = [
   { value: 'manual', label: '左上角重开' },
 ] as const
 const DEFAULT_WAIT_MS = 1000
+
+type ActionViewMode = 'round' | 'round2'
+
+interface TokenEntry {
+  token: string
+  index: number
+}
+
+function extractSlotFromToken(token: string): string | null {
+  const trimmed = token.trim()
+  if (!trimmed) {
+    return null
+  }
+
+  const baseMatch = trimmed.match(/^([1-5])([普大下])$/)
+  if (baseMatch) {
+    return baseMatch[1]
+  }
+
+  if (trimmed.startsWith('额外:')) {
+    const payload = trimmed.slice('额外:'.length)
+    const againMatch = payload.match(/^([1-5])([普大下])$/)
+    if (againMatch) {
+      return againMatch[1]
+    }
+  }
+
+  return null
+}
+
+function groupTokensBySlot(actions: string[][]) {
+  const slotMap: Record<string, TokenEntry[]> = {}
+  const others: TokenEntry[] = []
+
+  actions.forEach((entry, index) => {
+    const token = String(entry?.[0] ?? '').trim()
+    if (!token) {
+      return
+    }
+
+    const slot = extractSlotFromToken(token)
+    if (slot) {
+      if (!slotMap[slot]) {
+        slotMap[slot] = []
+      }
+      slotMap[slot].push({ token, index })
+      return
+    }
+
+    others.push({ token, index })
+  })
+
+  return { slotMap, others }
+}
 
 function defaultFormState(): RoundFormState {
   return {
@@ -121,6 +175,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
       return initial
     },
   )
+  const [viewMode, setViewMode] = useState<ActionViewMode>('round')
 
   useEffect(() => {
     const next = editorActionsToRoundActions(actions)
@@ -277,6 +332,13 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [handleAddToken, roundForms],
   )
 
+  const handleSelectSpy = useCallback(
+    (roundKey: string, slot: string) => {
+      updateForm(roundKey, { slot, extraSlot: slot })
+    },
+    [updateForm],
+  )
+
   const formatTokenLabel = useCallback(
     (rawToken: string) => {
       const token = rawToken.trim()
@@ -321,18 +383,159 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [slotAssignments],
   )
 
+  const renderActionControls = (roundKey: string, form: RoundFormState) => (
+    <div className="flex flex-wrap gap-4">
+      <div className="space-y-2">
+        <div className="text-sm font-medium">基础动作</div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <HTMLSelect
+            value={form.slot}
+            onChange={(e) => updateForm(roundKey, { slot: e.currentTarget.value })}
+          >
+            {SLOT_OPTIONS.map((value) => (
+              <option key={value} value={value}>
+                {value} 号位
+              </option>
+            ))}
+          </HTMLSelect>
+          <HTMLSelect
+            value={form.basicAction}
+            onChange={(e) =>
+              updateForm(roundKey, {
+                basicAction: e.currentTarget.value as RoundFormState['basicAction'],
+              })
+            }
+          >
+            {BASIC_ACTION_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </HTMLSelect>
+          <Button onClick={() => handleAddBasicAction(roundKey)}>＋动作</Button>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-sm font-medium">额外操作</div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <HTMLSelect
+            value={form.extraType}
+            onChange={(e) =>
+              updateForm(roundKey, {
+                extraType: e.currentTarget.value as RoundFormState['extraType'],
+              })
+            }
+          >
+            {EXTRA_TYPES.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </HTMLSelect>
+          {form.extraType === 'again' && (
+            <>
+              <HTMLSelect
+                value={form.extraSlot}
+                onChange={(e) =>
+                  updateForm(roundKey, {
+                    extraSlot: e.currentTarget.value,
+                  })
+                }
+              >
+                {SLOT_OPTIONS.map((value) => (
+                  <option key={value} value={value}>
+                    {value} 号位
+                  </option>
+                ))}
+              </HTMLSelect>
+              <HTMLSelect
+                value={form.extraAction}
+                onChange={(e) =>
+                  updateForm(roundKey, {
+                    extraAction: e.currentTarget.value as RoundFormState['extraAction'],
+                  })
+                }
+              >
+                {BASIC_ACTION_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </HTMLSelect>
+            </>
+          )}
+          {form.extraType === 'wait' && (
+            <InputGroup
+              value={form.waitMs}
+              onChange={(e) => updateForm(roundKey, { waitMs: e.currentTarget.value })}
+              type="number"
+              min={0}
+              placeholder="毫秒"
+              style={{ width: 120 }}
+            />
+          )}
+          <Button onClick={() => handleAddExtraAction(roundKey)}>＋额外</Button>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-sm font-medium">重开设置</div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <HTMLSelect
+            value={form.restartType}
+            onChange={(e) =>
+              updateForm(roundKey, {
+                restartType: e.currentTarget.value as RoundFormState['restartType'],
+              })
+            }
+          >
+            {RESTART_TYPES.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </HTMLSelect>
+          <Button onClick={() => handleAddRestartAction(roundKey)}>＋重开</Button>
+        </div>
+      </div>
+    </div>
+  )
+
+  const viewLabel = viewMode === 'round' ? '回合视图' : '回合视图 2'
+  const viewDescription =
+    viewMode === 'round'
+      ? '使用默认映射将回合动作转换为 Copilot 行动，缺失信息已填充默认值。'
+      : '按密探分组展示动作，调整布局不影响导出的 JSON 内容。'
+
   return (
     <div className={clsx('px-4 pb-24 space-y-6', className)}>
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold">动作序列（回合视图）</h3>
+          <h3 className="text-lg font-bold">动作序列（{viewLabel}）</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            使用默认映射将回合动作转换为 Copilot 行动，缺失信息已填充默认值。
+            {viewDescription}
           </p>
         </div>
-        <Button icon="add" intent="primary" onClick={handleAddRound}>
-          新增回合
-        </Button>
+        <div className="flex items-center gap-3">
+          <ButtonGroup minimal>
+            <Button
+              active={viewMode === 'round'}
+              onClick={() => setViewMode('round')}
+            >
+              回合视图
+            </Button>
+            <Button
+              active={viewMode === 'round2'}
+              onClick={() => setViewMode('round2')}
+            >
+              回合视图 2
+            </Button>
+          </ButtonGroup>
+          <Button icon="add" intent="primary" onClick={handleAddRound}>
+            新增回合
+          </Button>
+        </div>
       </div>
 
       {roundKeys.length === 0 ? (
@@ -343,173 +546,140 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
         roundKeys.map((roundKey) => {
           const actions = roundActions[roundKey] ?? []
           const form = roundForms[roundKey] ?? defaultFormState()
+
+          const header = (
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-base font-semibold">第 {Number(roundKey)} 回合</h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  共 {actions.length} 个动作
+                </p>
+              </div>
+              <Button
+                icon="trash"
+                minimal
+                intent="danger"
+                onClick={() => handleRemoveRound(roundKey)}
+              >
+                删除回合
+              </Button>
+            </div>
+          )
+
+          if (viewMode === 'round') {
+            return (
+              <Card key={roundKey} className="card-shadow-subtle space-y-4 !p-4">
+                {header}
+                <div className="flex flex-wrap gap-2">
+                  {actions.map((entry, index) => (
+                    <Tag
+                      key={`${roundKey}-${index}-${entry[0]}`}
+                      onRemove={() => handleRemoveToken(roundKey, index)}
+                      large
+                      intent="primary"
+                    >
+                      {formatTokenLabel(entry[0] ?? '')}
+                    </Tag>
+                  ))}
+                  {actions.length === 0 && (
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      暂无动作，使用下方控件添加。
+                    </span>
+                  )}
+                </div>
+                {renderActionControls(roundKey, form)}
+              </Card>
+            )
+          }
+
+          const { slotMap, others } = groupTokensBySlot(actions)
+          const assignedSlots = SLOT_OPTIONS.filter((slot) =>
+            Boolean(slotAssignments?.[Number(slot)]?.name),
+          )
+          const slotsToRender =
+            assignedSlots.length > 0 ? assignedSlots : SLOT_OPTIONS
+
           return (
-            <Card
-              key={roundKey}
-              className="card-shadow-subtle space-y-4 !p-4"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-base font-semibold">
-                    第 {Number(roundKey)} 回合
-                  </h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    共 {actions.length} 个动作
-                  </p>
+            <Card key={roundKey} className="card-shadow-subtle space-y-4 !p-4">
+              {header}
+              <div className="space-y-4">
+                <div className="overflow-x-auto">
+                  <div className="flex gap-4 min-w-max">
+                    {slotsToRender.map((slot) => {
+                      const slotNumber = Number(slot)
+                      const spy = slotAssignments?.[slotNumber]
+                      const tokensForSlot = slotMap[slot] ?? []
+                      const isActive = form.slot === slot
+                      return (
+                        <div
+                          key={slot}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => handleSelectSpy(roundKey, slot)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              handleSelectSpy(roundKey, slot)
+                            }
+                          }}
+                          className={clsx(
+                            'min-w-[180px] rounded-md border p-3 cursor-pointer select-none transition-colors',
+                            isActive
+                              ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10'
+                              : 'border-gray-200 dark:border-gray-600 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:border-blue-400/30',
+                          )}
+                        >
+                          <div className="text-sm font-semibold">
+                            {spy?.name ?? `密探 ${slot}`}
+                          </div>
+                          <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                            {slot} 号位
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {tokensForSlot.length > 0 ? (
+                              tokensForSlot.map((entry) => (
+                                <Tag
+                                  key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
+                                  minimal
+                                  intent="primary"
+                                  onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                >
+                                  {formatTokenLabel(entry.token)}
+                                </Tag>
+                              ))
+                            ) : (
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                暂无动作
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-                <Button
-                  icon="trash"
-                  minimal
-                  intent="danger"
-                  onClick={() => handleRemoveRound(roundKey)}
-                >
-                  删除回合
-                </Button>
-              </div>
 
-              <div className="flex flex-wrap gap-2">
-                {actions.map((entry, index) => (
-                  <Tag
-                    key={`${roundKey}-${index}-${entry[0]}`}
-                    onRemove={() => handleRemoveToken(roundKey, index)}
-                    large
-                    intent="primary"
-                  >
-                    {formatTokenLabel(entry[0] ?? '')}
-                  </Tag>
-                ))}
-                {actions.length === 0 && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    暂无动作，使用下方控件添加。
-                  </span>
+                {others.length > 0 && (
+                  <div className="rounded-md border border-dashed border-gray-200 dark:border-gray-600 p-3">
+                    <div className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                      其他动作
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {others.map((entry) => (
+                        <Tag
+                          key={`${roundKey}-other-${entry.index}-${entry.token}`}
+                          minimal
+                          intent="primary"
+                          onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                        >
+                          {formatTokenLabel(entry.token)}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
                 )}
-              </div>
 
-              <div className="flex flex-wrap gap-4">
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">基础动作</div>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <HTMLSelect
-                      value={form.slot}
-                      onChange={(e) =>
-                        updateForm(roundKey, { slot: e.currentTarget.value })
-                      }
-                    >
-                      {SLOT_OPTIONS.map((value) => (
-                        <option key={value} value={value}>
-                          {value} 号位
-                        </option>
-                      ))}
-                    </HTMLSelect>
-                    <HTMLSelect
-                      value={form.basicAction}
-                      onChange={(e) =>
-                        updateForm(roundKey, {
-                          basicAction: e.currentTarget.value as RoundFormState['basicAction'],
-                        })
-                      }
-                    >
-                      {BASIC_ACTION_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </HTMLSelect>
-                    <Button onClick={() => handleAddBasicAction(roundKey)}>
-                      ＋动作
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">额外操作</div>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <HTMLSelect
-                      value={form.extraType}
-                      onChange={(e) =>
-                        updateForm(roundKey, {
-                          extraType: e.currentTarget.value as RoundFormState['extraType'],
-                        })
-                      }
-                    >
-                      {EXTRA_TYPES.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </HTMLSelect>
-                    {form.extraType === 'again' && (
-                      <>
-                        <HTMLSelect
-                          value={form.extraSlot}
-                          onChange={(e) =>
-                            updateForm(roundKey, {
-                              extraSlot: e.currentTarget.value,
-                            })
-                          }
-                        >
-                          {SLOT_OPTIONS.map((value) => (
-                            <option key={value} value={value}>
-                              {value} 号位
-                            </option>
-                          ))}
-                        </HTMLSelect>
-                        <HTMLSelect
-                          value={form.extraAction}
-                          onChange={(e) =>
-                            updateForm(roundKey, {
-                              extraAction: e.currentTarget.value as RoundFormState['extraAction'],
-                            })
-                          }
-                        >
-                          {BASIC_ACTION_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </HTMLSelect>
-                      </>
-                    )}
-                    {form.extraType === 'wait' && (
-                      <InputGroup
-                        value={form.waitMs}
-                        onChange={(e) =>
-                          updateForm(roundKey, { waitMs: e.currentTarget.value })
-                        }
-                        type="number"
-                        min={0}
-                        placeholder="毫秒"
-                        style={{ width: 120 }}
-                      />
-                    )}
-                    <Button onClick={() => handleAddExtraAction(roundKey)}>
-                      ＋额外
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">重开设置</div>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <HTMLSelect
-                      value={form.restartType}
-                      onChange={(e) =>
-                        updateForm(roundKey, {
-                          restartType: e.currentTarget.value as RoundFormState['restartType'],
-                        })
-                      }
-                    >
-                      {RESTART_TYPES.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </HTMLSelect>
-                    <Button onClick={() => handleAddRestartAction(roundKey)}>
-                      ＋重开
-                    </Button>
-                  </div>
-                </div>
+                {renderActionControls(roundKey, form)}
               </div>
             </Card>
           )
