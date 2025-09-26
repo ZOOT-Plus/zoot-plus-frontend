@@ -642,8 +642,18 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
           const assignedSlots = SLOT_OPTIONS.filter((slot) =>
             Boolean(slotAssignments?.[Number(slot)]?.name),
           )
+          // 保证即使槽位未绑定密探但已有动作，也能继续显示这些动作
+          const slotsWithTokens = SLOT_OPTIONS.filter((slot) =>
+            (slotMap[slot]?.length ?? 0) > 0,
+          )
           const slotsToRender =
-            assignedSlots.length > 0 ? assignedSlots : SLOT_OPTIONS
+            assignedSlots.length > 0
+              ? SLOT_OPTIONS.filter(
+                  (slot) => assignedSlots.includes(slot) || slotsWithTokens.includes(slot),
+                )
+              : slotsWithTokens.length > 0
+                ? slotsWithTokens
+                : SLOT_OPTIONS
 
           return (
             <Card key={roundKey} className="card-shadow-subtle space-y-4 !p-4">
