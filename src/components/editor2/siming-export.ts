@@ -35,103 +35,110 @@ export type SimingOperation = Omit<CopilotOperationLoose, 'actions'> & {
 const ACTION_TEMPLATES: Record<string, SimingActionConfig> = {
   '1号位上拉': {
     action: 'Swipe',
-    begin: [77, 991, 10, 1],
+    begin: [77, 1060, 10, 1],
     end: [77, 670, 10, 1],
     post_delay: 5000,
     duration: 800,
   },
   '1号位下拉': {
     action: 'Swipe',
-    begin: [73, 985, 1, 1],
+    begin: [73, 1060, 1, 1],
     end: [73, 1258, 1, 1],
     post_delay: 3000,
     duration: 800,
   },
   '1号位普攻': {
     action: 'Click',
-    target: [56, 960, 58, 62],
+    target: [56, 1060, 5, 5],
     post_delay: 3000,
   },
   '2号位上拉': {
     action: 'Swipe',
-    begin: [220, 996, 1, 1],
+    begin: [220, 1060, 1, 1],
     end: [225, 668, 1, 1],
     post_delay: 5000,
     duration: 800,
   },
   '2号位下拉': {
     action: 'Swipe',
-    begin: [221, 975, 1, 1],
+    begin: [221, 1060, 1, 1],
     end: [221, 1251, 1, 1],
     post_delay: 3000,
     duration: 800,
   },
   '2号位普攻': {
     action: 'Click',
-    target: [180, 959, 76, 83],
+    target: [180, 1060, 5, 5],
     post_delay: 3000,
   },
   '3号位上拉': {
     action: 'Swipe',
-    begin: [357, 975, 1, 1],
+    begin: [357, 1060, 1, 1],
     end: [357, 714, 1, 1],
     post_delay: 5000,
     duration: 800,
   },
   '3号位下拉': {
     action: 'Swipe',
-    begin: [357, 975, 1, 1],
+    begin: [357, 1060, 1, 1],
     end: [357, 1237, 1, 1],
     post_delay: 3000,
     duration: 800,
   },
   '3号位普攻': {
     action: 'Click',
-    target: [357, 975, 10, 10],
+    target: [357, 1060, 5, 5],
     post_delay: 3000,
   },
   '4号位上拉': {
     action: 'Swipe',
-    begin: [496, 980, 1, 1],
+    begin: [496, 1060, 1, 1],
     end: [496, 679, 1, 1],
     post_delay: 5000,
     duration: 800,
   },
   '4号位下拉': {
     action: 'Swipe',
-    begin: [496, 985, 1, 1],
+    begin: [496, 1060, 1, 1],
     end: [496, 1258, 1, 1],
     post_delay: 3000,
     duration: 800,
   },
   '4号位普攻': {
     action: 'Click',
-    target: [496, 980, 10, 10],
+    target: [496, 1060, 5, 5],
     post_delay: 3000,
   },
   '5号位上拉': {
     action: 'Swipe',
-    begin: [646, 987, 1, 1],
+    begin: [646, 1060, 1, 1],
     end: [642, 700, 1, 1],
     post_delay: 5000,
     duration: 800,
   },
   '5号位下拉': {
     action: 'Swipe',
-    begin: [646, 985, 1, 1],
+    begin: [646, 1060, 1, 1],
     end: [646, 1258, 1, 1],
     post_delay: 3000,
     duration: 800,
   },
   '5号位普攻': {
     action: 'Click',
-    target: [646, 987, 10, 10],
+    target: [646, 1060, 5, 5],
+    post_delay: 3000,
+  },
+  '切换敌人': {
+    action: 'Swipe',
+    begin: [77, 991, 5, 5],
+    end: [77, 670, 5, 5],
     post_delay: 3000,
   },
 }
 
 const TARGET_LEFT_ACTION: SimingActionConfig = {
   text_doc: '左侧目标',
+  focus: '切换至左侧目标',
   action: 'Click',
   target: [154, 648, 1, 1],
   post_delay: 2000,
@@ -140,16 +147,59 @@ const TARGET_LEFT_ACTION: SimingActionConfig = {
 
 const TARGET_RIGHT_ACTION: SimingActionConfig = {
   text_doc: '右侧目标',
+  focus: '切换至右侧目标',
   action: 'Click',
   target: [603, 413, 18, 21],
   post_delay: 2000,
   duration: 800,
 }
 
-const DETECTION_ROI: Readonly<[number, number, number, number]> = [
-  585, 28, 90, 65,
-]
+const EXTRA_ACTION_TEMPLATES: Record<string, SimingActionConfig> = {
+  吕布: {
+    text_doc: '吕布',
+    focus: '点击吕布-切换形态',
+    recognition: 'TemplateMatch',
+    template: ['copilot/lb_l2h.png', 'copilot/lb_h2l.png'],
+    roi: [15, 1072, 690, 95],
+    action: 'Click',
+    pre_delay: 500,
+    post_delay: 3000,
+  },
+  开自动: {
+    text_doc: '开自动',
+    focus: '开始自动战斗',
+    recognition: 'OCR',
+    expected: '手',
+    roi: [635, 610, 85, 95],
+    action: 'Click',
+    timeout: 1800000,
+  },
+  '史子眇sp': {
+    text_doc: '额外:史子眇sp',
+    focus: '点击史子眇sp',
+    recognition: 'TemplateMatch',
+    template: 'copilot/szm_sp_skill.png',
+    roi: [15, 1072, 690, 95],
+    action: 'Click',
+    pre_delay: 500,
+    post_delay: 5000,
+  },
+}
 
+const ORANGE_RESTART_LABEL = '重开:无橙星'
+const DOWN_RESTART_PREFIX = '重开:检测'
+
+const ORANGE_DETECTION_TEMPLATE: SimingActionConfig = {
+  recognition: 'ColorMatch',
+  upper: [255, 255, 120],
+  lower: [180, 160, 40],
+  roi: [58, 160, 103, 88],
+  next: [],
+}
+
+const DETECTION_ROI: Readonly<[number, number, number, number]> = [
+  641, 50, 43, 27,
+]
 const RESTART_FULL_TARGET = '抄作业全灭重开'
 const RESTART_MANUAL_TARGET = '抄作业点左上角重开'
 const RESTART_FULL_LABEL = '重开:全灭'
@@ -195,36 +245,199 @@ function templateKeyFromToken(token: string): string | undefined {
   return `${position}号位下拉`
 }
 
+function parseDownRestartPosition(token: string): number {
+  const trimmed = token.replace(DOWN_RESTART_PREFIX, '').replace('号位阵亡', '').trim()
+  const digit = trimmed.charAt(0)
+  const position = Number.parseInt(digit, 10)
+  return Number.isFinite(position) && position >= 1 ? position : 1
+}
+
 function buildRoundNodes(roundActions: RoundActionsInput): SimingActionMap {
   const entries = Object.entries(roundActions)
     .filter(([round]) => !Number.isNaN(Number(round)))
     .sort(([a], [b]) => Number(a) - Number(b))
 
   const result: SimingActionMap = {}
-  const totalRounds = entries.length
-  let lastActionKey: string | null = null
+  if (entries.length === 0) {
+    result[RESTART_NODE_KEY] = ensureNextArray(
+      cloneConfig(RESTART_NODE) ?? { next: [] },
+    )
+    return result
+  }
 
-  entries.forEach(([roundKey, actions], roundIndex) => {
-    const detectionKey = `检测回合${roundKey}`
-    result[detectionKey] = {
-      recognition: 'OCR',
-      expected: `回合${roundKey}`,
-      roi: [...DETECTION_ROI],
-      text_doc: `回合${roundKey}`,
-      post_delay: 2000,
-      next: [],
+  const roundsWithOrangeRestart = new Set<string>()
+  let maxRoundWithActions = 0
+
+  entries.forEach(([roundKey, actions]) => {
+    const actionList = Array.isArray(actions) ? actions : []
+    const hasNodeAction = actionList.some((entry) => {
+      const token = entry?.[0]?.trim()
+      if (!token) {
+        return false
+      }
+      if (token === ORANGE_RESTART_LABEL) {
+        roundsWithOrangeRestart.add(roundKey)
+        return false
+      }
+      if (token.startsWith(DOWN_RESTART_PREFIX)) {
+        return true
+      }
+      return !token.startsWith('重开:')
+    })
+
+    if (
+      actionList.some((entry) => entry?.[0]?.trim() === ORANGE_RESTART_LABEL)
+    ) {
+      roundsWithOrangeRestart.add(roundKey)
     }
 
-    let currentKey: string | null = detectionKey
+    if (hasNodeAction) {
+      const roundNum = Number(roundKey)
+      if (!Number.isNaN(roundNum)) {
+        maxRoundWithActions = Math.max(maxRoundWithActions, roundNum)
+      }
+    }
+  })
+
+  let lastActionKey: string | null = null
+
+  entries.forEach(([roundKey, actions], index) => {
+    const roundNum = Number(roundKey)
+    if (Number.isNaN(roundNum)) {
+      return
+    }
     const actionList = Array.isArray(actions) ? actions : []
 
-    actionList.forEach((entry, index) => {
+    const hasNodeAction = actionList.some((entry) => {
+      const token = entry?.[0]?.trim()
+      if (!token) {
+        return false
+      }
+      if (token === ORANGE_RESTART_LABEL) {
+        return false
+      }
+      if (token.startsWith(DOWN_RESTART_PREFIX)) {
+        return true
+      }
+      return !token.startsWith('重开:')
+    })
+
+    if (roundNum > maxRoundWithActions && !hasNodeAction) {
+      return
+    }
+
+    const detectionKey = `检测回合${roundKey}`
+    result[detectionKey] = ensureNextArray({
+      recognition: 'Custom',
+      custom_recognition: 'PureNum',
+      custom_recognition_param: {
+        roi: [...DETECTION_ROI],
+        expected: `${roundNum}`,
+      },
+      text_doc: `回合${roundKey}`,
+      focus: `当前：第${roundKey}回合`,
+      next: [],
+      on_error: [RESTART_NODE_KEY],
+      timeout: 3000,
+      post_delay: 2000,
+    })
+
+    const nextRoundDetection =
+      index < entries.length - 1 ? `检测回合${entries[index + 1][0]}` : null
+
+    const firstToken = actionList.find((entry) => {
+      const token = entry?.[0]?.trim()
+      return token && token.length > 0
+    })?.[0]?.trim()
+
+    if (roundsWithOrangeRestart.has(roundKey)) {
+      ensureNext(result, detectionKey, `第${roundKey}回合橙星检测`)
+    } else if (firstToken && firstToken.includes('检测')) {
+      ensureNext(result, detectionKey, `回合${roundKey}行动1`)
+    } else if (firstToken && firstToken.startsWith('重开:')) {
+      if (firstToken === ORANGE_RESTART_LABEL) {
+        ensureNext(result, detectionKey, `第${roundKey}回合橙星检测`)
+      } else if (firstToken === RESTART_FULL_LABEL) {
+        ensureNext(result, detectionKey, RESTART_FULL_TARGET)
+      } else if (firstToken === RESTART_MANUAL_LABEL) {
+        ensureNext(result, detectionKey, RESTART_NODE_KEY)
+      } else if (firstToken.startsWith(DOWN_RESTART_PREFIX)) {
+        ensureNext(result, detectionKey, `回合${roundKey}行动1`)
+      } else {
+        ensureNext(result, detectionKey, RESTART_NODE_KEY)
+      }
+    } else if (hasNodeAction) {
+      ensureNext(result, detectionKey, `回合${roundKey}行动1`)
+    } else if (nextRoundDetection) {
+      ensureNext(result, detectionKey, nextRoundDetection)
+    }
+
+    if (roundsWithOrangeRestart.has(roundKey)) {
+      const orangeKey = `第${roundKey}回合橙星检测`
+      const orangeConfig = ensureNextArray(
+        cloneConfig(ORANGE_DETECTION_TEMPLATE) ?? { next: [] },
+      )
+      orangeConfig.text_doc = `第${roundKey}回合橙星检测`
+      orangeConfig.focus = `第${roundKey}回合有橙星`
+      orangeConfig.next = [`回合${roundKey}行动1`]
+      result[orangeKey] = orangeConfig
+    }
+
+    let currentActionKey: string | null = detectionKey
+    let actualActionIndex = 1
+
+    actionList.forEach((entry) => {
       const token = entry?.[0]?.trim()
       if (!token) {
         return
       }
 
-      const actionKey = `回合${roundKey}行动${index + 1}`
+      if (token === ORANGE_RESTART_LABEL) {
+        return
+      }
+
+      if (token.startsWith(DOWN_RESTART_PREFIX)) {
+        const position = parseDownRestartPosition(token)
+        const actionKey = `回合${roundKey}行动${actualActionIndex}`
+        const downConfig = ensureNextArray({
+          text_doc: `${position}号位阵亡检测`,
+          action: 'Custom',
+          custom_action: 'DownRestart',
+          custom_action_param: {
+            node: actionKey,
+            position,
+          },
+        })
+        result[actionKey] = downConfig
+        if (currentActionKey) {
+          ensureNext(result, currentActionKey, actionKey)
+        }
+        currentActionKey = actionKey
+        lastActionKey = actionKey
+        actualActionIndex += 1
+        return
+      }
+
+      if (token.startsWith('重开:')) {
+        const current = currentActionKey ? result[currentActionKey] : undefined
+        if (token === RESTART_FULL_LABEL) {
+          if (current) {
+            const original = current.next ? [...current.next] : []
+            const newNext = [
+              RESTART_FULL_TARGET,
+              ...original.filter((item) => item !== RESTART_FULL_TARGET),
+            ]
+            current.next = newNext
+          }
+        } else if (token === RESTART_MANUAL_LABEL) {
+          if (current) {
+            current.next = [RESTART_NODE_KEY]
+          }
+        }
+        return
+      }
+
+      const actionKey = `回合${roundKey}行动${actualActionIndex}`
 
       if (token.startsWith('额外:')) {
         const extra = handleExtraAction(token)
@@ -232,58 +445,33 @@ function buildRoundNodes(roundActions: RoundActionsInput): SimingActionMap {
           return
         }
         result[actionKey] = ensureNextArray(extra)
-        if (currentKey) {
-          ensureNext(result, currentKey, actionKey)
-        }
-        currentKey = actionKey
-        lastActionKey = actionKey
-        return
+      } else {
+        const templateKey = templateKeyFromToken(token)
+        const config = ensureNextArray(
+          cloneConfig(templateKey ? ACTION_TEMPLATES[templateKey] : undefined) ?? {
+            action: 'Click',
+            post_delay: 3000,
+          },
+        )
+        config.text_doc = token
+        result[actionKey] = config
       }
 
-      if (token.startsWith('重开:')) {
-        const targetNode = token.endsWith('全灭')
-          ? '抄作业全灭重开'
-          : RESTART_NODE_KEY
-        if (currentKey) {
-          ensureNext(result, currentKey, targetNode)
-          if (index < actionList.length - 1) {
-            ensureNext(result, currentKey, `回合${roundKey}行动${index + 2}`)
-          } else if (roundIndex < totalRounds - 1) {
-            ensureNext(
-              result,
-              currentKey,
-              `检测回合${entries[roundIndex + 1][0]}`,
-            )
-          }
-        }
-        return
+      if (currentActionKey) {
+        ensureNext(result, currentActionKey, actionKey)
       }
-
-      const templateKey = templateKeyFromToken(token)
-      const config = ensureNextArray(
-        cloneConfig(
-          templateKey ? ACTION_TEMPLATES[templateKey] : undefined,
-        ) ?? {
-          action: 'Click',
-          post_delay: 3000,
-        },
-      )
-      config.text_doc = token
-      result[actionKey] = config
-
-      if (currentKey) {
-        ensureNext(result, currentKey, actionKey)
-      }
-      currentKey = actionKey
+      currentActionKey = actionKey
       lastActionKey = actionKey
-
-      if (index === actionList.length - 1 && roundIndex < totalRounds - 1) {
-        ensureNext(result, actionKey, `检测回合${entries[roundIndex + 1][0]}`)
-      }
+      actualActionIndex += 1
     })
 
-    if (actionList.length === 0 && roundIndex < totalRounds - 1) {
-      ensureNext(result, detectionKey, `检测回合${entries[roundIndex + 1][0]}`)
+    if (currentActionKey && currentActionKey !== detectionKey) {
+      ensureNext(result, currentActionKey, '抄作业战斗胜利')
+      if (nextRoundDetection) {
+        ensureNext(result, currentActionKey, nextRoundDetection)
+      }
+    } else if (nextRoundDetection) {
+      ensureNext(result, detectionKey, nextRoundDetection)
     }
   })
 
@@ -297,6 +485,7 @@ function buildRoundNodes(roundActions: RoundActionsInput): SimingActionMap {
 
   return result
 }
+
 
 function handleExtraAction(token: string): SimingActionConfig | undefined {
   const [, raw] = token.split(':', 2)
@@ -312,11 +501,18 @@ function handleExtraAction(token: string): SimingActionConfig | undefined {
   }
   if (raw.startsWith('等待')) {
     const parts = token.split(':')
-    const waitMs = Number(parts[2])
+    const parsed = Number(parts[2])
+    const waitMs = Number.isFinite(parsed) ? parsed : 0
     return {
       text_doc: '等待',
-      post_delay: Number.isFinite(waitMs) ? waitMs : 0,
+      focus: '等待' + waitMs + 'ms',
+      post_delay: waitMs,
     }
+  }
+
+  const special = cloneConfig(EXTRA_ACTION_TEMPLATES[raw])
+  if (special) {
+    return special
   }
 
   const templateKey = templateKeyFromToken(raw)
@@ -324,14 +520,17 @@ function handleExtraAction(token: string): SimingActionConfig | undefined {
     templateKey ? ACTION_TEMPLATES[templateKey] : undefined,
   )
   if (config) {
-    config.text_doc = `再动${raw}`
+    config.text_doc = '再动' + raw
+    config.focus = '再次行动:' + raw
     return config
   }
 
   return {
     text_doc: raw,
+    focus: raw,
   }
 }
+
 
 function ensureNext(map: SimingActionMap, fromKey: string, toKey: string) {
   if (!map[fromKey]) {
@@ -386,7 +585,7 @@ export function simingActionsToRoundActions(
     if (token) {
       tokens.push([token])
     }
-    const next = config.next ?? []
+    const next = (config.next ?? []).filter((item) => item !== '史子眇sp')
     if (next.includes(RESTART_FULL_TARGET)) {
       tokens.push([RESTART_FULL_LABEL])
     }
@@ -405,12 +604,25 @@ export function simingActionsToRoundActions(
       roundMap[roundKey] = []
     }
     const tokens = roundMap[roundKey]
-    const next = config.next ?? []
-    if (next.includes(RESTART_FULL_TARGET)) {
+    const next = (config.next ?? []).filter((item) => item !== '史子眇sp')
+    if (
+      next.includes(RESTART_FULL_TARGET) &&
+      !tokens.some((entry) => entry[0] === RESTART_FULL_LABEL)
+    ) {
       tokens.unshift([RESTART_FULL_LABEL])
     }
-    if (next.includes(RESTART_MANUAL_TARGET)) {
+    if (
+      next.includes(RESTART_MANUAL_TARGET) &&
+      !tokens.some((entry) => entry[0] === RESTART_MANUAL_LABEL)
+    ) {
       tokens.unshift([RESTART_MANUAL_LABEL])
+    }
+    const orangeKey = `第${roundKey}回合橙星检测`
+    if (
+      next.includes(orangeKey) &&
+      !tokens.some((entry) => entry[0] === ORANGE_RESTART_LABEL)
+    ) {
+      tokens.unshift([ORANGE_RESTART_LABEL])
     }
   })
 
@@ -419,7 +631,7 @@ export function simingActionsToRoundActions(
 
 function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined {
   const text = action.textDoc?.trim()
-  if (text && /^\d[普大下]$/.test(text)) {
+  if (text && /^\\d[普大下]$/.test(text)) {
     return text
   }
   if (text && text.startsWith('再动')) {
@@ -436,6 +648,25 @@ function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined
   if (text === '右侧目标') {
     return '额外:右侧目标'
   }
+  if (text === '吕布') {
+    return '额外:吕布'
+  }
+  if (text === '开自动' || text === '开启自动战斗') {
+    return '额外:开自动'
+  }
+  if (text === '额外:史子眇sp') {
+    return '额外:史子眇sp'
+  }
+  if (text && text.endsWith('号位阵亡检测')) {
+    const digit = text.charAt(0)
+    return `重开:检测${digit}号位阵亡`
+  }
+  if (action.customAction === 'DownRestart') {
+    const position = Number(action.customActionParam?.position)
+    const safePosition =
+      Number.isFinite(position) && position >= 1 ? position : 1
+    return `重开:检测${safePosition}号位阵亡`
+  }
   if (text) {
     return text
   }
@@ -444,6 +675,7 @@ function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined
   }
   return undefined
 }
+
 
 export function toSimingOperation(
   baseOperation: CopilotOperationLoose,

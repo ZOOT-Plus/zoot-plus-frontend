@@ -24,6 +24,11 @@ type ParsedTokenKind =
   | 'switchRight'
   | 'restartFull'
   | 'restartManual'
+  | 'restartOrange'
+  | 'restartDown'
+  | 'extraLvbu'
+  | 'extraAuto'
+  | 'extraSp'
   | 'unknown'
 
 interface SlotConfig {
@@ -47,6 +52,8 @@ const DEFAULT_SLOT_CONFIG: Record<number, SlotConfig> = {
 }
 
 const CAMERA_SHIFT = 1
+const LVBU_POST_DELAY = 3000
+const SP_POST_DELAY = 5000
 
 /**
  * 将回合动作 JSON 解析为标准化结构。
@@ -124,6 +131,18 @@ function parseToken(token: string): {
       return { kind: 'switchRight' }
     }
 
+    if (modifier === '吕布') {
+      return { kind: 'extraLvbu' }
+    }
+
+    if (modifier === '开自动') {
+      return { kind: 'extraAuto' }
+    }
+
+    if (modifier === '史子眇sp') {
+      return { kind: 'extraSp' }
+    }
+
     const againMatch = modifier?.match(/^(\d)([普大下])$/)
     if (againMatch) {
       const slot = Number(againMatch[1])
@@ -141,8 +160,14 @@ function parseToken(token: string): {
     if (type === '左上角') {
       return { kind: 'restartManual' }
     }
+    if (type === '无橙星') {
+      return { kind: 'restartOrange' }
+    }
+    const downMatch = token.match(/重开:检测(\d)号位阵亡/)
+    if (downMatch) {
+      return { kind: 'restartDown', slot: Number(downMatch[1]) }
+    }
   }
-
   return { kind: 'unknown' }
 }
 
@@ -205,6 +230,46 @@ function mapParsedAction(
         type: CopilotDocV1.Type.SkillDaemon,
         doc: formatDoc(docPrefix, '触发左上角重开', '重开:左上角'),
         postDelay,
+      })
+    }
+    case 'restartOrange': {
+      return createAction({
+        type: CopilotDocV1.Type.SkillDaemon,
+        doc: formatDoc(docPrefix, '触发无橙星检测', '重开:无橙星'),
+        postDelay,
+      })
+    }
+    case 'restartDown': {
+      const position = action.slot ?? slot
+      return createAction({
+        type: CopilotDocV1.Type.Output,
+        doc: formatDoc(
+          docPrefix,
+          `检测槽位${position}阵亡`,
+          `重开:检测${position}号位阵亡`,
+        ),
+        postDelay,
+      })
+    }
+    case 'extraLvbu': {
+      return createAction({
+        type: CopilotDocV1.Type.Output,
+        doc: formatDoc(docPrefix, '吕布切换形态', '额外:吕布'),
+        postDelay: LVBU_POST_DELAY,
+      })
+    }
+    case 'extraAuto': {
+      return createAction({
+        type: CopilotDocV1.Type.Output,
+        doc: formatDoc(docPrefix, '开启自动战斗', '额外:开自动'),
+        postDelay,
+      })
+    }
+    case 'extraSp': {
+      return createAction({
+        type: CopilotDocV1.Type.Output,
+        doc: formatDoc(docPrefix, '点击史子眇sp', '额外:史子眇sp'),
+        postDelay: SP_POST_DELAY,
       })
     }
     default: {
@@ -313,15 +378,32 @@ function guessTokenFromAction(action: EditorAction): string {
       }
       return '额外:左侧目标'
     case CopilotDocV1.Type.SkillDaemon:
+      if (action.doc?.includes('无橙星')) {
+        return '重开:无橙星'
+      }
       if (action.doc?.includes('左上角')) {
         return '重开:左上角'
       }
       return '重开:全灭'
     case CopilotDocV1.Type.Output:
+      if (action.doc?.includes('检测槽位')) {
+        const downMatch = action.doc.match(/检测槽位(\d)阵亡/)
+        const position = downMatch ? Number(downMatch[1]) : slot
+        return '重开:检测' + position + '号位阵亡'
+      }
+      if (action.doc?.includes('吕布')) {
+        return '额外:吕布'
+      }
+      if (action.doc?.includes('开自动') || action.doc?.includes('自动战斗')) {
+        return '额外:开自动'
+      }
+      if (action.doc?.includes('史子眇sp')) {
+        return '额外:史子眇sp'
+      }
       if (action.doc?.includes('等待')) {
         const waitMatch = action.doc.match(/等待(\d+)毫秒/)
         const waitMs = waitMatch ? Number(waitMatch[1]) : getActionPostDelay(action) ?? DEFAULT_POST_DELAY
-        return `额外:等待:${waitMs}`
+        return '额外:等待:' + waitMs
       }
       if (action.doc?.includes('未识别动作')) {
         const unknownMatch = action.doc.match(/未识别动作（(.+?)）/)
@@ -329,7 +411,7 @@ function guessTokenFromAction(action: EditorAction): string {
           return unknownMatch[1]
         }
       }
-      return `额外:等待:${getActionPostDelay(action) ?? DEFAULT_POST_DELAY}`
+      return '额外:等待:' + (getActionPostDelay(action) ?? DEFAULT_POST_DELAY)
     case CopilotDocV1.Type.Skill:
       if (action.doc?.includes('大招')) {
         return `${slot}大`

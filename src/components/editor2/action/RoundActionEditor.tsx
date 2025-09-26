@@ -19,11 +19,12 @@ interface ActionEditorProps {
 interface RoundFormState {
   slot: string
   basicAction: '普' | '大' | '下'
-  extraType: 'again' | 'wait' | 'left' | 'right'
+  extraType: 'again' | 'wait' | 'left' | 'right' | 'lvbu' | 'auto' | 'sp'
   extraSlot: string
   extraAction: '普' | '大' | '下'
   waitMs: string
-  restartType: 'full' | 'manual'
+  restartType: 'full' | 'manual' | 'orange' | 'down'
+  restartSlot: string
 }
 
 const SLOT_OPTIONS = ['1', '2', '3', '4', '5']
@@ -42,10 +43,15 @@ const EXTRA_TYPES = [
   { value: 'wait', label: '等待' },
   { value: 'left', label: '切换至左侧目标' },
   { value: 'right', label: '切换至右侧目标' },
+  { value: 'lvbu', label: '吕布·切换形态' },
+  { value: 'auto', label: '开启自动战斗' },
+  { value: 'sp', label: '史子眇sp' },
 ] as const
 const RESTART_TYPES = [
   { value: 'full', label: '全灭重开' },
   { value: 'manual', label: '左上角重开' },
+  { value: 'orange', label: '无橙星重开' },
+  { value: 'down', label: '阵亡检测重开' },
 ] as const
 const DEFAULT_WAIT_MS = 1000
 
@@ -72,6 +78,15 @@ function extractSlotFromToken(token: string): string | null {
     const againMatch = payload.match(/^([1-5])([普大下])$/)
     if (againMatch) {
       return againMatch[1]
+    }
+
+    return null
+  }
+
+  if (trimmed.startsWith('重开:检测')) {
+    const downMatch = trimmed.match(/重开:检测(\d)号位阵亡/)
+    if (downMatch) {
+      return downMatch[1]
     }
   }
 
@@ -112,6 +127,7 @@ function defaultFormState(): RoundFormState {
     extraAction: '普',
     waitMs: String(DEFAULT_WAIT_MS),
     restartType: 'full',
+    restartSlot: '1',
   }
 }
 
@@ -194,7 +210,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     setRoundForms((prev) => {
       const next: Record<string, RoundFormState> = {}
       roundKeys.forEach((key) => {
-        next[key] = prev[key] ?? defaultFormState()
+        next[key] = { ...defaultFormState(), ...(prev[key] ?? {}) }
       })
       return next
     })
@@ -298,7 +314,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
       const form = roundForms[roundKey] ?? defaultFormState()
       switch (form.extraType) {
         case 'again': {
-          const token = `额外:${form.extraSlot}${form.extraAction}`
+          const token = '额外:' + form.extraSlot + form.extraAction
           handleAddToken(roundKey, token)
           break
         }
@@ -307,7 +323,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             0,
             Number.parseInt(form.waitMs, 10) || DEFAULT_WAIT_MS,
           )
-          handleAddToken(roundKey, `额外:等待:${waitMs}`)
+          handleAddToken(roundKey, '额外:等待:' + waitMs)
           break
         }
         case 'left':
@@ -315,6 +331,15 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
           break
         case 'right':
           handleAddToken(roundKey, '额外:右侧目标')
+          break
+        case 'lvbu':
+          handleAddToken(roundKey, '额外:吕布')
+          break
+        case 'auto':
+          handleAddToken(roundKey, '额外:开自动')
+          break
+        case 'sp':
+          handleAddToken(roundKey, '额外:史子眇sp')
           break
         default:
           break
@@ -326,7 +351,23 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
   const handleAddRestartAction = useCallback(
     (roundKey: string) => {
       const form = roundForms[roundKey] ?? defaultFormState()
-      const token = form.restartType === 'manual' ? '重开:左上角' : '重开:全灭'
+      let token: string
+      switch (form.restartType) {
+        case 'manual':
+          token = '重开:左上角'
+          break
+        case 'orange':
+          token = '重开:无橙星'
+          break
+        case 'down': {
+          const slot = form.restartSlot || '1'
+          token = '重开:检测' + slot + '号位阵亡'
+          break
+        }
+        default:
+          token = '重开:全灭'
+          break
+      }
       handleAddToken(roundKey, token)
     },
     [handleAddToken, roundForms],
@@ -334,7 +375,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
 
   const handleSelectSpy = useCallback(
     (roundKey: string, slot: string) => {
-      updateForm(roundKey, { slot, extraSlot: slot })
+      updateForm(roundKey, { slot, extraSlot: slot, restartSlot: slot })
     },
     [updateForm],
   )
@@ -362,64 +403,43 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
 
       if (token.startsWith('额外:')) {
         const extraPayload = token.slice('额外:'.length)
-        const againMatch = extraPayload.match(/^(\d)([普大下])$/)
+        const againMatch = extraPayload.match(/^([1-5])([普大下])$/)
         if (againMatch) {
-          const slot = Number(againMatch[1])
           const actionSymbol = againMatch[2] as RoundFormState['basicAction']
-          const actionLabel = BASIC_ACTION_LABEL_MAP[actionSymbol]
-          return `额外:${buildSlotLabel(slot, actionLabel)}`
+          return '再动·' + BASIC_ACTION_LABEL_MAP[actionSymbol]
         }
 
         if (extraPayload.startsWith('等待:')) {
           const wait = extraPayload.split(':')[1] ?? ''
-          return `额外:等待 ${wait}ms`
-        }
-
-        return token
-      }
-
-      return token
-    },
-    [slotAssignments],
-  )
-
-  const formatTokenSummary = useCallback(
-    (rawToken: string) => {
-      const token = rawToken.trim()
-      if (!token) {
-        return '未设定'
-      }
-
-      const baseMatch = token.match(/^(\d)([普大下])$/)
-      if (baseMatch) {
-        const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
-        return BASIC_ACTION_LABEL_MAP[actionSymbol]
-      }
-
-      if (token.startsWith('额外:')) {
-        const extraPayload = token.slice('额外:'.length)
-        const againMatch = extraPayload.match(/^(\d)([普大下])$/)
-        if (againMatch) {
-          const actionSymbol = againMatch[2] as RoundFormState['basicAction']
-          return `额外·${BASIC_ACTION_LABEL_MAP[actionSymbol]}`
-        }
-
-        if (extraPayload.startsWith('等待:')) {
-          const wait = extraPayload.split(':')[1] ?? ''
-          return `等待 ${wait}ms`
+          return '等待 ' + wait + 'ms'
         }
 
         if (extraPayload === '左侧目标') {
-          return '切换至左侧目标'
+          return '切换左侧目标'
         }
         if (extraPayload === '右侧目标') {
-          return '切换至右侧目标'
+          return '切换右侧目标'
+        }
+        if (extraPayload === '吕布') {
+          return '吕布切换'
+        }
+        if (extraPayload === '开自动') {
+          return '开启自动'
+        }
+        if (extraPayload === '史子眇sp') {
+          return '史子眇sp'
         }
 
         return extraPayload
       }
 
       if (token.startsWith('重开:')) {
+        if (token === '重开:无橙星') {
+          return '无橙星重开'
+        }
+        if (token.startsWith('重开:检测')) {
+          return token.replace('重开:', '')
+        }
         const type = token.split(':')[1]
         return type === '左上角' ? '左上角重开' : '全灭重开'
       }
@@ -542,6 +562,22 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
               </option>
             ))}
           </HTMLSelect>
+          {form.restartType === 'down' && (
+            <HTMLSelect
+              value={form.restartSlot}
+              onChange={(e) =>
+                updateForm(roundKey, {
+                  restartSlot: e.currentTarget.value,
+                })
+              }
+            >
+              {SLOT_OPTIONS.map((value) => (
+                <option key={value} value={value}>
+                  {value} 号位
+                </option>
+              ))}
+            </HTMLSelect>
+          )}
           <Button onClick={() => handleAddRestartAction(roundKey)}>＋重开</Button>
         </div>
       </div>
