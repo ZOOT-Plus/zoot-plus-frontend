@@ -1,6 +1,16 @@
-import { Button, ButtonGroup, Card, HTMLSelect, InputGroup, Tag } from '@blueprintjs/core'
+import { Button, ButtonGroup, Card, HTMLSelect, Icon, InputGroup, Tag } from '@blueprintjs/core'
+import {
+  DndContext,
+  DragEndEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import { SortableContext, arrayMove } from '@dnd-kit/sortable'
 import clsx from 'clsx'
 import isEqual from 'lodash-es/isEqual'
+import { Droppable, Sortable } from '../../dnd'
 import { useAtomValue } from 'jotai'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -38,6 +48,8 @@ const BASIC_ACTION_LABEL_MAP: Record<RoundFormState['basicAction'], string> = {
   大: '大招',
   下: '下拉',
 }
+
+const getActionSortableId = (roundKey: string, index: number) => `${roundKey}-action-${index}`
 const EXTRA_TYPES = [
   { value: 'again', label: '再次行动' },
   { value: 'wait', label: '等待' },
@@ -192,6 +204,15 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     },
   )
   const [viewMode, setViewMode] = useState<ActionViewMode>('round')
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    }),
+  )
 
   useEffect(() => {
     const next = editorActionsToRoundActions(actions)
@@ -512,6 +533,97 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [],
   )
 
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+      if (!over || active.id === over.id) {
+        return
+      }
+      const activeType = active.data.current?.type as string | undefined
+
+      if (activeType === 'round') {
+        const activeKey = active.data.current?.roundKey as string | undefined
+        const overKey =
+          (over.data.current?.roundKey as string | undefined) ||
+          (typeof over.id === 'string' ? over.id : undefined)
+        if (!activeKey || !overKey) {
+          return
+        }
+        const fromIndex = roundKeys.indexOf(activeKey)
+        const toIndex = roundKeys.indexOf(overKey)
+        if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+          return
+        }
+        const reorderedKeys = arrayMove(roundKeys, fromIndex, toIndex)
+        const mappings = reorderedKeys.map((oldKey, idx) => ({
+          oldKey,
+          newKey: String(idx + 1),
+        }))
+
+        setRoundForms((prev) => {
+          const next: Record<string, RoundFormState> = {}
+          mappings.forEach(({ oldKey, newKey }) => {
+            next[newKey] = prev[oldKey] ?? defaultFormState()
+          })
+          return next
+        })
+
+        applyRoundActions((current) => {
+          const next: RoundActionsInput = {}
+          mappings.forEach(({ oldKey, newKey }) => {
+            next[newKey] = current[oldKey] ?? []
+          })
+          return next
+        })
+        return
+      }
+
+      if (activeType === 'action') {
+        const activeRound = active.data.current?.roundKey as string | undefined
+        const activeIndex = active.data.current?.index as number | undefined
+        const overData = over.data.current as
+          | { type?: string; roundKey?: string; index?: number }
+          | undefined
+        const overRound = overData?.roundKey
+        if (!activeRound || activeIndex === undefined || !overRound || activeRound !== overRound) {
+          return
+        }
+        const list = roundActions[activeRound] ?? []
+        if (list.length <= 1) {
+          return
+        }
+        let overIndex = overData?.index
+        if (overData?.type === 'round-action-container') {
+          overIndex = list.length - 1
+        }
+        if (overIndex === undefined) {
+          return
+        }
+        const targetIndex = Math.max(0, Math.min(overIndex, list.length - 1))
+        if (targetIndex === activeIndex) {
+          return
+        }
+        applyRoundActions((current) => {
+          const source = current[activeRound] ?? []
+          if (
+            activeIndex < 0 ||
+            activeIndex >= source.length ||
+            targetIndex < 0 ||
+            targetIndex >= source.length
+          ) {
+            return current
+          }
+          const reordered = arrayMove(source, activeIndex, targetIndex)
+          return {
+            ...current,
+            [activeRound]: reordered,
+          }
+        })
+      }
+    },
+    [applyRoundActions, roundActions, roundKeys, setRoundForms],
+  )
+
   const renderActionControls = (roundKey: string, form: RoundFormState) => (
     <div className="flex flex-wrap gap-4">
       <div className="space-y-2">
@@ -688,158 +800,234 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
           当前没有任何回合动作，可点击“新增回合”开始编辑。
         </Card>
       ) : (
-        roundKeys.map((roundKey) => {
-          const actions = roundActions[roundKey] ?? []
-          const form = roundForms[roundKey] ?? defaultFormState()
-
-          const header = (
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-base font-semibold">第 {Number(roundKey)} 回合</h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  共 {actions.length} 个动作
-                </p>
-              </div>
-              <Button
-                icon="trash"
-                minimal
-                intent="danger"
-                onClick={() => handleRemoveRound(roundKey)}
-              >
-                删除回合
-              </Button>
-            </div>
-          )
-
-          if (viewMode === 'round') {
-            return (
-              <Card key={roundKey} className="card-shadow-subtle space-y-4 !p-4">
-                {header}
-                <div className="flex flex-wrap gap-2">
-                  {actions.map((entry, index) => (
-                    <Tag
-                      key={`${roundKey}-${index}-${entry[0]}`}
-                      onRemove={() => handleRemoveToken(roundKey, index)}
-                      large
-                      intent="primary"
-                    >
-                      {formatTokenLabel(entry[0] ?? '')}
-                    </Tag>
-                  ))}
-                  {actions.length === 0 && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      暂无动作，使用下方控件添加。
-                    </span>
-                  )}
-                </div>
-                {renderActionControls(roundKey, form)}
-              </Card>
-            )
-          }
-
-          const { slotMap, others } = groupTokensBySlot(actions)
-          const assignedSlots = SLOT_OPTIONS.filter((slot) =>
-            Boolean(slotAssignments?.[Number(slot)]?.name),
-          )
-          // 保证即使槽位未绑定密探但已有动作，也能继续显示这些动作
-          const slotsWithTokens = SLOT_OPTIONS.filter((slot) =>
-            (slotMap[slot]?.length ?? 0) > 0,
-          )
-          const slotsToRender =
-            assignedSlots.length > 0
-              ? SLOT_OPTIONS.filter(
-                  (slot) => assignedSlots.includes(slot) || slotsWithTokens.includes(slot),
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <SortableContext items={roundKeys}>
+            <ul className="space-y-4">
+              {roundKeys.map((roundKey, roundIndex) => {
+                const actions = roundActions[roundKey] ?? []
+                const form = roundForms[roundKey] ?? defaultFormState()
+                const actionItems = actions.map((_, index) =>
+                  getActionSortableId(roundKey, index),
                 )
-              : slotsWithTokens.length > 0
-                ? slotsWithTokens
-                : SLOT_OPTIONS
 
-          return (
-            <Card key={roundKey} className="card-shadow-subtle space-y-4 !p-4">
-              {header}
-              <div className="space-y-4">
-                <div className="overflow-x-auto">
-                  <div className="flex gap-4 min-w-max">
-                    {slotsToRender.map((slot) => {
-                      const slotNumber = Number(slot)
-                      const spy = slotAssignments?.[slotNumber]
-                      const tokensForSlot = slotMap[slot] ?? []
-                      const isActive = form.slot === slot
-                      return (
-                        <div
-                          key={slot}
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => handleSelectSpy(roundKey, slot)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault()
-                              handleSelectSpy(roundKey, slot)
-                            }
-                          }}
-                          className={clsx(
-                            'min-w-[180px] rounded-md border p-3 cursor-pointer select-none transition-colors',
-                            isActive
-                              ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10'
-                              : 'border-gray-200 dark:border-gray-600 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:border-blue-400/30',
-                          )}
-                        >
-                          <div className="text-sm font-semibold">
-                            {spy?.name ?? `密探 ${slot}`}
+                if (viewMode === 'round') {
+                  return (
+                    <Sortable
+                      key={roundKey}
+                      id={roundKey}
+                      data={{ type: 'round', roundKey, index: roundIndex }}
+                      className="list-none"
+                    >
+                      {({ attributes, listeners }) => (
+                        <Card className="card-shadow-subtle space-y-4 !p-4">
+                          <div className="flex items-center justify-between">
+                            <div
+                              className="flex items-center gap-2 cursor-move select-none text-sm"
+                              {...attributes}
+                              {...listeners}
+                            >
+                              <Icon icon="drag-handle-vertical" />
+                              <div>
+                                <h4 className="text-base font-semibold">第 {Number(roundKey)} 回合</h4>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  共 {actions.length} 个动作
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              icon="trash"
+                              minimal
+                              intent="danger"
+                              onClick={() => handleRemoveRound(roundKey)}
+                            >
+                              删除回合
+                            </Button>
                           </div>
-                          <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                            {slot} 号位
-                          </div>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {tokensForSlot.length > 0 ? (
-                              tokensForSlot.map((entry) => (
-                                <Tag
-                                  key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
-                                  minimal
-                                  intent="primary"
-                                  onRemove={() => handleRemoveToken(roundKey, entry.index)}
-                                >
-                                  {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
-                                </Tag>
-                              ))
-                            ) : (
+
+                          <Droppable
+                            id={`${roundKey}-actions`}
+                            data={{ type: 'round-action-container', roundKey }}
+                            className="block"
+                          >
+                            <SortableContext items={actionItems}>
+                              <ul className="flex flex-wrap gap-2 p-0 m-0 list-none">
+                                {actions.map((entry, index) => (
+                                  <Sortable
+                                    key={getActionSortableId(roundKey, index)}
+                                    id={getActionSortableId(roundKey, index)}
+                                    data={{ type: 'action', roundKey, index }}
+                                    className="list-none"
+                                  >
+                                    {({
+                                      attributes: actionAttributes,
+                                      listeners: actionListeners,
+                                    }) => (
+                                      <Tag
+                                        large
+                                        intent="primary"
+                                        onRemove={() => handleRemoveToken(roundKey, index)}
+                                        {...actionAttributes}
+                                        {...actionListeners}
+                                      >
+                                        {formatTokenLabel(entry[0] ?? '')}
+                                      </Tag>
+                                    )}
+                                  </Sortable>
+                                ))}
+                              </ul>
+                            </SortableContext>
+                            {actions.length === 0 && (
                               <span className="text-xs text-gray-500 dark:text-gray-400">
-                                暂无动作
+                                暂无动作，使用下方控件添加。
                               </span>
                             )}
-                          </div>
-                        </div>
+                          </Droppable>
+
+                          {renderActionControls(roundKey, form)}
+                        </Card>
+                      )}
+                    </Sortable>
+                  )
+                }
+
+                const { slotMap, others } = groupTokensBySlot(actions)
+                const assignedSlots = SLOT_OPTIONS.filter((slot) =>
+                  Boolean(slotAssignments?.[Number(slot)]?.name),
+                )
+                const slotsWithTokens = SLOT_OPTIONS.filter((slot) =>
+                  (slotMap[slot]?.length ?? 0) > 0,
+                )
+                const slotsToRender =
+                  assignedSlots.length > 0
+                    ? SLOT_OPTIONS.filter(
+                        (slot) => assignedSlots.includes(slot) || slotsWithTokens.includes(slot),
                       )
-                    })}
-                  </div>
-                </div>
+                    : slotsWithTokens.length > 0
+                      ? slotsWithTokens
+                      : SLOT_OPTIONS
 
-                {others.length > 0 && (
-                  <div className="rounded-md border border-dashed border-gray-200 dark:border-gray-600 p-3">
-                    <div className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                      其他动作
-                    </div>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {others.map((entry) => (
-                        <Tag
-                          key={`${roundKey}-other-${entry.index}-${entry.token}`}
-                          minimal
-                          intent="primary"
-                          onRemove={() => handleRemoveToken(roundKey, entry.index)}
-                        >
-                          {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
-                        </Tag>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                return (
+                  <Sortable
+                    key={roundKey}
+                    id={roundKey}
+                    data={{ type: 'round', roundKey, index: roundIndex }}
+                    className="list-none"
+                  >
+                    {({ attributes, listeners }) => (
+                      <Card className="card-shadow-subtle space-y-4 !p-4">
+                        <div className="flex items-center justify-between">
+                          <div
+                            className="flex items-center gap-2 cursor-move select-none text-sm"
+                            {...attributes}
+                            {...listeners}
+                          >
+                            <Icon icon="drag-handle-vertical" />
+                            <div>
+                              <h4 className="text-base font-semibold">第 {Number(roundKey)} 回合</h4>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                共 {actions.length} 个动作
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            icon="trash"
+                            minimal
+                            intent="danger"
+                            onClick={() => handleRemoveRound(roundKey)}
+                          >
+                            删除回合
+                          </Button>
+                        </div>
 
-                {renderActionControls(roundKey, form)}
-              </div>
-            </Card>
-          )
-        })
+                        <div className="space-y-4">
+                          <div className="overflow-x-auto">
+                            <div className="flex gap-4 min-w-max">
+                              {slotsToRender.map((slot) => {
+                                const slotNumber = Number(slot)
+                                const spy = slotAssignments?.[slotNumber]
+                                const tokensForSlot = slotMap[slot] ?? []
+                                const isActive = form.slot === slot
+                                return (
+                                  <div
+                                    key={slot}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => handleSelectSpy(roundKey, slot)}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault()
+                                        handleSelectSpy(roundKey, slot)
+                                      }
+                                    }}
+                                    className={clsx(
+                                      'min-w-[180px] rounded-md border p-3 cursor-pointer select-none transition-colors',
+                                      isActive
+                                        ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10'
+                                        : 'border-gray-200 dark:border-gray-600 hover:border-blue-400 hover:bg-blue-50/40 dark:hover:border-blue-400/30',
+                                    )}
+                                  >
+                                    <div className="text-sm font-semibold">
+                                      {spy?.name ?? `密探 ${slot}`}
+                                    </div>
+                                    <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                                      {slot} 号位
+                                    </div>
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                      {tokensForSlot.length > 0 ? (
+                                        tokensForSlot.map((entry) => (
+                                          <Tag
+                                            key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
+                                            minimal
+                                            intent="primary"
+                                            onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                          >
+                                            {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
+                                          </Tag>
+                                        ))
+                                      ) : (
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                          暂无动作
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+
+                          {others.length > 0 && (
+                            <div className="rounded-md border border-dashed border-gray-200 dark:border-gray-600 p-3">
+                              <div className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                                其他动作
+                              </div>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {others.map((entry) => (
+                                  <Tag
+                                    key={`${roundKey}-other-${entry.index}-${entry.token}`}
+                                    minimal
+                                    intent="primary"
+                                    onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                  >
+                                    {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
+                                  </Tag>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {renderActionControls(roundKey, form)}
+                        </div>
+                      </Card>
+                    )}
+                  </Sortable>
+                )
+              })}
+            </ul>
+          </SortableContext>
+        </DndContext>
       )}
+
     </div>
   )
 }
