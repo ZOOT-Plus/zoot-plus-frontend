@@ -449,6 +449,69 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [],
   )
 
+  const formatTokenSummary = useCallback(
+    (rawToken: string) => {
+      const token = rawToken.trim()
+      if (!token) {
+        return '未设定'
+      }
+
+      const baseMatch = token.match(/^(\d)([普大下])$/)
+      if (baseMatch) {
+        const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
+        return BASIC_ACTION_LABEL_MAP[actionSymbol]
+      }
+
+      if (token.startsWith('额外:')) {
+        const extraPayload = token.slice('额外:'.length)
+        const againMatch = extraPayload.match(/^(\d)([普大下])$/)
+        if (againMatch) {
+          const actionSymbol = againMatch[2] as RoundFormState['basicAction']
+          return `额外·${BASIC_ACTION_LABEL_MAP[actionSymbol]}`
+        }
+
+        if (extraPayload.startsWith('等待:')) {
+          const wait = extraPayload.split(':')[1] ?? ''
+          return `等待 ${wait}ms`
+        }
+
+        if (extraPayload === '左侧目标') {
+          return '切换左侧目标'
+        }
+        if (extraPayload === '右侧目标') {
+          return '切换右侧目标'
+        }
+        if (extraPayload === '吕布') {
+          return '吕布切换'
+        }
+        if (extraPayload === '开自动') {
+          return '开启自动'
+        }
+        if (extraPayload === '史子眇sp') {
+          return '史子眇sp'
+        }
+
+        return extraPayload
+      }
+
+      if (token === '重开:无橙星') {
+        return '无橙星'
+      }
+      if (token === '重开:左上角') {
+        return '左上角重开'
+      }
+      if (token === '重开:全灭') {
+        return '全灭重开'
+      }
+      if (token.startsWith('重开:检测')) {
+        return token.replace('重开:', '')
+      }
+
+      return token
+    },
+    [],
+  )
+
   const renderActionControls = (roundKey: string, form: RoundFormState) => (
     <div className="flex flex-wrap gap-4">
       <div className="space-y-2">
