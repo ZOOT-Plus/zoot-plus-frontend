@@ -24,12 +24,12 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
   const t = useTranslation()
   const [importDropdownOpen, setImportDropdownOpen] = useState(false)
 
-  const handleImport = (text: string) => {
+  const handleImport = (content: string) => {
     setImportDropdownOpen(false)
     if (onImport) {
-      onImport(text)
+      onImport(content)
     } else {
-      onChange(text)
+      onChange(content)
     }
   }
 
@@ -46,8 +46,8 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
     let title: string | undefined
     try {
       title = (JSON.parse(text) as CopilotDocV1.Operation).doc.title
-    } catch (e) {
-      console.warn(e)
+    } catch (error) {
+      console.warn(error)
     }
 
     const blob = new Blob([text], {
@@ -61,8 +61,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
     URL.revokeObjectURL(url)
 
     AppToaster.show({
-      message:
-        t.components.editor.source.SourceEditorHeader.job_json_downloaded,
+      message: t.components.editor.source.SourceEditorHeader.job_json_downloaded,
       intent: 'success',
     })
   }
@@ -94,7 +93,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
           icon="import"
           text={t.components.editor.source.SourceEditorHeader.import}
           rightIcon="caret-down"
-          onClick={() => setImportDropdownOpen(!importDropdownOpen)}
+          onClick={() => setImportDropdownOpen((prev) => !prev)}
         />
       </Popover2>
 

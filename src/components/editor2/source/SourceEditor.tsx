@@ -20,7 +20,7 @@ import { formatError } from '../../../utils/error'
 import { Confirm } from '../../Confirm'
 import { withSuspensable } from '../../Suspensable'
 import { DrawerLayout } from '../../drawer/DrawerLayout'
-import { SourceEditorHeader } from '../../editor/source/SourceEditorHeader'
+import { SourceEditorHeader } from './SourceEditorHeader'
 import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
 import { toSimingOperation } from '../siming-export'
@@ -37,9 +37,7 @@ const SourceEditor = withSuspensable(
     onUnsavedChangesRef.current = onUnsavedChanges
     const edit = useEdit()
     const [operation, setOperation] = useAtom(editorAtoms.operation)
-    const [text, setText] = useState(() =>
-      JSON.stringify(toMaaOperation(operation), null, 2),
-    )
+    const [text, setText] = useAtom(editorAtoms.sourceEditorText)
     const [viewMode, setViewMode] = useState<'maa' | 'siming'>('siming')
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [pending, setPending] = useState(false)

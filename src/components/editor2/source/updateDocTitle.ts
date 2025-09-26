@@ -1,5 +1,5 @@
-import { toEditorOperation, toMaaOperation } from '../../editor2/reconciliation'
-import { parseOperationLoose } from '../../editor2/validation/schema'
+import { toEditorOperation, toMaaOperation } from '../reconciliation'
+import { parseOperationLoose } from '../validation/schema'
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)

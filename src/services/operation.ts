@@ -42,34 +42,78 @@ export const handleDownloadJSON = (operationDoc: CopilotDocV1.Operation) => {
   })
 }
 
-export const handleLazyDownloadJSON = async (id: number, title: string) => {
+const getSnakeCaseOperationDoc = async (
+  id: number,
+): Promise<Record<string, unknown> | undefined> => {
   const resp = await wrapErrorMessage(
     (e) =>
       i18n.services.operation.json_download_failed({
         error: formatError(e),
       }),
     new OperationApi().getCopilotById({
-      id: id,
+      id,
     }),
   )
 
   try {
     const rawDoc = JSON.parse(resp.data!.content) as Record<string, unknown>
-    const snakeCaseDoc = snakeCaseKeysUnicode(rawDoc as any) as Record<string, unknown>
-    const sanitizedDoc = stripOperationExportFields(snakeCaseDoc)
-    const json = JSON.stringify(sanitizedDoc, null, 2)
-    doTriggerDownloadJSON(json, `MAACopilot_${title}.json`)
-    AppToaster.show({
-      message: i18n.services.operation.json_downloaded,
-      intent: 'success',
-    })
-  } catch (e) {
-    console.error(e)
+    return snakeCaseKeysUnicode(rawDoc as any) as Record<string, unknown>
+  } catch (error) {
+    console.error(error)
     AppToaster.show({
       message: i18n.services.operation.json_data_error,
       intent: 'danger',
     })
+    return undefined
   }
+}
+
+export const handleLazyDownloadJSON = async (id: number, title: string) => {
+  const snakeCaseDoc = await getSnakeCaseOperationDoc(id)
+  if (!snakeCaseDoc) {
+    return
+  }
+
+  const sanitizedDoc = stripOperationExportFields(snakeCaseDoc)
+  const json = JSON.stringify(sanitizedDoc, null, 2)
+  doTriggerDownloadJSON(json, `MAACopilot_${title}.json`)
+  AppToaster.show({
+    message: i18n.services.operation.json_downloaded,
+    intent: 'success',
+  })
+}
+
+export const handleLazyDownloadSimingJSON = async (id: number, title: string) => {
+  const snakeCaseDoc = await getSnakeCaseOperationDoc(id)
+  if (!snakeCaseDoc) {
+    return
+  }
+
+  const sanitizedDoc = stripOperationExportFields(snakeCaseDoc)
+  const simingActionsCandidate =
+    sanitizedDoc['siming_actions'] ?? sanitizedDoc['actions']
+
+  if (
+    !simingActionsCandidate ||
+    Array.isArray(simingActionsCandidate) ||
+    typeof simingActionsCandidate !== 'object'
+  ) {
+    AppToaster.show({
+      message: i18n.services.operation.siming_json_missing,
+      intent: 'danger',
+    })
+    return
+  }
+
+  const simingActions =
+    simingActionsCandidate as CopilotDocV1.SimingActionMap
+
+  const json = JSON.stringify(simingActions, null, 2)
+  doTriggerDownloadJSON(json, `MAACopilot_Siming_${title}.json`)
+  AppToaster.show({
+    message: i18n.services.operation.json_downloaded,
+    intent: 'success',
+  })
 }
 
 /**

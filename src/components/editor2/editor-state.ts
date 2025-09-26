@@ -12,7 +12,7 @@ import { useMemo } from 'react'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { createHistoryAtom, useHistoryEdit } from './history'
 import { Simplify } from 'type-fest'
-import { toEditorOperation } from './reconciliation'
+import { toEditorOperation, toMaaOperation } from './reconciliation'
 import {
   EditorAction,
   EditorGroup,
@@ -47,6 +47,10 @@ export const defaultEditorState: EditorState = {
     visibility: 'public',
   },
 }
+
+const sourceEditorTextAtom = atom(
+  JSON.stringify(toMaaOperation(defaultEditorState.operation), null, 2),
+)
 
 // splitAtom() 有重载，无法用正常方法来构造类型
 const __operAtomsAtom = (noop as typeof splitAtom)(
@@ -226,6 +230,7 @@ export const editorAtoms = {
   newlyAddedGroupIdAtom: atom<string | undefined>(undefined),
   activeActionIdAtom: atom<string | undefined>(undefined),
   sourceEditorIsOpen: atom(false),
+  sourceEditorText: sourceEditorTextAtom,
   // this atom will cause some memory leak as it does not clean up until the editor is reset,
   // but generally it's not a big deal
 
@@ -241,6 +246,7 @@ export const editorAtoms = {
     (get, set, editorState: EditorState = defaultEditorState) => {
       set(historyAtom, 'RESET')
       set(editorAtom, editorState)
+      set(sourceEditorTextAtom, JSON.stringify(toMaaOperation(editorState.operation), null, 2))
       set(editorGlobalErrorsAtom, [])
       set(editorEntityErrorsAtom, {})
     },

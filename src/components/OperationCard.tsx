@@ -4,7 +4,11 @@ import { Tooltip2 } from '@blueprintjs/popover2'
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
-import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
+import {
+  copyShortCode,
+  handleLazyDownloadJSON,
+  handleLazyDownloadSimingJSON,
+} from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
@@ -343,6 +347,25 @@ const CardActions = ({
           icon="download"
           onClick={() =>
             handleLazyDownloadJSON(
+              operation.id,
+              operation.parsedContent.doc.title,
+            )
+          }
+        />
+      </Tooltip2>
+      <Tooltip2
+        placement="bottom"
+        content={
+          <div className="max-w-sm dark:text-slate-900">
+            {t.components.OperationCard.download_siming_json}
+          </div>
+        }
+      >
+        <Button
+          small
+          icon="export"
+          onClick={() =>
+            handleLazyDownloadSimingJSON(
               operation.id,
               operation.parsedContent.doc.title,
             )

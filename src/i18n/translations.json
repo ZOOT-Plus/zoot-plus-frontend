@@ -3243,6 +3243,10 @@
         "cn": "下载原 JSON",
         "en": "Download Original JSON"
       },
+      "download_siming_json": {
+        "cn": "下载司命格式 JSON",
+        "en": "Download Siming JSON"
+      },
       "copy_secret_code": {
         "cn": "复制神秘代码",
         "en": "Copy Secret Code"
@@ -4069,6 +4073,10 @@
       "json_data_error": {
         "cn": "JSON 数据错误，请联系开发者",
         "en": "JSON data error, please contact the developer"
+      },
+      "siming_json_missing": {
+        "cn": "未找到司命动作，无法导出",
+        "en": "Siming actions not found; export unavailable"
       },
       "shortcode_copied": {
         "cn": "已复制神秘代码，前往 MAA 粘贴即可使用~",

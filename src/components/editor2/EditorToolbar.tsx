@@ -13,7 +13,7 @@ import { Popover2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { FC, useRef, useState } from 'react'
+import { FC, useCallback, useRef, useState } from 'react'
 
 import { i18n, useTranslation } from '../../i18n/i18n'
 import { formatError } from '../../utils/error'
@@ -24,15 +24,18 @@ import { AppToaster } from '../Toaster'
 import { Settings } from './Settings'
 import { editorAtoms, historyAtom, useEdit } from './editor-state'
 import { useHistoryControls, useHistoryValue } from './history'
-import { hydrateOperation } from './reconciliation'
+import { hydrateOperation, toEditorOperation, toMaaOperation } from './reconciliation'
 import { SourceEditorButton } from './source/SourceEditor'
+import { FileImporter } from './source/FileImporter'
+import { XlsxImporter } from './source/XlsxImporter'
+import { ShortCodeImporter } from './source/ShortCodeImporter'
 import {
   AUTO_SAVE_INTERVAL,
   AUTO_SAVE_LIMIT,
   editorArchiveAtom,
   editorSaveAtom,
 } from './useAutoSave'
-import { getLabeledPath } from './validation/schema'
+import { getLabeledPath, parseOperationLoose } from './validation/schema'
 
 interface EditorToolbarProps extends SubmitButtonProps {
   subtitle?: string
@@ -73,6 +76,7 @@ export const EditorToolbar: FC<EditorToolbarProps> = ({
         <HistoryButtons {...buttonProps} />
         <ErrorVisibleButton {...buttonProps} />
         <ErrorButton {...buttonProps} />
+        <ImportOperationButton {...buttonProps} />
         <SourceEditorButton {...buttonProps} />
         <span className="grow max-w-4" />
         <SubmitButton submitAction={submitAction} onSubmit={onSubmit} />
@@ -86,6 +90,78 @@ interface SubmitButtonProps extends ButtonProps {
   onSubmit: () => Promise<void | false> | false | void
 }
 
+
+const ImportOperationButton = (buttonProps: ButtonProps) => {
+  const t = useTranslation()
+  const edit = useEdit()
+  const setOperation = useSetAtom(editorAtoms.operation)
+  const setSourceEditorText = useSetAtom(editorAtoms.sourceEditorText)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleImport = useCallback(
+    (content: string) => {
+      setIsOpen(false)
+      try {
+        const parsed = JSON.parse(content)
+        const operationLoose = parseOperationLoose(parsed)
+        const newOperation = toEditorOperation(operationLoose)
+        const formatted = JSON.stringify(toMaaOperation(newOperation), null, 2)
+
+        edit((get, set, skip) => {
+          const current = get(editorAtoms.operation)
+          if (JSON.stringify(current) === JSON.stringify(newOperation)) {
+            return skip
+          }
+          setOperation(newOperation)
+          return {
+            action: 'import-json',
+            desc: i18n.actions.editor2.set_json,
+            squashBy: '',
+          }
+        })
+
+        setSourceEditorText(formatted)
+      } catch (error) {
+        console.warn('Failed to import operation JSON', error)
+        const message =
+          error instanceof SyntaxError
+            ? t.components.editor2.SourceEditor.json_syntax_error
+            : i18n.components.editor2.SourceEditor.unknown_error({
+                error: formatError(error),
+              })
+        AppToaster.show({
+          message,
+          intent: 'danger',
+        })
+      }
+    },
+    [edit, i18n, setOperation, setSourceEditorText, t],
+  )
+
+  return (
+    <Popover2
+      minimal
+      position="bottom-left"
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      content={
+        <Menu>
+          <FileImporter onImport={handleImport} />
+          <XlsxImporter onImport={handleImport} />
+          <ShortCodeImporter onImport={handleImport} />
+        </Menu>
+      }
+    >
+      <Button
+        icon="import"
+        rightIcon="caret-down"
+        text={t.components.editor.source.SourceEditorHeader.import}
+        {...buttonProps}
+        onClick={() => setIsOpen((prev) => !prev)}
+      />
+    </Popover2>
+  )
+}
 const SubmitButton = ({
   submitAction,
   onSubmit,
