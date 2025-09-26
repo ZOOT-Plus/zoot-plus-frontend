@@ -4,6 +4,7 @@ import { ChangeEventHandler, FC, useRef } from 'react'
 
 import { useTranslation } from '../../../i18n/i18n'
 import { AppToaster } from '../../Toaster'
+import { updateOperationDocTitle } from './updateDocTitle'
 
 export const FileImporter: FC<{ onImport: (content: string) => void }> = ({
   onImport,
@@ -19,13 +20,19 @@ export const FileImporter: FC<{ onImport: (content: string) => void }> = ({
     }
 
     try {
-      onImport(await file.text())
-    } catch (e) {
-      console.warn('Failed to read file:', e)
+      const content = await file.text()
+      const contentWithTitle = updateOperationDocTitle(content, file.name)
+      onImport(contentWithTitle)
+    } catch (error) {
+      console.warn('Failed to import file:', error)
       AppToaster.show({
         message: t.components.editor.source.FileImporter.cannot_read_file,
         intent: 'danger',
       })
+    } finally {
+      if (inputRef.current) {
+        inputRef.current.value = ''
+      }
     }
   }
 

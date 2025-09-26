@@ -152,6 +152,19 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     }
   }, [selectedLevel])
 
+  const formatLevelLabel = (level: Level) => {
+    const parts = [level.catOne, level.catTwo, level.catThree]
+      .map((part) => part?.trim())
+      .filter(Boolean) as string[]
+    if (parts.length) {
+      return parts.join(' - ')
+    }
+    if (level.name?.trim()) {
+      return level.name
+    }
+    return level.stageId
+  }
+
   return (
     <div className="flex flex-wrap gap-2 items-center">
       <Suggest<Level>
@@ -183,7 +196,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               roleStructure="listoption"
               key={item.stageId}
               className={clsx(modifiers.active && Classes.ACTIVE)}
-              text={`${item.catThree} ${item.name}`}
+              text={formatLevelLabel(item)}
               onClick={handleClick}
               onFocus={handleFocus}
               onMouseDown={onOptionMouseDown}
@@ -192,11 +205,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             />
           )
         }
-        inputValueRenderer={(item) =>
-          isCustomLevel(item)
-            ? t.components.editor2.LevelSelect.custom_level({ name: item.name })
-            : `${item.catThree} ${item.name}`
-        }
+        inputValueRenderer={formatLevelLabel}
         selectedItem={selectedLevel}
         onItemSelect={(level) => {
           if (!isCustomLevel(level)) {

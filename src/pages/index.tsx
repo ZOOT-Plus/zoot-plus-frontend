@@ -11,7 +11,6 @@ import { Operations } from 'components/Operations'
 import { OperationDrawer } from 'components/drawer/OperationDrawer'
 import { OperationEditorLauncher } from 'components/editor/OperationEditorLauncher'
 import { OperationSetEditorLauncher } from 'components/operation-set/OperationSetEditor'
-import { OperationUploaderLauncher } from 'components/uploader/OperationUploaderLauncher'
 
 import { AnnPanel } from '../components/announcement/AnnPanel'
 import { useTranslation } from '../i18n/i18n'
@@ -36,7 +35,6 @@ export const IndexPage: ComponentType = withGlobalErrorBoundary(() => {
               </CardTitle>
 
               <OperationEditorLauncher />
-              <OperationUploaderLauncher />
               <OperationSetEditorLauncher />
             </Card>
 

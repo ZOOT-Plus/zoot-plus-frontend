@@ -126,6 +126,19 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     }
   }, [selectedLevel])
 
+  const formatLevelLabel = (level: Level) => {
+    const parts = [level.catOne, level.catTwo, level.catThree]
+      .map((part) => part?.trim())
+      .filter(Boolean) as string[]
+    if (parts.length) {
+      return parts.join(' - ')
+    }
+    if (level.name?.trim()) {
+      return level.name
+    }
+    return level.stageId
+  }
+
   return (
     <Select<Level>
       items={levels}
@@ -150,7 +163,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             roleStructure="listoption"
             key={item.stageId}
             className={clsx(modifiers.active && Classes.ACTIVE)}
-            text={`${item.catThree} ${item.name}`}
+            text={formatLevelLabel(item)}
             onClick={handleClick}
             onFocus={handleFocus}
             onMouseDown={onOptionMouseDown}
@@ -194,7 +207,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           rightIcon="chevron-down"
         >
           {selectedLevel
-            ? selectedLevel.catThree
+            ? formatLevelLabel(selectedLevel)
             : t.components.LevelSelect.level}
         </Button>
       }

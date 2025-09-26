@@ -26,3 +26,6 @@ dist-ssr
 build/
 public/locales/*.json
 src/i18n/generated
+
+# dev tooling
+.serena/

@@ -5,6 +5,7 @@ import { ChangeEventHandler, FC, useRef } from 'react'
 import { convertXlsxToAutoFightJson } from 'features/auto-fight-gen/convert'
 import { useTranslation } from '../../../i18n/i18n'
 import { AppToaster } from '../../Toaster'
+import { updateOperationDocTitle } from './updateDocTitle'
 
 export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
   onImport,
@@ -21,7 +22,8 @@ export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
     try {
       const buffer = await file.arrayBuffer()
       const json = convertXlsxToAutoFightJson(buffer)
-      onImport(json)
+      const jsonWithTitle = updateOperationDocTitle(json, file.name)
+      onImport(jsonWithTitle)
       AppToaster.show({
         message: t.components.editor.source.XlsxImporter.import_success,
         intent: 'success',
