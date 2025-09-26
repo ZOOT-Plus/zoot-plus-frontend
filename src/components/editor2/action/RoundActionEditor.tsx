@@ -1,5 +1,7 @@
 import type { IconName } from '@blueprintjs/core'
 import { Button, Card, HTMLSelect, Icon, InputGroup } from '@blueprintjs/core'
+import { AppToaster } from '../../Toaster'
+import { NumericInput2 } from '../../editor/NumericInput2'
 import {
   DndContext,
   DragEndEvent,
@@ -68,6 +70,15 @@ const RESTART_TYPES = [
   { value: 'down', label: '阵亡检测重开' },
 ] as const
 const DEFAULT_WAIT_MS = 1000
+
+const ROUND_LIMIT = 50
+
+const clampNumber = (value: number, min: number, max: number) => {
+  if (Number.isNaN(value)) {
+    return min
+  }
+  return Math.min(Math.max(value, min), max)
+}
 
 type ActionViewMode = 'round' | 'round2'
 
@@ -339,6 +350,18 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     () => Object.keys(roundActions).sort((a, b) => Number(a) - Number(b)),
     [roundActions],
   )
+  const numericRoundKeys = useMemo(
+    () => roundKeys.map((key) => Number(key)).sort((a, b) => a - b),
+    [roundKeys],
+  )
+  const [loopRange, setLoopRange] = useState(() => ({ start: 1, end: 1 }))
+  const hasRounds = numericRoundKeys.length > 0
+  const minRound = hasRounds ? numericRoundKeys[0] : 1
+  const maxRound = hasRounds
+    ? numericRoundKeys[numericRoundKeys.length - 1]
+    : 1
+  const loopStart = loopRange.start
+  const loopEnd = loopRange.end
   const [roundForms, setRoundForms] = useState<Record<string, RoundFormState>>(
     () => {
       const initial: Record<string, RoundFormState> = {}
@@ -382,6 +405,26 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     })
   }, [roundKeys])
 
+  useEffect(() => {
+    if (!hasRounds) {
+      setLoopRange((prev) => {
+        if (prev.start === 1 && prev.end === 1) {
+          return prev
+        }
+        return { start: 1, end: 1 }
+      })
+      return
+    }
+    setLoopRange((prev) => {
+      const nextStart = clampNumber(prev.start, minRound, maxRound)
+      const nextEnd = clampNumber(Math.max(nextStart, prev.end), minRound, maxRound)
+      if (nextStart === prev.start && nextEnd === prev.end) {
+        return prev
+      }
+      return { start: nextStart, end: nextEnd }
+    })
+  }, [hasRounds, maxRound, minRound])
+
   const applyRoundActions = useCallback(
     (updater: (current: RoundActionsInput) => RoundActionsInput) => {
       setRoundActions((prev) => {
@@ -417,6 +460,89 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
       },
     }))
   }, [])
+
+  const handleLoopRangeChange = useCallback(
+    (field: 'start' | 'end', nextValue: number) => {
+      if (!hasRounds) {
+        return
+      }
+      if (!Number.isFinite(nextValue)) {
+        return
+      }
+      setLoopRange((prev) => {
+        if (field === 'start') {
+          const nextStart = clampNumber(nextValue, minRound, maxRound)
+          const nextEnd = clampNumber(
+            Math.max(nextStart, prev.end),
+            nextStart,
+            maxRound,
+          )
+          if (nextStart === prev.start && nextEnd === prev.end) {
+            return prev
+          }
+          return { start: nextStart, end: nextEnd }
+        }
+        const nextEnd = clampNumber(nextValue, minRound, maxRound)
+        const baseStart = clampNumber(prev.start, minRound, maxRound)
+        const nextStart = clampNumber(baseStart, minRound, nextEnd)
+        if (nextStart === prev.start && nextEnd === prev.end) {
+          return prev
+        }
+        return { start: nextStart, end: nextEnd }
+      })
+    },
+    [hasRounds, maxRound, minRound],
+  )
+
+  const handleGenerateLoop = useCallback(() => {
+    if (!hasRounds) {
+      AppToaster.show({ message: '请先添加至少一个回合', intent: 'danger' })
+      return
+    }
+    const start = loopStart
+    const end = loopEnd
+    if (start > end) {
+      AppToaster.show({ message: '起始回合不能大于结束回合', intent: 'danger' })
+      return
+    }
+    const missingRounds: number[] = []
+    for (let round = start; round <= end; round += 1) {
+      if (!Object.prototype.hasOwnProperty.call(roundActions, String(round))) {
+        missingRounds.push(round)
+      }
+    }
+    if (missingRounds.length > 0) {
+      AppToaster.show({
+        message: `回合 ${missingRounds.join(', ')} 未设置，无法生成循环`,
+        intent: 'danger',
+      })
+      return
+    }
+    const templateLength = end - start + 1
+    const currentMax = maxRound
+    const targetEnd = currentMax + templateLength
+    if (targetEnd > ROUND_LIMIT) {
+      AppToaster.show({
+        message: `复制后将超过 ${ROUND_LIMIT} 回合限制`,
+        intent: 'danger',
+      })
+      return
+    }
+    applyRoundActions((current) => {
+      const next = cloneRoundActions(current)
+      for (let offset = 0; offset < templateLength; offset += 1) {
+        const sourceKey = String(start + offset)
+        const targetKey = String(currentMax + offset + 1)
+        const sourceEntries = next[sourceKey] ?? []
+        next[targetKey] = sourceEntries.map((entry) => [...entry])
+      }
+      return next
+    })
+    AppToaster.show({
+      message: `已复制第${start}~${end}回合至第${currentMax + 1}~${targetEnd}回合`,
+      intent: 'success',
+    })
+  }, [applyRoundActions, hasRounds, loopEnd, loopStart, maxRound, roundActions])
 
   const handleAddRound = useCallback(() => {
     applyRoundActions((current) => {
@@ -917,36 +1043,77 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             {viewDescription}
           </p>
         </div>
-        <div className="flex items-center gap-3 flex-wrap justify-end">
-          <div className="flex items-center gap-2 flex-wrap">
-            {Object.entries(VIEW_MODE_META).map(([key, meta]) => {
-              const mode = key as ActionViewMode
-              const active = viewMode === mode
-              return (
-                <button
-                  key={mode}
-                  type="button"
-                  className="editor-round-pill text-sm"
-                  data-state={active ? 'active' : undefined}
-                  data-variant="neutral"
-                  aria-pressed={active}
-                  onClick={() => setViewMode(mode)}
-                >
-                  <Icon icon={meta.icon} />
-                  <span>{meta.label}</span>
-                </button>
-              )
-            })}
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-3 flex-wrap justify-end">
+            <div className="flex items-center gap-2 flex-wrap">
+              {Object.entries(VIEW_MODE_META).map(([key, meta]) => {
+                const mode = key as ActionViewMode
+                const active = viewMode === mode
+                return (
+                  <button
+                    key={mode}
+                    type="button"
+                    className="editor-round-pill text-sm"
+                    data-state={active ? 'active' : undefined}
+                    data-variant="neutral"
+                    aria-pressed={active}
+                    onClick={() => setViewMode(mode)}
+                  >
+                    <Icon icon={meta.icon} />
+                    <span>{meta.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <button
+              type="button"
+              className="editor-round-pill text-sm flex-shrink-0"
+              data-variant="warm"
+              onClick={handleAddRound}
+            >
+              <Icon icon="add" />
+              <span>新增回合</span>
+            </button>
           </div>
-          <button
-            type="button"
-            className="editor-round-pill text-sm"
-            data-variant="warm"
-            onClick={handleAddRound}
-          >
-            <Icon icon="add" />
-            <span>新增回合</span>
-          </button>
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-300">
+            <span className="font-medium text-gray-700 dark:text-gray-200 flex-shrink-0 whitespace-nowrap">生成循环</span>
+            <div className="flex items-center gap-1 flex-shrink-0 basis-full sm:basis-auto">
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">起始</span>
+              <NumericInput2
+                className="w-full sm:w-24 flex-shrink-0"
+                intOnly
+                min={minRound}
+                max={maxRound}
+                buttonPosition="none"
+                value={loopStart}
+                disabled={!hasRounds}
+                onValueChange={(value) => handleLoopRangeChange('start', value)}
+              />
+            </div>
+            <div className="flex items-center gap-1 flex-shrink-0 basis-full sm:basis-auto">
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">结束</span>
+              <NumericInput2
+                className="w-full sm:w-24 flex-shrink-0"
+                intOnly
+                min={minRound}
+                max={maxRound}
+                buttonPosition="none"
+                value={loopEnd}
+                disabled={!hasRounds}
+                onValueChange={(value) => handleLoopRangeChange('end', value)}
+              />
+            </div>
+            <button
+              type="button"
+              className="editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+              data-variant="teal"
+              onClick={handleGenerateLoop}
+              disabled={!hasRounds}
+            >
+              <Icon icon="repeat" />
+              <span>生成循环</span>
+            </button>
+          </div>
         </div>
       </div>
 
