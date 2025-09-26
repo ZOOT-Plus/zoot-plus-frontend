@@ -41,14 +41,14 @@ interface RoundFormState {
 
 const SLOT_OPTIONS = ['1', '2', '3', '4', '5']
 const BASIC_ACTION_OPTIONS = [
-  { value: '普', label: '普攻' },
-  { value: '大', label: '大招' },
-  { value: '下', label: '下拉' },
+  { value: '普', label: 'A' },
+  { value: '大', label: '↑' },
+  { value: '下', label: '↓' },
 ] as const
 const BASIC_ACTION_LABEL_MAP: Record<RoundFormState['basicAction'], string> = {
-  普: '普攻',
-  大: '大招',
-  下: '下拉',
+  普: 'A',
+  大: '↑',
+  下: '↓',
 }
 
 const getActionSortableId = (roundKey: string, index: number) => `${roundKey}-action-${index}`
@@ -1129,7 +1129,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                     <div className="mt-2 flex flex-wrap gap-2">
                                       {tokensForSlot.length > 0 ? (
                                         tokensForSlot.map((entry) => {
-                                          const summaryLabel = `第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`
+                                          const summaryLabel = `${entry.index + 1}${formatTokenSummary(entry.token)}`
                                           return (
                                             <RoundChip
                                               key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
@@ -1159,7 +1159,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                               </div>
                               <div className="mt-2 flex flex-wrap gap-2">
                                 {others.map((entry) => {
-                                  const summaryLabel = `第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`
+                                  const summaryLabel = `${entry.index + 1}${formatTokenSummary(entry.token)}`
                                   return (
                                     <RoundChip
                                       key={`${roundKey}-other-${entry.index}-${entry.token}`}

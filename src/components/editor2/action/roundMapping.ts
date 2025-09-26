@@ -301,24 +301,24 @@ function resolveSlotConfig(
 function describeAttack(action: ParsedRoundAction, slotName: string): string {
   switch (action.kind) {
     case 'ultimate':
-      return `${slotName} 释放大招`
+      return `${slotName} ↑`
     case 'defense':
-      return `${slotName} 下拉防御`
+      return `${slotName} ↓`
     case 'again':
       return `${slotName} 再次行动${describeAgainVariant(action.payload)}`
     default:
-      return `${slotName} 普攻`
+      return `${slotName} A`
   }
 }
 
 function describeAgainVariant(payload?: number | string) {
   if (payload === 'ultimate') {
-    return '（大招）'
+    return '（↑）'
   }
   if (payload === 'defense') {
-    return '（下拉）'
+    return '（↓）'
   }
-  return '（普攻）'
+  return '（A）'
 }
 
 function formatDoc(prefix: string, body: string, token: string) {
@@ -413,10 +413,10 @@ function guessTokenFromAction(action: EditorAction): string {
       }
       return '额外:等待:' + (getActionPostDelay(action) ?? DEFAULT_POST_DELAY)
     case CopilotDocV1.Type.Skill:
-      if (action.doc?.includes('大招')) {
+      if (action.doc && (action.doc.includes('大招') || action.doc.includes('↑'))) {
         return `${slot}大`
       }
-      if (action.doc?.includes('下拉')) {
+      if (action.doc && (action.doc.includes('下拉') || action.doc.includes('防御') || action.doc.includes('↓'))) {
         return `${slot}下`
       }
       if (action.doc?.includes('再次行动')) {
@@ -444,11 +444,15 @@ function mapVariantToSymbol(label?: string) {
   if (!label) {
     return '普'
   }
-  if (label.includes('大')) {
+  const normalized = label.replace(/\s+/g, '')
+  if (normalized.includes('↑') || normalized.includes('大')) {
     return '大'
   }
-  if (label.includes('下')) {
+  if (normalized.includes('↓') || normalized.includes('下') || normalized.includes('防')) {
     return '下'
+  }
+  if (normalized.toUpperCase().includes('A') || normalized.includes('普')) {
+    return '普'
   }
   return '普'
 }
