@@ -1,4 +1,5 @@
-import { Button, ButtonGroup, Card, HTMLSelect, Icon, InputGroup, Tag } from '@blueprintjs/core'
+import type { IconName } from '@blueprintjs/core'
+import { Button, Card, HTMLSelect, Icon, InputGroup } from '@blueprintjs/core'
 import {
   DndContext,
   DragEndEvent,
@@ -7,6 +8,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import type { DraggableAttributes, SyntheticListenerMap } from '@dnd-kit/core'
 import { SortableContext, arrayMove } from '@dnd-kit/sortable'
 import clsx from 'clsx'
 import isEqual from 'lodash-es/isEqual'
@@ -69,6 +71,41 @@ const DEFAULT_WAIT_MS = 1000
 
 type ActionViewMode = 'round' | 'round2'
 
+const VIEW_MODE_META: Record<
+  ActionViewMode,
+  { label: string; icon: IconName; description: string }
+> = {
+  round: {
+    label: '回合视图',
+    icon: 'timeline-events',
+    description:
+      '使用默认映射将回合动作转换为 Copilot 行动，缺失信息已填充默认值。',
+  },
+  round2: {
+    label: '回合视图 2',
+    icon: 'layout-grid',
+    description:
+      '按密探分组展示动作，调整布局不影响导出的 JSON 内容。',
+  },
+}
+
+type ChipVariant = 'warm' | 'danger' | 'info' | 'teal' | 'success' | 'neutral'
+
+const CHIP_VARIANT_DOT_CLASS: Record<ChipVariant, string> = {
+  warm: 'bg-amber-400',
+  danger: 'bg-rose-500',
+  info: 'bg-sky-500',
+  teal: 'bg-cyan-500',
+  success: 'bg-lime-500',
+  neutral: 'bg-slate-400',
+}
+
+const BASIC_ACTION_VARIANTS: Record<RoundFormState['basicAction'], ChipVariant> = {
+  普: 'warm',
+  大: 'danger',
+  下: 'info',
+}
+
 interface TokenEntry {
   token: string
   index: number
@@ -128,6 +165,114 @@ function groupTokensBySlot(actions: string[][]) {
   })
 
   return { slotMap, others }
+}
+
+function resolveChipVariant(rawToken: string): ChipVariant {
+  const token = rawToken.trim()
+  if (!token) {
+    return 'neutral'
+  }
+
+  const baseMatch = token.match(/^(\d)([普大下])$/)
+  if (baseMatch) {
+    const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
+    return BASIC_ACTION_VARIANTS[actionSymbol]
+  }
+
+  if (token.startsWith('额外:')) {
+    const extraPayload = token.slice('额外:'.length)
+    const normalizedExtraPayload = extraPayload.toLowerCase()
+    const againMatch = extraPayload.match(/^(\d)([普大下])$/)
+    if (againMatch) {
+      const actionSymbol = againMatch[2] as RoundFormState['basicAction']
+      return BASIC_ACTION_VARIANTS[actionSymbol]
+    }
+    if (extraPayload.startsWith('等待')) {
+      return 'neutral'
+    }
+    if (extraPayload.includes('左侧') || extraPayload.includes('右侧')) {
+      return 'teal'
+    }
+    if (extraPayload.includes('吕布')) {
+      return 'success'
+    }
+    if (extraPayload.includes('自动') || normalizedExtraPayload.includes('auto')) {
+      return 'info'
+    }
+    if (extraPayload.includes('史子眇') || normalizedExtraPayload.includes('sp')) {
+      return 'warm'
+    }
+    return 'neutral'
+  }
+
+  if (token.startsWith('重开:')) {
+    return 'danger'
+  }
+
+  return 'neutral'
+}
+
+interface RoundChipProps {
+  label: string
+  variant: ChipVariant
+  onRemove?: () => void
+  draggableAttributes?: DraggableAttributes
+  draggableListeners?: SyntheticListenerMap
+  className?: string
+  isDraggable?: boolean
+}
+
+const RoundChip: FC<RoundChipProps> = ({
+  label,
+  variant,
+  onRemove,
+  draggableAttributes,
+  draggableListeners,
+  className,
+  isDraggable,
+}) => {
+  const cursorClass = isDraggable
+    ? 'cursor-grab active:cursor-grabbing'
+    : onRemove
+      ? 'cursor-pointer'
+      : 'cursor-default'
+
+  return (
+    <div
+      className={clsx(
+        'editor-round-chip text-xs sm:text-sm font-medium select-none whitespace-nowrap',
+        cursorClass,
+        onRemove && 'pr-1.5',
+        className,
+      )}
+      data-variant={variant}
+      {...(draggableAttributes ?? {})}
+      {...(draggableListeners ?? {})}
+    >
+      <span
+        className={clsx(
+          'inline-flex h-2.5 w-2.5 flex-none rounded-full',
+          CHIP_VARIANT_DOT_CLASS[variant],
+        )}
+        aria-hidden="true"
+      />
+      <span className="truncate">{label}</span>
+      {onRemove ? (
+        <button
+          type="button"
+          className="ml-2 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-white/60 text-slate-500 transition hover:bg-white hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 dark:bg-slate-700/70 dark:hover:bg-slate-600/80 dark:text-slate-200"
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            onRemove()
+          }}
+          aria-label="移除此动作"
+        >
+          <Icon icon="small-cross" iconSize={12} />
+        </button>
+      ) : null}
+    </div>
+  )
 }
 
 function defaultFormState(): RoundFormState {
@@ -759,11 +904,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     </div>
   )
 
-  const viewLabel = viewMode === 'round' ? '回合视图' : '回合视图 2'
-  const viewDescription =
-    viewMode === 'round'
-      ? '使用默认映射将回合动作转换为 Copilot 行动，缺失信息已填充默认值。'
-      : '按密探分组展示动作，调整布局不影响导出的 JSON 内容。'
+  const viewMeta = VIEW_MODE_META[viewMode]
+  const viewLabel = viewMeta.label
+  const viewDescription = viewMeta.description
 
   return (
     <div className={clsx('px-4 pb-24 space-y-6', className)}>
@@ -774,24 +917,36 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             {viewDescription}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <ButtonGroup minimal>
-            <Button
-              active={viewMode === 'round'}
-              onClick={() => setViewMode('round')}
-            >
-              回合视图
-            </Button>
-            <Button
-              active={viewMode === 'round2'}
-              onClick={() => setViewMode('round2')}
-            >
-              回合视图 2
-            </Button>
-          </ButtonGroup>
-          <Button icon="add" intent="primary" onClick={handleAddRound}>
-            新增回合
-          </Button>
+        <div className="flex items-center gap-3 flex-wrap justify-end">
+          <div className="flex items-center gap-2 flex-wrap">
+            {Object.entries(VIEW_MODE_META).map(([key, meta]) => {
+              const mode = key as ActionViewMode
+              const active = viewMode === mode
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  className="editor-round-pill text-sm"
+                  data-state={active ? 'active' : undefined}
+                  data-variant="neutral"
+                  aria-pressed={active}
+                  onClick={() => setViewMode(mode)}
+                >
+                  <Icon icon={meta.icon} />
+                  <span>{meta.label}</span>
+                </button>
+              )
+            })}
+          </div>
+          <button
+            type="button"
+            className="editor-round-pill text-sm"
+            data-variant="warm"
+            onClick={handleAddRound}
+          >
+            <Icon icon="add" />
+            <span>新增回合</span>
+          </button>
         </div>
       </div>
 
@@ -862,15 +1017,14 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                       attributes: actionAttributes,
                                       listeners: actionListeners,
                                     }) => (
-                                      <Tag
-                                        large
-                                        intent="primary"
+                                      <RoundChip
+                                        label={formatTokenLabel(entry[0] ?? '')}
+                                        variant={resolveChipVariant(entry[0] ?? '')}
                                         onRemove={() => handleRemoveToken(roundKey, index)}
-                                        {...actionAttributes}
-                                        {...actionListeners}
-                                      >
-                                        {formatTokenLabel(entry[0] ?? '')}
-                                      </Tag>
+                                        draggableAttributes={actionAttributes}
+                                        draggableListeners={actionListeners}
+                                        isDraggable
+                                      />
                                     )}
                                   </Sortable>
                                 ))}
@@ -974,16 +1128,18 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                     </div>
                                     <div className="mt-2 flex flex-wrap gap-2">
                                       {tokensForSlot.length > 0 ? (
-                                        tokensForSlot.map((entry) => (
-                                          <Tag
-                                            key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
-                                            minimal
-                                            intent="primary"
-                                            onRemove={() => handleRemoveToken(roundKey, entry.index)}
-                                          >
-                                            {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
-                                          </Tag>
-                                        ))
+                                        tokensForSlot.map((entry) => {
+                                          const summaryLabel = `第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`
+                                          return (
+                                            <RoundChip
+                                              key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
+                                              label={summaryLabel}
+                                              variant={resolveChipVariant(entry.token)}
+                                              onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                              className="text-xs sm:text-sm"
+                                            />
+                                          )
+                                        })
                                       ) : (
                                         <span className="text-xs text-gray-500 dark:text-gray-400">
                                           暂无动作
@@ -1002,16 +1158,18 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                 其他动作
                               </div>
                               <div className="mt-2 flex flex-wrap gap-2">
-                                {others.map((entry) => (
-                                  <Tag
-                                    key={`${roundKey}-other-${entry.index}-${entry.token}`}
-                                    minimal
-                                    intent="primary"
-                                    onRemove={() => handleRemoveToken(roundKey, entry.index)}
-                                  >
-                                    {`第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`}
-                                  </Tag>
-                                ))}
+                                {others.map((entry) => {
+                                  const summaryLabel = `第 ${entry.index + 1} 个 · ${formatTokenSummary(entry.token)}`
+                                  return (
+                                    <RoundChip
+                                      key={`${roundKey}-other-${entry.index}-${entry.token}`}
+                                      label={summaryLabel}
+                                      variant={resolveChipVariant(entry.token)}
+                                      onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                      className="text-xs sm:text-sm"
+                                    />
+                                  )
+                                })}
                               </div>
                             </div>
                           )}
