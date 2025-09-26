@@ -1,0 +1,133 @@
+import { Button } from '@blueprintjs/core'
+import clsx from 'clsx'
+import {
+  FC,
+  useCallback,
+  useEffect,
+  useId,
+  useState,
+} from 'react'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
+
+import { useTranslation } from '../../../i18n/i18n'
+import { OperatorEditor } from './OperatorEditor'
+import { OperatorSheet } from './sheet/OperatorSheet'
+
+const TRANSITION_MS = 200
+
+export const OperatorSidebarFloating: FC = () => {
+  const [open, setOpen] = useState(false)
+  const [shouldRender, setShouldRender] = useState(false)
+  const t = useTranslation()
+  const dialogId = useId()
+
+  const toggle = useCallback(() => {
+    setOpen((prev) => {
+      const next = !prev
+      if (!prev) {
+        setShouldRender(true)
+      }
+      return next
+    })
+  }, [])
+
+  const close = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      return
+    }
+    const timeout = window.setTimeout(() => setShouldRender(false), TRANSITION_MS)
+    return () => window.clearTimeout(timeout)
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        close()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open, close])
+
+  const panelTitle = t.components.editor2.OperatorEditor.add_operator
+  const triggerText = open ? t.common.close : panelTitle
+
+  return (
+    <>
+      <Button
+        large
+        icon={open ? 'cross' : 'people'}
+        className="fixed bottom-4 right-4 z-40"
+        onClick={toggle}
+        text={triggerText}
+        aria-expanded={open}
+        aria-controls={shouldRender ? dialogId : undefined}
+      />
+      {shouldRender && (
+        <div
+          className={clsx(
+            'fixed inset-0 z-10 transition-opacity duration-200',
+            open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
+          )}
+        >
+          <div
+            className={clsx(
+              'absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-200',
+              open ? 'opacity-100' : 'opacity-0',
+            )}
+            aria-hidden
+            onClick={close}
+          />
+          <aside
+            id={dialogId}
+            role="dialog"
+            aria-modal="true"
+            aria-label={panelTitle}
+            className={clsx(
+              'fixed bottom-20 right-4 z-50 flex w-[min(520px,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
+              'transition-all duration-200 ease-out',
+              open
+                ? 'translate-y-0 opacity-100'
+                : 'translate-y-4 opacity-0 pointer-events-none',
+            )}
+            style={{ height: 'min(720px, calc(100vh - 6rem))' }}
+          >
+            <div className="panel-shadow flex shrink-0 items-center justify-between rounded-lg bg-white/90 px-4 py-2 dark:bg-gray-900/90">
+              <span className="font-semibold">{panelTitle}</span>
+              <Button minimal icon="cross" onClick={close} aria-label={t.common.close} />
+            </div>
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              <PanelGroup
+                autoSaveId="editor-floating"
+                direction="vertical"
+                className="flex-1"
+                style={{ height: '100%' }}
+              >
+                <Panel className="panel-shadow relative flex-1 overflow-hidden">
+                  <div className="absolute inset-0">
+                    <OperatorSheet />
+                  </div>
+                </Panel>
+                <PanelResizeHandle className="h-1 bg-white dark:bg-[#383e47]" />
+                <Panel className="panel-shadow flex-1 overflow-hidden">
+                  <div className="h-full overflow-auto">
+                    <OperatorEditor />
+                  </div>
+                </Panel>
+              </PanelGroup>
+            </div>
+          </aside>
+        </div>
+      )}
+    </>
+  )
+}
