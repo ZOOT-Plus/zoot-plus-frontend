@@ -26,43 +26,43 @@ export const NAV_CONFIG = [
 export const SOCIAL_CONFIG = [
   {
     icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
-    href: 'https://maa.plus',
+    href: 'https://maayuan.top',
     labelKey: i18nDefer.links.official_site,
   },
   {
     icon: <BlueprintIcon icon="edit" className="mr-2" size={12} />,
-    href: 'https://github.com/MaaAssistantArknights/maa-copilot-frontend/issues/new/choose',
+    href: 'https://github.com/MrSnake0208/MaaYuan-Share-frontend/issues/new',
     labelKey: i18nDefer.links.feedback,
   },
   {
     icon: (
       <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />
     ),
-    href: 'https://github.com/MaaAssistantArknights/MaaAssistantArknights',
+    href: 'https://github.com/syoius/MaaYuan',
     labelKey: i18nDefer.links.maa_repo,
   },
   {
     icon: (
       <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />
     ),
-    href: 'https://github.com/MaaAssistantArknights/maa-copilot-frontend',
+    href: 'https://github.com/MrSnake0208/MaaYuan-Share-frontend',
     labelKey: i18nDefer.links.frontend_repo,
   },
   {
     icon: (
       <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />
     ),
-    href: 'https://github.com/MaaAssistantArknights/MaaBackendCenter',
+    href: 'https://github.com/MrSnake0208/MaaYuan-Share-Backend',
     labelKey: i18nDefer.links.backend_repo,
   },
   {
     icon: <IconifyIcon icon={simpleIconsQQ} className="mr-2" fontSize="12px" />,
-    href: 'https://jq.qq.com/?_wv=1027&k=ElimpMzQ',
-    labelKey: () => i18n.links.creator_group({ groupNumber: '1169188429' }),
+    href: '',
+    labelKey: () => i18n.links.creator_group({ groupNumber: '1055262891' }),
   },
-  {
-    icon: <IconifyIcon icon={simpleIconsQQ} className="mr-2" fontSize="12px" />,
-    href: 'https://api.maa.plus/MaaAssistantArknights/api/qqgroup/index.html',
-    labelKey: i18nDefer.links.sharing_group,
-  },
+  // {
+  //   icon: <IconifyIcon icon={simpleIconsQQ} className="mr-2" fontSize="12px" />,
+  //   href: 'https://api.maa.plus/MaaAssistantArknights/api/qqgroup/index.html',
+  //   labelKey: i18nDefer.links.sharing_group,
+  // },
 ]
