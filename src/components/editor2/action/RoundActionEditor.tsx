@@ -1075,12 +1075,12 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
               <span>新增回合</span>
             </button>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3 text-sm text-gray-600 dark:text-gray-300">
+          <div className="editor-loop-controls flex flex-wrap items-center justify-end gap-y-2 gap-x-3 sm:gap-x-4 text-sm text-gray-600 dark:text-gray-300">
             <span className="font-medium text-gray-700 dark:text-gray-200 flex-shrink-0 whitespace-nowrap">生成循环</span>
-            <div className="flex items-center gap-1 flex-shrink-0 basis-full sm:basis-auto">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
               <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">起始</span>
               <NumericInput2
-                containerClassName="w-16 flex-none"
+                containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
                 inputClassName="!text-center"
                 intOnly
                 min={minRound}
@@ -1090,10 +1090,10 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                 onValueChange={(value) => handleLoopRangeChange('start', value)}
               />
             </div>
-            <div className="flex items-center gap-1 flex-shrink-0 basis-full sm:basis-auto">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
               <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">结束</span>
               <NumericInput2
-                containerClassName="w-16 flex-none"
+                containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
                 inputClassName="!text-center"
                 intOnly
                 min={minRound}
@@ -1105,7 +1105,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             </div>
             <button
               type="button"
-              className="editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+              className={`editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center whitespace-nowrap${hasRounds ? '' : ' is-disabled'}`}
               data-variant="teal"
               onClick={handleGenerateLoop}
               disabled={!hasRounds}
