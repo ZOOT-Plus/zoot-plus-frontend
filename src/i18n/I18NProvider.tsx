@@ -74,7 +74,7 @@ async function loadTranslations(language: Language) {
     if (language === 'cn') {
       return (await import(`./generated/cn`)).default
     }
-    return (await import(`./generated/en`)).default
+    return (await import(`./generated/zh_tw`)).default
   } catch (e) {
     throw new Error(i18n.essentials.translation_load_failed)
   }
@@ -83,13 +83,13 @@ async function loadTranslations(language: Language) {
 // handle HMR
 if (import.meta.hot) {
   import.meta.hot.accept(
-    ['./generated/cn', './generated/en'],
-    ([cnModule, enModule]) => {
+    ['./generated/cn', './generated/zh_tw'],
+    ([cnModule, zhTwModule]) => {
       if (cnModule?.default) {
         hotReloadedModules['cn'] = cnModule?.default
       }
-      if (enModule?.default) {
-        hotReloadedModules['en'] = enModule?.default
+      if (zhTwModule?.default) {
+        hotReloadedModules['zh_tw'] = zhTwModule?.default
       }
       refresh()
     },

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import 'dayjs/locale/en'
+import 'dayjs/locale/zh-tw'
 import 'dayjs/locale/zh-cn'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { getDefaultStore } from 'jotai'
@@ -9,7 +9,7 @@ import { Language, languageAtom } from '../i18n/i18n'
 dayjs.extend(relativeTime)
 
 function updateDayjsLocale(language: Language) {
-  dayjs.locale(language === 'cn' ? 'zh-cn' : 'en')
+  dayjs.locale(language === 'zh_tw' ? 'zh-tw' : 'zh-cn')
 }
 
 updateDayjsLocale(getDefaultStore().get(languageAtom))

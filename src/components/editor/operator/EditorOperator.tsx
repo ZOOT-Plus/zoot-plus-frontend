@@ -108,7 +108,7 @@ export const EditorOperatorName = <T extends FieldValues>({
         <MenuItem
           key={'id' in item ? item.id : item.name}
           text={
-            isOperator(item) && language === 'en' && item.name_en
+            isOperator(item) && language === 'zh_tw' && item.name_en
               ? item.name_en
               : item.name
           }
@@ -128,7 +128,7 @@ export const EditorOperatorName = <T extends FieldValues>({
       onItemSelect={(item) => onChange(item.name)}
       selectedItem={createArbitraryOperator((value || '') as string)}
       inputValueRenderer={(item) =>
-        isOperator(item) && language === 'en' && item.name_en
+        isOperator(item) && language === 'zh_tw' && item.name_en
           ? item.name_en
           : item.name
       }

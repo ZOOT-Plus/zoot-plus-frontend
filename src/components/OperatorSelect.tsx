@@ -84,7 +84,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
                 id={item.id}
                 rarity={item.rarity}
               />
-              {language === 'en' ? item.name_en : item.name}
+              {language === 'zh_tw' ? item.name_en : item.name}
             </div>
           }
           onClick={handleClick}
@@ -131,7 +131,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
             id={item.id}
             rarity={item.rarity}
           />
-          {language === 'en' ? item.name_en : item.name}
+          {language === 'zh_tw' ? item.name_en : item.name}
         </div>
       )}
       popoverProps={{

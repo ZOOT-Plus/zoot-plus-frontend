@@ -2,72 +2,72 @@
   "essentials": {
     "language": {
       "cn": "简体中文",
-      "en": "English"
+      "zh_tw": "繁體中文"
     },
     "error_occurred": {
       "cn": "エラー発生",
-      "en": "Error Occurred"
+      "zh_tw": "エラー発生"
     },
     "render_error": {
       "cn": "页面渲染出现错误；请尝试:",
-      "en": "An error occurred while rendering the page; please try"
+      "zh_tw": "頁面渲染出現錯誤；請嘗試:"
     },
     "refresh_page": {
       "cn": "刷新页面",
-      "en": "Refreshing the Page"
+      "zh_tw": "刷新頁面"
     },
     "translations_not_loaded": {
       "cn": "翻译未加载",
-      "en": "Translations have not been loaded."
+      "zh_tw": "翻譯未加載"
     },
     "translation_load_failed": {
       "cn": "翻译加载失败",
-      "en": "Failed to load translations."
+      "zh_tw": "翻譯加載失敗"
     }
   },
   "common": {
     "loading": {
       "cn": "加载中...",
-      "en": "Loading..."
+      "zh_tw": "加載中..."
     },
     "confirm": {
       "cn": "确认",
-      "en": "Confirm"
+      "zh_tw": "確認"
     },
     "cancel": {
       "cn": "取消",
-      "en": "Cancel"
+      "zh_tw": "取消"
     },
     "delete": {
       "cn": "删除",
-      "en": "Delete"
+      "zh_tw": "刪除"
     },
     "close": {
       "cn": "关闭",
-      "en": "Close"
+      "zh_tw": "關閉"
     }
   },
   "apis": {
     "announcement": {
       "network_error": {
         "cn": "网络错误",
-        "en": "Network error"
+        "zh_tw": "網絡錯誤"
       }
     },
     "comment": {
       "invalid_operation_id": {
         "cn": "无效的作业ID",
-        "en": "Invalid operation ID"
+        "zh_tw": "無效的作業ID"
       }
     },
     "operation_set": {
       "search_requires_suspense": {
         "cn": "useOperationSetSearch 必须使用 suspense",
-        "en": "useOperationSetSearch must be used with suspense"
+        "zh_tw": "useOperationSetSearch 必須使用 suspense"
       },
       "search_cannot_be_disabled": {
         "cn": "useOperationSetSearch 不能被禁用",
-        "en": "useOperationSetSearch cannot be disabled"
+        "zh_tw": "useOperationSetSearch 不能被禁用"
       }
     }
   },
@@ -75,155 +75,155 @@
     "editor2": {
       "init": {
         "cn": "初始化（锁定）",
-        "en": "Initialize (Locked)"
+        "zh_tw": "初始化（鎖定）"
       },
       "set_title": {
         "cn": "修改标题",
-        "en": "Change Title"
+        "zh_tw": "修改標題"
       },
       "set_description": {
         "cn": "修改描述",
-        "en": "Change Description"
+        "zh_tw": "修改描述"
       },
       "set_level": {
         "cn": "修改关卡",
-        "en": "Change Level"
+        "zh_tw": "修改關卡"
       },
       "set_difficulty": {
         "cn": "修改难度",
-        "en": "Change Difficulty"
+        "zh_tw": "修改難度"
       },
       "set_visibility": {
         "cn": "修改可见范围",
-        "en": "Change Visibility"
+        "zh_tw": "修改可見範圍"
       },
       "set_action_target": {
         "cn": "修改动作的目标",
-        "en": "Change Action's Target"
+        "zh_tw": "修改動作的目標"
       },
       "set_action_location": {
         "cn": "修改动作的位置",
-        "en": "Change Action's Location"
+        "zh_tw": "修改動作的位置"
       },
       "set_action_distance": {
         "cn": "修改动作的距离",
-        "en": "Change Action's Distance"
+        "zh_tw": "修改動作的距離"
       },
       "set_action_direction": {
         "cn": "修改动作的朝向",
-        "en": "Change Action's Direction"
+        "zh_tw": "修改動作的朝向"
       },
       "set_action_skill_usage": {
         "cn": "修改动作的技能用法",
-        "en": "Change Action's Skill Usage"
+        "zh_tw": "修改動作的技能用法"
       },
       "set_action_skill_times": {
         "cn": "修改动作的技能使用次数",
-        "en": "Change Action's Skill Usage Count"
+        "zh_tw": "修改動作的技能使用次數"
       },
       "duplicate_action": {
         "cn": "复制动作",
-        "en": "Duplicate Action"
+        "zh_tw": "複製動作"
       },
       "delete_action": {
         "cn": "删除动作",
-        "en": "Delete Action"
+        "zh_tw": "刪除動作"
       },
       "set_action_doc": {
         "cn": "修改动作日志",
-        "en": "Change Action's Log"
+        "zh_tw": "修改動作日誌"
       },
       "delete_action_doc": {
         "cn": "删除动作日志",
-        "en": "Delete Action's Log"
+        "zh_tw": "刪除動作日誌"
       },
       "set_action_doc_color": {
         "cn": "修改动作日志颜色",
-        "en": "Change Action's Log Color"
+        "zh_tw": "修改動作日誌顏色"
       },
       "add_action_condition": {
         "cn": "添加动作条件: {{title}}",
-        "en": "Add Action Condition: {{title}}"
+        "zh_tw": "添加動作條件: {{title}}"
       },
       "set_action_condition": {
         "cn": "修改动作条件: {{title}}",
-        "en": "Change Action Condition: {{title}}"
+        "zh_tw": "修改動作條件: {{title}}"
       },
       "delete_action_condition": {
         "cn": "删除动作条件: {{title}}",
-        "en": "Delete Action Condition: {{title}}"
+        "zh_tw": "刪除動作條件: {{title}}"
       },
       "update_operator": {
         "cn": "更新密探",
-        "en": "Update Operator"
+        "zh_tw": "更新密探"
       },
       "add_operator": {
         "cn": "添加密探",
-        "en": "Add Operator"
+        "zh_tw": "添加密探"
       },
       "delete_operator": {
         "cn": "删除密探",
-        "en": "Delete Operator"
+        "zh_tw": "刪除密探"
       },
       "move_operator": {
         "cn": "移动密探",
-        "en": "Move Operator"
+        "zh_tw": "移動密探"
       },
       "set_operator_level": {
         "cn": "修改密探等级",
-        "en": "Change Operator Level"
+        "zh_tw": "修改密探等級"
       },
       "set_operator_module": {
         "cn": "修改密探模组",
-        "en": "Change Operator Module"
+        "zh_tw": "修改密探模組"
       },
       "set_operator_skill": {
         "cn": "修改密探技能",
-        "en": "Change Operator Skill"
+        "zh_tw": "修改密探技能"
       },
       "set_operator_skill_level": {
         "cn": "修改密探技能等级",
-        "en": "Change Operator Skill Level"
+        "zh_tw": "修改密探技能等級"
       },
       "set_operator_skill_count": {
         "cn": "修改密探技能次数",
-        "en": "Change Operator Skill Usage Count"
+        "zh_tw": "修改密探技能次數"
       },
       "set_operator_skill_usage": {
         "cn": "修改密探技能用法",
-        "en": "Change Operator Skill Usage"
+        "zh_tw": "修改密探技能用法"
       },
       "update_group": {
         "cn": "更新密探组",
-        "en": "Update Operator Group"
+        "zh_tw": "更新密探組"
       },
       "add_group": {
         "cn": "添加密探组",
-        "en": "Add Operator Group"
+        "zh_tw": "添加密探組"
       },
       "delete_group": {
         "cn": "删除密探组",
-        "en": "Delete Operator Group"
+        "zh_tw": "刪除密探組"
       },
       "move_group": {
         "cn": "移动密探组",
-        "en": "Move Operator Group"
+        "zh_tw": "移動密探組"
       },
       "set_group_name": {
         "cn": "修改密探组名称",
-        "en": "Change Operator Group Name"
+        "zh_tw": "修改密探組名稱"
       },
       "set_group_from_fav": {
         "cn": "从收藏中读取密探组",
-        "en": "Load Operator Group from Favorites"
+        "zh_tw": "從收藏中讀取密探組"
       },
       "set_json": {
         "cn": "修改 JSON",
-        "en": "Edit JSON"
+        "zh_tw": "修改 JSON"
       },
       "restore_from_autosave": {
         "cn": "从自动保存恢复",
-        "en": "Restore from autosave"
+        "zh_tw": "從自動保存恢復"
       }
     }
   },
@@ -233,160 +233,160 @@
         "operation": {
           "version": {
             "cn": "版本号",
-            "en": "Version"
+            "zh_tw": "版本號"
           },
           "stage_name": {
             "cn": "关卡名称",
-            "en": "Stage Name"
+            "zh_tw": "關卡名稱"
           },
           "minimum_required": {
             "cn": "最低要求 MAA 版本",
-            "en": "Minimum Required MAA Version"
+            "zh_tw": "最低要求 MAA 版本"
           },
           "difficulty": {
             "cn": "难度",
-            "en": "Difficulty"
+            "zh_tw": "難度"
           },
           "doc": {
             "title": {
               "cn": "标题",
-              "en": "Title"
+              "zh_tw": "標題"
             },
             "details": {
               "cn": "详情",
-              "en": "Details"
+              "zh_tw": "詳情"
             },
             "title_color": {
               "cn": "标题颜色",
-              "en": "Title Color"
+              "zh_tw": "標題顏色"
             },
             "details_color": {
               "cn": "详情颜色",
-              "en": "Details Color"
+              "zh_tw": "詳情顏色"
             }
           },
           "groups": {
             "_item": {
               "cn": "密探组",
-              "en": "Group"
+              "zh_tw": "密探組"
             },
             "name": {
               "cn": "名称",
-              "en": "Name"
+              "zh_tw": "名稱"
             }
           },
           "actions": {
             "_item": {
               "cn": "动作",
-              "en": "Action"
+              "zh_tw": "動作"
             },
             "type": {
               "cn": "动作类型",
-              "en": "Action Type"
+              "zh_tw": "動作類型"
             },
             "name": {
               "cn": "目标",
-              "en": "Target"
+              "zh_tw": "目標"
             },
             "location": {
               "cn": "位置",
-              "en": "Location"
+              "zh_tw": "位置"
             },
             "distance": {
               "cn": "距离",
-              "en": "Distance"
+              "zh_tw": "距離"
             },
             "direction": {
               "cn": "朝向",
-              "en": "Direction"
+              "zh_tw": "朝向"
             },
             "skill_usage": {
               "cn": "技能用法",
-              "en": "Skill Usage"
+              "zh_tw": "技能用法"
             },
             "skill_times": {
               "cn": "技能使用次数",
-              "en": "Skill Usage Count"
+              "zh_tw": "技能使用次數"
             },
             "kills": {
               "cn": "击杀数",
-              "en": "Kills"
+              "zh_tw": "擊殺數"
             },
             "costs": {
               "cn": "费用",
-              "en": "DP"
+              "zh_tw": "費用"
             },
             "cost_changes": {
               "cn": "费用变化",
-              "en": "DP Change"
+              "zh_tw": "費用變化"
             },
             "cooling": {
               "cn": "冷却中的密探",
-              "en": "Operators on Cooldown"
+              "zh_tw": "冷卻中的密探"
             },
             "pre_delay": {
               "cn": "前置延迟",
-              "en": "Pre-Delay"
+              "zh_tw": "前置延遲"
             },
             "rear_delay": {
               "cn": "后置延迟",
-              "en": "Post-Delay"
+              "zh_tw": "後置延遲"
             },
             "post_delay": {
               "cn": "后置延迟",
-              "en": "Post-Delay"
+              "zh_tw": "後置延遲"
             },
             "doc": {
               "cn": "日志",
-              "en": "Log"
+              "zh_tw": "日誌"
             },
             "doc_color": {
               "cn": "日志颜色",
-              "en": "Log Color"
+              "zh_tw": "日誌顏色"
             }
           }
         },
         "opers": {
           "_item": {
             "cn": "密探",
-            "en": "Operator"
+            "zh_tw": "密探"
           },
           "name": {
             "cn": "名称",
-            "en": "Name"
+            "zh_tw": "名稱"
           },
           "skill": {
             "cn": "技能",
-            "en": "Skill"
+            "zh_tw": "技能"
           },
           "skill_usage": {
             "cn": "技能用法",
-            "en": "Skill Usage"
+            "zh_tw": "技能用法"
           },
           "skill_times": {
             "cn": "技能使用次数",
-            "en": "Skill Usage Count"
+            "zh_tw": "技能使用次數"
           },
           "requirements": {
             "elite": {
               "cn": "精英等级",
-              "en": "Elite Level"
+              "zh_tw": "精英等級"
             },
             "level": {
               "cn": "等级",
-              "en": "Level"
+              "zh_tw": "等級"
             },
             "skill_level": {
               "cn": "技能等级",
-              "en": "Skill Level"
+              "zh_tw": "技能等級"
             },
             "module": {
               "cn": "模组",
-              "en": "Module"
+              "zh_tw": "模組"
             },
             "potentiality": {
               "cn": "潜能",
-              "en": "Potential"
+              "zh_tw": "潛能"
             }
           }
         }
@@ -394,495 +394,489 @@
       "validation": {
         "required": {
           "cn": "必填",
-          "en": "Required"
+          "zh_tw": "必填"
         }
       },
       "EditorToolbar": {
         "title": {
           "cn": "作业编辑器v2",
-          "en": "Job Editor v2"
+          "zh_tw": "作業編輯器v2"
         },
         "auto_save_interval": {
           "cn": "每隔 {{count}} 分钟自动保存 ({{records}}/{{limit}})",
-          "en": {
-            "1": "Auto save every {{count}} minute ({{records}}/{{limit}})",
-            "other": "Auto save every {{count}} minutes ({{records}}/{{limit}})"
-          }
+          "zh_tw": "每隔 {{count}} 分鐘自動保存 ({{records}}/{{limit}})"
         },
         "save_now": {
           "cn": "立即保存",
-          "en": "Save Now"
+          "zh_tw": "立即保存"
         },
         "cannot_save": {
           "cn": "无法保存: {{error}}",
-          "en": "Cannot save: {{error}}"
+          "zh_tw": "無法保存: {{error}}"
         },
         "untitled": {
           "cn": "无标题",
-          "en": "Untitled"
+          "zh_tw": "無標題"
         },
         "auto_save": {
           "cn": "自动保存",
-          "en": "Auto Save"
+          "zh_tw": "自動保存"
         },
         "undo": {
           "cn": "撤销 (Ctrl+Z)",
-          "en": "Undo (Ctrl+Z)"
+          "zh_tw": "撤銷 (Ctrl+Z)"
         },
         "redo": {
           "cn": "重做 (Ctrl+Y)",
-          "en": "Redo (Ctrl+Y)"
+          "zh_tw": "重做 (Ctrl+Y)"
         },
         "undo_history": {
           "cn": "操作历史",
-          "en": "Undo History"
+          "zh_tw": "操作歷史"
         },
         "undo_history_header": {
           "cn": "操作历史 (上限{{limit}})",
-          "en": "Undo History (limit {{limit}})"
+          "zh_tw": "操作歷史 (上限{{limit}})"
         },
         "errors_header": {
           "cn": "错误",
-          "en": "Errors"
+          "zh_tw": "錯誤"
         },
         "no_errors": {
           "cn": "无错误",
-          "en": "No Errors"
+          "zh_tw": "無錯誤"
         },
         "show_errors": {
           "cn": "在编辑器中显示错误",
-          "en": "Show Errors in Editor"
+          "zh_tw": "在編輯器中顯示錯誤"
         }
       },
       "InfoEditor": {
         "job_info": {
           "cn": "作业信息",
-          "en": "Job Information"
+          "zh_tw": "作業信息"
         },
         "title": {
           "cn": "标题",
-          "en": "Title"
+          "zh_tw": "標題"
         },
         "title_placeholder": {
           "cn": "起一个引人注目的标题吧",
-          "en": "Create an eye-catching title"
+          "zh_tw": "起一個引人注目的標題吧"
         },
         "description": {
           "cn": "描述",
-          "en": "Description"
+          "zh_tw": "描述"
         },
         "description_placeholder": {
           "cn": "如：作者名、参考的视频攻略链接（如有）等",
-          "en": "Example: Author name, reference video strategy links (if any), etc."
+          "zh_tw": "如：作者名、參考的視頻攻略鏈接（如有）等"
         },
         "stage": {
           "cn": "关卡",
-          "en": "Stage"
+          "zh_tw": "關卡"
         },
         "difficulty": {
           "cn": "适用难度",
-          "en": "Difficulty"
+          "zh_tw": "適用難度"
         },
         "visibility": {
           "cn": "可见范围",
-          "en": "Visibility"
+          "zh_tw": "可見範圍"
         },
         "public": {
           "cn": "公开",
-          "en": "Public"
+          "zh_tw": "公開"
         },
         "private": {
           "cn": "仅自己可见",
-          "en": "Only Visible to Yourself"
+          "zh_tw": "僅自己可見"
         },
         "private_note": {
           "cn": "其他人无法在列表中看见，但可以通过神秘代码访问",
-          "en": "Others cannot see it in the list, but can access it via shortcode"
+          "zh_tw": "其他人無法在列表中看見，但可以通過神秘代碼訪問"
         }
       },
       "LevelSelect": {
         "related_levels": {
           "cn": "相关关卡",
-          "en": "Related Stages"
+          "zh_tw": "相關關卡"
         },
         "custom_level": {
           "cn": "{{name}} (自定义)",
-          "en": "{{name}} (Custom)"
+          "zh_tw": "{{name}} (自定義)"
         },
         "use_custom_level": {
           "cn": "使用自定义关卡 \"{{name}}\"",
-          "en": "Use Custom Stage \"{{name}}\""
+          "zh_tw": "使用自定義關卡 \"{{name}}\""
         },
         "placeholder": {
           "cn": "关卡名、类型、编号",
-          "en": "Stage name, category, or ID"
+          "zh_tw": "關卡名、類型、編號"
         },
         "view_external": {
           "cn": "在 PRTS.Map 中查看关卡",
-          "en": "View Stage on PRTS.Map"
+          "zh_tw": "在 PRTS.Map 中查看關卡"
         },
         "load_error": {
           "cn": "加载关卡失败：{{error}}",
-          "en": "Failed to load stages: {{error}}"
+          "zh_tw": "加載關卡失敗：{{error}}"
         }
       },
       "DifficultyPicker": {
         "default": {
           "cn": "默认",
-          "en": "Default"
+          "zh_tw": "默認"
         },
         "regular": {
           "cn": "普通",
-          "en": "Standard"
+          "zh_tw": "普通"
         },
         "hard": {
           "cn": "突袭",
-          "en": "Challenge"
+          "zh_tw": "突襲"
         },
         "regular_and_hard": {
           "cn": "普通+突袭",
-          "en": "Standard + Challenge"
+          "zh_tw": "普通+突襲"
         },
         "select_level": {
           "cn": "请选择关卡",
-          "en": "Please select a Level"
+          "zh_tw": "請選擇關卡"
         },
         "no_hard_mode": {
           "cn": "该关卡没有突袭难度，无需选择",
-          "en": "This level has no challenge mode, no need to select."
+          "zh_tw": "該關卡沒有突襲難度，無需選擇"
         }
       },
       "Settings": {
         "title": {
           "cn": "编辑器设置",
-          "en": "Editor Settings"
+          "zh_tw": "編輯器設置"
         },
         "show_linker_buttons": {
           "cn": "始终显示动作之间的按钮",
-          "en": "Always Show Buttons Between Actions"
+          "zh_tw": "始終顯示動作之間的按鈕"
         },
         "auto_toggle_selector_panel": {
           "cn": "自动在密探列表与关卡地图之间切换",
-          "en": "Automatically Toggle Between Operator List and Level Map"
+          "zh_tw": "自動在密探列表與關卡地圖之間切換"
         },
         "show_errors_by_default": {
           "cn": "默认显示验证错误",
-          "en": "Show Validation Errors by Default"
+          "zh_tw": "默認顯示驗證錯誤"
         },
         "history_limit": {
           "cn": "撤销记录上限",
-          "en": "Undo History Limit"
+          "zh_tw": "撤銷記錄上限"
         },
         "history_limit_note": {
           "cn": "更高的上限将使用更多内存。",
-          "en": "A higher limit will use more memory."
+          "zh_tw": "更高的上限將使用更多內存。"
         }
       },
       "SourceEditor": {
         "edit_json": {
           "cn": "编辑 JSON",
-          "en": "Edit JSON"
+          "zh_tw": "編輯 JSON"
         },
         "auto_sync_note": {
           "cn": "编辑后的 JSON 内容会自动同步到编辑器里",
-          "en": "Edited JSON content will automatically sync to the editor"
+          "zh_tw": "編輯後的 JSON 內容會自動同步到編輯器裡"
         },
         "view_json_mode": {
           "cn": "JSON 展示模式",
-          "en": "JSON View Mode"
+          "zh_tw": "JSON 展示模式"
         },
         "view_json_mode_maa": {
           "cn": "标准格式",
-          "en": "Standard"
+          "zh_tw": "標準格式"
         },
         "view_json_mode_siming": {
           "cn": "司命格式",
-          "en": "Siming"
+          "zh_tw": "司命格式"
         },
         "siming_view_readonly": {
           "cn": "司命格式仅供查看与复制，编辑仍需使用标准格式。",
-          "en": "Siming format is read-only; switch back to Standard to edit."
+          "zh_tw": "司命格式僅供查看與複製，編輯仍需使用標準格式。"
         },
         "has_errors": {
           "cn": "存在错误",
-          "en": "Has Errors"
+          "zh_tw": "存在錯誤"
         },
         "validation_passed": {
           "cn": "验证通过",
-          "en": "Validation Passed"
+          "zh_tw": "驗證通過"
         },
         "error_count": {
           "cn": "{{count}} 个错误",
-          "en": {
-            "1": "{{count}} error",
-            "other": "{{count}} errors"
-          }
+          "zh_tw": "{{count}} 個錯誤"
         },
         "json_syntax_error": {
           "cn": "JSON 语法错误",
-          "en": "JSON Syntax Error"
+          "zh_tw": "JSON 語法錯誤"
         },
         "unknown_error": {
           "cn": "未知错误: {{error}}",
-          "en": "Unknown Error: {{error}}"
+          "zh_tw": "未知錯誤: {{error}}"
         },
         "unsaved_changes": {
           "cn": "修改未保存",
-          "en": "Unsaved Changes"
+          "zh_tw": "修改未保存"
         },
         "unsaved_warning": {
           "cn": "未保存的修改将在关闭 JSON 编辑器后丢失，是否仍要关闭？",
-          "en": "Unsaved changes will be lost after closing the JSON editor. Do you still want to close it?"
+          "zh_tw": "未保存的修改將在關閉 JSON 編輯器後丟失，是否仍要關閉？"
         }
       },
       "SelectorPanel": {
         "operator": {
           "cn": "密探",
-          "en": "Operator"
+          "zh_tw": "密探"
         },
         "map": {
           "cn": "地图",
-          "en": "Map"
+          "zh_tw": "地圖"
         }
       },
       "ActionEditor": {
         "action_sequence": {
           "cn": "动作序列",
-          "en": "Action Sequence"
+          "zh_tw": "動作序列"
         },
         "add_action": {
           "cn": "添加动作",
-          "en": "Add Action"
+          "zh_tw": "添加動作"
         },
         "move_action": {
           "cn": "移动动作",
-          "en": "Move Action"
+          "zh_tw": "移動動作"
         }
       },
       "ActionItem": {
         "unnamed_group": {
           "cn": "(未命名密探组)",
-          "en": "(Unnamed Group)"
+          "zh_tw": "(未命名密探組)"
         },
         "select_target": {
           "cn": "选择目标",
-          "en": "Select Target"
+          "zh_tw": "選擇目標"
         },
         "group": {
           "cn": "密探组",
-          "en": "Operator Group"
+          "zh_tw": "密探組"
         },
         "operator": {
           "cn": "密探",
-          "en": "Operator"
+          "zh_tw": "密探"
         },
         "token": {
           "cn": "召唤物",
-          "en": "Summon"
+          "zh_tw": "召喚物"
         },
         "unknown_target": {
           "cn": "未知单位",
-          "en": "Unknown Unit"
+          "zh_tw": "未知單位"
         },
         "target_or_location": {
           "cn": "目标或位置只需填入其中一项",
-          "en": "Only one of target or location is required"
+          "zh_tw": "目標或位置只需填入其中一項"
         },
         "or": {
           "cn": "或",
-          "en": "or"
+          "zh_tw": "或"
         },
         "select_usage": {
           "cn": "选择用法",
-          "en": "Select Usage"
+          "zh_tw": "選擇用法"
         },
         "add_doc": {
           "cn": "添加日志",
-          "en": "Add Log"
+          "zh_tw": "添加日誌"
         },
         "duplicate": {
           "cn": "复制一份",
-          "en": "Duplicate"
+          "zh_tw": "複製一份"
         },
         "delete": {
           "cn": "删除",
-          "en": "Delete"
+          "zh_tw": "刪除"
         },
         "doc_placeholder": {
           "cn": "MAA 执行此动作时显示的文字",
-          "en": "Text displayed when MAA executes this action"
+          "zh_tw": "MAA 執行此動作時顯示的文字"
         }
       },
       "ActionLinker": {
         "action": {
           "cn": "动作",
-          "en": "Action"
+          "zh_tw": "動作"
         },
         "condition": {
           "cn": "条件",
-          "en": "Condition"
+          "zh_tw": "條件"
         },
         "condition_delay": {
           "cn": "延迟",
-          "en": "Delay"
+          "zh_tw": "延遲"
         }
       },
       "CreateActionMenu": {
         "add_action": {
           "cn": "添加动作",
-          "en": "Add Action"
+          "zh_tw": "添加動作"
         }
       },
       "LevelMap": {
         "select_level": {
           "cn": "请选择关卡",
-          "en": "Please select a level"
+          "zh_tw": "請選擇關卡"
         }
       },
       "OperatorEditor": {
         "no_operators": {
           "cn": "暂无密探",
-          "en": "No Operators"
+          "zh_tw": "暫無密探"
         },
         "add_operator": {
           "cn": "密探",
-          "en": "Operator"
+          "zh_tw": "密探"
         },
         "add_group": {
           "cn": "密探组",
-          "en": "Operator Group"
+          "zh_tw": "密探組"
         },
         "operator_error": {
           "cn": "\"{{name}}\": {{error}}",
-          "en": "\"{{name}}\": {{error}}"
+          "zh_tw": "\"{{name}}\": {{error}}"
         },
         "operator_field_error": {
           "cn": "\"{{name}}\"的{{field}}: {{error}}",
-          "en": "\"{{name}}\"'s {{field}}: {{error}}"
+          "zh_tw": "\"{{name}}\"的{{field}}: {{error}}"
         }
       },
       "GroupItem": {
         "add_to_favorites": {
           "cn": "添加到收藏",
-          "en": "Add to Favorites"
+          "zh_tw": "添加到收藏"
         },
         "added_to_favorites": {
           "cn": "已添加到收藏",
-          "en": "Added to favorites"
+          "zh_tw": "已添加到收藏"
         },
         "move_left": {
           "cn": "左移",
-          "en": "Move Left"
+          "zh_tw": "左移"
         },
         "move_right": {
           "cn": "右移",
-          "en": "Move Right"
+          "zh_tw": "右移"
         },
         "select_operator_from_list": {
           "cn": "从列表中选择密探",
-          "en": "Select operator from list"
+          "zh_tw": "從列表中選擇密探"
         },
         "guide": {
           "cn": "点击快捷编辑|点击添加密探|拖动上方的密探到这里",
-          "en": "Click Quick Edit|Click Add Operator|Drag Operators Here"
+          "zh_tw": "點擊快捷編輯|點擊添加密探|拖動上方的密探到這裡"
         },
         "quick_edit": {
           "cn": "快捷编辑",
-          "en": "Quick Edit"
+          "zh_tw": "快捷編輯"
         },
         "finish": {
           "cn": "完成",
-          "en": "Finish"
+          "zh_tw": "完成"
         },
         "add_operator": {
           "cn": "添加密探...",
-          "en": "Add Operator..."
+          "zh_tw": "添加密探..."
         },
         "group_name": {
           "cn": "密探组名称",
-          "en": "Operator Group Name"
+          "zh_tw": "密探組名稱"
         },
         "replace_existing_operators": {
           "cn": "是否要替换掉已有的密探？",
-          "en": "Do you want to replace the existing operators?"
+          "zh_tw": "是否要替換掉已有的密探？"
         },
         "append": {
           "cn": "追加",
-          "en": "Append"
+          "zh_tw": "追加"
         },
         "overwrite": {
           "cn": "覆盖",
-          "en": "Overwrite"
+          "zh_tw": "覆蓋"
         },
         "load_operator_group_from_favorites": {
           "cn": "从收藏中读取密探组",
-          "en": "Load operator group from favorites"
+          "zh_tw": "從收藏中讀取密探組"
         },
         "no_matching_groups": {
           "cn": "没有匹配的密探组",
-          "en": "No matching operator groups"
+          "zh_tw": "沒有匹配的密探組"
         },
         "no_fav_groups": {
           "cn": "没有已收藏的密探组",
-          "en": "No favorite operator groups"
+          "zh_tw": "沒有已收藏的密探組"
         }
       },
       "OperatorItem": {
         "add_to_favorites": {
           "cn": "添加到收藏",
-          "en": "Add to Favorites"
+          "zh_tw": "添加到收藏"
         },
         "added_to_favorites": {
           "cn": "已添加到收藏",
-          "en": "Added to favorites"
+          "zh_tw": "已添加到收藏"
         },
         "elite": {
           "cn": "精英{{level}}",
-          "en": "Elite {{level}}"
+          "zh_tw": "精英{{level}}"
         },
         "module": {
           "cn": "模组",
-          "en": "Module"
+          "zh_tw": "模組"
         },
         "module_title": {
           "cn": {
-            "-1": "不改变",
             "0": "切换到初始模组",
+            "-1": "不改变",
             "other": "切换到{{name}}模组"
           },
-          "en": {
-            "-1": "Don't Change",
-            "0": "Switch to Original Module",
-            "other": "Switch to {{name}} Module"
+          "zh_tw": {
+            "0": "切換到初始模組",
+            "-1": "不改變",
+            "other": "切換到{{name}}模組"
           }
         },
         "skill_not_available": {
           "cn": "当前等级未解锁该技能",
-          "en": "This skill is not available at the current level"
+          "zh_tw": "當前等級未解鎖該技能"
         }
       },
       "OperatorSelect": {
         "search_operator": {
           "cn": "搜索密探",
-          "en": "Search Operator"
+          "zh_tw": "搜索密探"
         },
         "use_custom_name": {
           "cn": "使用自定义名称 \"{{name}}\"",
-          "en": "Use Custom Name \"{{name}}\""
+          "zh_tw": "使用自定義名稱 \"{{name}}\""
         }
       },
       "misc": {
         "already_exists": {
           "cn": "密探 \"{{name}}\" 已存在",
-          "en": "Operator \"{{name}}\" already exists"
+          "zh_tw": "密探 \"{{name}}\" 已存在"
         },
         "operator_limit_reached": {
           "cn": "密探数量已达上限（{{limit}}）",
-          "en": "You can select up to {{limit}} operators"
+          "zh_tw": "密探數量已達上限（{{limit}}）"
         },
         "autosave_error": {
           "cn": "自动保存失败：{{error}}",
-          "en": "Failed to autosave: {{error}}"
+          "zh_tw": "自動保存失敗：{{error}}"
         }
       }
     },
@@ -890,223 +884,223 @@
       "AuthFormShared": {
         "email_required": {
           "cn": "邮箱为必填项",
-          "en": "Email is required"
+          "zh_tw": "郵箱為必填項"
         },
         "email_invalid": {
           "cn": "不合法的邮箱",
-          "en": "Invalid email format"
+          "zh_tw": "不合法的郵箱"
         },
         "password_required": {
           "cn": "密码为必填项",
-          "en": "Password is required"
+          "zh_tw": "密碼為必填項"
         },
         "password_min_length": {
           "cn": "密码长度不能小于 8 位",
-          "en": "Password must be at least 8 characters"
+          "zh_tw": "密碼長度不能小於 8 位"
         },
         "password_max_length": {
           "cn": "密码长度不能大于 32 位",
-          "en": "Password cannot be longer than 32 characters"
+          "zh_tw": "密碼長度不能大於 32 位"
         },
         "username_required": {
           "cn": "用户名为必填项",
-          "en": "Username is required"
+          "zh_tw": "用戶名為必填項"
         },
         "username_min_length": {
           "cn": "用户名长度不能小于 4 位",
-          "en": "Username must be at least 4 characters"
+          "zh_tw": "用戶名長度不能小於 4 位"
         },
         "username_max_length": {
           "cn": "用户名长度不能大于 24 位",
-          "en": "Username cannot be longer than 24 characters"
+          "zh_tw": "用戶名長度不能大於 24 位"
         },
         "username_pattern": {
           "cn": "用户名前后不能包含空格",
-          "en": "Username cannot start or end with spaces"
+          "zh_tw": "用戶名前後不能包含空格"
         },
         "token_required": {
           "cn": "邮箱验证码为必填项",
-          "en": "Email verification code is required"
+          "zh_tw": "郵箱驗證碼為必填項"
         },
         "token_length": {
           "cn": "邮箱验证码长度为 6 位",
-          "en": "Email verification code must be 6 characters"
+          "zh_tw": "郵箱驗證碼長度為 6 位"
         },
         "email": {
           "cn": "邮箱",
-          "en": "Email"
+          "zh_tw": "郵箱"
         },
         "email_verification_code": {
           "cn": "邮箱验证码",
-          "en": "Email Verification Code"
+          "zh_tw": "郵箱驗證碼"
         },
         "password": {
           "cn": "密码",
-          "en": "Password"
+          "zh_tw": "密碼"
         },
         "username": {
           "cn": "用户名",
-          "en": "Username"
+          "zh_tw": "用戶名"
         },
         "email_verification_note": {
           "cn": "将通过发送邮件输入验证码确认",
-          "en": "A verification code will be sent to your email"
+          "zh_tw": "將通過發送郵件輸入驗證碼確認"
         },
         "enter_email_code": {
           "cn": "请输入邮件中的验证码",
-          "en": "Please enter the verification code from your email"
+          "zh_tw": "請輸入郵件中的驗證碼"
         }
       },
       "EditDialog": {
         "edit_account_info": {
           "cn": "修改账户信息",
-          "en": "Edit Account Information"
+          "zh_tw": "修改賬戶信息"
         },
         "account_info": {
           "cn": "账户信息",
-          "en": "Account Info"
+          "zh_tw": "賬戶信息"
         },
         "password": {
           "cn": "密码",
-          "en": "Password"
+          "zh_tw": "密碼"
         },
         "update_success": {
           "cn": "更新成功",
-          "en": "Update successful"
+          "zh_tw": "更新成功"
         },
         "error": {
           "cn": "错误",
-          "en": "Error"
+          "zh_tw": "錯誤"
         },
         "save": {
           "cn": "保存",
-          "en": "Save"
+          "zh_tw": "保存"
         },
         "current_password": {
           "cn": "当前密码",
-          "en": "Current Password"
+          "zh_tw": "當前密碼"
         },
         "new_password": {
           "cn": "新密码",
-          "en": "New Password"
+          "zh_tw": "新密碼"
         },
         "confirm_new_password": {
           "cn": "确认新密码",
-          "en": "Confirm New Password"
+          "zh_tw": "確認新密碼"
         },
         "forgot_password": {
           "cn": "忘记密码...",
-          "en": "Forgot Password..."
+          "zh_tw": "忘記密碼..."
         },
         "passwords_dont_match": {
           "cn": "两次输入的密码不一致",
-          "en": "The passwords don't match"
+          "zh_tw": "兩次輸入的密碼不一致"
         }
       },
       "LoginPanel": {
         "login_failed": {
           "cn": "登录失败：{{error}}",
-          "en": "Login failed: {{error}}"
+          "zh_tw": "登錄失敗：{{error}}"
         },
         "login_success": {
           "cn": "登录成功。欢迎回来，{{name}}",
-          "en": "Login successful. Welcome back, {{name}}"
+          "zh_tw": "登錄成功。歡迎回來，{{name}}"
         },
         "forgot_password": {
           "cn": "忘记密码...",
-          "en": "Forgot Password..."
+          "zh_tw": "忘記密碼..."
         },
         "no_account": {
           "cn": "还没有账号？",
-          "en": "Don't have an account?"
+          "zh_tw": "還沒有賬號？"
         },
         "go_register": {
           "cn": "前往注册",
-          "en": "Register now"
+          "zh_tw": "前往註冊"
         },
         "login": {
           "cn": "登录",
-          "en": "Login"
+          "zh_tw": "登錄"
         }
       },
       "RegisterPanel": {
         "registration_failed": {
           "cn": "注册失败：{{error}}",
-          "en": "Registration failed: {{error}}"
+          "zh_tw": "註冊失敗：{{error}}"
         },
         "registration_success": {
           "cn": "注册成功",
-          "en": "Registration successful"
+          "zh_tw": "註冊成功"
         },
         "invalid_email": {
           "cn": "邮箱输入为空或格式错误,请重新输入",
-          "en": "Email is empty or has an invalid format, please try again"
+          "zh_tw": "郵箱輸入為空或格式錯誤,請重新輸入"
         },
         "send_failed": {
           "cn": "发送失败：{{error}}",
-          "en": "Sending failed: {{error}}"
+          "zh_tw": "發送失敗：{{error}}"
         },
         "email_sent_success": {
           "cn": "邮件发送成功",
-          "en": "Email sent successfully"
+          "zh_tw": "郵件發送成功"
         },
         "retry_seconds": {
           "cn": "{{seconds}} 秒再试",
-          "en": "Retry in {{seconds}} seconds"
+          "zh_tw": "{{seconds}} 秒再試"
         },
         "send_verification_code": {
           "cn": "发送验证码",
-          "en": "Send Verification Code"
+          "zh_tw": "發送驗證碼"
         },
         "register": {
           "cn": "注册",
-          "en": "Register"
+          "zh_tw": "註冊"
         }
       },
       "ResetPasswordDialog": {
         "reset_success": {
           "cn": "重置成功，请重新登录",
-          "en": "Reset successful, please log in again"
+          "zh_tw": "重置成功，請重新登錄"
         },
         "reset_password": {
           "cn": "重置密码",
-          "en": "Reset Password"
+          "zh_tw": "重置密碼"
         },
         "error": {
           "cn": "错误",
-          "en": "Error"
+          "zh_tw": "錯誤"
         },
         "verification_code": {
           "cn": "验证码",
-          "en": "Verification Code"
+          "zh_tw": "驗證碼"
         },
         "code_required": {
           "cn": "验证码为必填项",
-          "en": "Verification code is required"
+          "zh_tw": "驗證碼為必填項"
         },
         "enter_email_code": {
           "cn": "请填入邮件中的验证码",
-          "en": "Please enter the verification code from your email"
+          "zh_tw": "請填入郵件中的驗證碼"
         },
         "save": {
           "cn": "保存",
-          "en": "Save"
+          "zh_tw": "保存"
         },
         "get_code_failed": {
           "cn": "获取验证码失败：{{error}}",
-          "en": "Failed to get verification code: {{error}}"
+          "zh_tw": "獲取驗證碼失敗：{{error}}"
         },
         "code_sent": {
           "cn": "验证码已发送至您的邮箱",
-          "en": "Verification code has been sent to your email"
+          "zh_tw": "驗證碼已發送至您的郵箱"
         },
         "resend": {
           "cn": "重新发送",
-          "en": "Resend"
+          "zh_tw": "重新發送"
         },
         "get_code": {
           "cn": "获取验证码",
-          "en": "Get Code"
+          "zh_tw": "獲取驗證碼"
         }
       }
     },
@@ -1114,25 +1108,25 @@
       "AnnDialog": {
         "title": {
           "cn": "公告",
-          "en": "Announcement"
+          "zh_tw": "公告"
         },
         "no_announcements": {
           "cn": "暂无公告",
-          "en": "No announcements"
+          "zh_tw": "暫無公告"
         },
         "ok": {
           "cn": "确定",
-          "en": "OK"
+          "zh_tw": "確定"
         }
       },
       "AnnPanel": {
         "title": {
           "cn": "公告",
-          "en": "Announcement"
+          "zh_tw": "公告"
         },
         "load_failed": {
           "cn": "公告加载失败：{{error}}",
-          "en": "Failed to load announcement: {{error}}"
+          "zh_tw": "公告加載失敗：{{error}}"
         }
       }
     },
@@ -1140,11 +1134,11 @@
       "NavAside": {
         "create_job_set": {
           "cn": "创建作业集...",
-          "en": "Create Job Set"
+          "zh_tw": "創建作業集..."
         },
         "announcement": {
           "cn": "公告",
-          "en": "Announcement"
+          "zh_tw": "公告"
         }
       }
     },
@@ -1153,253 +1147,253 @@
         "EditorActionAdd": {
           "add": {
             "cn": "添加",
-            "en": "Add"
+            "zh_tw": "添加"
           },
           "edit": {
             "cn": "编辑",
-            "en": "Edit"
+            "zh_tw": "編輯"
           },
           "action": {
             "cn": "动作",
-            "en": " Action"
+            "zh_tw": "動作"
           },
           "save": {
             "cn": "保存",
-            "en": "Save"
+            "zh_tw": "保存"
           },
           "current_action": {
             "cn": "正在编辑的动作",
-            "en": "Current Action"
+            "zh_tw": "正在編輯的動作"
           },
           "action_type": {
             "cn": "动作类型",
-            "en": "Action Type"
+            "zh_tw": "動作類型"
           },
           "operator_group_name": {
             "cn": "密探或密探组名",
-            "en": "Operator or Group Name"
+            "zh_tw": "密探或密探組名"
           },
           "select_operator_description": {
             "cn": "选择密探、使用密探名、或使用密探组名引用",
-            "en": "Select an operator, use operator name, or reference an operator group"
+            "zh_tw": "選擇密探、使用密探名、或使用密探組名引用"
           },
           "search_operator_hint": {
             "cn": "键入密探名、拼音或拼音首字母以搜索密探列表",
-            "en": "Enter operator name, initials to start search"
+            "zh_tw": "鍵入密探名、拼音或拼音首字母以搜索密探列表"
           },
           "reference_group_hint": {
             "cn": "键入密探组名以引用密探组配置",
-            "en": "Type group name to reference operator group configuration"
+            "zh_tw": "鍵入密探組名以引用密探組配置"
           },
           "operator_required": {
             "cn": "必须填写密探或密探组名",
-            "en": "Operator or group name is required"
+            "zh_tw": "必須填寫密探或密探組名"
           },
           "skill_usage": {
             "cn": "技能用法",
-            "en": "Skill Usage"
+            "zh_tw": "技能用法"
           },
           "skill_usage_count": {
             "cn": "技能使用次数",
-            "en": "Skill Usage Count"
+            "zh_tw": "技能使用次數"
           },
           "camera_movement_hint": {
             "cn": "移动距离一般不需要修改，只填写前置延迟（15000）和击杀数条件即可",
-            "en": "Movement distance usually doesn't need modification, just fill in pre-delay (15000) and Kill Count conditions"
+            "zh_tw": "移動距離一般不需要修改，只填寫前置延遲（15000）和擊殺數條件即可"
           },
           "execution_conditions": {
             "cn": "执行条件",
-            "en": "Execution Conditions"
+            "zh_tw": "執行條件"
           },
           "log": {
             "cn": "日志",
-            "en": "Log"
+            "zh_tw": "日誌"
           },
           "description": {
             "cn": "描述",
-            "en": "Description"
+            "zh_tw": "描述"
           },
           "description_placeholder": {
             "cn": "描述，可选。会显示在界面上，没有实际作用",
-            "en": "Description, optional. Will be displayed in the interface but has no practical effect."
+            "zh_tw": "描述，可選。會顯示在界面上，沒有實際作用"
           },
           "cancel_edit": {
             "cn": "取消编辑",
-            "en": "Cancel Edit"
+            "zh_tw": "取消編輯"
           }
         },
         "EditorActionDelay": {
           "pre_delay": {
             "cn": "前置延时",
-            "en": "Pre-Delay"
+            "zh_tw": "前置延時"
           },
           "delay_description": {
             "cn": "可选，默认为 0，单位毫秒",
-            "en": "Optional, defaults to 0. In milliseconds"
+            "zh_tw": "可選，默認為 0，單位毫秒"
           },
           "post_delay": {
             "cn": "后置延时",
-            "en": "Post-Delay"
+            "zh_tw": "後置延時"
           }
         },
         "EditorActionDistance": {
           "distance_required": {
             "cn": "必须填写移动距离",
-            "en": "Movement distance is required"
+            "zh_tw": "必須填寫移動距離"
           },
           "not_valid_number": {
             "cn": "不是有效的数字",
-            "en": "Not a valid number"
+            "zh_tw": "不是有效的數字"
           },
           "movement_distance": {
             "cn": "移动距离",
-            "en": "Movement Distance"
+            "zh_tw": "移動距離"
           },
           "x_distance": {
             "cn": "X 距离",
-            "en": "X Distance"
+            "zh_tw": "X 距離"
           },
           "y_distance": {
             "cn": "Y 距离",
-            "en": "Y Distance"
+            "zh_tw": "Y 距離"
           }
         },
         "EditorActionDocColor": {
           "description_color": {
             "cn": "描述颜色",
-            "en": "Description Color"
+            "zh_tw": "描述顏色"
           },
           "color_description": {
             "cn": "在 MAA 中打印描述时的颜色",
-            "en": "Color used when printing descriptions in MAA"
+            "zh_tw": "在 MAA 中打印描述時的顏色"
           }
         },
         "EditorActionExecPredicate": {
           "kill_count_condition": {
             "cn": "击杀数条件",
-            "en": "Kill Count Condition"
+            "zh_tw": "擊殺數條件"
           },
           "kill_count_description": {
             "cn": "如果没达到就一直等待。可选，默认为 0，直接执行",
-            "en": "If not reached, will wait. Optional, defaults to 0 (execute immediately)"
+            "zh_tw": "如果沒達到就一直等待。可選，默認為 0，直接執行"
           },
           "kill_count": {
             "cn": "击杀数",
-            "en": "Kill Count"
+            "zh_tw": "擊殺數"
           },
           "cost_condition": {
             "cn": "费用条件",
-            "en": "DP Cost Condition"
+            "zh_tw": "費用條件"
           },
           "cost_condition_description": {
             "cn": "如果没达到就一直等待。可选，默认为 0，直接执行。费用受潜能等影响，可能并不完全正确，仅适合对时间轴要求不严格的战斗，否则请使用下面的费用变化量条件。另外仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
-            "en": "If not reached, will wait. Optional, defaults to 0. DP costs can be affected by potentials and may not be completely accurate. Only suitable for battles that don't require strict timing; otherwise use the DP Change condition below. Recognition is more reliable with two-digit DP costs; three-digit costs may be recognized incorrectly and are not recommended."
+            "zh_tw": "如果沒達到就一直等待。可選，默認為 0，直接執行。費用受潛能等影響，可能並不完全正確，僅適合對時間軸要求不嚴格的戰鬥，否則請使用下面的費用變化量條件。另外僅在費用是兩位數的時候識別的比較準，三位數的費用可能會識別錯，不推薦使用。"
           },
           "dp_cost": {
             "cn": "费用",
-            "en": "DP Cost"
+            "zh_tw": "費用"
           },
           "cost_change_condition": {
             "cn": "费用变化量条件",
-            "en": "DP Change Condition"
+            "zh_tw": "費用變化量條件"
           },
           "cost_change_description": {
             "cn": "如果没达到就一直等待。可选，默认为 0，直接执行。注意：费用变化量是从开始执行本动作时开始计算的（即：使用前一个动作结束时的费用作为基准）。支持负数，即费用变少了（例如\"孑\"等吸费密探使得费用变少了）。另外仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
-            "en": "If not reached, will wait. Optional, defaults to 0. Note: DP Change is calculated from the start of this action (using the DP at the end of the previous action as baseline). Supports negative values (e.g., when DP decreases due to operators like Jaye). Recognition is more reliable with two-digit DP costs; three-digit costs may be recognized incorrectly and are not recommended."
+            "zh_tw": "如果沒達到就一直等待。可選，默認為 0，直接執行。注意：費用變化量是從開始執行本動作時開始計算的（即：使用前一個動作結束時的費用作為基準）。支持負數，即費用變少了（例如\"孑\"等吸費密探使得費用變少了）。另外僅在費用是兩位數的時候識別的比較準，三位數的費用可能會識別錯，不推薦使用。"
           },
           "dp_change_amount": {
             "cn": "费用变化量",
-            "en": "DP Change Amount"
+            "zh_tw": "費用變化量"
           },
           "cooldown_operator_condition": {
             "cn": "CD 中密探数量条件",
-            "en": "Operators on Cooldown Condition"
+            "zh_tw": "CD 中密探數量條件"
           },
           "cooldown_description": {
             "cn": "如果没达到就一直等待。可选，默认 -1，不识别",
-            "en": "If not reached, will wait. Optional, defaults to -1 (not recognized)"
+            "zh_tw": "如果沒達到就一直等待。可選，默認 -1，不識別"
           },
           "cooldown_count": {
             "cn": "CD 中密探数量",
-            "en": "N° of Ops on Cooldown"
+            "zh_tw": "CD 中密探數量"
           }
         },
         "EditorActionOperatorDirection": {
           "direction_required": {
             "cn": "必须选择朝向",
-            "en": "Direction is required"
+            "zh_tw": "必須選擇朝向"
           },
           "operator_direction": {
             "cn": "密探朝向",
-            "en": "Operator Direction"
+            "zh_tw": "密探朝向"
           },
           "direction_description": {
             "cn": "部署密探的密探朝向",
-            "en": "Direction the operator will face when deployed"
+            "zh_tw": "部署密探的密探朝向"
           }
         },
         "EditorActionOperatorLocation": {
           "location_required": {
             "cn": "必须填写位置",
-            "en": "Location is required"
+            "zh_tw": "必須填寫位置"
           },
           "invalid_location": {
             "cn": "位置不是有效的数字",
-            "en": "Location is not a valid number"
+            "zh_tw": "位置不是有效的數字"
           },
           "x_out_of_range": {
             "cn": "X 坐标超出地图范围 (0-{{max}})",
-            "en": "X coordinate out of map range (0-{{max}})"
+            "zh_tw": "X 座標超出地圖範圍 (0-{{max}})"
           },
           "y_out_of_range": {
             "cn": "Y 坐标超出地图范围 (0-{{max}})",
-            "en": "Y coordinate out of map range (0-{{max}})"
+            "zh_tw": "Y 座標超出地圖範圍 (0-{{max}})"
           },
           "operator_location": {
             "cn": "密探位置",
-            "en": "Operator Location"
+            "zh_tw": "密探位置"
           },
           "map_location_description": {
             "cn": "填完关卡名后开一局，会在目录下 map 文件夹中生成地图坐标图片",
-            "en": "After entering stage name and starting a game, a map coordinate image will be generated in the 'map' folder"
+            "zh_tw": "填完關卡名後開一局，會在目錄下 map 文件夾中生成地圖座標圖片"
           },
           "click_on_map": {
             "cn": "可在地图上点击以选择位置",
-            "en": "Click on the map to select a location"
+            "zh_tw": "可在地圖上點擊以選擇位置"
           },
           "x_coordinate": {
             "cn": "X 坐标",
-            "en": "X Coordinate"
+            "zh_tw": "X 座標"
           },
           "y_coordinate": {
             "cn": "Y 坐标",
-            "en": "Y Coordinate"
+            "zh_tw": "Y 座標"
           }
         },
         "EditorActionTypeSelect": {
           "select_action_type_required": {
             "cn": "请选择动作类型",
-            "en": "Please select an action type"
+            "zh_tw": "請選擇動作類型"
           },
           "select_action": {
             "cn": "选择动作",
-            "en": "Select action"
+            "zh_tw": "選擇動作"
           }
         },
         "EditorActions": {
           "no_actions": {
             "cn": "暂无动作",
-            "en": "No actions yet"
+            "zh_tw": "暫無動作"
           },
           "update_action_not_found": {
             "cn": "未能找到要更新的动作",
-            "en": "Could not find the action to update"
+            "zh_tw": "未能找到要更新的動作"
           }
         },
         "validation": {
           "name_or_location_required": {
             "cn": "类型为技能、撤退或子弹时间时，必须填写名称或位置其中一个",
-            "en": "When type is Skill, Retreat, or BulletTime, you must provide either a name or location"
+            "zh_tw": "類型為技能、撤退或子彈時間時，必須填寫名稱或位置其中一個"
           }
         }
       },
@@ -1407,33 +1401,33 @@
         "connection": {
           "env_var_not_defined": {
             "cn": "环境变量 VITE_THERESA_SERVER 未定义。",
-            "en": "Environment variable VITE_THERESA_SERVER is not defined."
+            "zh_tw": "環境變量 VITE_THERESA_SERVER 未定義。"
           }
         },
         "FloatingMap": {
           "waiting_connection": {
             "cn": "等待地图连接...",
-            "en": "Waiting for map connection..."
+            "zh_tw": "等待地圖連接..."
           },
           "no_stage_selected": {
             "cn": "未选择关卡",
-            "en": "No stage selected"
+            "zh_tw": "未選擇關卡"
           },
           "hide_map": {
             "cn": "隐藏地图",
-            "en": "Hide map"
+            "zh_tw": "隱藏地圖"
           },
           "show_map": {
             "cn": "显示地图",
-            "en": "Show map"
+            "zh_tw": "顯示地圖"
           },
           "map": {
             "cn": "地图",
-            "en": "Map"
+            "zh_tw": "地圖"
           },
           "unnamed_stage": {
             "cn": "未命名关卡",
-            "en": "Unnamed stage"
+            "zh_tw": "未命名關卡"
           }
         }
       },
@@ -1443,99 +1437,99 @@
             "CollapseButton": {
               "collapse": {
                 "cn": "折叠所包含密探",
-                "en": "Collapse included operators"
+                "zh_tw": "摺疊所包含密探"
               },
               "expand": {
                 "cn": "展开所包含密探",
-                "en": "Expand included operators"
+                "zh_tw": "展開所包含密探"
               }
             },
             "SheetGroupItem": {
               "unsaved_changes": {
                 "cn": "当前密探组名修改未保存，是否放弃修改？",
-                "en": "Current operator group name changes are not saved, discard changes?"
+                "zh_tw": "當前密探組名修改未保存，是否放棄修改？"
               },
               "edit_group_name": {
                 "cn": "修改密探组名称",
-                "en": "Edit operator group name"
+                "zh_tw": "修改密探組名稱"
               },
               "cancel": {
                 "cn": "取消",
-                "en": "Cancel"
+                "zh_tw": "取消"
               },
               "confirm": {
                 "cn": "确认",
-                "en": "Confirm"
+                "zh_tw": "確認"
               },
               "remove_from_favorites": {
                 "cn": "从收藏分组中移除",
-                "en": "Remove from favourite groups"
+                "zh_tw": "從收藏分組中移除"
               },
               "will_replace_same_name": {
                 "cn": "此操作会替换同名密探组",
-                "en": "This operation will replace the operator group with the same name"
+                "zh_tw": "此操作會替換同名密探組"
               },
               "add_to_favorites": {
                 "cn": "添加至收藏分组",
-                "en": "Add to favourite groups"
+                "zh_tw": "添加至收藏分組"
               },
               "already_added": {
                 "cn": "已添加",
-                "en": "Already added"
+                "zh_tw": "已添加"
               },
               "same_name_detected": {
                 "cn": "检测到同名密探组",
-                "en": "Found operator group with the same name"
+                "zh_tw": "檢測到同名密探組"
               },
               "use_recommended_group": {
                 "cn": "使用该推荐分组",
-                "en": "Use this recommended group"
+                "zh_tw": "使用該推薦分組"
               }
             },
             "SheetOperatorEditor": {
               "edit_operator_info": {
                 "cn": "编辑密探组中密探信息",
-                "en": "Edit operator information in the group"
+                "zh_tw": "編輯密探組中密探信息"
               },
               "select_operator": {
                 "cn": "选择密探",
-                "en": "Select operator"
+                "zh_tw": "選擇密探"
               },
               "selected_operators": {
                 "cn": "已选择密探",
-                "en": "Selected operators"
+                "zh_tw": "已選擇密探"
               },
               "unselected_operators": {
                 "cn": "未选择密探",
-                "en": "Unselected operators"
+                "zh_tw": "未選擇密探"
               },
               "operators_in_other_groups": {
                 "cn": "其他分组密探",
-                "en": "Operators in other groups"
+                "zh_tw": "其他分組密探"
               },
               "select_all": {
                 "cn": "全选",
-                "en": "Select all"
+                "zh_tw": "全選"
               },
               "confirm": {
                 "cn": "确认",
-                "en": "Confirm"
+                "zh_tw": "確認"
               },
               "unsaved_data_warning": {
                 "cn": "所有未保存的数据均会丢失，确认继续？",
-                "en": "All unsaved data will be lost, continue?"
+                "zh_tw": "所有未保存的數據均會丟失，確認繼續？"
               },
               "continue": {
                 "cn": "继续",
-                "en": "Continue"
+                "zh_tw": "繼續"
               },
               "cancel": {
                 "cn": "取消",
-                "en": "Cancel"
+                "zh_tw": "取消"
               },
               "reset": {
                 "cn": "重置",
-                "en": "Reset"
+                "zh_tw": "重置"
               }
             }
           },
@@ -1544,218 +1538,218 @@
               "OperatorBackToTop": {
                 "back_to_top": {
                   "cn": "回到顶部",
-                  "en": "Back to top"
+                  "zh_tw": "回到頂部"
                 }
               },
               "OperatorMutipleSelect": {
                 "deselect_all_operators": {
                   "cn": "取消选择全部{{count}}位密探",
-                  "en": "Deselect all {{count}} operators"
+                  "zh_tw": "取消選擇全部{{count}}位密探"
                 },
                 "select_all_operators": {
                   "cn": "全选{{count}}位密探",
-                  "en": "Select all {{count}} operators"
+                  "zh_tw": "全選{{count}}位密探"
                 }
               },
               "OperatorRaritySelect": {
                 "display_by_rarity": {
                   "cn": "按密探星级展示",
-                  "en": "Display by operator rarity"
+                  "zh_tw": "按密探星級展示"
                 },
                 "reset_selection": {
                   "cn": "重置选择",
-                  "en": "Reset selection"
+                  "zh_tw": "重置選擇"
                 },
                 "sort_ascending": {
                   "cn": "按从下至上升序排列",
-                  "en": "Sort in ascending order (bottom to top)"
+                  "zh_tw": "按從下至上升序排列"
                 },
                 "sort_descending": {
                   "cn": "按从下至上降序排列",
-                  "en": "Sort in descending order (bottom to top)"
+                  "zh_tw": "按從下至上降序排列"
                 }
               }
             },
             "ProfClassificationWithFilters": {
               "all": {
                 "cn": "全部",
-                "en": "All"
+                "zh_tw": "全部"
               },
               "favorites": {
                 "cn": "收藏",
-                "en": "Favs"
+                "zh_tw": "收藏"
               },
               "others": {
                 "cn": "其它",
-                "en": "Other"
+                "zh_tw": "其它"
               },
               "selected": {
                 "cn": "已选择",
-                "en": "Selected"
+                "zh_tw": "已選擇"
               }
             },
             "SheetOperatorItem": {
               "operator_in_group": {
                 "cn": "密探 {{name}} 已被编组",
-                "en": "Operator {{name}} is already in a group"
+                "zh_tw": "密探 {{name}} 已被編組"
               },
               "remove_from_favorites": {
                 "cn": "移出收藏",
-                "en": "Remove from favourites"
+                "zh_tw": "移出收藏"
               },
               "will_replace_operator": {
                 "cn": "此操作会覆盖已有密探",
-                "en": "This will replace the existing operator"
+                "zh_tw": "此操作會覆蓋已有密探"
               },
               "in_group": {
                 "cn": "已被编组",
-                "en": "In a group"
+                "zh_tw": "已被編組"
               }
             },
             "ShowMore": {
               "showing_all_operators": {
                 "cn": "已经展示全部密探了({{total}})",
-                "en": "Showing all operators ({{total}})"
+                "zh_tw": "已經展示全部密探了({{total}})"
               },
               "collapse": {
                 "cn": "收起",
-                "en": "Collapse"
+                "zh_tw": "收起"
               },
               "show_more": {
                 "cn": "显示更多密探(剩余{{remaining}})",
-                "en": "Show more operators ({{remaining}} remaining)"
+                "zh_tw": "顯示更多密探(剩餘{{remaining}})"
               }
             }
           },
           "SheetGroup": {
             "add_operator_group": {
               "cn": "添加密探组",
-              "en": "Add Operator Group"
+              "zh_tw": "添加密探組"
             },
             "configured_groups": {
               "cn": "已设置的密探组",
-              "en": "Configured Operator Groups"
+              "zh_tw": "已設置的密探組"
             },
             "group_count": {
               "cn": "已显示全部 {{count}} 个密探组",
-              "en": "Showing all {{count}} operator groups"
+              "zh_tw": "已顯示全部 {{count}} 個密探組"
             },
             "recommended_groups": {
               "cn": "推荐分组",
-              "en": "Recommended Groups"
+              "zh_tw": "推薦分組"
             },
             "favorite_groups": {
               "cn": "收藏分组",
-              "en": "Favourite Groups"
+              "zh_tw": "收藏分組"
             },
             "set_operator_groups": {
               "cn": "设置密探组",
-              "en": "Configure Operator Groups"
+              "zh_tw": "設置密探組"
             },
             "group_name_empty": {
               "cn": "密探组名不能为空",
-              "en": "Operator group name cannot be empty"
+              "zh_tw": "密探組名不能為空"
             },
             "enter_group_name": {
               "cn": "输入密探组名",
-              "en": "Enter operator group name"
+              "zh_tw": "輸入密探組名"
             },
             "add": {
               "cn": "添加",
-              "en": "Add"
+              "zh_tw": "添加"
             },
             "reset": {
               "cn": "重置",
-              "en": "Reset"
+              "zh_tw": "重置"
             }
           },
           "SheetNoneData": {
             "no_operators": {
               "cn": "暂无密探",
-              "en": "No operators yet"
+              "zh_tw": "暫無密探"
             },
             "no_groups": {
               "cn": "暂无密探组",
-              "en": "No operator groups yet"
+              "zh_tw": "暫無密探組"
             }
           },
           "SheetOperator": {
             "select_operator": {
               "cn": "选择密探",
-              "en": "Select Operator"
+              "zh_tw": "選擇密探"
             }
           },
           "SheetOperatorSkillAbout": {
             "skill": {
               "cn": "技能",
-              "en": "Skill"
+              "zh_tw": "技能"
             },
             "skill_usage": {
               "cn": "技能用法",
-              "en": "Skill Usage"
+              "zh_tw": "技能用法"
             },
             "skill_usage_count": {
               "cn": "技能使用次数",
-              "en": "Skill Usage Count"
+              "zh_tw": "技能使用次數"
             },
             "confirm": {
               "cn": "确定",
-              "en": "Confirm"
+              "zh_tw": "確定"
             },
             "default_settings_tooltip": {
               "cn": "若不进行任何设置, 将使用默认值 (一技能 · 不自动使用 · 技能使用次数: 1次)",
-              "en": "If no settings are applied, default values will be used (Skill 1 · Don't use automatically · Usage count: 1)"
+              "zh_tw": "若不進行任何設置, 將使用默認值 (一技能 · 不自動使用 · 技能使用次數: 1次)"
             },
             "not_set": {
               "cn": "未设置技能",
-              "en": "Skill not set"
+              "zh_tw": "未設置技能"
             }
           }
         },
         "EditorGroupItem": {
           "drag_operators_here": {
             "cn": "将密探拖拽到此处",
-            "en": "Drag operators here"
+            "zh_tw": "將密探拖拽到此處"
           }
         },
         "EditorOperator": {
           "operator_or_group": {
             "cn": "密探或密探组",
-            "en": "Operator or operator group"
+            "zh_tw": "密探或密探組"
           },
           "operator": {
             "cn": "密探",
-            "en": "Operator"
+            "zh_tw": "密探"
           },
           "please_enter_name": {
             "cn": "请输入{{entityName}}名",
-            "en": "Please enter {{entityName}} name"
+            "zh_tw": "請輸入{{entityName}}名"
           },
           "no_matching_entity": {
             "cn": "没有匹配的{{entityName}}",
-            "en": "No matching {{entityName}}"
+            "zh_tw": "沒有匹配的{{entityName}}"
           },
           "use_custom_name": {
             "cn": "使用自定义{{entityName}}名 \"{{query}}\"",
-            "en": "Use custom {{entityName}} name \"{{query}}\""
+            "zh_tw": "使用自定義{{entityName}}名 \"{{query}}\""
           },
           "entity_name": {
             "cn": "{{entityName}}名",
-            "en": "{{entityName}} name"
+            "zh_tw": "{{entityName}}名"
           }
         },
         "EditorOperatorGroupSelect": {
           "create_new_group": {
             "cn": "创建新的密探组 \"{{query}}\"",
-            "en": "Create new operator group \"{{query}}\""
+            "zh_tw": "創建新的密探組 \"{{query}}\""
           },
           "no_matching_groups": {
             "cn": "没有匹配的密探组",
-            "en": "No matching operator groups"
+            "zh_tw": "沒有匹配的密探組"
           },
           "group_name": {
             "cn": "密探组名",
-            "en": "Operator group name"
+            "zh_tw": "密探組名"
           }
         },
         "EditorOperatorItem": {
@@ -1766,102 +1760,102 @@
               "3": "三技能",
               "other": "未知技能"
             },
-            "en": {
-              "1": "S1",
-              "2": "S2",
-              "3": "S3",
-              "other": "Unknown Skill"
+            "zh_tw": {
+              "1": "一技能",
+              "2": "二技能",
+              "3": "三技能",
+              "other": "未知技能"
             }
           }
         },
         "EditorOperatorSelect": {
           "please_select_operator": {
             "cn": "请选择密探",
-            "en": "Please select operator"
+            "zh_tw": "請選擇密探"
           },
           "operator_deploy_retreat": {
             "cn": "密探上/退场",
-            "en": "Operator Deploy/Retreat"
+            "zh_tw": "密探上/退場"
           },
           "deploy": {
             "cn": "部署",
-            "en": "Deploy"
+            "zh_tw": "部署"
           },
           "deploy_description": {
             "cn": "部署密探至指定位置。当费用不够时，会一直等待到费用够（除非 timeout）",
-            "en": "Deploy operator to specified location. When DP is insufficient, will wait until enough (unless timeout)"
+            "zh_tw": "部署密探至指定位置。當費用不夠時，會一直等待到費用夠（除非 timeout）"
           },
           "retreat": {
             "cn": "撤退",
-            "en": "Retreat"
+            "zh_tw": "撤退"
           },
           "retreat_description": {
             "cn": "将密探从作战中撤出",
-            "en": "Withdraw operator from battle"
+            "zh_tw": "將密探從作戰中撤出"
           },
           "operator_skills": {
             "cn": "密探技能",
-            "en": "Operator Skills"
+            "zh_tw": "密探技能"
           },
           "use_skill": {
             "cn": "使用技能",
-            "en": "Use Skill"
+            "zh_tw": "使用技能"
           },
           "use_skill_description": {
             "cn": "当技能 CD 没转好时，一直等待到技能 CD 好（除非 timeout）",
-            "en": "When skill cooldown isn't ready, will wait until it is (unless timeout)"
+            "zh_tw": "當技能 CD 沒轉好時，一直等待到技能 CD 好（除非 timeout）"
           },
           "switch_skill_usage": {
             "cn": "切换技能用法",
-            "en": "Switch Skill Usage"
+            "zh_tw": "切換技能用法"
           },
           "switch_skill_usage_description": {
             "cn": "切换密探技能用法。例如，刚下桃金娘、需要她帮忙打几个怪，但此时不能自动开技能否则会漏怪，等中后期平稳了才需要她自动开技能，则可以在对应时刻后，将桃金娘的技能用法从「不自动使用」改为「好了就用」。",
-            "en": "Switch operator skill usage. For example, when Perfumer is just deployed and needs to help defeat some enemies, but automatic skill activation would miss enemies, and only in mid/late game should she activate skills automatically, you can change Perfumer's skill usage from 'Don't use automatically' to 'Use when ready'."
+            "zh_tw": "切換密探技能用法。例如，剛下桃金娘、需要她幫忙打幾個怪，但此時不能自動開技能否則會漏怪，等中後期平穩了才需要她自動開技能，則可以在對應時刻後，將桃金娘的技能用法從「不自動使用」改為「好了就用」。"
           },
           "battle_control": {
             "cn": "作战控制",
-            "en": "Battle Control"
+            "zh_tw": "作戰控制"
           },
           "toggle_speed": {
             "cn": "切换二倍速",
-            "en": "Toggle 2× Speed"
+            "zh_tw": "切換二倍速"
           },
           "toggle_speed_description": {
             "cn": "执行后切换至二倍速，再次执行切换至一倍速",
-            "en": "After execution, switches to 2× speed; executing again switches to 1× speed"
+            "zh_tw": "執行後切換至二倍速，再次執行切換至一倍速"
           },
           "bullet_time": {
             "cn": "进入子弹时间",
-            "en": "Enter Bullet Time"
+            "zh_tw": "進入子彈時間"
           },
           "bullet_time_description": {
             "cn": "执行后将点击任意密探，进入 1/5 速度状态；再进行任意动作会恢复正常速度",
-            "en": "After execution, click any operator to enter 1/5 speed state; any further action will restore normal speed"
+            "zh_tw": "執行後將點擊任意密探，進入 1/5 速度狀態；再進行任意動作會恢復正常速度"
           },
           "auto_mode": {
             "cn": "开始挂机",
-            "en": "Start Auto Mode"
+            "zh_tw": "開始掛機"
           },
           "auto_mode_description": {
             "cn": "进入挂机模式。仅使用 \"好了就用\" 的技能，其他什么都不做，直到战斗结束",
-            "en": "Enter auto mode. Only uses skills set to 'Use when ready', does nothing else until battle ends"
+            "zh_tw": "進入掛機模式。僅使用 \"好了就用\" 的技能，其他什麼都不做，直到戰鬥結束"
           },
           "miscellaneous": {
             "cn": "杂项",
-            "en": "Miscellaneous"
+            "zh_tw": "雜項"
           },
           "print_description": {
             "cn": "打印描述内容",
-            "en": "Print Description"
+            "zh_tw": "打印描述內容"
           },
           "print_description_details": {
             "cn": "对作战没有实际作用，仅用于输出描述内容（用来做字幕之类的）",
-            "en": "Has no actual effect on battle, only outputs description content (for subtitles, etc.)"
+            "zh_tw": "對作戰沒有實際作用，僅用於輸出描述內容（用來做字幕之類的）"
           },
           "select_operator": {
             "cn": "选择密探",
-            "en": "Select Operator"
+            "zh_tw": "選擇密探"
           }
         },
         "EditorOperatorSkill": {
@@ -1872,174 +1866,174 @@
               "3": "三技能",
               "other": "未知技能"
             },
-            "en": {
-              "1": "Skill 1",
-              "2": "Skill 2",
-              "3": "Skill 3",
-              "other": "Unknown Skill"
+            "zh_tw": {
+              "1": "一技能",
+              "2": "二技能",
+              "3": "三技能",
+              "other": "未知技能"
             }
           }
         },
         "EditorOperatorSkillTimes": {
           "skill_usage_count": {
             "cn": "技能使用次数",
-            "en": "Skill Usage Count"
+            "zh_tw": "技能使用次數"
           }
         },
         "EditorOperatorSkillUsage": {
           "select_skill_usage": {
             "cn": "选择技能用法",
-            "en": "Select Skill Usage"
+            "zh_tw": "選擇技能用法"
           }
         },
         "EditorPerformer": {
           "no_operators": {
             "cn": "暂无密探",
-            "en": "No operators yet"
+            "zh_tw": "暫無密探"
           },
           "no_operator_groups": {
             "cn": "暂无密探组",
-            "en": "No operator groups yet"
+            "zh_tw": "暫無密探組"
           },
           "operators": {
             "cn": "密探",
-            "en": "Operators"
+            "zh_tw": "密探"
           },
           "operator_groups": {
             "cn": "密探组",
-            "en": "Operator Groups"
+            "zh_tw": "密探組"
           },
           "update_operator_not_found": {
             "cn": "未能找到要更新的密探",
-            "en": "Could not find the operator to update"
+            "zh_tw": "未能找到要更新的密探"
           },
           "update_group_not_found": {
             "cn": "未能找到要更新的密探组",
-            "en": "Could not find the operator group to update"
+            "zh_tw": "未能找到要更新的密探組"
           },
           "operator_already_exists": {
             "cn": "密探已存在",
-            "en": "Operator already exists"
+            "zh_tw": "密探已存在"
           },
           "group_already_exists": {
             "cn": "密探组已存在",
-            "en": "Operator group already exists"
+            "zh_tw": "密探組已存在"
           },
           "ungrouped_operators": {
             "cn": "未加入密探",
-            "en": "Ungrouped operators"
+            "zh_tw": "未加入密探"
           }
         },
         "EditorPerformerAdd": {
           "add": {
             "cn": "添加",
-            "en": "Add"
+            "zh_tw": "添加"
           },
           "operator": {
             "cn": "密探",
-            "en": "Operator"
+            "zh_tw": "密探"
           },
           "operator_group": {
             "cn": "密探组",
-            "en": "Operator Group"
+            "zh_tw": "密探組"
           }
         },
         "EditorPerformerGroup": {
           "editing_operator_group": {
             "cn": "正在编辑的密探组",
-            "en": "Operator group being edited"
+            "zh_tw": "正在編輯的密探組"
           },
           "what_is_group": {
             "cn": "什么是密探组？",
-            "en": "What is an operator group?"
+            "zh_tw": "什麼是密探組？"
           },
           "group_explanation": {
             "cn": "编队时将选择组内练度最高的一位密探；组内前后顺序并不影响判断",
-            "en": "When forming a team, the operator with the highest level in the group will be selected; order within the group does not affect selection"
+            "zh_tw": "編隊時將選擇組內練度最高的一位密探；組內前後順序並不影響判斷"
           },
           "group_name": {
             "cn": "密探组名",
-            "en": "Operator Group Name"
+            "zh_tw": "密探組名"
           },
           "name_description": {
             "cn": "任意名称，用于在动作中引用。例如：速狙、群奶",
-            "en": "Any name, used for reference in actions. Examples: Fast-Snipers, AoE-Healers"
+            "zh_tw": "任意名稱，用於在動作中引用。例如：速狙、群奶"
           },
           "name_required": {
             "cn": "请输入密探组名",
-            "en": "Please enter an operator group name"
+            "zh_tw": "請輸入密探組名"
           },
           "name_placeholder": {
             "cn": "密探组名",
-            "en": "Operator group name"
+            "zh_tw": "密探組名"
           },
           "add": {
             "cn": "添加",
-            "en": "Add"
+            "zh_tw": "添加"
           },
           "save": {
             "cn": "保存",
-            "en": "Save"
+            "zh_tw": "保存"
           },
           "cancel_edit": {
             "cn": "取消编辑",
-            "en": "Cancel Edit"
+            "zh_tw": "取消編輯"
           }
         },
         "EditorPerformerOperator": {
           "editing_operator": {
             "cn": "正在编辑的密探",
-            "en": "Operator being edited"
+            "zh_tw": "正在編輯的密探"
           },
           "operator_name": {
             "cn": "密探名",
-            "en": "Operator Name"
+            "zh_tw": "密探名"
           },
           "operator_description": {
             "cn": "选择密探或直接使用搜索内容创建密探",
-            "en": "Select an operator or create one directly using the search content"
+            "zh_tw": "選擇密探或直接使用搜索內容創建密探"
           },
           "search_hint": {
             "cn": "键入密探名、拼音或拼音首字母以从密探列表中搜索",
-            "en": "Enter operator name, initials to start search"
+            "zh_tw": "鍵入密探名、拼音或拼音首字母以從密探列表中搜索"
           },
           "group_membership": {
             "cn": "所属密探组",
-            "en": "Operator Group Membership"
+            "zh_tw": "所屬密探組"
           },
           "group_membership_description": {
             "cn": "该密探的所属密探组，如果不存在则会自动创建",
-            "en": "The operator group this operator belongs to; if it doesn't exist, it will be created automatically"
+            "zh_tw": "該密探的所屬密探組，如果不存在則會自動創建"
           },
           "skill": {
             "cn": "技能",
-            "en": "Skill"
+            "zh_tw": "技能"
           },
           "skill_usage": {
             "cn": "技能用法",
-            "en": "Skill Usage"
+            "zh_tw": "技能用法"
           },
           "skill_usage_count": {
             "cn": "技能使用次数",
-            "en": "Skill Usage Count"
+            "zh_tw": "技能使用次數"
           },
           "add": {
             "cn": "添加",
-            "en": "Add"
+            "zh_tw": "添加"
           },
           "save": {
             "cn": "保存",
-            "en": "Save"
+            "zh_tw": "保存"
           },
           "cancel_edit": {
             "cn": "取消编辑",
-            "en": "Cancel Edit"
+            "zh_tw": "取消編輯"
           }
         },
         "EditorSheet": {
           "quick_edit": {
             "cn": "快捷编辑",
-            "en": "Quick Edit"
+            "zh_tw": "快捷編輯"
           }
         }
       },
@@ -2047,366 +2041,366 @@
         "FileImporter": {
           "cannot_read_file": {
             "cn": "无法读取文件",
-            "en": "Cannot read file"
+            "zh_tw": "無法讀取文件"
           },
           "import_local_file": {
             "cn": "导入本地文件...",
-            "en": "Import local file..."
+            "zh_tw": "導入本地文件..."
           }
         },
         "XlsxImporter": {
           "import_xlsx": {
             "cn": "导入 AutoFightGen 表格...",
-            "en": "Import AutoFightGen spreadsheet..."
+            "zh_tw": "導入 AutoFightGen 表格..."
           },
           "import_success": {
             "cn": "已将表格转换为 JSON",
-            "en": "Spreadsheet converted to JSON"
+            "zh_tw": "已將表格轉換為 JSON"
           },
           "import_failed": {
             "cn": "转换 Excel 为 JSON 失败",
-            "en": "Failed to convert spreadsheet to JSON"
+            "zh_tw": "轉換 Excel 為 JSON 失敗"
           }
         },
         "ShortCodeImporter": {
           "enter_shortcode": {
             "cn": "请输入神秘代码",
-            "en": "Please enter a shortcode"
+            "zh_tw": "請輸入神秘代碼"
           },
           "invalid_shortcode": {
             "cn": "无效的神秘代码",
-            "en": "Invalid shortcode"
+            "zh_tw": "無效的神秘代碼"
           },
           "cannot_parse_content": {
             "cn": "无法解析作业内容",
-            "en": "Cannot parse Job content"
+            "zh_tw": "無法解析作業內容"
           },
           "load_failed": {
             "cn": "加载失败：",
-            "en": "Loading failed: "
+            "zh_tw": "加載失敗："
           },
           "import_shortcode": {
             "cn": "导入神秘代码...",
-            "en": "Import shortcode..."
+            "zh_tw": "導入神秘代碼..."
           },
           "import_shortcode_title": {
             "cn": "导入神秘代码",
-            "en": "Import Shortcode"
+            "zh_tw": "導入神秘代碼"
           },
           "shortcode_label": {
             "cn": "神秘代码",
-            "en": "Shortcode"
+            "zh_tw": "神秘代碼"
           },
           "shortcode_description": {
             "cn": "神秘代码可在本站的作业详情中获取",
-            "en": "Shortcodes can be found in Job details on this site"
+            "zh_tw": "神秘代碼可在本站的作業詳情中獲取"
           },
           "import_button": {
             "cn": "导入",
-            "en": "Import"
+            "zh_tw": "導入"
           }
         },
         "SourceEditorButton": {
           "edit_json": {
             "cn": "编辑 JSON",
-            "en": "Edit JSON"
+            "zh_tw": "編輯 JSON"
           }
         },
         "SourceEditor": {
           "parsing_error": {
             "cn": "(解析时出现错误)",
-            "en": "(Error occurred during parsing)"
+            "zh_tw": "(解析時出現錯誤)"
           },
           "syntax_error": {
             "cn": "存在语法错误",
-            "en": "Syntax error exists"
+            "zh_tw": "存在語法錯誤"
           },
           "structure_error": {
             "cn": "存在结构错误",
-            "en": "Structure error exists"
+            "zh_tw": "存在結構錯誤"
           },
           "json_update_notice": {
             "cn": "在此处编辑 JSON 将会实时更新表单",
-            "en": "Editing JSON here will update the form in real-time"
+            "zh_tw": "在此處編輯 JSON 將會實時更新表單"
           },
           "json_validation": {
             "cn": "JSON 验证：{{status}}",
-            "en": "JSON validation: {{status}}"
+            "zh_tw": "JSON 驗證：{{status}}"
           },
           "syntax_error_short": {
             "cn": "语法错误",
-            "en": "Syntax error"
+            "zh_tw": "語法錯誤"
           },
           "passed": {
             "cn": "通过",
-            "en": "Passed"
+            "zh_tw": "通過"
           },
           "see_errors_in_form": {
             "cn": "请在表单中查看错误信息",
-            "en": "Please check the error messages in the form"
+            "zh_tw": "請在表單中查看錯誤信息"
           },
           "form_validation": {
             "cn": "表单验证：{{status}}",
-            "en": "Form validation: {{status}}"
+            "zh_tw": "表單驗證：{{status}}"
           },
           "not_passed": {
             "cn": "未通过",
-            "en": "Not passed"
+            "zh_tw": "未通過"
           }
         },
         "SourceEditorHeader": {
           "edit_json": {
             "cn": "编辑 JSON",
-            "en": "Edit JSON"
+            "zh_tw": "編輯 JSON"
           },
           "json_copied": {
             "cn": "已复制 JSON 到剪贴板",
-            "en": "JSON copied to clipboard"
+            "zh_tw": "已複製 JSON 到剪貼板"
           },
           "untitled": {
             "cn": "未命名",
-            "en": "Untitled"
+            "zh_tw": "未命名"
           },
           "job_json_downloaded": {
             "cn": "已下载作业 JSON 文件",
-            "en": "Job JSON file downloaded"
+            "zh_tw": "已下載作業 JSON 文件"
           },
           "import": {
             "cn": "导入",
-            "en": "Import"
+            "zh_tw": "導入"
           },
           "copy": {
             "cn": "复制",
-            "en": "Copy"
+            "zh_tw": "複製"
           },
           "download": {
             "cn": "下载",
-            "en": "Download"
+            "zh_tw": "下載"
           },
           "export": {
             "cn": "导出",
-            "en": "Export"
+            "zh_tw": "導出"
           }
         }
       },
       "CardOptions": {
         "duplicate": {
           "cn": "复制",
-          "en": "Duplicate"
+          "zh_tw": "複製"
         },
         "edit": {
           "cn": "编辑",
-          "en": "Edit"
+          "zh_tw": "編輯"
         },
         "delete": {
           "cn": "删除",
-          "en": "Delete"
+          "zh_tw": "刪除"
         }
       },
       "EditorIntegerInput": {
         "min_value": {
           "cn": "最小为 {{min}}",
-          "en": "Minimum value is {{min}}"
+          "zh_tw": "最小為 {{min}}"
         }
       },
       "EditorResetButton": {
         "reset": {
           "cn": "重置",
-          "en": "Reset"
+          "zh_tw": "重置"
         },
         "cancel": {
           "cn": "取消",
-          "en": "Cancel"
+          "zh_tw": "取消"
         },
         "reset_entity": {
           "cn": "重置{{entityName}}",
-          "en": "Reset {{entityName}}"
+          "zh_tw": "重置{{entityName}}"
         },
         "confirm_reset": {
           "cn": "确定要重置{{entityName}}吗？",
-          "en": "Are you sure you want to reset the {{entityName}}?"
+          "zh_tw": "確定要重置{{entityName}}嗎？"
         },
         "reset_button": {
           "cn": "重置...",
-          "en": "Reset..."
+          "zh_tw": "重置..."
         }
       },
       "FormError": {
         "error_occurred": {
           "cn": "发生错误…",
-          "en": "Errors occurred..."
+          "zh_tw": "發生錯誤…"
         },
         "unknown_error": {
           "cn": "未知错误",
-          "en": "Unknown error"
+          "zh_tw": "未知錯誤"
         }
       },
       "OperationEditorLauncher": {
         "launch_job_editor": {
           "cn": "启动作业编辑器",
-          "en": "Launch Job editor"
+          "zh_tw": "啟動作業編輯器"
         }
       },
       "OperationEditor": {
         "stage_required": {
           "cn": "请输入关卡",
-          "en": "Please enter a stage"
+          "zh_tw": "請輸入關卡"
         },
         "stage": {
           "cn": "关卡",
-          "en": "Stage"
+          "zh_tw": "關卡"
         },
         "type_to_search": {
           "cn": "键入以搜索",
-          "en": "Type to search"
+          "zh_tw": "鍵入以搜索"
         },
         "for_main_event_stages": {
           "cn": "对于主线、活动关卡：键入关卡代号、关卡中文名或活动名称",
-          "en": "For main story or event stages: Type stage code, stage name or event name"
+          "zh_tw": "對於主線、活動關卡：鍵入關卡代號、關卡中文名或活動名稱"
         },
         "for_paradox_stages": {
           "cn": "对于悖论模拟关卡：键入关卡名或密探名",
-          "en": "For paradox simulation stages: Type stage name or operator name"
+          "zh_tw": "對於悖論模擬關卡：鍵入關卡名或密探名"
         },
         "custom": {
           "cn": "自定义",
-          "en": "Custom"
+          "zh_tw": "自定義"
         },
         "no_matching_stages": {
           "cn": "没有匹配的关卡",
-          "en": "No matching stages"
+          "zh_tw": "沒有匹配的關卡"
         },
         "use_custom_stage": {
           "cn": "使用自定义关卡名 \"{{query}}\"",
-          "en": "Use custom stage name \"{{query}}\""
+          "zh_tw": "使用自定義關卡名 \"{{query}}\""
         },
         "view_in_prts_map": {
           "cn": "在 PRTS.Map 中查看关卡",
-          "en": "View stage in PRTS.Map"
+          "zh_tw": "在 PRTS.Map 中查看關卡"
         },
         "stage_difficulty": {
           "cn": "关卡难度",
-          "en": "Stage Difficulty"
+          "zh_tw": "關卡難度"
         },
         "difficulty_description": {
           "cn": "在作业上显示的难度标识，如果不选择则不显示",
-          "en": "Difficulty indicator shown on the Job, not displayed if not selected"
+          "zh_tw": "在作業上顯示的難度標識，如果不選擇則不顯示"
         },
         "no_challenge_mode": {
           "cn": "该关卡没有突袭难度，无需选择",
-          "en": "This stage has no challenge mode, no need to select"
+          "zh_tw": "該關卡沒有突襲難度，無需選擇"
         },
         "normal": {
           "cn": "普通",
-          "en": "Standard"
+          "zh_tw": "普通"
         },
         "challenge": {
           "cn": "突袭",
-          "en": "Challenge"
+          "zh_tw": "突襲"
         },
         "job_editor": {
           "cn": "作业编辑器",
-          "en": "Job Editor"
+          "zh_tw": "作業編輯器"
         },
         "error": {
           "cn": "错误",
-          "en": "Error"
+          "zh_tw": "錯誤"
         },
         "job_metadata": {
           "cn": "作业元信息",
-          "en": "Job Metadata"
+          "zh_tw": "作業元信息"
         },
         "job_title": {
           "cn": "作业标题",
-          "en": "Job Title"
+          "zh_tw": "作業標題"
         },
         "title_required": {
           "cn": "必须填写标题",
-          "en": "Title is required"
+          "zh_tw": "必須填寫標題"
         },
         "title_placeholder": {
           "cn": "起一个引人注目的标题吧",
-          "en": "Create an eye-catching title"
+          "zh_tw": "起一個引人注目的標題吧"
         },
         "job_description": {
           "cn": "作业描述",
-          "en": "Job Description"
+          "zh_tw": "作業描述"
         },
         "description_placeholder": {
           "cn": "如：作者名、参考的视频攻略链接（如有）等",
-          "en": "Example: Author name, reference video strategy links (if any), etc."
+          "zh_tw": "如：作者名、參考的視頻攻略鏈接（如有）等"
         },
         "action_sequence": {
           "cn": "动作序列",
-          "en": "Action Sequence"
+          "zh_tw": "動作序列"
         },
         "drag_to_reorder": {
           "cn": "拖拽以重新排序",
-          "en": "Drag to reorder"
+          "zh_tw": "拖拽以重新排序"
         },
         "operators_and_groups": {
           "cn": "密探与密探组",
-          "en": "Operators and Groups"
+          "zh_tw": "密探與密探組"
         },
         "drag_to_reorder_operators": {
           "cn": "拖拽以重新排序或分配密探",
-          "en": "Drag to reorder or assign operators"
+          "zh_tw": "拖拽以重新排序或分配密探"
         },
         "drag_too_fast_issue": {
           "cn": "如果拖拽速度过快可能会使动画出现问题，此时请点击",
-          "en": "Dragging too quickly causes animation issues, please click "
+          "zh_tw": "如果拖拽速度過快可能會使動畫出現問題，此時請點擊"
         },
         "refresh_ui": {
           "cn": "刷新界面",
-          "en": "refresh UI"
+          "zh_tw": "刷新界面"
         },
         "to_fix_no_data_loss": {
           "cn": "以修复 （不会丢失数据）",
-          "en": " to fix. (no data will be lost)"
+          "zh_tw": "以修復 （不會丟失數據）"
         }
       },
       "useAutosave": {
         "autosave_info": {
           "cn": "每隔 {{minutes}} 分钟自动保存编辑过的内容，记录上限为 {{limit}} 条",
-          "en": "Auto-saves edited content every {{minutes}} minutes, with a maximum of {{limit}} records"
+          "zh_tw": "每隔 {{minutes}} 分鐘自動保存編輯過的內容，記錄上限為 {{limit}} 條"
         },
         "autosaved_at": {
           "cn": "已自动保存：{{time}}",
-          "en": "Auto-saved: {{time}}"
+          "zh_tw": "已自動保存：{{time}}"
         },
         "not_saved": {
           "cn": "未保存",
-          "en": "Not saved"
+          "zh_tw": "未保存"
         },
         "cancel": {
           "cn": "取消",
-          "en": "Cancel"
+          "zh_tw": "取消"
         },
         "confirm": {
           "cn": "确定",
-          "en": "Confirm"
+          "zh_tw": "確定"
         },
         "restore_content": {
           "cn": "恢复内容",
-          "en": "Restore Content"
+          "zh_tw": "恢復內容"
         },
         "restore_confirmation": {
           "cn": "当前的编辑内容将会被覆盖，确定要恢复内容吗？",
-          "en": "Current edits will be overwritten. Are you sure you want to restore this content?"
+          "zh_tw": "當前的編輯內容將會被覆蓋，確定要恢復內容嗎？"
         }
       },
       "validation": {
         "empty_group": {
           "cn": "密探组\"{{name}}\"不能为空",
-          "en": "Operator group \"{{name}}\" cannot be empty"
+          "zh_tw": "密探組\"{{name}}\"不能為空"
         },
         "bullet_time_error": {
           "cn": "第{{index}}个动作是\"{{actionType}}\"，但它的下一个动作不是\"{{validTypes}}\"其中之一",
-          "en": "Action #{{index}} is \"{{actionType}}\", but the next action is not one of \"{{validTypes}}\""
+          "zh_tw": "第{{index}}個動作是\"{{actionType}}\"，但它的下一個動作不是\"{{validTypes}}\"其中之一"
         },
         "bullet_time_separator": {
           "cn": "\"、\"",
-          "en": "\", \""
+          "zh_tw": "\"、\""
         }
       }
     },
@@ -2414,33 +2408,33 @@
       "EDifficulty": {
         "regular": {
           "cn": "普通",
-          "en": "Standard"
+          "zh_tw": "普通"
         },
         "regular_description": {
           "cn": "本作业支持普通难度作战",
-          "en": "This Job supports Standard mode"
+          "zh_tw": "本作業支持普通難度作戰"
         },
         "hard": {
           "cn": "突袭",
-          "en": "Challenge"
+          "zh_tw": "突襲"
         },
         "hard_description": {
           "cn": "本作业支持突袭难度作战",
-          "en": "This Job supports Challenge mode"
+          "zh_tw": "本作業支持突襲難度作戰"
         },
         "unknown": {
           "cn": "未知难度",
-          "en": "Unknown Difficulty"
+          "zh_tw": "未知難度"
         },
         "unknown_description": {
           "cn": "本作业并未支持难度支持标识，请自行根据作业的文字描述判断其所支持的作业难度等级。通常来说，未写明支持难度的作业均兼容突袭和普通难度作战。",
-          "en": "This Job doesn't specify supported difficulty levels. Please refer to the Job description to determine compatibility. Generally, Jobs without specified difficulty support both standard and challenge modes."
+          "zh_tw": "本作業並未支持難度支持標識，請自行根據作業的文字描述判斷其所支持的作業難度等級。通常來說，未寫明支持難度的作業均兼容突襲和普通難度作戰。"
         }
       },
       "ELevel": {
         "custom_level": {
           "cn": "自定义关卡",
-          "en": "Custom Stage"
+          "zh_tw": "自定義關卡"
         }
       }
     },
@@ -2448,137 +2442,137 @@
       "AddToOperationSet": {
         "add_to_job_set_title": {
           "cn": "添加 {{count}} 份作业到作业集",
-          "en": "Add {{count}} Jobs to Job Set"
+          "zh_tw": "添加 {{count}} 份作業到作業集"
         },
         "not_logged_in": {
           "cn": "未登录",
-          "en": "Not logged in"
+          "zh_tw": "未登錄"
         },
         "error": {
           "cn": "错误",
-          "en": "Error"
+          "zh_tw": "錯誤"
         },
         "no_job_sets_yet": {
           "cn": "还没有作业集哦(￣▽￣)",
-          "en": "No Job sets yet (￣▽￣)"
+          "zh_tw": "還沒有作業集哦(￣▽￣)"
         },
         "no_added_job_sets_yet": {
           "cn": "还没有已添加的作业集哦(￣▽￣)",
-          "en": "No Job sets added yet (￣▽￣)"
+          "zh_tw": "還沒有已添加的作業集哦(￣▽￣)"
         },
         "added_to_job_set": {
           "cn": "已添加到作业集",
-          "en": "Added to Job Set"
+          "zh_tw": "已添加到作業集"
         },
         "click_to_view": {
           "cn": "点击查看",
-          "en": "Click to view"
+          "zh_tw": "點擊查看"
         },
         "show_only_added": {
           "cn": "只显示已添加的",
-          "en": "Show only added"
+          "zh_tw": "只顯示已添加的"
         },
         "create_job_set": {
           "cn": "创建作业集...",
-          "en": "Create Job Set..."
+          "zh_tw": "創建作業集..."
         },
         "confirm": {
           "cn": "确定",
-          "en": "Confirm"
+          "zh_tw": "確定"
         },
         "load_more": {
           "cn": "加载更多",
-          "en": "Load more"
+          "zh_tw": "加載更多"
         },
         "private": {
           "cn": "私有",
-          "en": "Private"
+          "zh_tw": "私有"
         }
       },
       "OperationSetEditor": {
         "create_job_set": {
           "cn": "创建作业集",
-          "en": "Create Job Set"
+          "zh_tw": "創建作業集"
         },
         "edit_job_set": {
           "cn": "编辑作业集",
-          "en": "Edit Job Set"
+          "zh_tw": "編輯作業集"
         },
         "update_success": {
           "cn": "更新作业集成功",
-          "en": "Job set updated successfully"
+          "zh_tw": "更新作業集成功"
         },
         "create_success": {
           "cn": "创建作业集成功",
-          "en": "Job set created successfully"
+          "zh_tw": "創建作業集成功"
         },
         "no_jobs_yet": {
           "cn": "还没有添加作业哦(￣▽￣)",
-          "en": "No Jobs added yet (￣▽￣)"
+          "zh_tw": "還沒有添加作業哦(￣▽￣)"
         },
         "add_from_list": {
           "cn": "请从作业列表中添加",
-          "en": "Please add from the Job list"
+          "zh_tw": "請從作業列表中添加"
         },
         "title": {
           "cn": "标题",
-          "en": "Title"
+          "zh_tw": "標題"
         },
         "title_required": {
           "cn": "标题不能为空",
-          "en": "Title is required"
+          "zh_tw": "標題不能為空"
         },
         "description": {
           "cn": "描述",
-          "en": "Description"
+          "zh_tw": "描述"
         },
         "visible_to_all": {
           "cn": "对所有人可见",
-          "en": "Visible to everyone"
+          "zh_tw": "對所有人可見"
         },
         "click_save": {
           "cn": "修改后请点击保存按钮",
-          "en": "Click save after making changes"
+          "zh_tw": "修改後請點擊保存按鈕"
         },
         "save": {
           "cn": "保存",
-          "en": "Save"
+          "zh_tw": "保存"
         },
         "create": {
           "cn": "创建",
-          "en": "Create"
+          "zh_tw": "創建"
         },
         "error": {
           "cn": "错误",
-          "en": "Error"
+          "zh_tw": "錯誤"
         },
         "sort_by_level": {
           "cn": "按关卡",
-          "en": "By Level"
+          "zh_tw": "按關卡"
         },
         "loading": {
           "cn": "加载中...",
-          "en": "Loading..."
+          "zh_tw": "加載中..."
         },
         "level_load_failed": {
           "cn": "关卡加载失败，使用备用排序",
-          "en": "Stage loading failed, using fallback sorting"
+          "zh_tw": "關卡加載失敗，使用備用排序"
         },
         "sort_by_title": {
           "cn": "按标题",
-          "en": "By Title"
+          "zh_tw": "按標題"
         },
         "sort_by_id": {
           "cn": "按 ID",
-          "en": "By ID"
+          "zh_tw": "按 ID"
         },
         "quick_sort": {
           "cn": "一键排序",
-          "en": "Quick Sort"
+          "zh_tw": "一鍵排序"
         },
         "reverse_list": {
           "cn": "反转列表",
-          "en": "Reverse List"
+          "zh_tw": "反轉列表"
         }
       }
     },
@@ -2586,127 +2580,127 @@
       "OperationUploader": {
         "wait_upload": {
           "cn": "正在上传，请等待",
-          "en": "Uploading, please wait"
+          "zh_tw": "正在上傳，請等待"
         },
         "wait_parsing": {
           "cn": "正在解析文件，请等待",
-          "en": "Parsing files, please wait"
+          "zh_tw": "正在解析文件，請等待"
         },
         "select_files": {
           "cn": "请选择文件",
-          "en": "Please select files"
+          "zh_tw": "請選擇文件"
         },
         "contains_uploaded": {
           "cn": "文件列表中包含已上传的文件，请重新选择",
-          "en": "File list contains already uploaded files, please select again"
+          "zh_tw": "文件列表中包含已上傳的文件，請重新選擇"
         },
         "file_errors": {
           "cn": "文件存在错误，请修改内容",
-          "en": "Files have errors, please fix content"
+          "zh_tw": "文件存在錯誤，請修改內容"
         },
         "errors_exist": {
           "cn": "存在错误，请排查问题",
-          "en": "Errors exist, please check issues"
+          "zh_tw": "存在錯誤，請排查問題"
         },
         "upload_failed": {
           "cn": "上传失败：{{error}}",
-          "en": "Upload failed: {{error}}"
+          "zh_tw": "上傳失敗：{{error}}"
         },
         "upload_complete": {
           "cn": "作业上传完成：成功 {{successCount}} 个，失败 {{errorCount}} 个",
-          "en": "Job upload complete: {{successCount}} successful, {{errorCount}} failed"
+          "zh_tw": "作業上傳完成：成功 {{successCount}} 個，失敗 {{errorCount}} 個"
         },
         "upload_local_jobs": {
           "cn": "上传本地作业",
-          "en": "Upload local Jobs"
+          "zh_tw": "上傳本地作業"
         },
         "edit_before_upload_message": {
           "cn": "若需要在上传前进行编辑，请在作业编辑器的",
-          "en": "If you need to edit before uploading, use"
+          "zh_tw": "若需要在上傳前進行編輯，請在作業編輯器的"
         },
         "edit_json": {
           "cn": "编辑 JSON",
-          "en": "Edit JSON"
+          "zh_tw": "編輯 JSON"
         },
         "import_job": {
           "cn": "处导入作业",
-          "en": "in the Job editor to import"
+          "zh_tw": "處導入作業"
         },
         "select_job_files": {
           "cn": "选择作业文件",
-          "en": "Select Job Files"
+          "zh_tw": "選擇作業文件"
         },
         "json_files_only": {
           "cn": "仅支持 .json 文件，可多选",
-          "en": "Only .json files supported, multiple selection allowed"
+          "zh_tw": "僅支持 .json 文件，可多選"
         },
         "browse": {
           "cn": "浏览",
-          "en": "Browse"
+          "zh_tw": "瀏覽"
         },
         "file_count": {
           "cn": "{{count}} 个文件",
-          "en": "{{count}} files"
+          "zh_tw": "{{count}} 個文件"
         },
         "choose_files": {
           "cn": "选择文件...",
-          "en": "Choose files..."
+          "zh_tw": "選擇文件..."
         },
         "upload": {
           "cn": "上传",
-          "en": "Upload"
+          "zh_tw": "上傳"
         },
         "error": {
           "cn": "错误",
-          "en": "Error"
+          "zh_tw": "錯誤"
         },
         "file_details": {
           "cn": "文件详情",
-          "en": "File Details"
+          "zh_tw": "文件詳情"
         },
         "untitled": {
           "cn": "无标题",
-          "en": "Untitled"
+          "zh_tw": "無標題"
         }
       },
       "OperationUploaderLauncher": {
         "upload_local_jobs": {
           "cn": "上传本地作业",
-          "en": "Upload local Jobs"
+          "zh_tw": "上傳本地作業"
         }
       },
       "utils": {
         "invalid_object": {
           "cn": "不是有效的对象",
-          "en": "Not a valid object"
+          "zh_tw": "不是有效的對象"
         },
         "select_json_file": {
           "cn": "请选择 JSON 文件",
-          "en": "Please select a JSON file"
+          "zh_tw": "請選擇 JSON 文件"
         },
         "json_parse_failed": {
           "cn": "请选择合法的 JSON 文件：JSON 解析失败：",
-          "en": "Please select a valid JSON file: JSON parsing failed: "
+          "zh_tw": "請選擇合法的 JSON 文件：JSON 解析失敗："
         },
         "job_with_stage_name": {
           "cn": "作业 {{stageName}}",
-          "en": "Job {{stageName}}"
+          "zh_tw": "作業 {{stageName}}"
         },
         "stage_not_unique": {
           "cn": "匹配到的关卡不唯一",
-          "en": "Stage match is not unique"
+          "zh_tw": "匹配到的關卡不唯一"
         },
         "stage_not_found": {
           "cn": "未找到对应关卡",
-          "en": "Corresponding stage not found"
+          "zh_tw": "未找到對應關卡"
         },
         "auto_fix_failed": {
           "cn": "自动修正失败：",
-          "en": "Auto-correction failed: "
+          "zh_tw": "自動修正失敗："
         },
         "validation_failed": {
           "cn": "验证失败：",
-          "en": "Validation failed: "
+          "zh_tw": "驗證失敗："
         }
       }
     },
@@ -2714,746 +2708,746 @@
       "comment": {
         "no_comments": {
           "cn": "还没有评论，发一条评论鼓励作者吧！",
-          "en": "No comments yet. Be the first to encourage the author!"
+          "zh_tw": "還沒有評論，發一條評論鼓勵作者吧！"
         },
         "encourage_author": {
           "cn": "(｡･ω･｡)ﾉ♡",
-          "en": "(｡･ω･｡)ﾉ♡"
+          "zh_tw": "(｡･ω･｡)ﾉ♡"
         },
         "reached_bottom": {
           "cn": "已经到底了哦 (ﾟ▽ﾟ)/",
-          "en": "You've reached the bottom (ﾟ▽ﾟ)/"
+          "zh_tw": "已經到底了哦 (ﾟ▽ﾟ)/"
         },
         "load_more": {
           "cn": "加载更多",
-          "en": "Load More"
+          "zh_tw": "加載更多"
         },
         "deleted": {
           "cn": "（已删除）",
-          "en": "(Deleted)"
+          "zh_tw": "（已刪除）"
         },
         "reply": {
           "cn": "回复",
-          "en": "Reply"
+          "zh_tw": "回覆"
         },
         "pinned": {
           "cn": "置顶",
-          "en": "Pinned"
+          "zh_tw": "置頂"
         },
         "delete": {
           "cn": "删除",
-          "en": "Delete"
+          "zh_tw": "刪除"
         },
         "cancel": {
           "cn": "取消",
-          "en": "Cancel"
+          "zh_tw": "取消"
         },
         "delete_comment": {
           "cn": "删除评论",
-          "en": "Delete Comment"
+          "zh_tw": "刪除評論"
         },
         "confirm_delete": {
           "cn": "确定要删除评论吗？",
-          "en": "Are you sure you want to delete this comment?"
+          "zh_tw": "確定要刪除評論嗎？"
         },
         "all_subcomments_deleted": {
           "cn": "所有子评论都会被删除。",
-          "en": "All replies will be deleted as well."
+          "zh_tw": "所有子評論都會被刪除。"
         },
         "rating_failed": {
           "cn": "评分失败：{{error}}",
-          "en": "Rating failed: {{error}}"
+          "zh_tw": "評分失敗：{{error}}"
         },
         "pin_failed": {
           "cn": "置顶失败：{{error}}",
-          "en": "Pinning failed: {{error}}"
+          "zh_tw": "置頂失敗：{{error}}"
         },
         "unpin": {
           "cn": "取消置顶",
-          "en": "Unpin"
+          "zh_tw": "取消置頂"
         },
         "pin": {
           "cn": "置顶",
-          "en": "Pin"
+          "zh_tw": "置頂"
         },
         "friendly_comment_placeholder": {
           "cn": "发一条友善的评论吧",
-          "en": "Leave a friendly comment"
+          "zh_tw": "發一條友善的評論吧"
         },
         "enter_comment": {
           "cn": "请输入评论内容",
-          "en": "Please enter comment content"
+          "zh_tw": "請輸入評論內容"
         },
         "submit_failed": {
           "cn": "发表评论失败：{{error}}",
-          "en": "Failed to submit comment: {{error}}"
+          "zh_tw": "發表評論失敗：{{error}}"
         },
         "reply_target_not_found": {
           "cn": "要回复的评论不存在",
-          "en": "The comment you're replying to doesn't exist"
+          "zh_tw": "要回復的評論不存在"
         },
         "submit_success": {
           "cn": "发表成功",
-          "en": "Successfully posted"
+          "zh_tw": "發表成功"
         },
         "post_comment": {
           "cn": "发表评论",
-          "en": "Post Comment"
+          "zh_tw": "發表評論"
         },
         "preview_markdown": {
           "cn": "预览 Markdown",
-          "en": "Preview Markdown"
+          "zh_tw": "預覽 Markdown"
         },
         "no_content": {
           "cn": "*没有内容*",
-          "en": "*No content*"
+          "zh_tw": "*沒有內容*"
         }
       },
       "OperationRating": {
         "not_enough_ratings_long": {
           "cn": "还没有足够的评分",
-          "en": "Not enough ratings yet"
+          "zh_tw": "還沒有足夠的評分"
         },
         "not_enough_ratings_short": {
           "cn": "评分不足",
-          "en": "Not enough ratings"
+          "zh_tw": "評分不足"
         },
         "liked_percentage": {
           "cn": "有{{percent}}%的人为本作业点了个赞（{{ratio}}）",
-          "en": "{{percent}}% of users liked this Job ({{ratio}})"
+          "zh_tw": "有{{percent}}%的人為本作業點了個贊（{{ratio}}）"
         }
       },
       "OperationSetViewer": {
         "delete_failed": {
           "cn": "删除失败：{{error}}",
-          "en": "Delete failed: {{error}}"
+          "zh_tw": "刪除失敗：{{error}}"
         },
         "delete_success": {
           "cn": "删除成功",
-          "en": "Delete successful"
+          "zh_tw": "刪除成功"
         },
         "cancel": {
           "cn": "取消",
-          "en": "Cancel"
+          "zh_tw": "取消"
         },
         "delete": {
           "cn": "删除",
-          "en": "Delete"
+          "zh_tw": "刪除"
         },
         "delete_task_set": {
           "cn": "删除作业集",
-          "en": "Delete Job Set"
+          "zh_tw": "刪除作業集"
         },
         "confirm_delete_task_set": {
           "cn": "确定要删除作业集吗？",
-          "en": "Are you sure you want to delete this Job set?"
+          "zh_tw": "確定要刪除作業集嗎？"
         },
         "edit_task_set": {
           "cn": "编辑作业集...",
-          "en": "Edit Job Set..."
+          "zh_tw": "編輯作業集..."
         },
         "refresh_failed": {
           "cn": "刷新作业集失败：{{error}}",
-          "en": "Failed to refresh Job set: {{error}}"
+          "zh_tw": "刷新作業集失敗：{{error}}"
         },
         "maa_copilot_task_set": {
           "cn": "MaaYuan Share 作业集",
-          "en": "MaaYuan Share Job Set"
+          "zh_tw": "MaaYuan Share 作業集"
         },
         "manage": {
           "cn": "管理",
-          "en": "Manage"
+          "zh_tw": "管理"
         },
         "copy_secret_code": {
           "cn": "复制神秘代码",
-          "en": "Copy Secret Code"
+          "zh_tw": "複製神秘代碼"
         },
         "render_error": {
           "cn": "渲染错误",
-          "en": "Render Error"
+          "zh_tw": "渲染錯誤"
         },
         "render_problem": {
           "cn": "渲染此作业集时出现了问题。是否是还未支持的作业集类型？",
-          "en": "There was a problem rendering this Job set. Is it an unsupported Job set type?"
+          "zh_tw": "渲染此作業集時出現了問題。是否是還未支持的作業集類型？"
         },
         "published_at": {
           "cn": "发布于",
-          "en": "Published at"
+          "zh_tw": "發佈於"
         },
         "author": {
           "cn": "作者",
-          "en": "Author"
+          "zh_tw": "作者"
         },
         "render_preview_problem": {
           "cn": "渲染此作业集的预览时出现了问题 Σ(っ °Д °;)っ",
-          "en": "There was a problem rendering the preview of this Job set Σ(っ °Д °;)っ"
+          "zh_tw": "渲染此作業集的預覽時出現了問題 Σ(っ °Д °;)っ"
         },
         "task_list": {
           "cn": "作业列表",
-          "en": "Job List"
+          "zh_tw": "作業列表"
         },
         "loading_task_set": {
           "cn": "作业集加载中",
-          "en": "Loading Job Set"
+          "zh_tw": "作業集加載中"
         }
       },
       "OperationViewer": {
         "operation_failed": {
           "cn": "操作失败：{{error}}",
-          "en": "Operation failed: {{error}}"
+          "zh_tw": "操作失敗：{{error}}"
         },
         "delete_failed": {
           "cn": "删除失败：{{error}}",
-          "en": "Delete failed: {{error}}"
+          "zh_tw": "刪除失敗：{{error}}"
         },
         "delete_success": {
           "cn": "删除成功",
-          "en": "Delete successful"
+          "zh_tw": "刪除成功"
         },
         "modify_task": {
           "cn": "修改作业",
-          "en": "Modify Job"
+          "zh_tw": "修改作業"
         },
         "modify_task_v2": {
           "cn": "修改作业(v2)",
-          "en": "Modify Job (v2)"
+          "zh_tw": "修改作業(v2)"
         },
         "close_comments": {
           "cn": "关闭评论区",
-          "en": "Close Comments"
+          "zh_tw": "關閉評論區"
         },
         "confirm_close_comments": {
           "cn": "确定要关闭评论区吗？",
-          "en": "Are you sure you want to close the comments section?"
+          "zh_tw": "確定要關閉評論區嗎？"
         },
         "existing_comments_preserved": {
           "cn": "已有的评论不会被删除，重新开启后会恢复显示",
-          "en": "Existing comments won't be deleted and will be visible again when reopened"
+          "zh_tw": "已有的評論不會被刪除，重新開啟後會恢復顯示"
         },
         "open_comments": {
           "cn": "开启评论区",
-          "en": "Open Comments"
+          "zh_tw": "開啟評論區"
         },
         "confirm_open_comments": {
           "cn": "确定要开启评论区吗？",
-          "en": "Are you sure you want to open the comments section?"
+          "zh_tw": "確定要開啟評論區嗎？"
         },
         "delete": {
           "cn": "删除",
-          "en": "Delete"
+          "zh_tw": "刪除"
         },
         "delete_task": {
           "cn": "删除作业",
-          "en": "Delete Job"
+          "zh_tw": "刪除作業"
         },
         "confirm_delete_task": {
           "cn": "确定要删除作业吗？",
-          "en": "Are you sure you want to delete this Job?"
+          "zh_tw": "確定要刪除作業嗎？"
         },
         "three_confirmations": {
           "cn": "需要三次确认以删除",
-          "en": "Three confirmations required to delete"
+          "zh_tw": "需要三次確認以刪除"
         },
         "refresh_failed": {
           "cn": "刷新作业失败：{{error}}",
-          "en": "Failed to refresh Job: {{error}}"
+          "zh_tw": "刷新作業失敗：{{error}}"
         },
         "submit_rating_failed": {
           "cn": "提交评分失败：{{error}}",
-          "en": "Failed to submit rating: {{error}}"
+          "zh_tw": "提交評分失敗：{{error}}"
         },
         "maa_copilot_task": {
           "cn": "MaaYuan Share 作业",
-          "en": "MaaYuan Share Job"
+          "zh_tw": "MaaYuan Share 作業"
         },
         "manage": {
           "cn": "管理",
-          "en": "Manage"
+          "zh_tw": "管理"
         },
         "download_json": {
           "cn": "下载原 JSON",
-          "en": "Download Original JSON"
+          "zh_tw": "下載原 JSON"
         },
         "copy_secret_code": {
           "cn": "复制神秘代码",
-          "en": "Copy Secret Code"
+          "zh_tw": "複製神秘代碼"
         },
         "render_error": {
           "cn": "渲染错误",
-          "en": "Render Error"
+          "zh_tw": "渲染錯誤"
         },
         "render_problem": {
           "cn": "渲染此作业时出现了问题。是否是还未支持的作业类型？",
-          "en": "There was a problem rendering this Job. Is it an unsupported Job type?"
+          "zh_tw": "渲染此作業時出現了問題。是否是還未支持的作業類型？"
         },
         "loading_task": {
           "cn": "作业加载中",
-          "en": "Loading Job"
+          "zh_tw": "作業加載中"
         },
         "private": {
           "cn": "私有",
-          "en": "Private"
+          "zh_tw": "私有"
         },
         "skill": {
           "cn": "技能",
-          "en": "Skill"
+          "zh_tw": "技能"
         },
         "stage": {
           "cn": "作战",
-          "en": "Stage"
+          "zh_tw": "作戰"
         },
         "task_rating": {
           "cn": "作业评分",
-          "en": "Job Rating"
+          "zh_tw": "作業評分"
         },
         "views": {
           "cn": "浏览量",
-          "en": "Views"
+          "zh_tw": "瀏覽量"
         },
         "published_at": {
           "cn": "发布于",
-          "en": "Published at"
+          "zh_tw": "發佈於"
         },
         "author": {
           "cn": "作者",
-          "en": "Author"
+          "zh_tw": "作者"
         },
         "render_preview_problem": {
           "cn": "渲染此作业的预览时出现了问题。是否是还未支持的作业类型？",
-          "en": "There was a problem rendering the preview of this Job. Is it an unsupported Job type?"
+          "zh_tw": "渲染此作業的預覽時出現了問題。是否是還未支持的作業類型？"
         },
         "comments": {
           "cn": "评论",
-          "en": "Comments"
+          "zh_tw": "評論"
         },
         "comments_count": {
           "cn": "评论 ({{count}})",
-          "en": "Comments ({{count}})"
+          "zh_tw": "評論 ({{count}})"
         },
         "comments_closed": {
           "cn": "评论区已关闭",
-          "en": "Comment section is closed"
+          "zh_tw": "評論區已關閉"
         },
         "comments_closed_note": {
           "cn": "感受…宁静……",
-          "en": "Experience tranquility..."
+          "zh_tw": "感受…寧靜……"
         },
         "operators_and_groups": {
           "cn": "密探与密探组",
-          "en": "Operators and Operator Groups"
+          "zh_tw": "密探與密探組"
         },
         "operators_and_groups_note": {
           "cn": "{{operators(密探)}}\n作业必需的密探。\n密探练度（等级、模组）仅供参考，MAA 的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(密探组)}}\n一系列可替换密探的编组。\n组内密探可以任选其一，MAA 自动编队时按最高练度来选择。",
-          "en": "{{operators(Operators)}}\nOperators required for this Job. \nThe requirements (level and module) are for reference only. MAA's auto-formation only supports skill selection, and other information is not yet supported.\n\n{{groups(Operator Groups)}}\nGroups of interchangeable operators. \nYou can choose any operator in a group. MAA's auto-formation selects the one with the highest level."
+          "zh_tw": "{{operators(密探)}}\n作業必需的密探。\n密探練度（等級、模組）僅供參考，MAA 的自動編隊僅支持技能選擇，其餘信息暫未支持。\n\n{{groups(密探組)}}\n一系列可替換密探的編組。\n組內密探可以任選其一，MAA 自動編隊時按最高練度來選擇。"
         },
         "no_operators": {
           "cn": "暂无密探",
-          "en": "No Operators"
+          "zh_tw": "暫無密探"
         },
         "no_operators_added": {
           "cn": "作业并未添加密探",
-          "en": "No operators have been added to this Job"
+          "zh_tw": "作業並未添加密探"
         },
         "unknown": {
           "cn": "未知",
-          "en": "Unknown"
+          "zh_tw": "未知"
         },
         "no_operator": {
           "cn": "无密探",
-          "en": "No Operator"
+          "zh_tw": "無密探"
         },
         "module_title": {
           "cn": {
             "0": "初始模组",
             "other": "{{name}}模组"
           },
-          "en": {
-            "0": "Original Module",
-            "other": "{{name}} Module"
+          "zh_tw": {
+            "0": "初始模組",
+            "other": "{{name}}模組"
           }
         },
         "action_sequence": {
           "cn": "动作序列",
-          "en": "Action Sequence"
+          "zh_tw": "動作序列"
         },
         "round_title": {
           "cn": "第 {{round}} 回合",
-          "en": "Round {{round}}"
+          "zh_tw": "第 {{round}} 回合"
         },
         "round_action_count": {
           "cn": "共 {{count}} 个动作",
-          "en": "Actions: {{count}}"
+          "zh_tw": "共 {{count}} 個動作"
         },
         "siming_actions_hint": {
           "cn": "检测到司命动作格式，下方展示为原始节点数据。",
-          "en": "Siming action format detected; displaying raw node data below."
+          "zh_tw": "檢測到司命動作格式，下方展示為原始節點數據。"
         },
         "no_actions": {
           "cn": "暂无动作",
-          "en": "No Actions"
+          "zh_tw": "暫無動作"
         },
         "no_actions_defined": {
           "cn": "作业并未定义任何动作",
-          "en": "No actions have been defined for this Job"
+          "zh_tw": "作業並未定義任何動作"
         }
       }
     },
     "AccountManager": {
       "logout_success": {
         "cn": "已退出登录",
-        "en": "Logged out successfully"
+        "zh_tw": "已退出登錄"
       },
       "cancel": {
         "cn": "取消",
-        "en": "Cancel"
+        "zh_tw": "取消"
       },
       "logout": {
         "cn": "退出登录",
-        "en": "Log Out"
+        "zh_tw": "退出登錄"
       },
       "logout_confirm": {
         "cn": "确定要退出登录吗？",
-        "en": "Are you sure you want to log out?"
+        "zh_tw": "確定要退出登錄嗎？"
       },
       "account_not_activated": {
         "cn": "账号未激活，请在退出登录后，以重置密码的方式激活",
-        "en": "Account not activated. Please log out and use the password reset feature to activate."
+        "zh_tw": "賬號未激活，請在退出登錄後，以重置密碼的方式激活"
       },
       "profile": {
         "cn": "个人主页",
-        "en": "Profile"
+        "zh_tw": "個人主頁"
       },
       "edit_info": {
         "cn": "修改信息...",
-        "en": "Edit Information"
+        "zh_tw": "修改信息..."
       },
       "maa_account": {
         "cn": "MaaYuan Share 账户",
-        "en": "MaaYuan Share Account"
+        "zh_tw": "MaaYuan Share 賬戶"
       },
       "login": {
         "cn": "登录",
-        "en": "Login"
+        "zh_tw": "登錄"
       },
       "register": {
         "cn": "注册",
-        "en": "Register"
+        "zh_tw": "註冊"
       },
       "login_register": {
         "cn": "登录 / 注册",
-        "en": "Login / Register"
+        "zh_tw": "登錄 / 註冊"
       }
     },
     "ActionCard": {
       "coordinates": {
         "cn": "坐标",
-        "en": "Coordinates"
+        "zh_tw": "座標"
       },
       "direction": {
         "cn": "朝向",
-        "en": "Direction"
+        "zh_tw": "朝向"
       },
       "distance": {
         "cn": "距离",
-        "en": "Distance"
+        "zh_tw": "距離"
       },
       "kills": {
         "cn": "击杀",
-        "en": "Kills"
+        "zh_tw": "擊殺"
       },
       "cooling": {
         "cn": "冷却中",
-        "en": "On Cooldown"
+        "zh_tw": "冷卻中"
       },
       "cost": {
         "cn": "费用",
-        "en": "DP Cost"
+        "zh_tw": "費用"
       },
       "cost_changes": {
         "cn": "费用变化",
-        "en": "DP Change"
+        "zh_tw": "費用變化"
       },
       "pre_delay": {
         "cn": "前置",
-        "en": "Pre-Delay"
+        "zh_tw": "前置"
       },
       "rear_delay": {
         "cn": "后置",
-        "en": "Post-Delay"
+        "zh_tw": "後置"
       }
     },
     "Confirm": {
       "cancel": {
         "cn": "取消",
-        "en": "Cancel"
+        "zh_tw": "取消"
       },
       "confirm": {
         "cn": "确定",
-        "en": "Confirm"
+        "zh_tw": "確定"
       }
     },
     "LevelSelect": {
       "annihilation": {
         "cn": "剿灭作战",
-        "en": "Annihilation"
+        "zh_tw": "剿滅作戰"
       },
       "contingency_contract": {
         "cn": "危机合约",
-        "en": "Contingency Contract"
+        "zh_tw": "危機合約"
       },
       "related_levels": {
         "cn": "相关关卡",
-        "en": "Related Stages"
+        "zh_tw": "相關關卡"
       },
       "search_level": {
         "cn": "直接搜索关卡 \"{{query}}\"",
-        "en": "Search Stage \"{{query}}\""
+        "zh_tw": "直接搜索關卡 \"{{query}}\""
       },
       "level_search_placeholder": {
         "cn": "关卡名、类型、编号",
-        "en": "Stage name, category, or ID"
+        "zh_tw": "關卡名、類型、編號"
       },
       "level": {
         "cn": "关卡",
-        "en": "Stage"
+        "zh_tw": "關卡"
       }
     },
     "OperationCard": {
       "private": {
         "cn": "私有",
-        "en": "Private"
+        "zh_tw": "私有"
       },
       "operators_and_groups": {
         "cn": "密探/密探组",
-        "en": "Operators/Groups"
+        "zh_tw": "密探/密探組"
       },
       "no_operators": {
         "cn": "无密探",
-        "en": "No operators"
+        "zh_tw": "無密探"
       },
       "no_records": {
         "cn": "无记录",
-        "en": "No records"
+        "zh_tw": "無記錄"
       },
       "views_count": {
         "cn": "访问量：{{count}}",
-        "en": "Views: {{count}}"
+        "zh_tw": "訪問量：{{count}}"
       },
       "download_json": {
         "cn": "下载原 JSON",
-        "en": "Download Original JSON"
+        "zh_tw": "下載原 JSON"
       },
       "download_siming_json": {
         "cn": "下载司命格式 JSON",
-        "en": "Download Siming JSON"
+        "zh_tw": "下載司命格式 JSON"
       },
       "copy_secret_code": {
         "cn": "复制神秘代码",
-        "en": "Copy Secret Code"
+        "zh_tw": "複製神秘代碼"
       },
       "add_to_job_set": {
         "cn": "添加到作业集",
-        "en": "Add to Job Set"
+        "zh_tw": "添加到作業集"
       }
     },
     "OperationList": {
       "selected_jobs": {
         "cn": "已选择 {{count}} 份作业",
-        "en": "{{count}} Jobs selected"
+        "zh_tw": "已選擇 {{count}} 份作業"
       },
       "only_loaded_items": {
         "cn": "只能选择已加载的项目",
-        "en": "Only loaded items can be selected"
+        "zh_tw": "只能選擇已加載的項目"
       },
       "select_all": {
         "cn": "全选",
-        "en": "Select All"
+        "zh_tw": "全選"
       },
       "clear": {
         "cn": "清空",
-        "en": "Clear"
+        "zh_tw": "清空"
       },
       "add_to_job_set": {
         "cn": "添加到作业集",
-        "en": "Add to Job Set"
+        "zh_tw": "添加到作業集"
       },
       "no_jobs_found": {
         "cn": "没有找到任何作业",
-        "en": "No Jobs found"
+        "zh_tw": "沒有找到任何作業"
       },
       "sad_face": {
         "cn": "(つД｀)･ﾟ･",
-        "en": "(つД｀)･ﾟ･"
+        "zh_tw": "(つД｀)･ﾟ･"
       },
       "reached_bottom": {
         "cn": "已经到底了哦 (ﾟ▽ﾟ)/",
-        "en": "You've reached the bottom (ﾟ▽ﾟ)/"
+        "zh_tw": "已經到底了哦 (ﾟ▽ﾟ)/"
       },
       "load_more": {
         "cn": "加载更多",
-        "en": "Load More"
+        "zh_tw": "加載更多"
       }
     },
     "Operations": {
       "operations": {
         "cn": "作业",
-        "en": "Jobs"
+        "zh_tw": "作業"
       },
       "operation_sets": {
         "cn": "作业集",
-        "en": "Job Sets"
+        "zh_tw": "作業集"
       },
       "enable_multi_select": {
         "cn": "启动多选",
-        "en": "Enable Multi-select"
+        "zh_tw": "啟動多選"
       },
       "search_placeholder": {
         "cn": "标题、描述、神秘代码",
-        "en": "Title, Description, Secret Code"
+        "zh_tw": "標題、描述、神秘代碼"
       },
       "sort_by": {
         "cn": "排序:",
-        "en": "Sort by:"
+        "zh_tw": "排序:"
       },
       "popularity": {
         "cn": "热度",
-        "en": "Popularity"
+        "zh_tw": "熱度"
       },
       "newest": {
         "cn": "最新",
-        "en": "Newest"
+        "zh_tw": "最新"
       },
       "views": {
         "cn": "访问量",
-        "en": "Views"
+        "zh_tw": "訪問量"
       }
     },
     "OperationSetCard": {
       "private": {
         "cn": "私有",
-        "en": "Private"
+        "zh_tw": "私有"
       },
       "jobs_count": {
         "cn": "{{count}}份作业",
-        "en": "{{count}} Jobs"
+        "zh_tw": "{{count}}份作業"
       },
       "copy_secret_code": {
         "cn": "复制神秘代码",
-        "en": "Copy Secret Code"
+        "zh_tw": "複製神秘代碼"
       }
     },
     "OperationSetList": {
       "no_job_sets_found": {
         "cn": "没有找到任何作业集",
-        "en": "No Job Sets found"
+        "zh_tw": "沒有找到任何作業集"
       },
       "sad_face": {
         "cn": "(つД｀)･ﾟ･",
-        "en": "(つД｀)･ﾟ･"
+        "zh_tw": "(つД｀)･ﾟ･"
       },
       "reached_bottom": {
         "cn": "已经到底了哦 (ﾟ▽ﾟ)/",
-        "en": "You've reached the bottom (ﾟ▽ﾟ)/"
+        "zh_tw": "已經到底了哦 (ﾟ▽ﾟ)/"
       },
       "load_more": {
         "cn": "加载更多",
-        "en": "Load More"
+        "zh_tw": "加載更多"
       }
     },
     "OperatorFilter": {
       "disable_operator_selection": {
         "cn": "禁用密探选择",
-        "en": "Disable operator selection"
+        "zh_tw": "禁用密探選擇"
       },
       "operators": {
         "cn": "密探",
-        "en": "Operators"
+        "zh_tw": "密探"
       },
       "select_operators": {
         "cn": "选择密探",
-        "en": "Select Operators"
+        "zh_tw": "選擇密探"
       },
       "included_operators": {
         "cn": "包含的密探",
-        "en": "Included Operators"
+        "zh_tw": "包含的密探"
       },
       "excluded_operators": {
         "cn": "排除的密探",
-        "en": "Excluded Operators"
+        "zh_tw": "排除的密探"
       },
       "search_help": {
         "cn": "输入密探名、拼音或拼音首字母以搜索",
-        "en": "Enter operator name, initials to start search"
+        "zh_tw": "輸入密探名、拼音或拼音首字母以搜索"
       },
       "cancel": {
         "cn": "取消",
-        "en": "Cancel"
+        "zh_tw": "取消"
       },
       "confirm": {
         "cn": "确认",
-        "en": "Confirm"
+        "zh_tw": "確認"
       },
       "remember_selection": {
         "cn": "记住选择",
-        "en": "Remember Selection"
+        "zh_tw": "記住選擇"
       }
     },
     "OperatorSelect": {
       "no_matching_operators": {
         "cn": "没有匹配的密探",
-        "en": "No matching operators"
+        "zh_tw": "沒有匹配的密探"
       }
     },
     "Suspensable": {
       "loading": {
         "cn": "加载中",
-        "en": "Loading"
+        "zh_tw": "加載中"
       },
       "loadFailed": {
         "cn": "加载失败",
-        "en": "Load Failed"
+        "zh_tw": "加載失敗"
       },
       "dataLoadFailedRetry": {
         "cn": "数据加载失败，请重试",
-        "en": "Data load failed, please retry"
+        "zh_tw": "數據加載失敗，請重試"
       },
       "retry": {
         "cn": "重试",
-        "en": "Retry"
+        "zh_tw": "重試"
       }
     },
     "UserFilter": {
       "searching": {
         "cn": "正在搜索...",
-        "en": "Searching..."
+        "zh_tw": "正在搜索..."
       },
       "search_failed": {
         "cn": "搜索失败：",
-        "en": "Search failed: "
+        "zh_tw": "搜索失敗："
       },
       "no_user_found": {
         "cn": "查无此人 (ﾟДﾟ≡ﾟдﾟ)!?",
-        "en": "No user found (ﾟДﾟ≡ﾟдﾟ)!?"
+        "zh_tw": "查無此人 (ﾟДﾟ≡ﾟдﾟ)!?"
       },
       "enter_username": {
         "cn": "输入用户名以搜索",
-        "en": "Enter username to search"
+        "zh_tw": "輸入用戶名以搜索"
       },
       "username_placeholder": {
         "cn": "用户名称",
-        "en": "Username"
+        "zh_tw": "用戶名稱"
       },
       "author": {
         "cn": "作者",
-        "en": "Author"
+        "zh_tw": "作者"
       },
       "view_my_jobs": {
         "cn": "查看我自己的作业",
-        "en": "View my own Jobs"
+        "zh_tw": "查看我自己的作業"
       },
       "view_mine": {
         "cn": "看看我的",
-        "en": "View personal"
+        "zh_tw": "看看我的"
       }
     }
   },
@@ -3461,33 +3455,33 @@
     "announcement": {
       "default_title": {
         "cn": "公告",
-        "en": "Announcement"
+        "zh_tw": "公告"
       }
     },
     "converter": {
       "invalid_operation_content": {
         "cn": "无法解析作业内容",
-        "en": "Unable to parse Job content"
+        "zh_tw": "無法解析作業內容"
       },
       "failed_to_parse_operation": {
         "cn": "解析作业失败",
-        "en": "Failed to parse operation"
+        "zh_tw": "解析作業失敗"
       }
     },
     "level": {
       "custom_level": {
         "cn": "自定义关卡",
-        "en": "Custom Stage"
+        "zh_tw": "自定義關卡"
       }
     },
     "operator": {
       "operator": {
         "cn": "密探",
-        "en": "Operator"
+        "zh_tw": "密探"
       },
       "operator_group": {
         "cn": "密探组",
-        "en": "Operator Group"
+        "zh_tw": "密探組"
       },
       "skill_number": {
         "cn": {
@@ -3496,365 +3490,362 @@
           "3": "三技能",
           "other": "未知技能"
         },
-        "en": {
-          "1": "S1",
-          "2": "S2",
-          "3": "S3",
-          "other": "Unknown Skill"
+        "zh_tw": {
+          "1": "一技能",
+          "2": "二技能",
+          "3": "三技能",
+          "other": "未知技能"
         }
       },
       "elite": {
         "cn": "精英{{level}}",
-        "en": "Elite {{level}}"
+        "zh_tw": "精英{{level}}"
       },
       "skill_usage": {
         "none": {
           "title": {
             "cn": "不自动使用",
-            "en": "Don't use automatically"
+            "zh_tw": "不自動使用"
           },
           "alt_title": {
             "cn": "手动使用技能",
-            "en": "Manual Activation"
+            "zh_tw": "手動使用技能"
           },
           "description": {
             "cn": "不由 MAA 自动开启技能、或密探技能并不需要操作开启（自动触发）。若需要手动开启技能，请添加「使用技能」动作",
-            "en": "Skills won't be activated automatically by MAA, or for operators whose skills don't need manual activation (auto-trigger). If you need to manually activate a skill, add a 'Use Skill' action"
+            "zh_tw": "不由 MAA 自動開啟技能、或密探技能並不需要操作開啟（自動觸發）。若需要手動開啟技能，請添加「使用技能」動作"
           }
         },
         "ready_to_use": {
           "title": {
             "cn": "好了就用",
-            "en": "Use when ready"
+            "zh_tw": "好了就用"
           },
           "alt_title": {
             "cn": "自动使用技能",
-            "en": "Auto Activation"
+            "zh_tw": "自動使用技能"
           },
           "description": {
             "cn": "有多少次用多少次，例如：棘刺 3 技能、桃金娘 1 技能等",
-            "en": "Use as many times as available. Examples: Thorns S3, Perfumer S1, etc."
+            "zh_tw": "有多少次用多少次，例如：棘刺 3 技能、桃金娘 1 技能等"
           }
         },
         "ready_to_use_times": {
           "title": {
             "cn": "好了就用（指定次数）",
-            "en": "Use when ready (specific times)"
+            "zh_tw": "好了就用（指定次數）"
           },
           "alt_title": {
             "cn": "自动使用技能（指定次数）",
-            "en": "Auto Activation (specific times)"
+            "zh_tw": "自動使用技能（指定次數）"
           },
           "description": {
             "cn": "默认仅使用一次，例如：山 2 技能",
-            "en": "By default, only use once. Example: Mountain S2"
+            "zh_tw": "默認僅使用一次，例如：山 2 技能"
           },
           "format": {
             "cn": "好了就用（{{times}}次）",
-            "en": {
-              "1": "Use when ready (1 time)",
-              "other": "Use when ready ({{times}} times)"
-            }
+            "zh_tw": "好了就用（{{times}}次）"
           },
           "alt_format": {
             "cn": "自动使用x{{times}}",
-            "en": "Auto Activation x{{times}}"
+            "zh_tw": "自動使用x{{times}}"
           }
         },
         "automatically": {
           "title": {
             "cn": "自动判断使用时机",
-            "en": "Automatically determine timing"
+            "zh_tw": "自動判斷使用時機"
           },
           "alt_title": {
             "cn": "智能判断使用时机",
-            "en": "Smart Activation"
+            "zh_tw": "智能判斷使用時機"
           },
           "description": {
             "cn": "(锐意开发中) 画饼.jpg",
-            "en": "(In development) Coming Soon™"
+            "zh_tw": "(銳意開發中) 畫餅.jpg"
           }
         },
         "unknown": {
           "title": {
             "cn": "未知用法",
-            "en": "Unknown usage"
+            "zh_tw": "未知用法"
           },
           "description": {
             "cn": "未知用法",
-            "en": "Unknown usage"
+            "zh_tw": "未知用法"
           }
         }
       },
       "direction": {
         "none": {
           "cn": "无",
-          "en": "None"
+          "zh_tw": "無"
         },
         "up": {
           "cn": "上",
-          "en": "Up"
+          "zh_tw": "上"
         },
         "down": {
           "cn": "下",
-          "en": "Down"
+          "zh_tw": "下"
         },
         "left": {
           "cn": "左",
-          "en": "Left"
+          "zh_tw": "左"
         },
         "right": {
           "cn": "右",
-          "en": "Right"
+          "zh_tw": "右"
         },
         "unknown": {
           "cn": "未知方向",
-          "en": "Unknown direction"
+          "zh_tw": "未知方向"
         }
       },
       "color": {
         "black": {
           "cn": "黑色",
-          "en": "Black"
+          "zh_tw": "黑色"
         },
         "gray": {
           "cn": "灰色",
-          "en": "Gray"
+          "zh_tw": "灰色"
         },
         "dark_red": {
           "cn": "红色",
-          "en": "Red"
+          "zh_tw": "紅色"
         },
         "dark_goldenrod": {
           "cn": "橙色",
-          "en": "Orange"
+          "zh_tw": "橙色"
         },
         "gold": {
           "cn": "黄色",
-          "en": "Yellow"
+          "zh_tw": "黃色"
         },
         "spring_green": {
           "cn": "绿色",
-          "en": "Green"
+          "zh_tw": "綠色"
         },
         "dark_cyan": {
           "cn": "青色",
-          "en": "Cyan"
+          "zh_tw": "青色"
         },
         "deep_sky_blue": {
           "cn": "蓝色",
-          "en": "Blue"
+          "zh_tw": "藍色"
         },
         "purple": {
           "cn": "紫色",
-          "en": "Purple"
+          "zh_tw": "紫色"
         },
         "pink": {
           "cn": "粉色",
-          "en": "Pink"
+          "zh_tw": "粉色"
         }
       }
     },
     "rating": {
       "overwhelmingly_negative": {
         "cn": "差评如潮",
-        "en": "Overwhelmingly Negative"
+        "zh_tw": "差評如潮"
       },
       "very_negative": {
         "cn": "特别差评",
-        "en": "Very Negative"
+        "zh_tw": "特別差評"
       },
       "negative": {
         "cn": "差评",
-        "en": "Negative"
+        "zh_tw": "差評"
       },
       "mostly_negative": {
         "cn": "多半差评",
-        "en": "Mostly Negative"
+        "zh_tw": "多半差評"
       },
       "mixed": {
         "cn": "褒贬不一",
-        "en": "Mixed"
+        "zh_tw": "褒貶不一"
       },
       "mostly_positive": {
         "cn": "多半好评",
-        "en": "Mostly Positive"
+        "zh_tw": "多半好評"
       },
       "positive": {
         "cn": "好评",
-        "en": "Positive"
+        "zh_tw": "好評"
       },
       "very_positive": {
         "cn": "特别好评",
-        "en": "Very Positive"
+        "zh_tw": "特別好評"
       },
       "overwhelmingly_positive": {
         "cn": "好评如潮",
-        "en": "Overwhelmingly Positive"
+        "zh_tw": "好評如潮"
       }
     },
     "types": {
       "action_group": {
         "operator_deploy_retreat": {
           "cn": "密探上/退场",
-          "en": "Operator Deploy/Retreat"
+          "zh_tw": "密探上/退場"
         },
         "operator_skills": {
           "cn": "密探技能",
-          "en": "Operator Skills"
+          "zh_tw": "密探技能"
         },
         "battle_control": {
           "cn": "作战控制",
-          "en": "Battle Control"
+          "zh_tw": "作戰控制"
         },
         "miscellaneous": {
           "cn": "杂项",
-          "en": "Miscellaneous"
+          "zh_tw": "雜項"
         },
         "unknown": {
           "cn": "未知",
-          "en": "Unknown"
+          "zh_tw": "未知"
         }
       },
       "action_type": {
         "deploy": {
           "title": {
             "cn": "部署",
-            "en": "Deploy"
+            "zh_tw": "部署"
           },
           "short_title": {
             "cn": "部署",
-            "en": "Deploy"
+            "zh_tw": "部署"
           },
           "description": {
             "cn": "部署密探至指定位置。当费用不够时，会一直等待到费用够（除非 timeout）",
-            "en": "Deploy operator to specified location. When DP is insufficient, will wait until enough (unless timeout)"
+            "zh_tw": "部署密探至指定位置。當費用不夠時，會一直等待到費用夠（除非 timeout）"
           }
         },
         "retreat": {
           "title": {
             "cn": "撤退",
-            "en": "Retreat"
+            "zh_tw": "撤退"
           },
           "short_title": {
             "cn": "撤退",
-            "en": "Retreat"
+            "zh_tw": "撤退"
           },
           "description": {
             "cn": "将密探从作战中撤出",
-            "en": "Withdraw operator from battle"
+            "zh_tw": "將密探從作戰中撤出"
           }
         },
         "skill": {
           "title": {
             "cn": "使用技能",
-            "en": "Use Skill"
+            "zh_tw": "使用技能"
           },
           "short_title": {
             "cn": "技能",
-            "en": "Skill"
+            "zh_tw": "技能"
           },
           "description": {
             "cn": "当技能 CD 没转好时，一直等待到技能 CD 好（除非 timeout）",
-            "en": "When skill cooldown isn't ready, will wait until it is (unless timeout)"
+            "zh_tw": "當技能 CD 沒轉好時，一直等待到技能 CD 好（除非 timeout）"
           }
         },
         "skill_usage": {
           "title": {
             "cn": "切换技能用法",
-            "en": "Switch Skill Usage"
+            "zh_tw": "切換技能用法"
           },
           "short_title": {
             "cn": "技能用法",
-            "en": "Skill Usage"
+            "zh_tw": "技能用法"
           },
           "description": {
             "cn": "切换密探技能用法。例如，刚下桃金娘、需要她帮忙打几个怪，但此时不能自动开技能否则会漏怪，等中后期平稳了才需要她自动开技能，则可以在对应时刻后，将桃金娘的技能用法从「不自动使用」改为「好了就用」。",
-            "en": "Switch operator skill usage. For example, when Perfumer is just deployed and needs to help defeat some enemies, but automatic skill activation would miss enemies, and only in mid/late game should she activate skills automatically, you can change Perfumer's skill usage from 'Don't use automatically' to 'Use when ready'."
+            "zh_tw": "切換密探技能用法。例如，剛下桃金娘、需要她幫忙打幾個怪，但此時不能自動開技能否則會漏怪，等中後期平穩了才需要她自動開技能，則可以在對應時刻後，將桃金娘的技能用法從「不自動使用」改為「好了就用」。"
           }
         },
         "speed_up": {
           "title": {
             "cn": "切换二倍速",
-            "en": "Toggle 2× Speed"
+            "zh_tw": "切換二倍速"
           },
           "short_title": {
             "cn": "二倍速",
-            "en": "2× Speed"
+            "zh_tw": "二倍速"
           },
           "description": {
             "cn": "执行后切换至二倍速，再次执行切换至一倍速",
-            "en": "After execution, switches to 2× speed; executing again switches to 1× speed"
+            "zh_tw": "執行後切換至二倍速，再次執行切換至一倍速"
           }
         },
         "bullet_time": {
           "title": {
             "cn": "进入子弹时间",
-            "en": "Enter Bullet Time"
+            "zh_tw": "進入子彈時間"
           },
           "short_title": {
             "cn": "子弹时间",
-            "en": "Bullet Time"
+            "zh_tw": "子彈時間"
           },
           "description": {
             "cn": "执行后将点击任意密探，进入 1/5 速度状态；再进行任意动作会恢复正常速度。下一个任务必须是\"部署\"、\"技能\"、\"撤退\"其中之一，此时会提前点开该密探，等待满足条件后再执行。",
-            "en": "After execution, click any operator to enter 1/5 speed state; any further action will restore normal speed. The next task must be one of 'Deploy', 'Skill', or 'Retreat', which will select that operator in advance and wait until conditions are met before executing."
+            "zh_tw": "執行後將點擊任意密探，進入 1/5 速度狀態；再進行任意動作會恢復正常速度。下一個任務必須是\"部署\"、\"技能\"、\"撤退\"其中之一，此時會提前點開該密探，等待滿足條件後再執行。"
           }
         },
         "move_camera": {
           "title": {
             "cn": "移动相机",
-            "en": "Move Camera"
+            "zh_tw": "移動相機"
           },
           "short_title": {
             "cn": "移动相机",
-            "en": "Camera"
+            "zh_tw": "移動相機"
           },
           "description": {
             "cn": "仅用于引航者试炼模式中切换区域",
-            "en": "Only used for switching areas in Integrated Strategies mode"
+            "zh_tw": "僅用於引航者試煉模式中切換區域"
           }
         },
         "skill_daemon": {
           "title": {
             "cn": "开始挂机",
-            "en": "Start Auto Mode"
+            "zh_tw": "開始掛機"
           },
           "short_title": {
             "cn": "挂机",
-            "en": "Auto"
+            "zh_tw": "掛機"
           },
           "description": {
             "cn": "进入挂机模式。仅使用 \"好了就用\" 的技能，其他什么都不做，直到战斗结束",
-            "en": "Enter auto mode. Only uses skills set to 'Use when ready', does nothing else until battle ends"
+            "zh_tw": "進入掛機模式。僅使用 \"好了就用\" 的技能，其他什麼都不做，直到戰鬥結束"
           }
         },
         "output": {
           "title": {
             "cn": "打印描述内容",
-            "en": "Print Description"
+            "zh_tw": "打印描述內容"
           },
           "short_title": {
             "cn": "打印描述",
-            "en": "Print"
+            "zh_tw": "打印描述"
           },
           "description": {
             "cn": "对作战没有实际作用，仅用于输出描述内容（用来做字幕之类的）",
-            "en": "Has no actual effect on battle, only outputs description content (for subtitles, etc.)"
+            "zh_tw": "對作戰沒有實際作用，僅用於輸出描述內容（用來做字幕之類的）"
           }
         },
         "unknown": {
           "title": {
             "cn": "未知类型",
-            "en": "Unknown Type"
+            "zh_tw": "未知類型"
           },
           "short_title": {
             "cn": "未知",
-            "en": "Unknown"
+            "zh_tw": "未知"
           },
           "description": {
             "cn": "未知动作类型",
-            "en": "Unknown action type"
+            "zh_tw": "未知動作類型"
           }
         }
       },
@@ -3862,61 +3853,61 @@
         "intermediate_pre_delay": {
           "title": {
             "cn": "前置延迟",
-            "en": "Pre-Delay"
+            "zh_tw": "前置延遲"
           },
           "description": {
             "cn": "延迟一定时间后，开始检查其他条件。注意：这里的含义和旧版编辑器以及 MAA 作业协议里的前置延迟是相反的",
-            "en": "Delay for a certain time before checking other conditions. Note: The meaning here is opposite to the pre-delay in the old editor and MAA Job Protocol."
+            "zh_tw": "延遲一定時間後，開始檢查其他條件。注意：這裡的含義和舊版編輯器以及 MAA 作業協議裡的前置延遲是相反的"
           }
         },
         "intermediate_post_delay": {
           "title": {
             "cn": "后置延迟",
-            "en": "Post-Delay"
+            "zh_tw": "後置延遲"
           },
           "description": {
             "cn": "所有条件全部满足后，延迟一定时间。注意：这里的含义和旧版编辑器以及 MAA 作业协议里的后置延迟是相反的",
-            "en": "Delay for a certain time after all conditions are met. Note: The meaning here is opposite to the post-delay in the old editor and MAA Job Protocol."
+            "zh_tw": "所有條件全部滿足後，延遲一定時間。注意：這裡的含義和舊版編輯器以及 MAA 作業協議裡的後置延遲是相反的"
           }
         },
         "costs": {
           "title": {
             "cn": "费用",
-            "en": "DP"
+            "zh_tw": "費用"
           },
           "description": {
             "cn": "达到一定费用后开始执行。费用受潜能等影响，可能并不完全正确，仅适合对时间轴要求不严格的战斗，否则请使用费用变化量条件。仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
-            "en": "Execute after reaching a certain DP. DP is affected by potential and other factors, and may not be completely accurate. It is only suitable for battles with less strict timeline requirements. Otherwise, please use the DP Change condition. Recognition is more reliable with a two-digit DP; a three-digit DP may be recognized incorrectly and are not recommended."
+            "zh_tw": "達到一定費用後開始執行。費用受潛能等影響，可能並不完全正確，僅適合對時間軸要求不嚴格的戰鬥，否則請使用費用變化量條件。僅在費用是兩位數的時候識別的比較準，三位數的費用可能會識別錯，不推薦使用。"
           }
         },
         "cost_changes": {
           "title": {
             "cn": "费用变化量",
-            "en": "DP Change"
+            "zh_tw": "費用變化量"
           },
           "description": {
             "cn": "从前一个动作结束时的费用开始计算，达到一定变化量后开始执行。支持负数，即费用变少了（例如“孑”等吸费密探使得费用变少了）。仅在费用是两位数的时候识别的比较准，三位数的费用可能会识别错，不推荐使用。",
-            "en": "Execute after reaching a certain change in DP from the previous action. Supports negative values (e.g., when DP decreases due to operators like Jaye). Recognition is more reliable with a two-digit DP; a three-digit DP may be recognized incorrectly and are not recommended."
+            "zh_tw": "從前一個動作結束時的費用開始計算，達到一定變化量後開始執行。支持負數，即費用變少了（例如“孑”等吸費密探使得費用變少了）。僅在費用是兩位數的時候識別的比較準，三位數的費用可能會識別錯，不推薦使用。"
           }
         },
         "kills": {
           "title": {
             "cn": "击杀",
-            "en": "Kill Count"
+            "zh_tw": "擊殺"
           },
           "description": {
             "cn": "达到一定击杀数时开始执行",
-            "en": "Execute after reaching a certain number of kills"
+            "zh_tw": "達到一定擊殺數時開始執行"
           }
         },
         "cooling": {
           "title": {
             "cn": "冷却中的密探",
-            "en": "Operators on cooldown"
+            "zh_tw": "冷卻中的密探"
           },
           "description": {
             "cn": "冷却中的密探达到一定数量时开始执行",
-            "en": "Execute after reaching a certain number of operators on cooldown"
+            "zh_tw": "冷卻中的密探達到一定數量時開始執行"
           }
         }
       }
@@ -3926,137 +3917,137 @@
     "_404": {
       "page_not_found": {
         "cn": "未找到页面",
-        "en": "Page Not Found"
+        "zh_tw": "未找到頁面"
       },
       "check_url": {
         "cn": "请检查您的 URL 是否正确",
-        "en": "Please check if your URL is correct"
+        "zh_tw": "請檢查您的 URL 是否正確"
       },
       "return_home": {
         "cn": "返回首页",
-        "en": "Return to Home"
+        "zh_tw": "返回首頁"
       }
     },
     "index": {
       "create_new_task": {
         "cn": "创建新作业",
-        "en": "Create a new Job"
+        "zh_tw": "創建新作業"
       },
       "advertisement": {
         "cn": "广告",
-        "en": "Ad"
+        "zh_tw": "廣告"
       }
     },
     "profile": {
       "invalid_id": {
         "cn": "ID 无效",
-        "en": "Invalid ID"
+        "zh_tw": "ID 無效"
       },
       "tasks": {
         "cn": "作业",
-        "en": "Jobs"
+        "zh_tw": "作業"
       },
       "task_sets": {
         "cn": "作业集",
-        "en": "Job Sets"
+        "zh_tw": "作業集"
       }
     },
     "create": {
       "publish": {
         "cn": "发布",
-        "en": "Publish"
+        "zh_tw": "發佈"
       },
       "update": {
         "cn": "更新",
-        "en": "Update"
+        "zh_tw": "更新"
       },
       "task_publish_success": {
         "cn": "作业发布成功",
-        "en": "Job published successfully"
+        "zh_tw": "作業發佈成功"
       },
       "task_update_success": {
         "cn": "作业更新成功",
-        "en": "Job updated successfully"
+        "zh_tw": "作業更新成功"
       },
       "task_publish_failed": {
         "cn": "作业发布失败：{{error}}",
-        "en": "Failed to publish Job: {{error}}"
+        "zh_tw": "作業發佈失敗：{{error}}"
       },
       "task_update_failed": {
         "cn": "作业更新失败：{{error}}",
-        "en": "Failed to update Job: {{error}}"
+        "zh_tw": "作業更新失敗：{{error}}"
       },
       "negative_cost_not_supported": {
         "cn": "目前暂不支持上传费用变化量为负数的动作（第{{actionIndex}}个动作）",
-        "en": "Currently, actions with negative DP Change are not supported (action #{{actionIndex}})"
+        "zh_tw": "目前暫不支持上傳費用變化量為負數的動作（第{{actionIndex}}個動作）"
       },
       "untitled": {
         "cn": "无标题",
-        "en": "Untitled"
+        "zh_tw": "無標題"
       },
       "public": {
         "cn": "公开",
-        "en": "Public"
+        "zh_tw": "公開"
       },
       "public_task_description": {
         "cn": "公开作业：会在所有列表中显示",
-        "en": "Public Job: Will be visible in all lists"
+        "zh_tw": "公開作業：會在所有列表中顯示"
       },
       "private_task_description": {
         "cn": "私有作业：其他人无法在列表中看见，但可以通过神秘代码访问",
-        "en": "Private Job: Others won't see it in lists, but can be accessed via secret code"
+        "zh_tw": "私有作業：其他人無法在列表中看見，但可以通過神秘代碼訪問"
       }
     },
     "editor": {
       "create": {
         "submit": {
           "cn": "创建作业",
-          "en": "Create Job"
+          "zh_tw": "創建作業"
         },
         "subtitle": {
           "cn": "正在创建新作业",
-          "en": "Creating New Job"
+          "zh_tw": "正在創建新作業"
         },
         "success": {
           "cn": "作业创建成功",
-          "en": "Job created successfully"
+          "zh_tw": "作業創建成功"
         }
       },
       "edit": {
         "submit": {
           "cn": "更新作业",
-          "en": "Update Job"
+          "zh_tw": "更新作業"
         },
         "subtitle": {
           "cn": "正在编辑作业",
-          "en": "Editing Job"
+          "zh_tw": "正在編輯作業"
         },
         "success": {
           "cn": "作业更新成功",
-          "en": "Job updated successfully"
+          "zh_tw": "作業更新成功"
         }
       },
       "upload_failed": {
         "cn": "作业上传失败：{{error}}",
-        "en": "Failed to upload Job: {{error}}"
+        "zh_tw": "作業上傳失敗：{{error}}"
       },
       "validation_error": {
         "cn": "作业内容存在错误，请检查",
-        "en": "Job content has errors, please check"
+        "zh_tw": "作業內容存在錯誤，請檢查"
       }
     },
     "about": {
       "slogan_line1": {
         "cn": "作业站解君愁",
-        "en": "The Job Site Solves Your Worries"
+        "zh_tw": "作業站解君愁"
       },
       "slogan_line2": {
         "cn": "点个收藏不迷路",
-        "en": "Bookmark us so can find your way back!"
+        "zh_tw": "點個收藏不迷路"
       },
       "changelog": {
         "cn": "更新日志",
-        "en": "Changelog"
+        "zh_tw": "更新日誌"
       }
     }
   },
@@ -4064,27 +4055,27 @@
     "operation": {
       "json_downloaded": {
         "cn": "已下载作业 JSON 文件，前往 MAA 选择即可使用~",
-        "en": "Job JSON file downloaded, go to MAA to use it~"
+        "zh_tw": "已下載作業 JSON 文件，前往 MAA 選擇即可使用~"
       },
       "json_download_failed": {
         "cn": "JSON下载失败：{{error}}",
-        "en": "JSON download failed: {{error}}"
+        "zh_tw": "JSON下載失敗：{{error}}"
       },
       "json_data_error": {
         "cn": "JSON 数据错误，请联系开发者",
-        "en": "JSON data error, please contact the developer"
+        "zh_tw": "JSON 數據錯誤，請聯繫開發者"
       },
       "siming_json_missing": {
         "cn": "未找到司命动作，无法导出",
-        "en": "Siming actions not found; export unavailable"
+        "zh_tw": "未找到司命動作，無法導出"
       },
       "shortcode_copied": {
         "cn": "已复制神秘代码，前往 MAA 粘贴即可使用~",
-        "en": "Secret code copied, paste it in MAA to use it~"
+        "zh_tw": "已複製神秘代碼，前往 MAA 粘貼即可使用~"
       },
       "shortcode_copy_failed": {
         "cn": "复制神秘代码失败：{{error}}",
-        "en": "Failed to copy secret code: {{error}}"
+        "zh_tw": "複製神秘代碼失敗：{{error}}"
       }
     }
   },
@@ -4092,92 +4083,92 @@
     "error": {
       "unknown_error": {
         "cn": "未知错误",
-        "en": "Unknown error"
+        "zh_tw": "未知錯誤"
       },
       "unauthorized": {
         "cn": "未登录，请先登录",
-        "en": "Not logged in, please login first"
+        "zh_tw": "未登錄，請先登錄"
       },
       "token_expired": {
         "cn": "登录已过期，请重新登录",
-        "en": "Login has expired, please login again"
+        "zh_tw": "登錄已過期，請重新登錄"
       },
       "invalid_token": {
         "cn": "登录失效，请重新登录",
-        "en": "Login is invalid, please login again"
+        "zh_tw": "登錄失效，請重新登錄"
       },
       "not_found": {
         "cn": "资源不存在",
-        "en": "Resource not found"
+        "zh_tw": "資源不存在"
       },
       "network_error": {
         "cn": "网络错误",
-        "en": "Network error"
+        "zh_tw": "網絡錯誤"
       },
       "api_error": {
         "cn": "请求错误",
-        "en": "Request error"
+        "zh_tw": "請求錯誤"
       }
     },
     "maa_copilot_client": {
       "invalid_response": {
         "cn": "返回值无效",
-        "en": "Invalid response"
+        "zh_tw": "返回值無效"
       },
       "server_error": {
         "cn": "服务器错误",
-        "en": "Server error"
+        "zh_tw": "服務器錯誤"
       },
       "serialization_comment": {
         "cn": "默认的序列化会把 undefined 转成字符串，我真的会谢",
-        "en": "Default serialization converts undefined to string, which is undesirable"
+        "zh_tw": "默認的序列化會把 undefined 轉成字符串，我真的會謝"
       }
     }
   },
   "links": {
     "home": {
       "cn": "首页",
-      "en": "Home"
+      "zh_tw": "首頁"
     },
     "create_job": {
       "cn": "创建作业",
-      "en": "Create Job"
+      "zh_tw": "創建作業"
     },
     "editor": {
       "cn": "编辑器v2",
-      "en": "Editor v2"
+      "zh_tw": "編輯器v2"
     },
     "about": {
       "cn": "关于",
-      "en": "About"
+      "zh_tw": "關於"
     },
     "official_site": {
       "cn": "MaaYuan 导航站",
-      "en": "MaaYuan 导航站"
+      "zh_tw": "MaaYuan 導航站"
     },
     "feedback": {
       "cn": "意见与反馈",
-      "en": "Feedback"
+      "zh_tw": "意見與反饋"
     },
     "maa_repo": {
       "cn": "MaaYuan GitHub Repo",
-      "en": "MaaYuan GitHub Repo"
+      "zh_tw": "MaaYuan GitHub Repo"
     },
     "frontend_repo": {
       "cn": "前端 GitHub Repo",
-      "en": "Frontend GitHub Repo"
+      "zh_tw": "前端 GitHub Repo"
     },
     "backend_repo": {
       "cn": "后端 GitHub Repo",
-      "en": "Backend GitHub Repo"
+      "zh_tw": "後端 GitHub Repo"
     },
     "creator_group": {
       "cn": "作业制作者交流群：{{groupNumber}}",
-      "en": "Creator Community Group: {{groupNumber}}"
+      "zh_tw": "作業製作者交流群：{{groupNumber}}"
     },
     "sharing_group": {
       "cn": "作业分享群",
-      "en": "Job Sharing Group"
+      "zh_tw": "作業分享群"
     }
   }
 }

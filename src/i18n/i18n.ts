@@ -7,8 +7,14 @@ import { Fragment, ReactElement, ReactNode, createElement } from 'react'
 import { preserveLineBreaks } from '../utils/react'
 import ESSENTIALS from './generated/essentials'
 
-export const languages = ['cn', 'en'] as const
-const defaultLanguage = navigator.language.startsWith('zh') ? 'cn' : 'en'
+export const languages = ['cn', 'zh_tw'] as const
+const browserLanguage = navigator.language.toLowerCase()
+const defaultLanguage =
+  browserLanguage.includes('zh-hant') ||
+  browserLanguage.includes('zh_tw') ||
+  browserLanguage.includes('zh-tw')
+    ? 'zh_tw'
+    : 'cn'
 
 const updater = mitt()
 
@@ -16,7 +22,7 @@ export type Language = (typeof languages)[number]
 
 export type I18NTranslations = MakeTranslations<
   | typeof import('./generated/cn').default
-  | typeof import('./generated/en').default
+  | typeof import('./generated/zh_tw').default
 > & { essentials: I18NEssentials }
 
 type I18NEssentials = MakeTranslations<(typeof ESSENTIALS)[Language]>
@@ -31,11 +37,11 @@ type MakeTranslations<T> = MakeEndpoints<ParseValue<T>>
 //
 // During this pass, we preserve distributivity to properly handle cases where a message
 // is of different kinds in different languages. In the following example, the "cn"
-// message is a plain string, while the "en" message is a plural object:
+// message is a plain string, while the "zh_tw" message is a plural object:
 //
 // "error_count": {
 //   "cn": "{{count}} 个错误",
-//   "en": {
+//   "zh_tw": {
 //     "1": "{{count}} error",
 //     "other": "{{count}} errors"
 //   }

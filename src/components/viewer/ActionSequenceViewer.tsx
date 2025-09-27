@@ -202,7 +202,7 @@ function formatTokenLabel(
 ): string {
   const trimmed = token.trim()
   if (!trimmed) {
-    return language === 'en' ? 'Unspecified Action' : '未设定动作'
+    return language === 'zh_tw' ? 'Unspecified Action' : '未设定动作'
   }
 
   const baseMatch = trimmed.match(/^(\d)([普大下])$/)
@@ -216,7 +216,7 @@ function formatTokenLabel(
     const payload = trimmed.slice('额外:'.length)
     if (payload.startsWith('等待:')) {
       const wait = payload.split(':')[1] ?? '0'
-      return language === 'en'
+      return language === 'zh_tw'
         ? `Extra: Wait ${wait}ms`
         : `额外:等待 ${wait}ms`
     }
@@ -226,28 +226,28 @@ function formatTokenLabel(
       const symbol = againMatch[2] as '普' | '大' | '下'
       const label = symbolToActionLabel(symbol, language)
       const slotLabel = buildSlotLabel(slotAssignments, slot, label, language)
-      return language === 'en'
+      return language === 'zh_tw'
         ? `Extra: ${slotLabel}`
         : `额外:${slotLabel}`
     }
     if (payload === '左侧目标') {
-      return language === 'en' ? 'Extra: Switch to Left Target' : '额外:左侧目标'
+      return language === 'zh_tw' ? 'Extra: Switch to Left Target' : '额外:左侧目标'
     }
     if (payload === '右侧目标') {
-      return language === 'en' ? 'Extra: Switch to Right Target' : '额外:右侧目标'
+      return language === 'zh_tw' ? 'Extra: Switch to Right Target' : '额外:右侧目标'
     }
-    return language === 'en' ? `Extra: ${payload}` : `额外:${payload}`
+    return language === 'zh_tw' ? `Extra: ${payload}` : `额外:${payload}`
   }
 
   if (trimmed.startsWith('重开:')) {
     const rest = trimmed.slice('重开:'.length)
     if (rest === '全灭') {
-      return language === 'en' ? 'Restart: Full Team' : trimmed
+      return language === 'zh_tw' ? 'Restart: Full Team' : trimmed
     }
     if (rest === '左上角') {
-      return language === 'en' ? 'Restart: Manual' : trimmed
+      return language === 'zh_tw' ? 'Restart: Manual' : trimmed
     }
-    return language === 'en' ? `Restart: ${rest}` : trimmed
+    return language === 'zh_tw' ? `Restart: ${rest}` : trimmed
   }
 
   return trimmed
@@ -260,20 +260,20 @@ function buildSlotLabel(
   language: Language,
 ): string {
   const name = slotAssignments[slot]?.name?.trim()
-  const slotLabel = language === 'en' ? `Slot ${slot}` : `${slot}号位`
-  const separator = name ? (language === 'en' ? ' · ' : '·') : ''
+  const slotLabel = language === 'zh_tw' ? `Slot ${slot}` : `${slot}号位`
+  const separator = name ? (language === 'zh_tw' ? ' · ' : '·') : ''
   const base = name ? `${slotLabel}${separator}${name}` : slotLabel
   if (!actionLabel) {
     return base
   }
-  return language === 'en' ? `${base} (${actionLabel})` : `${base}（${actionLabel}）`
+  return language === 'zh_tw' ? `${base} (${actionLabel})` : `${base}（${actionLabel}）`
 }
 
 function symbolToActionLabel(
   symbol: '普' | '大' | '下',
   language: Language,
 ): string {
-  if (language === 'en') {
+  if (language === 'zh_tw') {
     if (symbol === '普') return 'Normal Attack'
     if (symbol === '大') return 'Ultimate'
     return 'Defense'

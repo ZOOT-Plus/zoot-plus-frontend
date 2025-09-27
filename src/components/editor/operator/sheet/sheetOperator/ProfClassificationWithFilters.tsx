@@ -119,7 +119,7 @@ export const ProfClassificationWithFilters: FC<
           <ProfIcon
             key={prof.id}
             profId={prof.id}
-            name={language === 'en' && prof.name_en ? prof.name_en : prof.name}
+            name={language === 'zh_tw' && prof.name_en ? prof.name_en : prof.name}
             selected={selectedProf.includes(prof.id)}
             onProfClick={() =>
               setProfFilter((prev) => ({
@@ -139,7 +139,7 @@ export const ProfClassificationWithFilters: FC<
                 className={clsx(
                   'truncate cursor-pointer my-3 opacity-50 hover:underline hover:opacity-90',
                   selectedProf.includes(subProf.id) && '!opacity-100 underline',
-                  (language === 'en' && subProf.name_en
+                  (language === 'zh_tw' && subProf.name_en
                     ? subProf.name_en
                     : subProf.name
                   ).length > 3 && '!text-base',
@@ -151,7 +151,7 @@ export const ProfClassificationWithFilters: FC<
                   }))
                 }
               >
-                {language === 'en' && subProf.name_en
+                {language === 'zh_tw' && subProf.name_en
                   ? subProf.name_en
                   : subProf.name}
               </H4>

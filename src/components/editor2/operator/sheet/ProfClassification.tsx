@@ -105,7 +105,7 @@ export const ProfClassification: FC<ProfClassification> = () => {
                 }))
               }
             >
-              {language === 'en' && subProf.name_en
+              {language === 'zh_tw' && subProf.name_en
                 ? subProf.name_en
                 : subProf.name}
             </H4>
@@ -118,7 +118,7 @@ export const ProfClassification: FC<ProfClassification> = () => {
           <ProfIcon
             key={prof.id}
             profId={prof.id}
-            name={language === 'en' && prof.name_en ? prof.name_en : prof.name}
+            name={language === 'zh_tw' && prof.name_en ? prof.name_en : prof.name}
             selected={selectedProf.includes(prof.id)}
             onProfClick={() =>
               setProfFilter((prev) => ({

@@ -146,7 +146,7 @@ export const OperatorFilter: FC<OperatorFilterProps> = ({
                       id={id}
                       rarity={rarity}
                     />
-                    &nbsp;{language === 'en' ? name_en : name}
+                    &nbsp;{language === 'zh_tw' ? name_en : name}
                     &nbsp;
                   </div>
                 </Tag>
@@ -159,7 +159,7 @@ export const OperatorFilter: FC<OperatorFilterProps> = ({
                       id={id}
                       rarity={rarity}
                     />
-                    &nbsp;{language === 'en' ? name_en : name}
+                    &nbsp;{language === 'zh_tw' ? name_en : name}
                     &nbsp; {/* 两边加空格让删除线更显眼一些 */}
                   </div>
                 </Tag>
