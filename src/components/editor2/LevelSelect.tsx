@@ -122,9 +122,10 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         result.push(category)
       }
     }
-    if (selectedLevel) {
+    if (selectedLevel && !isCustomLevel(selectedLevel)) {
       const category = getLevelCategory(selectedLevel)
       if (!seen.has(category)) {
+        seen.add(category)
         result.push(category)
       }
     }
@@ -144,16 +145,32 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     }
   }, [categories, selectedCategory])
 
+  const categoryOptions = useMemo(() => {
+    if (!selectedCategory) {
+      return categories
+    }
+    if (categories.includes(selectedCategory)) {
+      return categories
+    }
+    return [...categories, selectedCategory]
+  }, [categories, selectedCategory])
+
   const previousValueRef = useRef<string | undefined>(undefined)
   useEffect(() => {
     if (value !== previousValueRef.current) {
       previousValueRef.current = value
-      const category = selectedLevel
-        ? getLevelCategory(selectedLevel)
-        : categories[0] ?? ''
-      if (category && category !== selectedCategory) {
-        setSelectedCategory(category)
-        updateQuery('', true)
+
+      if (selectedLevel && !isCustomLevel(selectedLevel)) {
+        const category = getLevelCategory(selectedLevel)
+        if (category && category !== selectedCategory) {
+          setSelectedCategory(category)
+          updateQuery('', true)
+        }
+        return
+      }
+
+      if (!selectedCategory && categories.length) {
+        setSelectedCategory(categories[0])
       }
     }
   }, [
@@ -289,10 +306,10 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           {t.components.editor2.LevelSelect.category_label}
         </span>
         <Suggest<string>
-          items={categories}
+          items={categoryOptions}
           itemsEqual={(a, b) => a === b}
           selectedItem={selectedCategory || null}
-          disabled={disabled || isLoading || categories.length === 0}
+          disabled={disabled || isLoading || categoryOptions.length === 0}
           itemListPredicate={(search, items) => {
             const normalized = (search ?? '').trim().toLowerCase()
             if (!normalized) {
@@ -332,7 +349,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           inputProps={{
             large: true,
             placeholder: t.components.editor2.LevelSelect.category_label,
-            disabled: disabled || isLoading || categories.length === 0,
+            disabled: disabled || isLoading || categoryOptions.length === 0,
           }}
           popoverProps={{
             minimal: true,
