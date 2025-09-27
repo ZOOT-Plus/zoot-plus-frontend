@@ -162,7 +162,7 @@ const ProfIcon: FC<ProfIconProp> = ({
       ) : (
         <img
           {...restImgProps}
-          className="invert dark:invert-0"
+          className="dark:invert-0"
           src={'/assets/prof-icons/' + profId + '.png'}
           alt=""
           title={name}
