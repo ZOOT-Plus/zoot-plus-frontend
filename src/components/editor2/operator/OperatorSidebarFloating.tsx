@@ -95,8 +95,9 @@ export const OperatorSidebarFloating: FC = () => {
             className={clsx(
               'fixed bottom-20 right-4 z-50 flex w-[min(520px,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
               'transition-all duration-200 ease-out',
+              // 展开态需避免 transform，否则 dnd-kit 会使用错误坐标
               open
-                ? 'translate-y-0 opacity-100'
+                ? 'opacity-100'
                 : 'translate-y-4 opacity-0 pointer-events-none',
             )}
             style={{ height: 'min(720px, calc(100vh - 6rem))' }}
