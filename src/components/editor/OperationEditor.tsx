@@ -203,70 +203,20 @@ export const StageNameInput: FC<{
 const DifficultyPicker: FC<{
   control: Control<CopilotDocV1.Operation>
 }> = ({ control }) => {
-  const t = useTranslation()
   const {
-    field: { value = OpDifficulty.UNKNOWN, onChange },
-    fieldState: { error },
+    field: { value, onChange },
   } = useController({
     name: 'difficulty',
     control,
   })
 
-  const stageName = useWatch({ control, name: 'stageName' })
-  const { data: levels } = useLevels()
-  const invalid = useMemo(() => {
-    // if the stageName is a custom level, we always allow setting difficulty
-    if (!findLevelByStageName(levels, stageName)) {
-      return false
-    }
-
-    if (hasHardMode(levels, stageName)) {
-      return false
-    }
-
-    return true
-  }, [levels, stageName])
-
   useEffect(() => {
-    if (invalid && value !== OpDifficulty.UNKNOWN) {
+    if (value === undefined) {
       onChange(OpDifficulty.UNKNOWN)
     }
-  }, [invalid, value, onChange])
+  }, [value, onChange])
 
-  const toggle = (bit: OpDifficultyBitFlag) => {
-    onChange(value ^ bit)
-  }
-
-  return (
-    <FormField2
-      label={t.components.editor.OperationEditor.stage_difficulty}
-      description={t.components.editor.OperationEditor.difficulty_description}
-      FormGroupProps={{
-        helperText: invalid
-          ? t.components.editor.OperationEditor.no_challenge_mode
-          : '',
-      }}
-      field="difficulty"
-      error={error}
-    >
-      <ButtonGroup>
-        <Button
-          disabled={invalid}
-          active={!!(value & OpDifficultyBitFlag.REGULAR)}
-          onClick={() => toggle(OpDifficultyBitFlag.REGULAR)}
-        >
-          {t.components.editor.OperationEditor.normal}
-        </Button>
-        <Button
-          disabled={invalid}
-          active={!!(value & OpDifficultyBitFlag.HARD)}
-          onClick={() => toggle(OpDifficultyBitFlag.HARD)}
-        >
-          {t.components.editor.OperationEditor.challenge}
-        </Button>
-      </ButtonGroup>
-    </FormField2>
-  )
+  return null
 }
 
 export interface OperationEditorProps {
@@ -297,11 +247,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       const level = findLevelByStageName(levels, stageName)
 
       if (level) {
+        const normalizedName = level.name?.trim()
         setValue(
           'doc.title',
-          [level.catTwo, level.catThree, level.name]
-            .filter(Boolean)
-            .join(' - '),
+          normalizedName?.length ? normalizedName : level.stageName,
         )
       }
     }
@@ -369,10 +318,10 @@ export const OperationEditor: FC<OperationEditorProps> = ({
           </div>
 
           <div className="flex flex-col md:flex-row">
-            <div className="w-full md:w-1/4 md:mr-8">
+            <div className="hidden">
               <DifficultyPicker control={control} />
             </div>
-            <div className="w-full md:w-3/4">
+            <div className="w-full">
               <FormField
                 label={t.components.editor.OperationEditor.job_description}
                 field="doc.details"

@@ -10,12 +10,12 @@ import {
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import { Paths } from 'type-fest'
 
 import { i18n, useTranslation } from '../../i18n/i18n'
 import { isCustomLevel } from '../../models/level'
-import { DifficultyPicker } from './DifficultyPicker'
+import { OpDifficulty } from '../../models/operation'
 import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
@@ -29,6 +29,14 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
   const [metadata, setMetadata] = useImmerAtom(editorAtoms.metadata)
   const edit = useEdit()
   const t = useTranslation()
+
+  useEffect(() => {
+    if (info.difficulty === undefined) {
+      setInfo((prev) => {
+        prev.difficulty = OpDifficulty.UNKNOWN
+      })
+    }
+  }, [info.difficulty, setInfo])
 
   return (
     <div
@@ -47,7 +55,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         labelInfo="*"
       >
         <LevelSelect
-          difficulty={info.difficulty}
+          difficulty={info.difficulty ?? OpDifficulty.UNKNOWN}
           value={info.stageName}
           onChange={(stageId, level) => {
             edit(() => {
@@ -56,11 +64,10 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
 
                 if (level && !prev.doc.title) {
                   // 如果没有标题，则使用关卡名作为标题
-                  prev.doc.title = isCustomLevel(level)
-                    ? level.name
-                    : [level.catTwo, level.catThree, level.name]
-                        .filter(Boolean)
-                        .join(' - ')
+                  const normalizedName = level.name?.trim()
+                  prev.doc.title = normalizedName?.length
+                    ? normalizedName
+                    : level.stageId
                 }
               })
               return {
@@ -72,31 +79,13 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         />
         <FieldError path="stage_name" />
       </FormGroup>
-      <FormGroup
-        contentClassName="grow"
-        label={t.components.editor2.InfoEditor.difficulty}
-      >
-        <DifficultyPicker
-          stageName={info.stageName}
-          value={info.difficulty}
-          onChange={(value, programmatically) => {
-            edit((get, set, skip) => {
-              setInfo((prev) => {
-                prev.difficulty = value
-              })
-              // 如果是由于关卡变化而导致的难度变化，则不需要 checkpoint
-              if (programmatically) {
-                return skip
-              }
-              return {
-                action: 'update-difficulty',
-                desc: i18n.actions.editor2.set_difficulty,
-              }
-            })
-          }}
-        />
-        <FieldError path="difficulty" />
-      </FormGroup>
+      {/* 隐藏适用难度选择，保留字段以兼容旧数据 */}
+      <input
+        type="hidden"
+        name="difficulty"
+        value={info.difficulty ?? OpDifficulty.UNKNOWN}
+        readOnly
+      />
       <FormGroup
         contentClassName="grow"
         label={t.components.editor2.InfoEditor.title}

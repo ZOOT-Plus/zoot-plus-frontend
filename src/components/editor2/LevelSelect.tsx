@@ -299,6 +299,14 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     return level.stageId
   }
 
+  const formatLevelInputValue = (level: Level) => {
+    const trimmedName = level.name?.trim()
+    if (trimmedName) {
+      return trimmedName
+    }
+    return level.stageId
+  }
+
   return (
     <div className="flex flex-wrap gap-2 items-center">
       <div className="flex items-center gap-2">
@@ -345,6 +353,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             setSelectedCategory(category)
             setActiveItem(null)
             updateQuery('', true)
+            if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
+              onChange('')
+            }
           }}
           inputProps={{
             large: true,
@@ -398,7 +409,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             />
           )
         }
-        inputValueRenderer={formatLevelLabel}
+        inputValueRenderer={formatLevelInputValue}
         selectedItem={selectedLevel}
         onItemSelect={(level) => {
           if (!isCustomLevel(level)) {
