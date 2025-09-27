@@ -87,13 +87,13 @@ const VIEW_MODE_META: Record<
   { label: string; icon: IconName; description: string }
 > = {
   round: {
-    label: '回合视图',
+    label: '动作链视图',
     icon: 'timeline-events',
     description:
-      '使用默认映射将回合动作转换为 Copilot 行动，缺失信息已填充默认值。',
+      ''
   },
   round2: {
-    label: '回合视图 2',
+    label: '类表格视图',
     icon: 'layout-grid',
     description:
       '按密探分组展示动作，调整布局不影响导出的 JSON 内容。',

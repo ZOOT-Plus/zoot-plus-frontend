@@ -286,19 +286,6 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     }
   }, [selectedLevel])
 
-  const formatLevelLabel = (level: Level) => {
-    const parts = [level.catOne, level.catTwo, level.catThree]
-      .map((part) => part?.trim())
-      .filter(Boolean) as string[]
-    if (parts.length) {
-      return parts.join(' - ')
-    }
-    if (level.name?.trim()) {
-      return level.name
-    }
-    return level.stageId
-  }
-
   const formatLevelInputValue = (level: Level) => {
     const trimmedName = level.name?.trim()
     if (trimmedName) {
@@ -307,160 +294,162 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     return level.stageId
   }
 
+  const formatLevelLabel = (level: Level) => {
+    if (level.stageId === 'header') {
+      return level.name
+    }
+    return formatLevelInputValue(level)
+  }
+
   return (
-    <div className="flex flex-wrap gap-2 items-center">
-      <div className="flex items-center gap-2">
-        <span className="text-sm whitespace-nowrap">
-          {t.components.editor2.LevelSelect.category_label}
-        </span>
-        <Suggest<string>
-          items={categoryOptions}
-          itemsEqual={(a, b) => a === b}
-          selectedItem={selectedCategory || null}
-          disabled={disabled || isLoading || categoryOptions.length === 0}
-          itemListPredicate={(search, items) => {
-            const normalized = (search ?? '').trim().toLowerCase()
-            if (!normalized) {
-              return items
+    <div className={clsx('flex flex-col gap-2', className)}>
+      <div className="flex w-full flex-wrap items-end gap-3">
+        <div className="flex flex-col gap-1 w-56">
+          <span className="text-xs font-medium text-slate-500">
+            {t.components.editor2.LevelSelect.category_label}
+          </span>
+          <Suggest<string>
+            items={categoryOptions}
+            itemsEqual={(a, b) => a === b}
+            selectedItem={selectedCategory || null}
+            disabled={disabled || isLoading || categoryOptions.length === 0}
+            className="w-full"
+            itemListPredicate={(search, items) => {
+              const normalized = (search ?? '').trim().toLowerCase()
+              if (!normalized) {
+                return items
+              }
+              return items.filter((item) =>
+                item.toLowerCase().includes(normalized),
+              )
+            }}
+            itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
+              if (modifiers.matchesPredicate === false) {
+                return null
+              }
+              return (
+                <MenuItem
+                  roleStructure="listoption"
+                  key={item}
+                  className={clsx(modifiers.active && Classes.ACTIVE)}
+                  text={item}
+                  onClick={handleClick}
+                  onFocus={handleFocus}
+                  onMouseDown={onOptionMouseDown}
+                  selected={item === selectedCategory}
+                  disabled={modifiers.disabled}
+                />
+              )
+            }}
+            inputValueRenderer={(item) => item ?? ''}
+            onItemSelect={(category) => {
+              if (!category || category === selectedCategory) {
+                return
+              }
+              setSelectedCategory(category)
+              setActiveItem(null)
+              updateQuery('', true)
+              if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
+                onChange('')
+              }
+            }}
+            inputProps={{
+              large: true,
+              placeholder: t.components.editor2.LevelSelect.category_label,
+              disabled: disabled || isLoading || categoryOptions.length === 0,
+            }}
+            popoverProps={{
+              minimal: true,
+            }}
+          />
+        </div>
+        <div className="flex items-end gap-2 w-[420px] max-w-full">
+          <Suggest<Level>
+            items={levels}
+            itemListPredicate={() => filteredLevels}
+            activeItem={
+              activeItem === 'createNewItem' ? getCreateNewItem() : activeItem
             }
-            return items.filter((item) =>
-              item.toLowerCase().includes(normalized),
-            )
-          }}
-          itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
-            if (modifiers.matchesPredicate === false) {
-              return null
-            }
-            return (
+            onActiveItemChange={(item, isCreateNewItem) => {
+              setActiveItem(isCreateNewItem ? 'createNewItem' : item)
+            }}
+            resetOnQuery={false}
+            query={query}
+            onQueryChange={(query) => updateQuery(query, false)}
+            onReset={() => {
+              if (!disabled) {
+                onChange('')
+              }
+            }}
+            disabled={disabled || isLoading}
+            className={clsx('w-full', isLoading && 'bp4-skeleton')}
+            itemsEqual={(a, b) => a.stageId === b.stageId}
+            itemDisabled={(item) => item.stageId === 'header'}
+            itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
               <MenuItem
                 roleStructure="listoption"
-                key={item}
+                key={item.stageId}
                 className={clsx(modifiers.active && Classes.ACTIVE)}
-                text={item}
+                text={formatLevelLabel(item)}
                 onClick={handleClick}
                 onFocus={handleFocus}
                 onMouseDown={onOptionMouseDown}
-                selected={item === selectedCategory}
+                selected={item === selectedLevel}
                 disabled={modifiers.disabled}
               />
-            )
-          }}
-          inputValueRenderer={(item) => item ?? ''}
-          onItemSelect={(category) => {
-            if (!category || category === selectedCategory) {
-              return
-            }
-            setSelectedCategory(category)
-            setActiveItem(null)
-            updateQuery('', true)
-            if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
-              onChange('')
-            }
-          }}
-          inputProps={{
-            large: true,
-            placeholder: t.components.editor2.LevelSelect.category_label,
-            disabled: disabled || isLoading || categoryOptions.length === 0,
-          }}
-          popoverProps={{
-            minimal: true,
-          }}
-        />
-      </div>
-      <Suggest<Level>
-        items={levels}
-        itemListPredicate={() => filteredLevels}
-        activeItem={
-          activeItem === 'createNewItem' ? getCreateNewItem() : activeItem
-        }
-        onActiveItemChange={(item, isCreateNewItem) => {
-          setActiveItem(isCreateNewItem ? 'createNewItem' : item)
-        }}
-        resetOnQuery={false}
-        query={query}
-        onQueryChange={(query) => updateQuery(query, false)}
-        onReset={() => {
-          if (!disabled) {
-            onChange('')
-          }
-        }}
-        disabled={disabled || isLoading}
-        className={clsx(
-          'items-stretch flex-1',
-          isLoading && 'bp4-skeleton',
-          className,
-        )}
-        itemsEqual={(a, b) => a.stageId === b.stageId}
-        itemDisabled={(item) => item.stageId === 'header'} // 避免 header 被选中为 active
-        itemRenderer={(item, { handleClick, handleFocus, modifiers }) =>
-          item.stageId === 'header' ? (
-            <MenuDivider key="header" title={item.name} />
-          ) : (
-            <MenuItem
-              roleStructure="listoption"
-              key={item.stageId}
-              className={clsx(modifiers.active && Classes.ACTIVE)}
-              text={formatLevelLabel(item)}
-              onClick={handleClick}
-              onFocus={handleFocus}
-              onMouseDown={onOptionMouseDown}
-              selected={item === selectedLevel}
-              disabled={modifiers.disabled}
-            />
-          )
-        }
-        inputValueRenderer={formatLevelInputValue}
-        selectedItem={selectedLevel}
-        onItemSelect={(level) => {
-          if (!isCustomLevel(level)) {
-            // 重置 query 以显示同类关卡
-            updateQuery('', true)
-          }
-          if (!disabled) {
-            onChange(level.stageId, level)
-          }
-        }}
-        createNewItemFromQuery={(query) => createCustomLevel(query)}
-        createNewItemRenderer={(query, active, handleClick) => (
-          <MenuItem
-            key="create-new-item"
-            roleStructure="listoption"
-            className={clsx(active && Classes.ACTIVE)}
-            text={`使用自定义关卡名 "${query}"`}
-            icon="text-highlight"
-            onClick={handleClick}
-            selected={!!selectedLevel && isCustomLevel(selectedLevel)}
+            )}
+            inputValueRenderer={formatLevelInputValue}
+            selectedItem={selectedLevel}
+            onItemSelect={(level) => {
+              if (!isCustomLevel(level)) {
+                updateQuery('', true)
+              }
+              if (!disabled) {
+                onChange(level.stageId, level)
+              }
+            }}
+            createNewItemFromQuery={(query) => createCustomLevel(query)}
+            createNewItemRenderer={(query, active, handleClick) => (
+              <MenuItem
+                key="create-new-item"
+                roleStructure="listoption"
+                className={clsx(active && Classes.ACTIVE)}
+                text={`使用自定义关卡名 "${query}"`}
+                icon="text-highlight"
+                onClick={handleClick}
+                selected={!!selectedLevel && isCustomLevel(selectedLevel)}
+              />
+            )}
+            inputProps={{
+              large: true,
+              placeholder: t.components.editor2.LevelSelect.placeholder,
+              inputRef,
+              disabled,
+              ...inputProps,
+            }}
+            popoverProps={{
+              minimal: true,
+              onClosed() {
+                updateQuery('', false)
+              },
+            }}
           />
-        )}
-        inputProps={{
-          large: true,
-          placeholder: t.components.editor2.LevelSelect.placeholder,
-          inputRef,
-          disabled,
-          ...inputProps,
-        }}
-        popoverProps={{
-          minimal: true,
-          onClosed() {
-            // 关闭下拉框时重置输入框，防止用户在未手动选择关卡时，误以为已输入的内容就是已选择的关卡
-            updateQuery('', false)
-          },
-        }}
-      />
-      <Tooltip2
-        placement="top"
-        content={t.components.editor2.LevelSelect.view_external}
-      >
-        <AnchorButton
-          minimal
-          large
-          icon="share"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={prtsMapUrl}
-          disabled={disabled || !prtsMapUrl}
-        />
-      </Tooltip2>
+          <Tooltip2
+            placement="top"
+            content={t.components.editor2.LevelSelect.view_external}
+          >
+            <AnchorButton
+              minimal
+              large
+              icon="share"
+              target="_blank"
+              rel="noopener noreferrer"
+              href={prtsMapUrl}
+              disabled={disabled || !prtsMapUrl}
+            />
+          </Tooltip2>
+        </div>
+      </div>
       {fetchError && (
         <span className="text-xs opacity-50">
           {t.components.editor2.LevelSelect.load_error({
