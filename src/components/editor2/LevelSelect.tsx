@@ -4,7 +4,15 @@ import { getCreateNewItem } from '@blueprintjs/select'
 
 import clsx from 'clsx'
 import Fuse from 'fuse.js'
-import { FC, Ref, useEffect, useMemo, useState } from 'react'
+import {
+  FC,
+  Ref,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import { useLevels } from '../../apis/level'
 import { i18n, useTranslation } from '../../i18n/i18n'
@@ -34,11 +42,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   className,
   difficulty,
   inputRef,
+  disabled,
   value,
   onChange,
   ...inputProps
 }) => {
   const t = useTranslation()
+  const relatedLevelsLabel = i18n.components.editor2.LevelSelect.related_levels
   // we are going to manually handle loading state so we could show the skeleton state easily,
   // without swapping the actual element.
   const { data, error: fetchError, isLoading } = useLevels()
@@ -93,54 +103,161 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       )
     : undefined
 
+  const getLevelCategory = useCallback(
+    (level: Level) =>
+      level.catOne?.trim() ||
+      level.catTwo?.trim() ||
+      level.catThree?.trim() ||
+      relatedLevelsLabel,
+    [relatedLevelsLabel],
+  )
+
+  const categories = useMemo(() => {
+    const seen = new Set<string>()
+    const result: string[] = []
+    for (const level of levels) {
+      const category = getLevelCategory(level)
+      if (!seen.has(category)) {
+        seen.add(category)
+        result.push(category)
+      }
+    }
+    if (selectedLevel) {
+      const category = getLevelCategory(selectedLevel)
+      if (!seen.has(category)) {
+        result.push(category)
+      }
+    }
+    return result
+  }, [getLevelCategory, levels, selectedLevel])
+
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
+    if (selectedLevel) {
+      return getLevelCategory(selectedLevel)
+    }
+    return categories[0] ?? ''
+  })
+
+  useEffect(() => {
+    if (!selectedCategory && categories.length) {
+      setSelectedCategory(categories[0])
+    }
+  }, [categories, selectedCategory])
+
+  const previousValueRef = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (value !== previousValueRef.current) {
+      previousValueRef.current = value
+      const category = selectedLevel
+        ? getLevelCategory(selectedLevel)
+        : categories[0] ?? ''
+      if (category && category !== selectedCategory) {
+        setSelectedCategory(category)
+        updateQuery('', true)
+      }
+    }
+  }, [
+    categories,
+    getLevelCategory,
+    selectedCategory,
+    selectedLevel,
+    updateQuery,
+    value,
+  ])
+
+  const ensureIncludesSelected = useCallback(
+    (list: Level[]) => {
+      if (
+        selectedLevel &&
+        !list.some((level) => level.stageId === selectedLevel.stageId)
+      ) {
+        return [selectedLevel, ...list]
+      }
+      return list
+    },
+    [selectedLevel],
+  )
+
   const filteredLevels = useMemo(() => {
-    // 未输入 query 时显示同类关卡
-    if (selectedLevel && !debouncedQuery) {
-      let similarLevels: Level[]
-      let headerName: string
+    const trimmedQuery = debouncedQuery.trim()
+
+    if (trimmedQuery) {
+      const searchResults = fuse.search(trimmedQuery).map((el) => el.item)
+      const filteredResults = selectedCategory
+        ? searchResults.filter(
+            (level) => getLevelCategory(level) === selectedCategory,
+          )
+        : searchResults
+      return ensureIncludesSelected(
+        filteredResults.length ? filteredResults : searchResults,
+      )
+    }
+
+    if (selectedLevel) {
+      let similarLevels: Level[] = []
+      let headerName = relatedLevelsLabel
 
       if (selectedLevel.catOne === '剿灭作战') {
         headerName = selectedLevel.catOne
         similarLevels = levels.filter(
-          (el) => el.catOne === selectedLevel.catOne,
+          (level) => level.catOne === selectedLevel.catOne,
         )
       } else if (
         selectedLevel.stageId.includes('rune') ||
         selectedLevel.stageId.includes('crisis')
       ) {
-        // 危机合约分类非常混乱，直接全塞到一起
         headerName = '危机合约'
         similarLevels = levels.filter(
-          (el) => el.stageId.includes('rune') || el.stageId.includes('crisis'),
+          (level) =>
+            level.stageId.includes('rune') || level.stageId.includes('crisis'),
         )
       } else if (selectedLevel.catTwo) {
         headerName = selectedLevel.catTwo
         similarLevels = levels.filter(
-          (el) => el.catTwo === selectedLevel.catTwo,
+          (level) => level.catTwo === selectedLevel.catTwo,
         )
       } else {
-        // catTwo 为空的时候用 levelId 来分类
-        headerName = i18n.components.editor2.LevelSelect.related_levels
         const levelIdPrefix = selectedLevel.levelId
           .split('/')
           .slice(0, -1)
           .join('/')
         similarLevels = levelIdPrefix
-          ? levels.filter((el) => el.levelId.startsWith(levelIdPrefix))
+          ? levels.filter((level) => level.levelId.startsWith(levelIdPrefix))
           : []
+      }
+
+      if (selectedCategory) {
+        similarLevels = similarLevels.filter(
+          (level) => getLevelCategory(level) === selectedCategory,
+        )
       }
 
       if (similarLevels.length > 1) {
         const header = createCustomLevel('header')
         header.name = headerName
-        return [header, ...similarLevels]
+        return ensureIncludesSelected([header, ...similarLevels])
+      }
+
+      if (similarLevels.length === 1) {
+        return ensureIncludesSelected(similarLevels)
       }
     }
 
-    return debouncedQuery.trim()
-      ? fuse.search(debouncedQuery).map((el) => el.item)
+    const levelsInCategory = selectedCategory
+      ? levels.filter((level) => getLevelCategory(level) === selectedCategory)
       : levels
-  }, [debouncedQuery, selectedLevel, levels, fuse])
+
+    return ensureIncludesSelected(levelsInCategory)
+  }, [
+    debouncedQuery,
+    ensureIncludesSelected,
+    fuse,
+    getLevelCategory,
+    levels,
+    relatedLevelsLabel,
+    selectedCategory,
+    selectedLevel,
+  ])
 
   useEffect(() => {
     if (!selectedLevel) {
@@ -167,6 +284,61 @@ export const LevelSelect: FC<LevelSelectProps> = ({
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
+      <div className="flex items-center gap-2">
+        <span className="text-sm whitespace-nowrap">
+          {t.components.editor2.LevelSelect.category_label}
+        </span>
+        <Suggest<string>
+          items={categories}
+          itemsEqual={(a, b) => a === b}
+          selectedItem={selectedCategory || null}
+          disabled={disabled || isLoading || categories.length === 0}
+          itemListPredicate={(search, items) => {
+            const normalized = (search ?? '').trim().toLowerCase()
+            if (!normalized) {
+              return items
+            }
+            return items.filter((item) =>
+              item.toLowerCase().includes(normalized),
+            )
+          }}
+          itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
+            if (modifiers.matchesPredicate === false) {
+              return null
+            }
+            return (
+              <MenuItem
+                roleStructure="listoption"
+                key={item}
+                className={clsx(modifiers.active && Classes.ACTIVE)}
+                text={item}
+                onClick={handleClick}
+                onFocus={handleFocus}
+                onMouseDown={onOptionMouseDown}
+                selected={item === selectedCategory}
+                disabled={modifiers.disabled}
+              />
+            )
+          }}
+          inputValueRenderer={(item) => item ?? ''}
+          onItemSelect={(category) => {
+            if (!category || category === selectedCategory) {
+              return
+            }
+            setSelectedCategory(category)
+            setActiveItem(null)
+            updateQuery('', true)
+          }}
+          inputProps={{
+            large: true,
+            placeholder: t.components.editor2.LevelSelect.category_label,
+            disabled: disabled || isLoading || categories.length === 0,
+          }}
+          popoverProps={{
+            minimal: true,
+          }}
+        />
+      </div>
       <Suggest<Level>
         items={levels}
         itemListPredicate={() => filteredLevels}
@@ -179,10 +351,14 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         resetOnQuery={false}
         query={query}
         onQueryChange={(query) => updateQuery(query, false)}
-        onReset={() => onChange('')}
-        disabled={isLoading}
+        onReset={() => {
+          if (!disabled) {
+            onChange('')
+          }
+        }}
+        disabled={disabled || isLoading}
         className={clsx(
-          'items-stretch',
+          'items-stretch flex-1',
           isLoading && 'bp4-skeleton',
           className,
         )}
@@ -212,7 +388,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             // 重置 query 以显示同类关卡
             updateQuery('', true)
           }
-          onChange(level.stageId, level)
+          if (!disabled) {
+            onChange(level.stageId, level)
+          }
         }}
         createNewItemFromQuery={(query) => createCustomLevel(query)}
         createNewItemRenderer={(query, active, handleClick) => (
@@ -230,6 +408,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           large: true,
           placeholder: t.components.editor2.LevelSelect.placeholder,
           inputRef,
+          disabled,
           ...inputProps,
         }}
         popoverProps={{
@@ -251,7 +430,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           href={prtsMapUrl}
-          disabled={!prtsMapUrl}
+          disabled={disabled || !prtsMapUrl}
         />
       </Tooltip2>
       {fetchError && (
