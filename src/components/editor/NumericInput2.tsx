@@ -20,6 +20,7 @@ export interface NumericInput2Props extends MixedNumericInputProps {
   intOnly?: boolean
   onWheelFocused?: (e: React.WheelEvent<HTMLInputElement>) => void
   wheelStepSize?: number
+  containerClassName?: string
 }
 
 export const NumericInput2 = ({
@@ -33,6 +34,11 @@ export const NumericInput2 = ({
   onWheelFocused,
   wheelStepSize,
   inputClassName,
+  containerClassName,
+  className,
+  fill,
+  buttonPosition = "none",
+  size,
   ...props
 }: NumericInput2Props) => {
   const allowNegative = min === undefined || min < 0
@@ -86,8 +92,12 @@ export const NumericInput2 = ({
           'focus:cursor-ns-resize',
         inputClassName,
       )}
+      className={clsx(containerClassName, className)}
       inputRef={inputRef}
       value={endsWithDot ? value + '.' : value}
+      fill={fill}
+      buttonPosition={buttonPosition}
+      size={size}
       onFocus={(e) => {
         onFocus?.(e)
         if (

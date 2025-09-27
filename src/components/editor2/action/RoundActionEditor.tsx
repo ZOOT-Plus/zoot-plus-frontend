@@ -1080,11 +1080,11 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             <div className="flex items-center gap-1 flex-shrink-0 basis-full sm:basis-auto">
               <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">起始</span>
               <NumericInput2
-                className="w-full sm:w-24 flex-shrink-0"
+                containerClassName="w-16 flex-none"
+                inputClassName="!text-center"
                 intOnly
                 min={minRound}
                 max={maxRound}
-                buttonPosition="none"
                 value={loopStart}
                 disabled={!hasRounds}
                 onValueChange={(value) => handleLoopRangeChange('start', value)}
@@ -1093,11 +1093,11 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             <div className="flex items-center gap-1 flex-shrink-0 basis-full sm:basis-auto">
               <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">结束</span>
               <NumericInput2
-                className="w-full sm:w-24 flex-shrink-0"
+                containerClassName="w-16 flex-none"
+                inputClassName="!text-center"
                 intOnly
                 min={minRound}
                 max={maxRound}
-                buttonPosition="none"
                 value={loopEnd}
                 disabled={!hasRounds}
                 onValueChange={(value) => handleLoopRangeChange('end', value)}
@@ -1105,7 +1105,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             </div>
             <button
               type="button"
-              className="editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+              className="editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
               data-variant="teal"
               onClick={handleGenerateLoop}
               disabled={!hasRounds}
