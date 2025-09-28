@@ -150,18 +150,6 @@ const SourceEditor = withSuspensable(
             <ButtonGroup minimal>
               <Button
                 small
-                active={viewMode === 'maa'}
-                onClick={() => {
-                  if (viewMode !== 'maa') {
-                    setText(JSON.stringify(toMaaOperation(operation), null, 2))
-                    setViewMode('maa')
-                  }
-                }}
-              >
-                {t.components.editor2.SourceEditor.view_json_mode_maa}
-              </Button>
-              <Button
-                small
                 active={viewMode === 'siming'}
                 onClick={() => {
                   if (viewMode !== 'siming') {
