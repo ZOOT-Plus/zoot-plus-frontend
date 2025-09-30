@@ -97,6 +97,10 @@
         "cn": "修改可见范围",
         "zh_tw": "修改可見範圍"
       },
+      "set_siming_delay": {
+        "cn": "修改司命延迟",
+        "zh_tw": "修改司命延遲"
+      },
       "set_action_target": {
         "cn": "修改动作的目标",
         "zh_tw": "修改動作的目標"
@@ -471,6 +475,26 @@
         "description_placeholder": {
           "cn": "如：作者名、参考的视频攻略链接（如有）等",
           "zh_tw": "如：作者名、參考的視頻攻略鏈接（如有）等"
+        },
+        "siming_settings": {
+          "cn": "司命设置",
+          "zh_tw": "司命設定"
+        },
+        "siming_delay_hint": {
+          "cn": "用于调整导出司命行动的默认行动后延迟",
+          "zh_tw": "用於調整導出司命行動的預設行動後延遲"
+        },
+        "siming_delay_attack": {
+          "cn": "普攻",
+          "zh_tw": "普攻"
+        },
+        "siming_delay_ultimate": {
+          "cn": "大招",
+          "zh_tw": "大招"
+        },
+        "siming_delay_defense": {
+          "cn": "下拉",
+          "zh_tw": "下拉"
         },
         "stage": {
           "cn": "关卡",
@@ -3077,6 +3101,30 @@
         "round_action_count": {
           "cn": "共 {{count}} 个动作",
           "zh_tw": "共 {{count}} 個動作"
+        },
+        "action_view_mode_flow": {
+          "cn": "动作链视图",
+          "zh_tw": "動作鏈視圖"
+        },
+        "action_view_mode_table": {
+          "cn": "类表格视图",
+          "zh_tw": "類表格視圖"
+        },
+        "action_table_slot_placeholder": {
+          "cn": "密探 {{slot}}",
+          "zh_tw": "密探 {{slot}}"
+        },
+        "action_table_slot_position": {
+          "cn": "{{slot}} 号位",
+          "zh_tw": "{{slot}} 號位"
+        },
+        "action_table_no_actions": {
+          "cn": "暂无动作",
+          "zh_tw": "暫無動作"
+        },
+        "action_table_other_actions": {
+          "cn": "其他动作",
+          "zh_tw": "其他動作"
         },
         "siming_actions_hint": {
           "cn": "检测到司命动作格式，下方展示为原始节点数据。",

@@ -16,8 +16,10 @@ import { Paths } from 'type-fest'
 import { i18n, useTranslation } from '../../i18n/i18n'
 import { isCustomLevel } from '../../models/level'
 import { OpDifficulty } from '../../models/operation'
+import { NumericInput2 } from '../editor/NumericInput2'
 import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
+import { DEFAULT_SIMING_ACTION_DELAYS } from './siming/constants'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
 
 interface InfoEditorProps {
@@ -37,6 +39,31 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
       })
     }
   }, [info.difficulty, setInfo])
+
+  const simingDelays = info.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS
+
+  const updateSimingDelay = (
+    key: keyof typeof DEFAULT_SIMING_ACTION_DELAYS,
+    nextValue: number,
+  ) => {
+    const normalized = Math.max(0, Math.round(nextValue))
+    if (simingDelays[key] === normalized) {
+      return
+    }
+    edit(() => {
+      setInfo((prev) => {
+        if (!prev.simingActionDelays) {
+          prev.simingActionDelays = { ...DEFAULT_SIMING_ACTION_DELAYS }
+        }
+        prev.simingActionDelays[key] = normalized
+      })
+      return {
+        action: 'set-siming-delay',
+        desc: i18n.actions.editor2.set_siming_delay,
+        squashBy: 'siming-delay-' + key,
+      }
+    })
+  }
 
   return (
     <div
@@ -137,6 +164,65 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
           onBlur={() => edit()}
         />
         <FieldError path="doc.details" />
+      </FormGroup>
+      <FormGroup
+        contentClassName="grow"
+        label={t.components.editor2.InfoEditor.siming_settings}
+        helperText={t.components.editor2.InfoEditor.siming_delay_hint}
+      >
+        <div className="flex flex-wrap gap-4">
+          <div className="flex w-32 flex-col gap-1 text-xs text-slate-500">
+            <span className="font-medium text-slate-600">
+              {t.components.editor2.InfoEditor.siming_delay_attack}
+            </span>
+            <NumericInput2
+              min={1000}
+              max={60000}
+              intOnly
+              stepSize={100}
+              majorStepSize={1000}
+              wheelStepSize={100}
+              value={simingDelays.attack}
+              aria-label={t.components.editor2.InfoEditor.siming_delay_attack}
+              containerClassName="editor-loop-range-input w-full"
+              onValueChange={(value) => updateSimingDelay('attack', value)}
+            />
+          </div>
+          <div className="flex w-32 flex-col gap-1 text-xs text-slate-500">
+            <span className="font-medium text-slate-600">
+              {t.components.editor2.InfoEditor.siming_delay_ultimate}
+            </span>
+            <NumericInput2
+              min={3000}
+              max={60000}
+              intOnly
+              stepSize={100}
+              majorStepSize={1000}
+              wheelStepSize={100}
+              value={simingDelays.ultimate}
+              aria-label={t.components.editor2.InfoEditor.siming_delay_ultimate}
+              containerClassName="editor-loop-range-input w-full"
+              onValueChange={(value) => updateSimingDelay('ultimate', value)}
+            />
+          </div>
+          <div className="flex w-32 flex-col gap-1 text-xs text-slate-500">
+            <span className="font-medium text-slate-600">
+              {t.components.editor2.InfoEditor.siming_delay_defense}
+            </span>
+            <NumericInput2
+              min={1000}
+              max={60000}
+              intOnly
+              stepSize={100}
+              majorStepSize={1000}
+              wheelStepSize={100}
+              value={simingDelays.defense}
+              aria-label={t.components.editor2.InfoEditor.siming_delay_defense}
+              containerClassName="editor-loop-range-input w-full"
+              onValueChange={(value) => updateSimingDelay('defense', value)}
+            />
+          </div>
+        </div>
       </FormGroup>
       <FormGroup
         className="mb-0"

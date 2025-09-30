@@ -5,6 +5,13 @@ import {
 } from './action/roundMapping'
 import { EditorOperation } from './types'
 import { CopilotOperationLoose } from './validation/schema'
+import {
+  DEFAULT_SIMING_ACTION_DELAYS,
+  DEFAULT_SIMING_ATTACK_DELAY,
+  DEFAULT_SIMING_DEFENSE_DELAY,
+  DEFAULT_SIMING_ULTIMATE_DELAY,
+  SimingActionDelays,
+} from './siming/constants'
 
 export interface SimingActionConfig {
   action?: string
@@ -19,7 +26,7 @@ export interface SimingActionConfig {
   rear_delay?: number
   duration?: number
   text_doc?: string
-  template?: string
+  template?: string | string[]
   timeout?: number
   green_mask?: boolean
   next?: string[]
@@ -245,6 +252,54 @@ function templateKeyFromToken(token: string): string | undefined {
   return `${position}号位下拉`
 }
 
+function resolveDelayForTemplate(
+  templateKey: string | undefined,
+  delays: SimingActionDelays,
+): number | undefined {
+  if (!templateKey) {
+    return undefined
+  }
+  if (templateKey.endsWith('普攻')) {
+    return delays.attack
+  }
+  if (templateKey.endsWith('上拉')) {
+    return delays.ultimate
+  }
+  if (templateKey.endsWith('下拉')) {
+    return delays.defense
+  }
+  return undefined
+}
+
+function applyDelayFromToken(
+  config: SimingActionConfig,
+  token: string,
+  delays: SimingActionDelays,
+) {
+  const raw = token.startsWith('额外:') ? token.split(':', 2)[1] ?? '' : token
+  const templateKey = templateKeyFromToken(raw)
+  const override = resolveDelayForTemplate(templateKey, delays)
+  if (override !== undefined) {
+    config.post_delay = override
+  }
+}
+
+function createCustomDelayNode(delays: SimingActionDelays): SimingActionConfig {
+  const normalize = (value: number | undefined, fallback: number) => {
+    const numberLike = Number(value)
+    const normalized = Number.isFinite(numberLike) && numberLike >= 0
+      ? Math.round(numberLike)
+      : fallback
+    return String(normalized)
+  }
+
+  return {
+    attack_delay: normalize(delays.attack, DEFAULT_SIMING_ATTACK_DELAY),
+    ult_delay: normalize(delays.ultimate, DEFAULT_SIMING_ULTIMATE_DELAY),
+    defense_delay: normalize(delays.defense, DEFAULT_SIMING_DEFENSE_DELAY),
+  }
+}
+
 function parseDownRestartPosition(token: string): number {
   const trimmed = token.replace(DOWN_RESTART_PREFIX, '').replace('号位阵亡', '').trim()
   const digit = trimmed.charAt(0)
@@ -252,12 +307,16 @@ function parseDownRestartPosition(token: string): number {
   return Number.isFinite(position) && position >= 1 ? position : 1
 }
 
-function buildRoundNodes(roundActions: RoundActionsInput): SimingActionMap {
+function buildRoundNodes(
+  roundActions: RoundActionsInput,
+  delays: SimingActionDelays,
+): SimingActionMap {
   const entries = Object.entries(roundActions)
     .filter(([round]) => !Number.isNaN(Number(round)))
     .sort(([a], [b]) => Number(a) - Number(b))
 
   const result: SimingActionMap = {}
+  result['抄作业自定义延时'] = createCustomDelayNode(delays)
   if (entries.length === 0) {
     result[RESTART_NODE_KEY] = ensureNextArray(
       cloneConfig(RESTART_NODE) ?? { next: [] },
@@ -440,20 +499,25 @@ function buildRoundNodes(roundActions: RoundActionsInput): SimingActionMap {
       const actionKey = `回合${roundKey}行动${actualActionIndex}`
 
       if (token.startsWith('额外:')) {
-        const extra = handleExtraAction(token)
+        const extra = handleExtraAction(token, delays)
         if (!extra) {
           return
         }
-        result[actionKey] = ensureNextArray(extra)
+        const config = ensureNextArray(extra)
+        applyDelayFromToken(config, token, delays)
+        result[actionKey] = config
       } else {
         const templateKey = templateKeyFromToken(token)
-        const config = ensureNextArray(
+        const baseConfig =
           cloneConfig(templateKey ? ACTION_TEMPLATES[templateKey] : undefined) ?? {
             action: 'Click',
-            post_delay: 3000,
-          },
-        )
+            post_delay:
+              resolveDelayForTemplate(templateKey, delays) ??
+              DEFAULT_SIMING_ATTACK_DELAY,
+          }
+        const config = ensureNextArray(baseConfig)
         config.text_doc = token
+        applyDelayFromToken(config, token, delays)
         result[actionKey] = config
       }
 
@@ -487,7 +551,10 @@ function buildRoundNodes(roundActions: RoundActionsInput): SimingActionMap {
 }
 
 
-function handleExtraAction(token: string): SimingActionConfig | undefined {
+function handleExtraAction(
+  token: string,
+  delays: SimingActionDelays,
+): SimingActionConfig | undefined {
   const [, raw] = token.split(':', 2)
   if (!raw) {
     return undefined
@@ -519,10 +586,22 @@ function handleExtraAction(token: string): SimingActionConfig | undefined {
   const config = cloneConfig(
     templateKey ? ACTION_TEMPLATES[templateKey] : undefined,
   )
+  const override = resolveDelayForTemplate(templateKey, delays)
   if (config) {
     config.text_doc = '再动' + raw
     config.focus = '再次行动:' + raw
+    if (override !== undefined) {
+      config.post_delay = override
+    }
     return config
+  }
+
+  if (override !== undefined) {
+    return {
+      text_doc: raw,
+      focus: raw,
+      post_delay: override,
+    }
   }
 
   return {
@@ -677,12 +756,41 @@ function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined
 }
 
 
+function sanitizeSimingActionDelays(
+  delays: SimingActionDelays | undefined,
+): SimingActionDelays {
+  const normalize = (value: number | undefined, fallback: number) => {
+    const numberLike = Number(value)
+    if (!Number.isFinite(numberLike) || numberLike < 0) {
+      return fallback
+    }
+    return Math.round(numberLike)
+  }
+  return {
+    attack: normalize(
+      delays?.attack,
+      DEFAULT_SIMING_ATTACK_DELAY,
+    ),
+    ultimate: normalize(
+      delays?.ultimate,
+      DEFAULT_SIMING_ULTIMATE_DELAY,
+    ),
+    defense: normalize(
+      delays?.defense,
+      DEFAULT_SIMING_DEFENSE_DELAY,
+    ),
+  }
+}
+
 export function toSimingOperation(
   baseOperation: CopilotOperationLoose,
   editorOperation: EditorOperation,
 ): SimingOperation {
   const roundActions = editorActionsToRoundActions(editorOperation.actions)
-  const actions = buildRoundNodes(roundActions)
+  const delays = sanitizeSimingActionDelays(
+    editorOperation.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS,
+  )
+  const actions = buildRoundNodes(roundActions, delays)
 
   const cloned = JSON.parse(
     JSON.stringify(baseOperation),

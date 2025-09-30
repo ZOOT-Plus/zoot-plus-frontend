@@ -9,6 +9,7 @@ import { AppToaster } from '../../Toaster'
 import { FileImporter } from './FileImporter'
 import { ShortCodeImporter } from './ShortCodeImporter'
 import { XlsxImporter } from './XlsxImporter'
+import { stripOperationExportFields } from '../../../services/operation'
 
 interface SourceEditorHeaderProps {
   text: string
@@ -34,7 +35,15 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
   }
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(text)
+    let output = text
+    try {
+      const obj = JSON.parse(text) as Record<string, unknown>
+      const sanitized = stripOperationExportFields(obj)
+      output = JSON.stringify(sanitized, null, 2)
+    } catch (_) {
+      // ignore parse error, fallback to original text
+    }
+    navigator.clipboard.writeText(output)
 
     AppToaster.show({
       message: t.components.editor.source.SourceEditorHeader.json_copied,
@@ -44,13 +53,17 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
 
   const handleDownload = () => {
     let title: string | undefined
+    let output = text
     try {
-      title = (JSON.parse(text) as CopilotDocV1.Operation).doc.title
+      const parsed = JSON.parse(text) as Record<string, unknown>
+      const sanitized = stripOperationExportFields(parsed)
+      output = JSON.stringify(sanitized, null, 2)
+      title = (sanitized as unknown as CopilotDocV1.Operation).doc.title
     } catch (error) {
       console.warn(error)
     }
 
-    const blob = new Blob([text], {
+    const blob = new Blob([output], {
       type: 'application/json',
     })
     const url = URL.createObjectURL(blob)

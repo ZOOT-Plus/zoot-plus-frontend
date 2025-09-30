@@ -9,6 +9,10 @@ import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
 import { createAction, createOperator } from './factories'
 import {
+  DEFAULT_SIMING_ACTION_DELAYS,
+  SimingActionDelays,
+} from './siming/constants'
+import {
   EditorAction,
   EditorGroup,
   EditorOperation,
@@ -171,6 +175,7 @@ export function toEditorOperation(
   }
 
   const hydrated = hydrateOperation(converted)
+  hydrated.simingActionDelays = extractSimingActionDelays(simingActions)
   if (simingEditorActions) {
     hydrated.actions = simingEditorActions
   }
@@ -185,8 +190,9 @@ export function toMaaOperation(
 ): CopilotOperationLoose {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
+  const { simingActionDelays: _simingActionDelays, ...restDehydrated } = dehydrated
   const converted = {
-    ...dehydrated,
+    ...restDehydrated,
     actions: dehydrated.actions.map((action, index, actions) => {
       type Action = PartialDeep<WithPartialCoordinates<CopilotDocV1.Action>>
       const {
@@ -233,4 +239,43 @@ export function toMaaOperation(
   }
 
   return snakeCaseKeysUnicode(converted, { deep: true })
+}
+
+function extractSimingActionDelays(
+  simingActions: CopilotDocV1.SimingActionMap | undefined,
+): SimingActionDelays {
+  const defaults = { ...DEFAULT_SIMING_ACTION_DELAYS }
+  if (!simingActions) {
+    return defaults
+  }
+
+  const raw = simingActions['抄作业自定义延时']
+  if (!raw || typeof raw !== 'object') {
+    return defaults
+  }
+
+  const normalize = (value: unknown, fallback: number) => {
+    const numberLike = typeof value === 'string' ? Number(value) : Number(value)
+    const normalized =
+      Number.isFinite(numberLike) && numberLike >= 0
+        ? Math.round(numberLike)
+        : fallback
+    return normalized
+  }
+
+  const record = raw as Record<string, unknown>
+  const read = (keys: string[], fallback: number) => {
+    for (const key of keys) {
+      if (key in record) {
+        return normalize(record[key], fallback)
+      }
+    }
+    return fallback
+  }
+
+  return {
+    attack: read(['attack_delay', 'attackDelay'], defaults.attack),
+    ultimate: read(['ult_delay', 'ultimate_delay', 'ultDelay'], defaults.ultimate),
+    defense: read(['defense_delay', 'defence_delay', 'defenseDelay'], defaults.defense),
+  }
 }

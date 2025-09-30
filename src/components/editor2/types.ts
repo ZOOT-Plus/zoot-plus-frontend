@@ -2,6 +2,8 @@ import { CopilotDocV1 } from '../../models/copilot.schema'
 import { PartialDeep } from '../../utils/partial-deep'
 import { SetRequired, Simplify } from 'type-fest'
 
+import { SimingActionDelays } from './siming/constants'
+
 export type WithId<T = {}> = T extends never ? never : T & { id: string }
 
 export type WithPartialCoordinates<T> = T extends {
@@ -25,6 +27,7 @@ export type EditorOperationBase = Simplify<
   > & {
     minimumRequired: string
     doc: PartialDeep<CopilotDocV1.Doc>
+    simingActionDelays?: SimingActionDelays
   }
 >
 

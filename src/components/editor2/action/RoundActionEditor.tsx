@@ -25,6 +25,13 @@ import {
   editorActionsToRoundActions,
   roundActionsToEditorActions,
 } from './roundMapping'
+import type { BasicActionSymbol, ChipVariant } from './tokenUtils'
+import {
+  CHIP_VARIANT_DOT_CLASS,
+  SLOT_KEYS,
+  groupTokensBySlot,
+  resolveChipVariant,
+} from './tokenUtils'
 
 interface ActionEditorProps {
   className?: string
@@ -32,16 +39,16 @@ interface ActionEditorProps {
 
 interface RoundFormState {
   slot: string
-  basicAction: '普' | '大' | '下'
+  basicAction: BasicActionSymbol
   extraType: 'again' | 'wait' | 'left' | 'right' | 'lvbu' | 'auto' | 'sp'
   extraSlot: string
-  extraAction: '普' | '大' | '下'
+  extraAction: BasicActionSymbol
   waitMs: string
   restartType: 'full' | 'manual' | 'orange' | 'down'
   restartSlot: string
 }
 
-const SLOT_OPTIONS = ['1', '2', '3', '4', '5']
+const SLOT_OPTIONS = [...SLOT_KEYS]
 const BASIC_ACTION_OPTIONS = [
   { value: '普', label: 'A' },
   { value: '大', label: '↑' },
@@ -100,128 +107,6 @@ const VIEW_MODE_META: Record<
   },
 }
 
-type ChipVariant = 'warm' | 'danger' | 'info' | 'teal' | 'success' | 'neutral'
-
-const CHIP_VARIANT_DOT_CLASS: Record<ChipVariant, string> = {
-  warm: 'bg-amber-400',
-  danger: 'bg-rose-500',
-  info: 'bg-sky-500',
-  teal: 'bg-cyan-500',
-  success: 'bg-lime-500',
-  neutral: 'bg-slate-400',
-}
-
-const BASIC_ACTION_VARIANTS: Record<RoundFormState['basicAction'], ChipVariant> = {
-  普: 'warm',
-  大: 'danger',
-  下: 'info',
-}
-
-interface TokenEntry {
-  token: string
-  index: number
-}
-
-function extractSlotFromToken(token: string): string | null {
-  const trimmed = token.trim()
-  if (!trimmed) {
-    return null
-  }
-
-  const baseMatch = trimmed.match(/^([1-5])([普大下])$/)
-  if (baseMatch) {
-    return baseMatch[1]
-  }
-
-  if (trimmed.startsWith('额外:')) {
-    const payload = trimmed.slice('额外:'.length)
-    const againMatch = payload.match(/^([1-5])([普大下])$/)
-    if (againMatch) {
-      return againMatch[1]
-    }
-
-    return null
-  }
-
-  if (trimmed.startsWith('重开:检测')) {
-    const downMatch = trimmed.match(/重开:检测(\d)号位阵亡/)
-    if (downMatch) {
-      return downMatch[1]
-    }
-  }
-
-  return null
-}
-
-function groupTokensBySlot(actions: string[][]) {
-  const slotMap: Record<string, TokenEntry[]> = {}
-  const others: TokenEntry[] = []
-
-  actions.forEach((entry, index) => {
-    const token = String(entry?.[0] ?? '').trim()
-    if (!token) {
-      return
-    }
-
-    const slot = extractSlotFromToken(token)
-    if (slot) {
-      if (!slotMap[slot]) {
-        slotMap[slot] = []
-      }
-      slotMap[slot].push({ token, index })
-      return
-    }
-
-    others.push({ token, index })
-  })
-
-  return { slotMap, others }
-}
-
-function resolveChipVariant(rawToken: string): ChipVariant {
-  const token = rawToken.trim()
-  if (!token) {
-    return 'neutral'
-  }
-
-  const baseMatch = token.match(/^(\d)([普大下])$/)
-  if (baseMatch) {
-    const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
-    return BASIC_ACTION_VARIANTS[actionSymbol]
-  }
-
-  if (token.startsWith('额外:')) {
-    const extraPayload = token.slice('额外:'.length)
-    const normalizedExtraPayload = extraPayload.toLowerCase()
-    const againMatch = extraPayload.match(/^(\d)([普大下])$/)
-    if (againMatch) {
-      const actionSymbol = againMatch[2] as RoundFormState['basicAction']
-      return BASIC_ACTION_VARIANTS[actionSymbol]
-    }
-    if (extraPayload.startsWith('等待')) {
-      return 'neutral'
-    }
-    if (extraPayload.includes('左侧') || extraPayload.includes('右侧')) {
-      return 'teal'
-    }
-    if (extraPayload.includes('吕布')) {
-      return 'success'
-    }
-    if (extraPayload.includes('自动') || normalizedExtraPayload.includes('auto')) {
-      return 'info'
-    }
-    if (extraPayload.includes('史子眇') || normalizedExtraPayload.includes('sp')) {
-      return 'warm'
-    }
-    return 'neutral'
-  }
-
-  if (token.startsWith('重开:')) {
-    return 'danger'
-  }
-
-  return 'neutral'
-}
 
 interface RoundChipProps {
   label: string

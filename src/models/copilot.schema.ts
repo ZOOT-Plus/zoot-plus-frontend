@@ -98,7 +98,7 @@ export namespace CopilotDocV1 {
     rearDelay?: number
     duration?: number
     textDoc?: string
-    template?: string
+    template?: string | string[]
     timeout?: number
     greenMask?: boolean
     next?: string[]
