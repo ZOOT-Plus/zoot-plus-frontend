@@ -30,6 +30,7 @@ import { Level, OpDifficulty, OpDifficultyBitFlag } from 'models/operation'
 
 import { useTranslation } from '../../i18n/i18n'
 import {
+  compareLevelsForDisplay,
   createCustomLevel,
   findLevelByStageName,
   getPrtsMapUrl,
@@ -75,7 +76,7 @@ export const StageNameInput: FC<{
       data
         // to simplify the list, we only show levels in normal mode
         .filter((level) => !isHardMode(level.stageId))
-        .sort((a, b) => a.levelId.localeCompare(b.levelId)) || [],
+        .sort(compareLevelsForDisplay) || [],
     [data],
   )
 

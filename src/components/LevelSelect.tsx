@@ -7,7 +7,12 @@ import { FC, useEffect, useMemo, useState } from 'react'
 
 import { useLevels } from '../apis/level'
 import { useTranslation } from '../i18n/i18n'
-import { createCustomLevel, isCustomLevel, isHardMode } from '../models/level'
+import {
+  compareLevelsForDisplay,
+  createCustomLevel,
+  isCustomLevel,
+  isHardMode,
+} from '../models/level'
 import { Level } from '../models/operation'
 import { useDebouncedQuery } from '../utils/useDebouncedQuery'
 import { Select } from './Select'
@@ -30,7 +35,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       data
         // to simplify the list, we only show levels in normal mode
         .filter((level) => !isHardMode(level.stageId))
-        .sort((a, b) => a.levelId.localeCompare(b.levelId)),
+        .sort(compareLevelsForDisplay),
     [data],
   )
   const fuse = useMemo(

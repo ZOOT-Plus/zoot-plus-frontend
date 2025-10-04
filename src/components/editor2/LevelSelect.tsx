@@ -17,6 +17,7 @@ import {
 import { useLevels } from '../../apis/level'
 import { i18n, useTranslation } from '../../i18n/i18n'
 import {
+  compareLevelsForDisplay,
   createCustomLevel,
   getPrtsMapUrl,
   getStageIdWithDifficulty,
@@ -60,7 +61,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       data
         // to simplify the list, we only show levels in normal mode
         .filter((level) => !isHardMode(level.stageId))
-        .sort((a, b) => a.levelId.localeCompare(b.levelId)),
+        .sort(compareLevelsForDisplay),
     [data],
   )
   const fuse = useMemo(

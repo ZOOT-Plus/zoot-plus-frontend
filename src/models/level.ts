@@ -132,6 +132,64 @@ export function matchStageIdIgnoringDifficulty(id1: string, id2: string) {
   )
 }
 
+const LEVEL_CATEGORY_ORDER = [
+  '主线',
+  '白鹄',
+  '洞窟',
+  '兰台',
+  '地宫',
+  '家具',
+  '活动',
+  '其他',
+] as const
+
+const LEVEL_CATEGORY_ORDER_MAP = new Map(
+  LEVEL_CATEGORY_ORDER.map((category, index) => [category, index] as const),
+)
+
+function normalizeLevelCategory(level: Level) {
+  const candidate =
+    level.catOne?.trim() || level.catTwo?.trim() || level.catThree?.trim() || ''
+
+  if (!candidate) {
+    return '其他'
+  }
+
+  for (const category of LEVEL_CATEGORY_ORDER) {
+    if (candidate.includes(category)) {
+      return category
+    }
+  }
+
+  return candidate
+}
+
+function getCategoryPriority(level: Level) {
+  const normalized = normalizeLevelCategory(level)
+  const explicit = LEVEL_CATEGORY_ORDER_MAP.get(normalized)
+
+  if (typeof explicit === 'number') {
+    return explicit
+  }
+
+  // 不在明确列表中的类别统一归入“其他”之后
+  return LEVEL_CATEGORY_ORDER.length
+}
+
+export function compareLevelsForDisplay(a: Level, b: Level) {
+  const categoryDiff = getCategoryPriority(a) - getCategoryPriority(b)
+  if (categoryDiff !== 0) {
+    return categoryDiff
+  }
+
+  const levelIdDiff = a.levelId.localeCompare(b.levelId)
+  if (levelIdDiff !== 0) {
+    return levelIdDiff
+  }
+
+  return a.stageId.localeCompare(b.stageId)
+}
+
 export function getPrtsMapUrl(stageId: string) {
   return `https://map.ark-nights.com/map/${stageId}?coord_override=maa`
 }
