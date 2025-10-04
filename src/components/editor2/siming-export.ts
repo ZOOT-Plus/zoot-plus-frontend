@@ -806,3 +806,69 @@ export function toSimingOperation(
     actions,
   }
 }
+
+// Remote generator: delegate Siming JSON building to MaaYuan-SiMing backend
+export async function toSimingOperationRemote(
+  baseOperation: CopilotOperationLoose,
+  editorOperation: EditorOperation,
+): Promise<SimingOperation> {
+  // Prepare round actions from editor state
+  const roundActions = editorActionsToRoundActions(editorOperation.actions)
+
+  // Normalize delays to strings as MaaYuan-SiMing expects string inputs
+  const delays = sanitizeSimingActionDelays(
+    editorOperation.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS,
+  )
+  const payload = {
+    level_name: baseOperation.stageName || 'generated_config',
+    level_type: '',
+    level_recognition_name: '',
+    difficulty: '',
+    cave_type: '',
+    lantai_nav: 'false',
+    attack_delay: String(delays.attack),
+    ult_delay: String(delays.ultimate),
+    defense_delay: String(delays.defense),
+    actions: roundActions,
+  }
+
+  const baseUrl = (import.meta as any).env?.VITE_SIMING_BASE_URL ||
+    (typeof process !== 'undefined' && (process as any).env?.VITE_SIMING_BASE_URL) ||
+    'http://127.0.0.1:49481'
+
+  const resp = await fetch(`${String(baseUrl).replace(/\/$/, '')}/api/export`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '')
+    throw new Error(`Siming生成接口失败: ${resp.status} ${text}`)
+  }
+
+  const data: { content?: string } = await resp.json()
+  if (!data?.content) {
+    throw new Error('Siming生成接口返回空内容')
+  }
+
+  let actions: SimingActionMap
+  try {
+    actions = JSON.parse(data.content)
+  } catch (e) {
+    throw new Error('解析Siming生成结果失败: ' + (e as Error).message)
+  }
+
+  const cloned = JSON.parse(JSON.stringify(baseOperation)) as CopilotOperationLoose
+  const rest = { ...cloned } as Record<string, unknown>
+  delete rest.actions
+  delete rest.siming_actions
+  delete rest.simingActions
+
+  return {
+    ...(rest as Omit<CopilotOperationLoose, 'actions'>),
+    actions,
+  }
+}

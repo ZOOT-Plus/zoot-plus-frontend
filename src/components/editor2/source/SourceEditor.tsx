@@ -12,7 +12,7 @@ import {
 
 import { useAtom } from 'jotai'
 import { debounce } from 'lodash-es'
-import { FC, memo, useCallback, useMemo, useRef, useState } from 'react'
+import { FC, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ZodError } from 'zod'
 
 import { i18n, useTranslation } from '../../../i18n/i18n'
@@ -23,7 +23,7 @@ import { DrawerLayout } from '../../drawer/DrawerLayout'
 import { SourceEditorHeader } from './SourceEditorHeader'
 import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
-import { toSimingOperation } from '../siming-export'
+import { toSimingOperationRemote } from '../siming-export'
 import { ZodIssue, parseOperationLoose } from '../validation/schema'
 
 interface SourceEditorProps {
@@ -43,10 +43,32 @@ const SourceEditor = withSuspensable(
     const [pending, setPending] = useState(false)
     const [errors, setErrors] = useState<(ZodIssue | string)[]>([])
 
-    const simingText = useMemo(() => {
-      const base = toMaaOperation(operation)
-      return JSON.stringify(toSimingOperation(base, operation), null, 2)
+    const [simingText, setSimingText] = useState<string>('')
+    const [simingPending, setSimingPending] = useState(false)
+    const [simingError, setSimingError] = useState<string | null>(null)
+
+    // fetch Siming JSON from remote when viewing siming or operation changes
+    const refreshSiming = useCallback(async () => {
+      try {
+        setSimingPending(true)
+        setSimingError(null)
+        const base = toMaaOperation(operation)
+        const result = await toSimingOperationRemote(base, operation)
+        setSimingText(JSON.stringify(result, null, 2))
+      } catch (e) {
+        setSimingError(formatError(e))
+        setSimingText('')
+      } finally {
+        setSimingPending(false)
+      }
     }, [operation])
+
+    useEffect(() => {
+      if (viewMode === 'siming') {
+        // fire and forget; errors will be shown below
+        refreshSiming()
+      }
+    }, [viewMode, refreshSiming])
 
     const update = useMemo(
       () =>
@@ -205,9 +227,21 @@ const SourceEditor = withSuspensable(
             readOnly={viewMode !== 'maa'}
           />
           {viewMode === 'siming' ? (
-            <Callout intent="primary" icon="info-sign">
-              {t.components.editor2.SourceEditor.siming_view_readonly}
-            </Callout>
+            <>
+              {simingPending ? (
+                <Callout intent="primary" icon="time">
+                  {t.common.loading}
+                </Callout>
+              ) : simingError ? (
+                <Callout intent="danger" icon="error">
+                  {simingError}
+                </Callout>
+              ) : (
+                <Callout intent="primary" icon="info-sign">
+                  {t.components.editor2.SourceEditor.siming_view_readonly}
+                </Callout>
+              )}
+            </>
           ) : null}
         </div>
       </DrawerLayout>

@@ -24,7 +24,7 @@ import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { useTranslation } from '../../i18n/i18n'
 import { formatError } from '../../utils/error'
 import { toEditorOperation } from '../editor2/reconciliation'
-import { SimingOperation, toSimingOperation } from '../editor2/siming-export'
+import { SimingOperation, toSimingOperationRemote } from '../editor2/siming-export'
 import { parseOperationLoose } from '../editor2/validation/schema'
 import { parseOperationFile, patchOperation, validateOperation } from './utils'
 
@@ -90,7 +90,10 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
             validateOperation(patched)
           }
 
-          entry.operation = toSimingOperation(baseOperation, editorOperation)
+          entry.operation = await toSimingOperationRemote(
+            baseOperation,
+            editorOperation,
+          )
         } catch (e) {
           entry.error = formatError(e)
           console.warn(e)

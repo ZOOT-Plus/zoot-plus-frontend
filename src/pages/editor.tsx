@@ -16,7 +16,7 @@ import {
   historyAtom,
 } from '../components/editor2/editor-state'
 import { toEditorOperation } from '../components/editor2/reconciliation'
-import { toSimingOperation } from '../components/editor2/siming-export'
+import { toSimingOperationRemote } from '../components/editor2/siming-export'
 import { parseOperationLoose } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
@@ -75,7 +75,10 @@ export const EditorPage = withSuspensable(() => {
         }
         const baseOperation = result.data
         const editorOperation = get(editorAtoms.operation)
-        const operation = toSimingOperation(baseOperation, editorOperation)
+        const operation = await toSimingOperationRemote(
+          baseOperation,
+          editorOperation,
+        )
         const status =
           get(editorAtoms.metadata).visibility === 'public'
             ? CopilotInfoStatusEnum.Public
