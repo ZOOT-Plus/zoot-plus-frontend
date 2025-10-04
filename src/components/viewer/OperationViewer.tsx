@@ -541,7 +541,7 @@ function OperationViewerInner({
 function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const t = useTranslation()
   const [showOperators, setShowOperators] = useState(true)
-  const [showActions, setShowActions] = useState(false)
+  const [showActions, setShowActions] = useState(true)
 
   return (
     <div>

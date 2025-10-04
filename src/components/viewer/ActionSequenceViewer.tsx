@@ -92,7 +92,7 @@ export const ActionSequenceViewer: FC<ActionSequenceViewerProps> = ({
     return { rounds: [], isSiming: false }
   }, [operation, slotAssignments, language])
 
-  const [viewMode, setViewMode] = useState<ViewMode>('flow')
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   if (!rounds.length) {
     return (
