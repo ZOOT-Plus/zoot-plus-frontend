@@ -25,6 +25,8 @@ import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
 import { toSimingOperationRemote } from '../siming-export'
 import { ZodIssue, parseOperationLoose } from '../validation/schema'
+import { useLevels } from '../../../apis/level'
+import { findLevelByStageName } from '../../../models/level'
 
 interface SourceEditorProps {
   onUnsavedChanges?: (hasUnsavedChanges: boolean) => void
@@ -46,6 +48,7 @@ const SourceEditor = withSuspensable(
     const [simingText, setSimingText] = useState<string>('')
     const [simingPending, setSimingPending] = useState(false)
     const [simingError, setSimingError] = useState<string | null>(null)
+    const { data: levels } = useLevels({ suspense: false })
 
     // fetch Siming JSON from remote when viewing siming or operation changes
     const refreshSiming = useCallback(async () => {
@@ -53,7 +56,13 @@ const SourceEditor = withSuspensable(
         setSimingPending(true)
         setSimingError(null)
         const base = toMaaOperation(operation)
-        const result = await toSimingOperationRemote(base, operation)
+        const selectedLevel = levels
+          ? findLevelByStageName(
+              levels,
+              (base as any).stageName ?? (base as any).stage_name ?? '',
+            )
+          : undefined
+        const result = await toSimingOperationRemote(base, operation, { level: selectedLevel })
         setSimingText(JSON.stringify(result, null, 2))
       } catch (e) {
         setSimingError(formatError(e))
@@ -61,7 +70,7 @@ const SourceEditor = withSuspensable(
       } finally {
         setSimingPending(false)
       }
-    }, [operation])
+    }, [operation, levels])
 
     useEffect(() => {
       if (viewMode === 'siming') {

@@ -27,6 +27,7 @@ import { Level, OpDifficulty } from '../../models/operation'
 import { formatError } from '../../utils/error'
 import { useDebouncedQuery } from '../../utils/useDebouncedQuery'
 import { Suggest } from '../Suggest'
+import { DifficultyPicker } from './DifficultyPicker'
 
 interface LevelSelectProps {
   className?: string
@@ -36,6 +37,7 @@ interface LevelSelectProps {
   disabled?: boolean
   value?: string
   onChange: (stageId: string, level?: Level) => void
+  onDifficultyChange?: (value: OpDifficulty, programmatically: boolean) => void
 }
 
 export const LevelSelect: FC<LevelSelectProps> = ({
@@ -45,6 +47,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   disabled,
   value,
   onChange,
+  onDifficultyChange,
   ...inputProps
 }) => {
   const t = useTranslation()
@@ -450,6 +453,21 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           </Tooltip2>
         </div>
       </div>
+      {/* 当 cat_one 为“活动”时，显示难度选择 */}
+      {selectedLevel?.catOne === '活动' && (
+        <div className="flex items-baseline">
+          <span className="mr-2 text-xs font-medium text-slate-500">
+            {i18n.components.editor.OperationEditor.stage_difficulty}
+          </span>
+          <DifficultyPicker
+            stageName={value}
+            value={difficulty}
+            onChange={(val, programmatically) =>
+              onDifficultyChange?.(val, programmatically)
+            }
+          />
+        </div>
+      )}
       {fetchError && (
         <span className="text-xs opacity-50">
           {t.components.editor2.LevelSelect.load_error({

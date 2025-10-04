@@ -4,6 +4,8 @@ import {
   editorActionsToRoundActions,
 } from './action/roundMapping'
 import { EditorOperation } from './types'
+import type { Level } from '../../models/operation'
+import { OpDifficulty, OpDifficultyBitFlag } from '../../models/operation'
 import { CopilotOperationLoose } from './validation/schema'
 import {
   DEFAULT_SIMING_ACTION_DELAYS,
@@ -811,6 +813,7 @@ export function toSimingOperation(
 export async function toSimingOperationRemote(
   baseOperation: CopilotOperationLoose,
   editorOperation: EditorOperation,
+  opts?: { level?: Level },
 ): Promise<SimingOperation> {
   // Prepare round actions from editor state
   const roundActions = editorActionsToRoundActions(editorOperation.actions)
@@ -819,8 +822,9 @@ export async function toSimingOperationRemote(
   const delays = sanitizeSimingActionDelays(
     editorOperation.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS,
   )
-  const payload = {
-    level_name: baseOperation.stageName || 'generated_config',
+  const stageName = (baseOperation as any).stageName ?? (baseOperation as any).stage_name ?? ''
+  const payload: any = {
+    level_name: stageName || 'generated_config',
     level_type: '',
     level_recognition_name: '',
     difficulty: '',
@@ -830,6 +834,92 @@ export async function toSimingOperationRemote(
     ult_delay: String(delays.ultimate),
     defense_delay: String(delays.defense),
     actions: roundActions,
+  }
+
+  // 如果关卡为“洞窟”，将 cave_type 设置为二级分类（catTwo），并指定 level_type 为“洞窟”
+  if (opts?.level && opts.level.catOne === '洞窟') {
+    payload.level_type = '洞窟'
+    payload.cave_type = opts.level.catTwo ?? ''
+  }
+
+  // 当 catOne 为“活动”或“其他”时，使用三级分类作为 OCR 关键字
+  if (opts?.level && (opts.level.catOne === '活动' || opts.level.catOne === '其他')) {
+    payload.level_recognition_name = opts.level.catThree ?? ''
+  }
+
+  // 主线、白鹄、活动（有分级）自动映射 level_type
+  if (opts?.level?.catOne === '主线') {
+    payload.level_type = '主线'
+  } else if (opts?.level?.catOne === '白鹄') {
+    payload.level_type = '白鹄'
+  } else if (opts?.level?.catOne === '活动') {
+    payload.level_type = '活动有分级'
+    // 难度映射：优先“普通”，否则“困难”，未知则留空
+    const diff = (editorOperation as any).difficulty ?? (baseOperation as any).difficulty
+    if (typeof diff === 'number') {
+      const hasRegular = (diff & OpDifficultyBitFlag.REGULAR) === OpDifficultyBitFlag.REGULAR
+      const hasHard = (diff & OpDifficultyBitFlag.HARD) === OpDifficultyBitFlag.HARD
+      if (hasRegular) {
+        payload.difficulty = '普通'
+      } else if (hasHard) {
+        payload.difficulty = '困难'
+      }
+    } else if (diff === OpDifficulty.REGULAR) {
+      payload.difficulty = '普通'
+    } else if (diff === OpDifficulty.HARD) {
+      payload.difficulty = '困难'
+    }
+  }
+
+  // 兜底：当未匹配到 Level（或 Level 不包含 catOne/catTwo），尝试从关卡名中解析洞窟与左右
+  if (!payload.level_type) {
+    const name = String(stageName || '')
+    if (name.includes('洞窟')) {
+      payload.level_type = '洞窟'
+      const m = name.match(/洞窟[-_\s]*([左右])/)
+      if (m && (m[1] === '左' || m[1] === '右')) {
+        payload.cave_type = m[1]
+      }
+    }
+  }
+
+  // 进一步兜底：从关卡名推断 主线/白鹄/活动/其他，并尽力提取识别名与难度
+  if (!payload.level_type) {
+    const raw = String(stageName || '')
+    const stripBrackets = (s: string) => s.replace(/\(.*?\)/g, '')
+    const splitParts = (s: string) =>
+      stripBrackets(s)
+        .split(/[-_]/)
+        .map((p) => p.trim())
+        .filter(Boolean)
+    const parts = splitParts(raw)
+    const lastPart = (() => {
+      let last = parts[parts.length - 1] || ''
+      if (last === '左' || last === '右') {
+        last = parts[parts.length - 2] || last
+      }
+      return last
+    })()
+
+    if (raw.includes('主线')) {
+      payload.level_type = '主线'
+    } else if (raw.includes('白鹄')) {
+      payload.level_type = '白鹄'
+    } else if (raw.includes('活动')) {
+      payload.level_type = '活动有分级'
+      if (!payload.level_recognition_name && lastPart) {
+        payload.level_recognition_name = lastPart
+      }
+      if (!payload.difficulty) {
+        if (raw.includes('普通')) payload.difficulty = '普通'
+        else if (raw.includes('困难') || raw.includes('高难')) payload.difficulty = '困难'
+      }
+    } else {
+      // 其他：尽力提供 OCR 关键字
+      if (!payload.level_recognition_name && lastPart) {
+        payload.level_recognition_name = lastPart
+      }
+    }
   }
 
   const baseUrl = (import.meta as any).env?.VITE_SIMING_BASE_URL ||

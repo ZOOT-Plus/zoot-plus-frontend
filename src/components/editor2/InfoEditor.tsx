@@ -103,6 +103,18 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
               }
             })
           }}
+          onDifficultyChange={(val) => {
+            edit(() => {
+              setInfo((prev) => {
+                prev.difficulty = val
+              })
+              return {
+                action: 'set-difficulty',
+                desc: i18n.actions.editor2.set_difficulty,
+                squashBy: '',
+              }
+            })
+          }}
         />
         <FieldError path="stage_name" />
       </FormGroup>

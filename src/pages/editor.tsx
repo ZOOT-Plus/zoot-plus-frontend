@@ -17,6 +17,8 @@ import {
 } from '../components/editor2/editor-state'
 import { toEditorOperation } from '../components/editor2/reconciliation'
 import { toSimingOperationRemote } from '../components/editor2/siming-export'
+import { useLevels } from '../apis/level'
+import { findLevelByStageName } from '../models/level'
 import { parseOperationLoose } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
@@ -37,6 +39,7 @@ export const EditorPage = withSuspensable(() => {
   }).data
   const t = useTranslation()
   const resetEditor = useSetAtom(editorAtoms.reset)
+  const { data: levels } = useLevels({ suspense: false })
 
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -75,9 +78,18 @@ export const EditorPage = withSuspensable(() => {
         }
         const baseOperation = result.data
         const editorOperation = get(editorAtoms.operation)
+        // 解析所选关卡，便于洞窟时设置 cave_type
+        const selectedLevel = levels
+          ? findLevelByStageName(
+              levels,
+              (baseOperation as any).stageName ?? (baseOperation as any).stage_name ?? editorOperation.stageName ?? editorOperation['stage_name'] ?? '',
+            )
+          : undefined
+
         const operation = await toSimingOperationRemote(
           baseOperation,
           editorOperation,
+          { level: selectedLevel },
         )
         const status =
           get(editorAtoms.metadata).visibility === 'public'
