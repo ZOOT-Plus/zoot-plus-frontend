@@ -155,7 +155,7 @@ export const ActionSequenceViewer: FC<ActionSequenceViewerProps> = ({
 
   const renderTableView = () => {
     const tableRows = rounds.map((roundEntry) => {
-      const { slotMap, others } = groupTokensForTable(roundEntry.tokens)
+      const { slotMap, others } = groupTokensForTable(roundEntry.tokens, slotAssignments)
       return {
         round: roundEntry.round,
         tokens: roundEntry.tokens,
@@ -278,11 +278,10 @@ export const ActionSequenceViewer: FC<ActionSequenceViewerProps> = ({
                         return (
                           <td
                             key={`${row.round}-${slotKey}`}
-                            className="w-[180px] align-top border border-gray-200 dark:border-gray-600 px-3 py-3"
+                            className="w-[180px] align-top border border-gray-200 dark:border-gray-600 px-3 py-3 text-center"
                           >
                             {slotTokens.length > 0 ? (
-                              <div className="flex flex-wrap gap-2">
-                                {slotTokens.map((token) => {
+                              <div className="flex flex-wrap gap-2 justify-center">{slotTokens.map((token) => {
                                   const variant = resolveChipVariant(token.raw)
                                   const summary = formatTokenSummary(
                                     token.raw,
@@ -318,10 +317,9 @@ export const ActionSequenceViewer: FC<ActionSequenceViewerProps> = ({
                         )
                       })}
                       {hasOtherActions && (
-                        <td className="w-[200px] align-top border border-gray-200 dark:border-gray-600 px-3 py-3">
+                        <td className="w-[200px] align-top border border-gray-200 dark:border-gray-600 px-3 py-3 text-center">
                           {row.others.length > 0 ? (
-                            <div className="flex flex-wrap gap-2">
-                              {row.others.map((token) => {
+                            <div className="flex flex-wrap gap-2 justify-center">{row.others.map((token) => {
                                 const variant = resolveChipVariant(token.raw)
                                 const summary = formatTokenSummary(
                                   token.raw,
@@ -369,11 +367,7 @@ export const ActionSequenceViewer: FC<ActionSequenceViewerProps> = ({
   return (
     <div className="mt-2 flex flex-col pb-8 space-y-4">
       <div className="flex flex-col gap-3">
-        {isSiming && (
-          <Callout icon="graph" intent="primary">
-            {t.components.viewer.OperationViewer.siming_actions_hint}
-          </Callout>
-        )}
+        
         <div className="flex justify-end">
           <ButtonGroup minimal>
             {viewModeOptions.map((option) => (
@@ -579,7 +573,7 @@ function symbolToActionLabel(
   return '下拉'
 }
 
-function groupTokensForTable(tokens: DisplayToken[]) {
+function groupTokensForTable(tokens: DisplayToken[], slotAssignments: SlotAssignments) {
   const slotMap: Partial<Record<SlotKey, DisplayToken[]>> = {}
   const others: DisplayToken[] = []
 
@@ -592,6 +586,32 @@ function groupTokensForTable(tokens: DisplayToken[]) {
       slotMap[slot]!.push(token)
       return
     }
+
+    const raw = token.raw.trim()
+    if (raw.startsWith('额外:')) {
+      const payload = raw.slice('额外:'.length)
+      const payloadNoSpace = payload.replace(/\s+/g, '')
+      const isLvbuSwitch =
+        payloadNoSpace.includes('吕布') || payloadNoSpace.includes('呂布')
+
+      if (isLvbuSwitch) {
+        let lvbuSlot: SlotKey | null = null
+        for (const [slotKey, assignment] of Object.entries(slotAssignments)) {
+          if (!assignment) continue
+          const name = `${assignment.name ?? ''} ${assignment.rawName ?? ''}`
+          if (name.includes('吕布') || name.includes('呂布')) {
+            lvbuSlot = slotKey as SlotKey
+            break
+          }
+        }
+        if (lvbuSlot) {
+          if (!slotMap[lvbuSlot]) slotMap[lvbuSlot] = []
+          slotMap[lvbuSlot]!.push(token)
+          return
+        }
+      }
+    }
+
     others.push(token)
   })
 
