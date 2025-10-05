@@ -32,6 +32,7 @@ import {
   CopilotInfoStatusEnum,
 } from 'maa-copilot-client'
 import { ComponentType, FC, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
@@ -43,6 +44,7 @@ import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { EDifficultyLevel } from 'components/entity/ELevel'
 import { OperationRating } from 'components/viewer/OperationRating'
 import { OpRatingType, Operation } from 'models/operation'
+import { toShortCode } from 'models/shortCode'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
@@ -201,6 +203,7 @@ export const OperationViewer: ComponentType<{
 }> = withSuspensable(
   function OperationViewer({ operationId, onCloseDrawer }) {
     const t = useTranslation()
+    const navigate = useNavigate()
     const {
       data: operation,
       error,
@@ -262,6 +265,12 @@ export const OperationViewer: ComponentType<{
       ).catch(console.warn)
     }
 
+    const handleCopyToEditor = () => {
+      const shortCode = toShortCode({ id: operation.id })
+      onCloseDrawer()
+      navigate(`/editor?shortcode=${encodeURIComponent(shortCode)}`)
+    }
+
     return (
       <DrawerLayout
         title={
@@ -303,6 +312,13 @@ export const OperationViewer: ComponentType<{
                 text={t.components.viewer.OperationViewer.copy_secret_code}
                 intent="primary"
                 onClick={() => copyShortCode(operation)}
+              />
+
+              <Button
+                icon="share"
+                text={t.components.viewer.OperationViewer.copy_to_editor_v2}
+                intent="primary"
+                onClick={handleCopyToEditor}
               />
             </div>
           </>

@@ -2,14 +2,15 @@ import { useSetAtom } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
-import { useCallback, useLayoutEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { OperationEditor } from 'components/editor2/Editor'
 
-import { createOperation, updateOperation, useOperation } from '../apis/operation'
+import { createOperation, getOperation, updateOperation, useOperation } from '../apis/operation'
 import { withSuspensable } from '../components/Suspensable'
 import { AppToaster } from '../components/Toaster'
+import { stripOperationExportFields } from '../services/operation'
 import {
   defaultEditorState,
   editorAtoms,
@@ -19,6 +20,7 @@ import { toEditorOperation } from '../components/editor2/reconciliation'
 import { toSimingOperationRemote } from '../components/editor2/siming-export'
 import { useLevels } from '../apis/level'
 import { findLevelByStageName } from '../models/level'
+import { parseShortCode } from '../models/shortCode'
 import { parseOperationLoose } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
@@ -40,6 +42,9 @@ export const EditorPage = withSuspensable(() => {
   const t = useTranslation()
   const resetEditor = useSetAtom(editorAtoms.reset)
   const { data: levels } = useLevels({ suspense: false })
+  const [searchParams, setSearchParams] = useSearchParams()
+  const importShortcode = searchParams.get('shortcode')
+  const importedShortcodeRef = useRef<string | null>(null)
 
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -63,6 +68,89 @@ export const EditorPage = withSuspensable(() => {
       resetEditor(defaultEditorState)
     }
   }, [apiOperation, resetEditor])
+
+  useEffect(() => {
+    if (!importShortcode) {
+      importedShortcodeRef.current = null
+      return
+    }
+
+    if (importedShortcodeRef.current === importShortcode) {
+      return
+    }
+
+    let cancelled = false
+
+    const run = async () => {
+      try {
+        const shortCodeContent = parseShortCode(importShortcode)
+
+        if (!shortCodeContent) {
+          throw new Error(
+            t.components.editor.source.ShortCodeImporter.invalid_shortcode,
+          )
+        }
+
+        const operationData = await getOperation({ id: shortCodeContent.id })
+        const operationContent = operationData.parsedContent
+
+        if (
+          operationContent.doc.title ===
+          t.models.converter.invalid_operation_content
+        ) {
+          throw new Error(
+            t.components.editor.source.ShortCodeImporter.cannot_parse_content,
+          )
+        }
+
+        const sanitizedContent = stripOperationExportFields(
+          operationContent as unknown as Record<string, unknown>,
+        )
+        const parsedOperation = parseOperationLoose(sanitizedContent)
+
+        resetEditor({
+          operation: toEditorOperation(parsedOperation),
+          metadata: {
+            visibility:
+              operationData.status === CopilotInfoStatusEnum.Public
+                ? 'public'
+                : 'private',
+          },
+        })
+        importedShortcodeRef.current = importShortcode
+      } catch (error) {
+        console.warn(error)
+        AppToaster.show({
+          intent: 'danger',
+          message:
+            t.components.editor.source.ShortCodeImporter.load_failed +
+            formatError(error),
+        })
+        importedShortcodeRef.current = importShortcode
+      } finally {
+        if (cancelled) {
+          return
+        }
+        setSearchParams((prev) => {
+          const next = new URLSearchParams(prev)
+          next.delete('shortcode')
+          return next
+        }, { replace: true })
+      }
+    }
+
+    run()
+
+    return () => {
+      cancelled = true
+    }
+  }, [
+    importShortcode,
+    resetEditor,
+    setSearchParams,
+    t,
+    formatError,
+  ])
 
   const handleSubmit = useAtomCallback(
     useCallback(
