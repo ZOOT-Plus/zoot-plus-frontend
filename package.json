@@ -31,6 +31,7 @@
     "@sentry/react": "^7.27.0",
     "@sentry/tracing": "^7.27.0",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@zod/core": "^0.11.6",
     "ajv": "^8.11.0",
     "ajv-i18n": "^4.2.0",
     "camelcase-keys": "^8.0.1",

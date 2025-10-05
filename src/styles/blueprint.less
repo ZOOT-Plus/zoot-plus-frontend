@@ -9,66 +9,66 @@
 // 加上最外层的id，保证自定义css优先级
 body {
   .bp4-card {
-    @apply rounded-lg py-4;
+    @apply ~'rounded-lg py-4';
   }
 
   .bp4-input {
-    @apply block w-full py-2 pl-3 pr-3;
-    @apply bg-white shadow-sm border border-slate-400 rounded-md border-solid;
-    @apply focus:border-violet-500;
+    @apply ~'block w-full py-2 pl-3 pr-3';
+    @apply ~'bg-white shadow-sm border border-slate-400 rounded-md border-solid';
+    @apply ~'focus:border-violet-500';
 
     &:focus {
       box-shadow: 0 0 5px @primary-color;
     }
 
     &[type='search' i]::-webkit-search-cancel-button {
-      @apply mr-0 cursor-pointer;
+      @apply ~'mr-0 cursor-pointer';
     }
   }
 
   .bp4-input,
   // class of TagInput (also used by MultiSelect2)
   .bp4-input-ghost {
-    @apply placeholder:italic placeholder:text-slate-400;
+    @apply ~'placeholder:italic placeholder:text-slate-400';
   }
 
   // simulate border using outline because Blueprint TextArea's auto-sizing doesn't work well with border
   textarea.bp4-input {
-    @apply border-none outline outline-1 outline-slate-400;
+    @apply ~'border-none outline outline-1 outline-slate-400';
 
     outline-offset: -1px;
   }
 
   .bp4-file-upload-input {
-    @apply placeholder:italic placeholder:text-slate-400;
-    @apply block w-full;
-    @apply bg-white shadow-sm border border-slate-400 rounded-md border-solid;
-    @apply focus:border-violet-500;
+    @apply ~'placeholder:italic placeholder:text-slate-400';
+    @apply ~'block w-full';
+    @apply ~'bg-white shadow-sm border border-slate-400 rounded-md border-solid';
+    @apply ~'focus:border-violet-500';
   }
 
   .bp4-large .bp4-file-upload-input::after {
-    @apply m-1;
+    @apply ~'m-1';
   }
 
   .bp4-callout {
-    @apply rounded-md;
+    @apply ~'rounded-md';
   }
 
   .bp4-input-group {
     .bp4-icon {
-      @apply absolute inset-y-0 left-0 flex items-center m-0;
+      @apply ~'absolute inset-y-0 left-0 flex items-center m-0';
 
       span {
-        @apply h-5 w-5;
+        @apply ~'h-5 w-5';
       }
     }
 
     .bp4-button .bp4-icon {
-      @apply relative;
+      @apply ~'relative';
     }
 
     .bp4-icon + .bp4-input {
-      @apply pl-8;
+      @apply ~'pl-8';
     }
   }
 
@@ -77,169 +77,169 @@ body {
   }
 
   .bp4-large .bp4-file-upload-input::after {
-    @apply text-slate-900 shadow-none rounded-none m-0;
-    @apply border-l border-solid border-slate-400;
-    @apply hover:shadow-none;
+    @apply ~'text-slate-900 shadow-none rounded-none m-0';
+    @apply ~'border-l border-solid border-slate-400';
+    @apply ~'hover:shadow-none';
 
     height: 2.375rem;
     line-height: 2.375rem;
   }
 
   .bp4-button {
-    @apply flex;
-    @apply border border-solid border-transparent rounded-md font-semibold;
-    @apply text-sm;
-    @apply transition-colors;
-    @apply justify-center items-center;
+    @apply ~'flex';
+    @apply ~'border border-solid border-transparent rounded-md font-semibold';
+    @apply ~'text-sm';
+    @apply ~'transition-colors';
+    @apply ~'justify-center items-center';
 
     &:not(.bp4-small) {
-      @apply py-2 px-4;
+      @apply ~'py-2 px-4';
     }
 
     &:not([class*='bp4-intent-']):not(.bp4-minimal) {
-      @apply text-slate-900 shadow-none;
-      @apply border-slate-400;
-      @apply hover:shadow-none;
+      @apply ~'text-slate-900 shadow-none';
+      @apply ~'border-slate-400';
+      @apply ~'hover:shadow-none';
     }
 
     &.bp4-disabled {
-      @apply opacity-50;
+      @apply ~'opacity-50';
     }
 
     &.bp4-intent-primary {
       &,
       &.bp4-disabled {
-        @apply bg-violet-500 enabled:hover:bg-violet-600;
+        @apply ~'bg-violet-500 enabled:hover:bg-violet-600';
       }
       &.bp4-minimal {
-        @apply bg-transparent enabled:hover:bg-violet-100;
+        @apply ~'bg-transparent enabled:hover:bg-violet-100';
       }
     }
 
     &.bp4-intent-success {
       &,
       &.bp4-disabled {
-        @apply bg-emerald-500 enabled:hover:bg-emerald-600;
+        @apply ~'bg-emerald-500 enabled:hover:bg-emerald-600';
       }
       &.bp4-minimal {
-        @apply bg-transparent enabled:hover:bg-emerald-100;
+        @apply ~'bg-transparent enabled:hover:bg-emerald-100';
       }
     }
 
     &.bp4-intent-warning {
       &,
       &.bp4-disabled {
-        @apply bg-amber-500 enabled:hover:bg-amber-600;
+        @apply ~'bg-amber-500 enabled:hover:bg-amber-600';
       }
       &.bp4-minimal {
-        @apply bg-transparent enabled:hover:bg-amber-100;
+        @apply ~'bg-transparent enabled:hover:bg-amber-100';
       }
     }
 
     &.bp4-intent-danger {
       &,
       &.bp4-disabled {
-        @apply bg-red-500 enabled:hover:bg-red-600;
+        @apply ~'bg-red-500 enabled:hover:bg-red-600';
       }
       &.bp4-minimal {
-        @apply bg-transparent enabled:hover:bg-red-100;
+        @apply ~'bg-transparent enabled:hover:bg-red-100';
       }
     }
 
     .bp4-icon:first-child {
-      @apply mr-2;
+      @apply ~'mr-2';
     }
   }
 
   // TODO: 请把select换成组件库的select
   // .bp4-html-select select {
-  //   @apply block py-2 px-4;
-  //   @apply border border-solid border-slate-400 rounded-md font-semibold;
-  //   @apply text-sm shadow-none text-center;
-  //   @apply transition-colors;
-  //   @apply focus:outline-none;
+  //   @apply ~'block py-2 px-4';
+  //   @apply ~'border border-solid border-slate-400 rounded-md font-semibold';
+  //   @apply ~'text-sm shadow-none text-center';
+  //   @apply ~'transition-colors';
+  //   @apply ~'focus:outline-none';
   // }
 
   .bp4-popover2 {
-    @apply rounded-lg;
+    @apply ~'rounded-lg';
     .bp4-popover2-content {
-      @apply rounded-lg p-2;
+      @apply ~'rounded-lg p-2';
     }
     ul li {
       .bp4-menu-item {
-        @apply rounded-md;
+        @apply ~'rounded-md';
       }
 
       &:not(:last-child) {
-        @apply mb-1;
+        @apply ~'mb-1';
       }
     }
   }
 
   .bp4-dialog {
-    @apply rounded-lg;
+    @apply ~'rounded-lg';
     & .bp4-dialog-header {
-      @apply rounded-t-lg;
+      @apply ~'rounded-t-lg';
     }
   }
 
   .bp4-popover2 .bp4-heading {
-    @apply opacity-80;
+    @apply ~'opacity-80';
   }
 
   .bp4-toast {
-    @apply rounded border-none;
+    @apply ~'rounded border-none';
     &.bp4-intent-success {
-      @apply bg-emerald-500;
+      @apply ~'bg-emerald-500';
       .bp4-button {
-        @apply !bg-emerald-500;
+        @apply ~'!bg-emerald-500';
       }
     }
     &.bp4-intent-warning {
-      @apply bg-amber-500;
+      @apply ~'bg-amber-500';
       .bp4-button {
-        @apply !bg-amber-500;
+        @apply ~'!bg-amber-500';
       }
     }
     &.bp4-intent-danger {
-      @apply bg-red-500;
+      @apply ~'bg-red-500';
       .bp4-button {
-        @apply !bg-red-500;
+        @apply ~'!bg-red-500';
       }
     }
     .bp4-button {
-      @apply border-none p-0;
+      @apply ~'border-none p-0';
     }
   }
 
   .bp4-numeric-input {
     & .bp4-input-group {
-      @apply !mr-0;
+      @apply ~'!mr-0';
 
       & input {
-        @apply rounded-r-none border-r-0;
+        @apply ~'rounded-r-none border-r-0';
       }
     }
 
     & .bp4-button-group {
       & button {
-        @apply !rounded-l-none;
+        @apply ~'!rounded-l-none';
       }
       & button:first-of-type {
-        @apply !rounded-tr-lg;
+        @apply ~'!rounded-tr-lg';
       }
       & button:last-of-type {
-        @apply !rounded-br-lg;
+        @apply ~'!rounded-br-lg';
       }
     }
   }
 
   .bp4-skeleton {
-    @apply rounded-md;
+    @apply ~'rounded-md';
   }
 
   label.bp4-checkbox {
-    @apply select-none;
+    @apply ~'select-none';
   }
 }
 
@@ -248,7 +248,7 @@ body {
 
   // background
   .docs-content-wrapper {
-    @apply min-h-screen;
+    @apply ~'min-h-screen';
     background-color: @dark-content-bg;
   }
 
@@ -256,7 +256,7 @@ body {
   .bp4-navbar {
     a,
     .bp4-tag span {
-      @apply text-slate-50;
+      @apply ~'text-slate-50';
     }
   }
 
@@ -267,7 +267,7 @@ body {
     }
 
     span:hover {
-      @apply text-slate-50;
+      @apply ~'text-slate-50';
     }
   }
 
@@ -277,65 +277,65 @@ body {
   .markdown-body,
   .markdown-body blockquote,
   .markdown-body span {
-    @apply text-slate-100;
+    @apply ~'text-slate-100';
   }
 
   .markdown-body blockquote {
-    @apply bg-zinc-900;
+    @apply ~'bg-zinc-900';
   }
 
   // 通用样式 - 按钮、tag、提示
   .bp4-button {
     .bp4-button-text {
-      @apply text-slate-50;
+      @apply ~'text-slate-50';
     }
 
     &.bp4-minimal.bp4-intent-danger:hover:enabled {
-      @apply bg-red-500;
+      @apply ~'bg-red-500';
     }
   }
 
   .bp4-tag {
-    @apply bg-slate-900 text-slate-200;
+    @apply ~'bg-slate-900 text-slate-200';
 
     &.bp4-intent-danger {
-      @apply bg-red-500;
+      @apply ~'bg-red-500';
     }
 
     &.bp4-intent-primary {
-      @apply bg-blue-500;
+      @apply ~'bg-blue-500';
     }
   }
 
   .bp4-callout p {
-    @apply text-slate-50;
+    @apply ~'text-slate-50';
   }
 
   .bp4-label {
     p,
     span,
     div {
-      @apply text-slate-100;
+      @apply ~'text-slate-100';
     }
   }
 
   .bp4-text-muted {
-    @apply text-slate-100;
+    @apply ~'text-slate-100';
   }
 
   .bp4-menu {
     .bp4-menu-item.bp4-selected {
-      @apply text-slate-100;
+      @apply ~'text-slate-100';
     }
   }
 
   .bp4-form-group {
     .bp4-form-helper-text {
-      @apply text-slate-100;
+      @apply ~'text-slate-100';
     }
 
     .bp4-input-group input {
-      @apply text-slate-100;
+      @apply ~'text-slate-100';
     }
   }
 
@@ -343,7 +343,7 @@ body {
     div,
     span,
     p {
-      @apply text-slate-100;
+      @apply ~'text-slate-100';
     }
   }
 }
