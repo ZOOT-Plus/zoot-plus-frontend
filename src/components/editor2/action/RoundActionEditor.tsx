@@ -107,6 +107,121 @@ const VIEW_MODE_META: Record<
   },
 }
 
+interface ActionEditorHeaderProps {
+  viewMode: ActionViewMode
+  onViewModeChange: (mode: ActionViewMode) => void
+  loopStart: number
+  loopEnd: number
+  minRound: number
+  maxRound: number
+  hasRounds: boolean
+  onLoopRangeChange: (field: 'start' | 'end', value: number) => void
+  onAddRound: () => void
+  onGenerateLoop: () => void
+}
+
+const ActionEditorHeader: FC<ActionEditorHeaderProps> = ({
+  viewMode,
+  onViewModeChange,
+  loopStart,
+  loopEnd,
+  minRound,
+  maxRound,
+  hasRounds,
+  onLoopRangeChange,
+  onAddRound,
+  onGenerateLoop,
+}) => {
+  const viewMeta = VIEW_MODE_META[viewMode]
+  const viewLabel = viewMeta.label
+  const viewDescription = viewMeta.description
+
+  return (
+    <div className="sticky top-0 z-20 -mx-4 px-4 pt-4 pb-3 bg-white/95 dark:bg-slate-900/95 shadow-sm border-b border-slate-200/70 dark:border-slate-700/70">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
+        <div>
+          <h3 className="text-lg font-bold">动作序列（{viewLabel}）</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {viewDescription}
+          </p>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-3 flex-wrap justify-end">
+            <div className="flex items-center gap-2 flex-wrap">
+              {Object.entries(VIEW_MODE_META).map(([key, meta]) => {
+                const mode = key as ActionViewMode
+                const active = viewMode === mode
+                return (
+                  <button
+                    key={mode}
+                    type="button"
+                    className="editor-round-pill text-sm"
+                    data-state={active ? 'active' : undefined}
+                    data-variant="neutral"
+                    aria-pressed={active}
+                    onClick={() => onViewModeChange(mode)}
+                  >
+                    <Icon icon={meta.icon} />
+                    <span>{meta.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <button
+              type="button"
+              className="editor-round-pill text-sm flex-shrink-0"
+              data-variant="warm"
+              onClick={onAddRound}
+            >
+              <Icon icon="add" />
+              <span>新增回合</span>
+            </button>
+          </div>
+          <div className="editor-loop-controls flex flex-wrap items-center justify-end gap-y-2 gap-x-3 sm:gap-x-4 text-sm text-gray-600 dark:text-gray-300">
+            <span className="font-medium text-gray-700 dark:text-gray-200 flex-shrink-0 whitespace-nowrap">生成循环</span>
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">起始</span>
+              <NumericInput2
+                containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
+                inputClassName="!text-center"
+                intOnly
+                min={minRound}
+                max={maxRound}
+                value={loopStart}
+                disabled={!hasRounds}
+                onValueChange={(value) => onLoopRangeChange('start', value)}
+              />
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">结束</span>
+              <NumericInput2
+                containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
+                inputClassName="!text-center"
+                intOnly
+                min={minRound}
+                max={maxRound}
+                value={loopEnd}
+                disabled={!hasRounds}
+                onValueChange={(value) => onLoopRangeChange('end', value)}
+              />
+            </div>
+            <button
+              type="button"
+              className={`editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center whitespace-nowrap${hasRounds ? '' : ' is-disabled'}`}
+              data-variant="teal"
+              onClick={onGenerateLoop}
+              disabled={!hasRounds}
+            >
+              <Icon icon="repeat" />
+              <span>生成循环</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 
 interface RoundChipProps {
   label: string
@@ -915,92 +1030,20 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     </div>
   )
 
-  const viewMeta = VIEW_MODE_META[viewMode]
-  const viewLabel = viewMeta.label
-  const viewDescription = viewMeta.description
-
   return (
-    <div className={clsx('px-4 pb-24 space-y-6', className)}>
-      <div className="flex flex-wrap gap-4 items-center justify-between">
-        <div>
-          <h3 className="text-lg font-bold">动作序列（{viewLabel}）</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {viewDescription}
-          </p>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-3 flex-wrap justify-end">
-            <div className="flex items-center gap-2 flex-wrap">
-              {Object.entries(VIEW_MODE_META).map(([key, meta]) => {
-                const mode = key as ActionViewMode
-                const active = viewMode === mode
-                return (
-                  <button
-                    key={mode}
-                    type="button"
-                    className="editor-round-pill text-sm"
-                    data-state={active ? 'active' : undefined}
-                    data-variant="neutral"
-                    aria-pressed={active}
-                    onClick={() => setViewMode(mode)}
-                  >
-                    <Icon icon={meta.icon} />
-                    <span>{meta.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-            <button
-              type="button"
-              className="editor-round-pill text-sm flex-shrink-0"
-              data-variant="warm"
-              onClick={handleAddRound}
-            >
-              <Icon icon="add" />
-              <span>新增回合</span>
-            </button>
-          </div>
-          <div className="editor-loop-controls flex flex-wrap items-center justify-end gap-y-2 gap-x-3 sm:gap-x-4 text-sm text-gray-600 dark:text-gray-300">
-            <span className="font-medium text-gray-700 dark:text-gray-200 flex-shrink-0 whitespace-nowrap">生成循环</span>
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
-              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">起始</span>
-              <NumericInput2
-                containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
-                inputClassName="!text-center"
-                intOnly
-                min={minRound}
-                max={maxRound}
-                value={loopStart}
-                disabled={!hasRounds}
-                onValueChange={(value) => handleLoopRangeChange('start', value)}
-              />
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
-              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">结束</span>
-              <NumericInput2
-                containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
-                inputClassName="!text-center"
-                intOnly
-                min={minRound}
-                max={maxRound}
-                value={loopEnd}
-                disabled={!hasRounds}
-                onValueChange={(value) => handleLoopRangeChange('end', value)}
-              />
-            </div>
-            <button
-              type="button"
-              className={`editor-round-pill text-sm flex-shrink-0 basis-full sm:basis-auto w-full sm:w-auto justify-center whitespace-nowrap${hasRounds ? '' : ' is-disabled'}`}
-              data-variant="teal"
-              onClick={handleGenerateLoop}
-              disabled={!hasRounds}
-            >
-              <Icon icon="repeat" />
-              <span>生成循环</span>
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className={clsx('px-4 pb-24 space-y-6 relative', className)}>
+      <ActionEditorHeader
+        viewMode={viewMode}
+        onViewModeChange={(mode) => setViewMode(mode)}
+        loopStart={loopStart}
+        loopEnd={loopEnd}
+        minRound={minRound}
+        maxRound={maxRound}
+        hasRounds={hasRounds}
+        onLoopRangeChange={handleLoopRangeChange}
+        onAddRound={handleAddRound}
+        onGenerateLoop={handleGenerateLoop}
+      />
 
       {roundKeys.length === 0 ? (
         <Card className="card-shadow-subtle text-sm text-gray-600 dark:text-gray-400">

@@ -112,7 +112,7 @@ const ManageMenu: FC<{
   return (
     <>
       <Menu>
-        <ReLinkRenderer
+        {/* <ReLinkRenderer
           className="hover:text-inherit hover:no-underline"
           to={`/create/${operation.id}`}
           target="_blank"
@@ -123,7 +123,7 @@ const ManageMenu: FC<{
               {...props}
             />
           )}
-        />
+        /> */}
         <ReLinkRenderer
           className="hover:text-inherit hover:no-underline"
           to={`/editor/${operation.id}`}
@@ -301,11 +301,11 @@ export const OperationViewer: ComponentType<{
                 </Popover2>
               )}
 
-              <Button
+              {/* <Button
                 icon="download"
                 text={t.components.viewer.OperationViewer.download_json}
                 onClick={() => handleDownloadJSON(operation.parsedContent)}
-              />
+              /> */}
 
               <Button
                 icon="clipboard"

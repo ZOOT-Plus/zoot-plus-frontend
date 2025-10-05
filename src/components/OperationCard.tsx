@@ -334,7 +334,7 @@ const CardActions = ({
     />
   ) : (
     <div className={clsx('flex gap-1', className)}>
-      <Tooltip2
+      {/* <Tooltip2
         placement="bottom"
         content={
           <div className="max-w-sm dark:text-slate-900">
@@ -352,7 +352,7 @@ const CardActions = ({
             )
           }
         />
-      </Tooltip2>
+      </Tooltip2> */}
       <Tooltip2
         placement="bottom"
         content={
