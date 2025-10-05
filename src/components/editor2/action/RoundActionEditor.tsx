@@ -593,12 +593,16 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
   )
 
   const handleAddBasicAction = useCallback(
-    (roundKey: string) => {
+    (roundKey: string, action?: RoundFormState['basicAction']) => {
       const form = roundForms[roundKey] ?? defaultFormState()
-      const token = `${form.slot}${form.basicAction}`
+      const actionSymbol = action ?? form.basicAction
+      if (actionSymbol !== form.basicAction) {
+        updateForm(roundKey, { basicAction: actionSymbol })
+      }
+      const token = `${form.slot}${actionSymbol}`
       handleAddToken(roundKey, token)
     },
-    [handleAddToken, roundForms],
+    [handleAddToken, roundForms, updateForm],
   )
 
   const handleAddExtraAction = useCallback(
@@ -910,21 +914,22 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
               </option>
             ))}
           </HTMLSelect>
-          <HTMLSelect
-            value={form.basicAction}
-            onChange={(e) =>
-              updateForm(roundKey, {
-                basicAction: e.currentTarget.value as RoundFormState['basicAction'],
-              })
-            }
-          >
-            {BASIC_ACTION_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </HTMLSelect>
-          <Button onClick={() => handleAddBasicAction(roundKey)}>＋动作</Button>
+          <div className="flex flex-wrap gap-2">
+            {BASIC_ACTION_OPTIONS.map((option) => {
+              const isActive = form.basicAction === option.value
+              return (
+                <Button
+                  key={option.value}
+                  small
+                  outlined={!isActive}
+                  intent={isActive ? 'primary' : undefined}
+                  onClick={() => handleAddBasicAction(roundKey, option.value)}
+                >
+                  {option.label}
+                </Button>
+              )
+            })}
+          </div>
         </div>
       </div>
 

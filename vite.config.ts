@@ -19,6 +19,8 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         src: require('path').resolve(__dirname, 'src'),
+        // 明确指向 ESM 入口，避免某些环境下包入口解析失败
+        'maa-copilot-client': 'maa-copilot-client/dist/esm/index.js',
       },
     },
     build: {
