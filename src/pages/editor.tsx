@@ -52,6 +52,8 @@ export const EditorPage = withSuspensable(() => {
   }
 
   useLayoutEffect(() => {
+    // 将后端返回的预计算关卡信息注入全局，供 InfoEditor 使用
+    ;(window as any).__editor_preLevel = apiOperation?.preLevel
     if (apiOperation) {
       resetEditor({
         operation: toEditorOperation(

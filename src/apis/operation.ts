@@ -185,9 +185,35 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
     requireData: true,
   }).getCopilotById(req)
 
+  const d: any = res.data as any
+  const preLevel = (() => {
+    const stageId = d.stageId ?? d.stage_id
+    const levelId = d.levelId ?? d.level_id ?? stageId ?? ''
+    const game = d.game ?? '明日方舟'
+    const name = d.name ?? ''
+    const catOne = d.catOne ?? d.cat_one ?? ''
+    const catTwo = d.catTwo ?? d.cat_two ?? ''
+    const catThree = d.catThree ?? d.cat_three ?? ''
+    if (!stageId && !catOne && !catTwo && !catThree && !name) {
+      return undefined
+    }
+    return {
+      game,
+      levelId,
+      stageId: stageId ?? '',
+      catOne,
+      catTwo,
+      catThree,
+      name,
+      width: 0,
+      height: 0,
+    }
+  })()
+
   return {
     ...res.data,
     parsedContent: toCopilotOperation(res.data),
+    preLevel,
   }
 }
 

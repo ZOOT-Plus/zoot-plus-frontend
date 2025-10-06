@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
+import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
 import { uniqueId } from 'lodash-es'
 import { PartialDeep } from 'type-fest'
@@ -175,6 +176,13 @@ export function toEditorOperation(
   }
 
   const hydrated = hydrateOperation(converted)
+  // 兼容：若缺少 stageName，但存在 level 字段，则回填到 stageName
+  if (!('stageName' in hydrated) || !hydrated.stageName) {
+    const maybeLevel = (operation as unknown as { level?: string }).level
+    if (maybeLevel) {
+      hydrated.stageName = maybeLevel
+    }
+  }
   hydrated.simingActionDelays = extractSimingActionDelays(simingActions)
   if (simingEditorActions) {
     hydrated.actions = simingEditorActions

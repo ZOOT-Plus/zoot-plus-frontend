@@ -118,7 +118,9 @@ export function matchLevelByStageName(level: Level, stageName: string) {
   return (
     matchStageIdIgnoringDifficulty(level.stageId, stageName) ||
     level.levelId === stageName ||
-    level.name === stageName
+    level.name === stageName ||
+    level.catThree === stageName ||
+    level.catTwo === stageName
   )
 }
 
@@ -177,6 +179,11 @@ function getCategoryPriority(level: Level) {
 }
 
 export function compareLevelsForDisplay(a: Level, b: Level) {
+  const gameA = (a.game || '').trim()
+  const gameB = (b.game || '').trim()
+  if (gameA !== gameB) {
+    return gameA.localeCompare(gameB)
+  }
   const categoryDiff = getCategoryPriority(a) - getCategoryPriority(b)
   if (categoryDiff !== 0) {
     return categoryDiff

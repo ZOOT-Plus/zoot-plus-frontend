@@ -22,11 +22,14 @@ import { editorAtoms, useEdit } from './editor-state'
 import { DEFAULT_SIMING_ACTION_DELAYS } from './siming/constants'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
 
+import { Operation } from '../../models/operation'
+
 interface InfoEditorProps {
   className?: string
+  preLevel?: Operation['preLevel']
 }
 
-export const InfoEditor = memo(({ className }: InfoEditorProps) => {
+export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
   const [info, setInfo] = useImmerAtom(editorAtoms.operationBase)
   const [metadata, setMetadata] = useImmerAtom(editorAtoms.metadata)
   const edit = useEdit()
@@ -84,6 +87,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         <LevelSelect
           difficulty={info.difficulty ?? OpDifficulty.UNKNOWN}
           value={info.stageName}
+          fallbackLevel={preLevel as any}
           onChange={(stageId, level) => {
             edit(() => {
               setInfo((prev) => {

@@ -137,7 +137,7 @@ const ActionEditorHeader: FC<ActionEditorHeaderProps> = ({
   const viewDescription = viewMeta.description
 
   return (
-    <div className="sticky top-0 z-20 -mx-4 px-4 pt-4 pb-3 bg-white/95 dark:bg-slate-900/95 shadow-sm border-b border-slate-200/70 dark:border-slate-700/70">
+    <div className="sticky top-0 z-20 -mx-4 px-4 pt-4 pb-3 bg-white/95 dark:bg-[#383e47] shadow-sm border-b border-slate-200/70 dark:border-slate-700/70">
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div>
           <h3 className="text-lg font-bold">动作序列（{viewLabel}）</h3>

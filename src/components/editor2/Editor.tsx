@@ -88,13 +88,13 @@ export const OperationEditor: FC<OperationEditorProps> = memo(
           {!isMD && <OperatorSidebarFloating />}
           {isMD ? (
             <div className="panel-shadow">
-              <InfoEditor />
+              <InfoEditor preLevel={(window as any).__editor_preLevel} />
               <OperatorEditor />
               <ActionEditor />
             </div>
           ) : (
             <div className="panel-shadow h-full overflow-auto">
-              <InfoEditor />
+              <InfoEditor preLevel={(window as any).__editor_preLevel} />
               <ActionEditor />
             </div>
           )}
@@ -104,4 +104,3 @@ export const OperationEditor: FC<OperationEditorProps> = memo(
   },
 )
 OperationEditor.displayName = 'OperationEditor'
-

@@ -19,6 +19,7 @@ import { i18n, useTranslation } from '../../i18n/i18n'
 import {
   compareLevelsForDisplay,
   createCustomLevel,
+  findLevelByStageName,
   getPrtsMapUrl,
   getStageIdWithDifficulty,
   isCustomLevel,
@@ -37,6 +38,7 @@ interface LevelSelectProps {
   inputRef?: Ref<HTMLInputElement>
   disabled?: boolean
   value?: string
+  fallbackLevel?: Level
   onChange: (stageId: string, level?: Level) => void
   onDifficultyChange?: (value: OpDifficulty, programmatically: boolean) => void
 }
@@ -47,6 +49,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   inputRef,
   disabled,
   value,
+  fallbackLevel,
   onChange,
   onDifficultyChange,
   ...inputProps
@@ -67,7 +70,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   const fuse = useMemo(
     () =>
       new Fuse(levels, {
-        keys: ['name', 'catTwo', 'catThree', 'stageId'],
+        keys: ['game', 'name', 'catOne', 'catTwo', 'catThree', 'stageId'],
         threshold: 0.3,
       }),
     [levels],
@@ -87,16 +90,14 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   )
 
   const selectedLevel = useMemo(() => {
-    const level = levels.find((el) => el.stageId === value)
-    if (level) {
-      return level
+    if (!value) return null
+    const fromStageName = findLevelByStageName(levels, value)
+    if (fromStageName) return fromStageName
+    if (fallbackLevel && (fallbackLevel.stageId === value || fallbackLevel.catThree === value || fallbackLevel.name === value)) {
+      return fallbackLevel
     }
-    // 如果有 value 但匹配不到，就创建一个自定义关卡来显示
-    if (value) {
-      return createCustomLevel(value)
-    }
-    return null
-  }, [levels, value])
+    return createCustomLevel(value)
+  }, [levels, value, fallbackLevel])
 
   const prtsMapUrl = selectedLevel
     ? getPrtsMapUrl(
@@ -116,10 +117,70 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     [relatedLevelsLabel],
   )
 
-  const categories = useMemo(() => {
+  // 第一层：游戏分类
+  const games = useMemo(() => {
     const seen = new Set<string>()
     const result: string[] = []
     for (const level of levels) {
+      const g = (level.game || '明日方舟').trim()
+      if (!seen.has(g)) {
+        seen.add(g)
+        result.push(g)
+      }
+    }
+    if (selectedLevel && !isCustomLevel(selectedLevel)) {
+      const g = (selectedLevel.game || '明日方舟').trim()
+      if (!seen.has(g)) {
+        seen.add(g)
+        result.push(g)
+      }
+    }
+    return result
+  }, [levels, selectedLevel])
+
+  const [selectedGame, setSelectedGame] = useState<string>(() => {
+    if (selectedLevel) {
+      return (selectedLevel.game || '明日方舟').trim()
+    }
+    return games[0] ?? ''
+  })
+
+  useEffect(() => {
+    if (!selectedGame && games.length) {
+      setSelectedGame(games[0])
+    }
+  }, [games, selectedGame])
+
+  const gameOptions = useMemo(() => {
+    if (!selectedGame) return games
+    if (games.includes(selectedGame)) return games
+    return [...games, selectedGame]
+  }, [games, selectedGame])
+
+  const levelsInGame = useMemo(
+    () =>
+      selectedGame
+        ? levels.filter(
+            (l) => (l.game || '明日方舟').trim() === selectedGame.trim(),
+          )
+        : levels,
+    [levels, selectedGame],
+  )
+
+  // 当选中关卡变化时，同步游戏筛选到该关卡所属游戏
+  useEffect(() => {
+    if (selectedLevel && !isCustomLevel(selectedLevel)) {
+      const g = (selectedLevel.game || '明日方舟').trim()
+      if (g && g !== selectedGame) {
+        setSelectedGame(g)
+      }
+    }
+  }, [selectedLevel, selectedGame])
+
+  const categories = useMemo(() => {
+    const seen = new Set<string>()
+    const result: string[] = []
+    for (const level of levelsInGame) {
       const category = getLevelCategory(level)
       if (!seen.has(category)) {
         seen.add(category)
@@ -134,7 +195,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       }
     }
     return result
-  }, [getLevelCategory, levels, selectedLevel])
+  }, [getLevelCategory, levelsInGame, selectedLevel])
 
   const [selectedCategory, setSelectedCategory] = useState<string>(() => {
     if (selectedLevel) {
@@ -168,7 +229,8 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         const category = getLevelCategory(selectedLevel)
         if (category && category !== selectedCategory) {
           setSelectedCategory(category)
-          updateQuery('', true)
+          // 将输入框填充为已选关卡的显示文案，便于直观看到当前选择
+          updateQuery(formatLevelInputValue(selectedLevel), true)
         }
         return
       }
@@ -203,7 +265,12 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     const trimmedQuery = debouncedQuery.trim()
 
     if (trimmedQuery) {
-      const searchResults = fuse.search(trimmedQuery).map((el) => el.item)
+      const searchResults = fuse
+        .search(trimmedQuery)
+        .map((el) => el.item)
+        .filter(
+          (l) => !selectedGame || (l.game || '明日方舟').trim() === selectedGame,
+        )
       const filteredResults = selectedCategory
         ? searchResults.filter(
             (level) => getLevelCategory(level) === selectedCategory,
@@ -265,8 +332,10 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     }
 
     const levelsInCategory = selectedCategory
-      ? levels.filter((level) => getLevelCategory(level) === selectedCategory)
-      : levels
+      ? levelsInGame.filter(
+          (level) => getLevelCategory(level) === selectedCategory,
+        )
+      : levelsInGame
 
     return ensureIncludesSelected(levelsInCategory)
   }, [
@@ -274,10 +343,11 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     ensureIncludesSelected,
     fuse,
     getLevelCategory,
-    levels,
+    levelsInGame,
     relatedLevelsLabel,
     selectedCategory,
     selectedLevel,
+    selectedGame,
   ])
 
   useEffect(() => {
@@ -289,6 +359,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       setActiveItem(selectedLevel)
     }
   }, [selectedLevel])
+
+  // 同步输入框显示为当前选中关卡，避免初次加载为空白
+  useEffect(() => {
+    if (selectedLevel && !isCustomLevel(selectedLevel)) {
+      updateQuery(formatLevelInputValue(selectedLevel), true)
+    }
+  }, [selectedLevel, updateQuery])
 
   const formatLevelInputValue = (level: Level) => {
     const trimmedName = level.name?.trim()
@@ -302,12 +379,76 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     if (level.stageId === 'header') {
       return level.name
     }
+    const parts = [
+      (level.game || '明日方舟').trim(),
+      level.catOne?.trim(),
+      level.catTwo?.trim(),
+      level.catThree?.trim(),
+    ].filter(Boolean) as string[]
+    if (parts.length) return parts.join(' / ')
     return formatLevelInputValue(level)
   }
 
   return (
     <div className={clsx('flex flex-col gap-2', className)}>
       <div className="flex w-full flex-wrap items-end gap-3">
+        <div className="flex flex-col gap-1 w-44">
+          <span className="text-xs font-medium text-slate-500">游戏</span>
+          <Suggest<string>
+            items={gameOptions}
+            itemsEqual={(a, b) => a === b}
+            selectedItem={selectedGame || null}
+            disabled={disabled || isLoading || gameOptions.length === 0}
+            className="w-full"
+            itemListPredicate={(search, items) => {
+              const normalized = (search ?? '').trim().toLowerCase()
+              if (!normalized) {
+                return items
+              }
+              return items.filter((item) =>
+                item.toLowerCase().includes(normalized),
+              )
+            }}
+            itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
+              if (modifiers.matchesPredicate === false) {
+                return null
+              }
+              return (
+                <MenuItem
+                  roleStructure="listoption"
+                  key={item}
+                  className={clsx(modifiers.active && Classes.ACTIVE)}
+                  text={item}
+                  onClick={handleClick}
+                  onFocus={handleFocus}
+                  onMouseDown={onOptionMouseDown}
+                  selected={item === selectedGame}
+                  disabled={modifiers.disabled}
+                />
+              )
+            }}
+            inputValueRenderer={(item) => item ?? ''}
+            onItemSelect={(game) => {
+              if (!game || game === selectedGame) {
+                return
+              }
+              setSelectedGame(game)
+              setActiveItem(null)
+              updateQuery('', true)
+              if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
+                onChange('')
+              }
+            }}
+            inputProps={{
+              large: true,
+              placeholder: '游戏',
+              disabled: disabled || isLoading || gameOptions.length === 0,
+            }}
+            popoverProps={{
+              minimal: true,
+            }}
+          />
+        </div>
         <div className="flex flex-col gap-1 w-56">
           <span className="text-xs font-medium text-slate-500">
             {t.components.editor2.LevelSelect.category_label}

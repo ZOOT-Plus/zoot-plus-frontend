@@ -41,7 +41,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   const fuse = useMemo(
     () =>
       new Fuse(levels, {
-        keys: ['name', 'catTwo', 'catThree', 'stageId'],
+        keys: ['game', 'name', 'catTwo', 'catThree', 'stageId'],
         threshold: 0.3,
       }),
     [levels],
@@ -132,11 +132,11 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   }, [selectedLevel])
 
   const formatLevelLabel = (level: Level) => {
-    const parts = [level.catOne, level.catTwo, level.catThree]
+    const parts = [level.game, level.catOne, level.catTwo, level.catThree]
       .map((part) => part?.trim())
       .filter(Boolean) as string[]
     if (parts.length) {
-      return parts.join(' - ')
+      return parts.join(' / ')
     }
     if (level.name?.trim()) {
       return level.name
