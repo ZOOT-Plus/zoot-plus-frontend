@@ -24,6 +24,13 @@ ZOOT Plus 前端！
 
 你可以创建 `.env.development.local` 文件来覆盖环境变量，优先级为 `.env.development.local` > `.env.development` > `.env`
 
+可用环境变量示例：
+
+- `VITE_API`：后端接口地址，例如 `http://127.0.0.1:8848`
+- `VITE_THERESA_SERVER`：地图站地址
+- `VITE_SIMING_BASE_URL`：MaaYuan-SiMing 生成器服务地址
+- `VITE_USE_REG_CODE`：是否启用“注册码注册”模式（`true`/`false`，默认 `false`）。启用后注册页将显示“注册码”输入框并隐藏“发送验证码”按钮，注册请求体将携带 `registrationCode` 字段；关闭时沿用邮箱验证码流程，注册请求体携带 `registrationToken` 字段。
+
 ## 命令
 
 安装依赖

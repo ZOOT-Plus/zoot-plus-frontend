@@ -481,8 +481,8 @@
           "zh_tw": "司命設定"
         },
         "siming_delay_hint": {
-          "cn": "用于调整导出司命行动的默认行动后延迟",
-          "zh_tw": "用於調整導出司命行動的預設行動後延遲"
+          "cn": "用于调整导出司命行动的默认行动后延迟（1000ms=1s）",
+          "zh_tw": "用於調整導出司命行動的預設行動後延遲（1000ms=1s）"
         },
         "siming_delay_attack": {
           "cn": "普攻",
@@ -973,6 +973,14 @@
         "enter_email_code": {
           "cn": "请输入邮件中的验证码",
           "zh_tw": "請輸入郵件中的驗證碼"
+        },
+        "registration_code": {
+          "cn": "注册码",
+          "zh_tw": "註冊碼"
+        },
+        "registration_code_required": {
+          "cn": "注册码为必填项",
+          "zh_tw": "註冊碼為必填項"
         }
       },
       "EditDialog": {

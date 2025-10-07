@@ -11,7 +11,12 @@ import { REGEX_EMAIL, REGEX_USERNAME } from 'utils/regexes'
 
 import { useTranslation } from '../../i18n/i18n'
 
-export type RuleKeys = 'email' | 'password' | 'username' | 'registertoken'
+export type RuleKeys =
+  | 'email'
+  | 'password'
+  | 'username'
+  | 'registertoken'
+  | 'registercode'
 
 function useRules(): Record<RuleKeys, UseControllerProps['rules']> {
   const t = useTranslation()
@@ -59,6 +64,9 @@ function useRules(): Record<RuleKeys, UseControllerProps['rules']> {
         value: 6,
         message: t.components.account.AuthFormShared.token_length,
       },
+    },
+    registercode: {
+      required: t.components.account.AuthFormShared.registration_code_required,
     },
   }
 }
@@ -153,6 +161,44 @@ export const AuthRegistrationTokenField = <T extends FieldValues>({
       FormGroupProps={{
         helperText:
           register && t.components.account.AuthFormShared.enter_email_code,
+      }}
+    />
+  )
+}
+
+export const AuthRegistrationCodeField = <T extends FieldValues>({
+  label,
+  control,
+  error,
+  field,
+  register,
+  autoComplete = '',
+  inputGroupProps,
+}: AuthFormFieldProps<T>) => {
+  const t = useTranslation()
+  const rules = useRules()
+
+  return (
+    <FormField
+      label={label || t.components.account.AuthFormShared.registration_code}
+      field={field}
+      control={control}
+      error={error}
+      ControllerProps={{
+        rules: rules.registercode,
+        render: (renderProps) => (
+          <InputGroup
+            id={field}
+            placeholder={t.components.account.AuthFormShared.registration_code}
+            autoComplete={autoComplete}
+            {...renderProps.field}
+            value={renderProps.field.value || ''}
+            {...inputGroupProps?.(renderProps)}
+          />
+        ),
+      }}
+      FormGroupProps={{
+        helperText: register ? undefined : undefined,
       }}
     />
   )

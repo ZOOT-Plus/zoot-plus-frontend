@@ -22,7 +22,7 @@ import { OperationSetList } from 'components/OperationSetList'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
-// 使用 v2 关卡选择器以适配四层级（含 game）
+// 使用悬浮式按钮选择器
 import { LevelSelectButton } from './LevelSelectButton'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
@@ -47,6 +47,8 @@ export const Operations: ComponentType = withSuspensable(() => {
   const [neoLayout, setNeoLayout] = useAtom(neoLayoutAtom)
   const [tab, setTab] = useState<'operation' | 'operationSet'>('operation')
   const [multiselect, setMultiselect] = useState(false)
+  // 独立保存已选中的具体关卡，用于按钮展示与弹层回显
+  const [selectedStageId, setSelectedStageId] = useState<string>('')
 
   return (
     <>
@@ -120,10 +122,11 @@ export const Operations: ComponentType = withSuspensable(() => {
                 }
                 onBlur={() => debouncedSetQueryParams.flush()}
               />
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1 items-end">
                 <LevelSelectButton
-                  value={queryParams.levelKeyword}
+                  value={selectedStageId}
                   onChange={(stageId) => {
+                    setSelectedStageId(stageId)
                     setQueryParams((old) => ({
                       ...old,
                       levelKeyword: stageId,
@@ -132,6 +135,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                     refreshOperations()
                   }}
                   onFilter={(kw) => {
+                    // 仅改变过滤关键字，不影响已选择的具体关卡展示
                     setQueryParams((old) => ({
                       ...old,
                       levelKeyword: kw,

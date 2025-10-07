@@ -15,19 +15,24 @@ import {
   AuthFormPasswordField,
   AuthFormUsernameField,
   AuthRegistrationTokenField,
+  AuthRegistrationCodeField,
 } from './AuthFormShared'
 
 export interface RegisterFormValues {
   email: string
   password: string
   username: string
-  registrationToken: string
+  registrationToken?: string
+  registrationCode?: string
 }
 
 export const RegisterPanel: FC<{
   onComplete: () => void
 }> = ({ onComplete }) => {
   const t = useTranslation()
+  const useRegCode =
+    ((import.meta as any).env?.VITE_USE_REG_CODE ?? '').toString().toLowerCase() ===
+    'true'
 
   const {
     control,
@@ -46,9 +51,11 @@ export const RegisterPanel: FC<{
         }),
       register({
         email: val.email,
-        registrationToken: val.registrationToken,
         username: val.username,
         password: val.password,
+        ...(useRegCode
+          ? { registrationCode: val.registrationCode || '' }
+          : { registrationToken: val.registrationToken || '' }),
       }),
     )
     AppToaster.show({
@@ -81,13 +88,15 @@ export const RegisterPanel: FC<{
         })
         return
       }
-      await wrapErrorMessage(
-        (e) =>
-          t.components.account.RegisterPanel.send_failed({
-            error: formatError(e),
-          }),
-        sendRegistrationEmail({ email: val.email }),
-      )
+      if (!useRegCode) {
+        await wrapErrorMessage(
+          (e) =>
+            t.components.account.RegisterPanel.send_failed({
+              error: formatError(e),
+            }),
+          sendRegistrationEmail({ email: val.email }),
+        )
+      }
       AppToaster.show({
         intent: 'success',
         message: t.components.account.RegisterPanel.email_sent_success,
@@ -105,30 +114,41 @@ export const RegisterPanel: FC<{
         error={errors.email}
         field="email"
       />
-      <div className="mt-6 flex justify-end">
-        <Button
-          disabled={
-            (!isValid && !isDirty) || isSubmitting || isSendEmailButtonDisabled
-          }
-          intent="primary"
-          type="button"
-          icon="envelope"
-          className="self-stretch"
-          onClick={onEmailSubmit}
-        >
-          {isSendEmailButtonDisabled
-            ? t.components.account.RegisterPanel.retry_seconds({
-                seconds: countdown,
-              })
-            : t.components.account.RegisterPanel.send_verification_code}
-        </Button>
-      </div>
-      <AuthRegistrationTokenField
-        register
-        control={control}
-        error={errors.registrationToken}
-        field="registrationToken"
-      />
+      {!useRegCode && (
+        <div className="mt-6 flex justify-end">
+          <Button
+            disabled={
+              (!isValid && !isDirty) || isSubmitting || isSendEmailButtonDisabled
+            }
+            intent="primary"
+            type="button"
+            icon="envelope"
+            className="self-stretch"
+            onClick={onEmailSubmit}
+          >
+            {isSendEmailButtonDisabled
+              ? t.components.account.RegisterPanel.retry_seconds({
+                  seconds: countdown,
+                })
+              : t.components.account.RegisterPanel.send_verification_code}
+          </Button>
+        </div>
+      )}
+      {useRegCode ? (
+        <AuthRegistrationCodeField
+          register
+          control={control}
+          error={errors.registrationCode}
+          field="registrationCode"
+        />
+      ) : (
+        <AuthRegistrationTokenField
+          register
+          control={control}
+          error={errors.registrationToken}
+          field="registrationToken"
+        />
+      )}
 
       <AuthFormUsernameField
         control={control}

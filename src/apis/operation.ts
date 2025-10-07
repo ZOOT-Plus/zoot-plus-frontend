@@ -189,7 +189,7 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   const preLevel = (() => {
     const stageId = d.stageId ?? d.stage_id
     const levelId = d.levelId ?? d.level_id ?? stageId ?? ''
-    const game = d.game ?? '明日方舟'
+    const game = d.game ?? ''
     const name = d.name ?? ''
     const catOne = d.catOne ?? d.cat_one ?? ''
     const catTwo = d.catTwo ?? d.cat_two ?? ''

@@ -40,7 +40,7 @@ interface ActionEditorProps {
 interface RoundFormState {
   slot: string
   basicAction: BasicActionSymbol
-  extraType: 'again' | 'wait' | 'left' | 'right' | 'lvbu' | 'auto' | 'sp'
+  extraType: 'wait' | 'left' | 'right' | 'lvbu' | 'auto' | 'sp'
   extraSlot: string
   extraAction: BasicActionSymbol
   waitMs: string
@@ -62,7 +62,6 @@ const BASIC_ACTION_LABEL_MAP: Record<RoundFormState['basicAction'], string> = {
 
 const getActionSortableId = (roundKey: string, index: number) => `${roundKey}-action-${index}`
 const EXTRA_TYPES = [
-  { value: 'again', label: '再次行动' },
   { value: 'wait', label: '等待' },
   { value: 'left', label: '切换至左侧目标' },
   { value: 'right', label: '切换至右侧目标' },
@@ -290,7 +289,7 @@ function defaultFormState(): RoundFormState {
   return {
     slot: '1',
     basicAction: '普',
-    extraType: 'again',
+    extraType: 'wait',
     extraSlot: '1',
     extraAction: '普',
     waitMs: String(DEFAULT_WAIT_MS),
@@ -609,11 +608,6 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     (roundKey: string) => {
       const form = roundForms[roundKey] ?? defaultFormState()
       switch (form.extraType) {
-        case 'again': {
-          const token = '额外:' + form.extraSlot + form.extraAction
-          handleAddToken(roundKey, token)
-          break
-        }
         case 'wait': {
           const waitMs = Math.max(
             0,
@@ -950,38 +944,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
               </option>
             ))}
           </HTMLSelect>
-          {form.extraType === 'again' && (
-            <>
-              <HTMLSelect
-                value={form.extraSlot}
-                onChange={(e) =>
-                  updateForm(roundKey, {
-                    extraSlot: e.currentTarget.value,
-                  })
-                }
-              >
-                {SLOT_OPTIONS.map((value) => (
-                  <option key={value} value={value}>
-                    {value} 号位
-                  </option>
-                ))}
-              </HTMLSelect>
-              <HTMLSelect
-                value={form.extraAction}
-                onChange={(e) =>
-                  updateForm(roundKey, {
-                    extraAction: e.currentTarget.value as RoundFormState['extraAction'],
-                  })
-                }
-              >
-                {BASIC_ACTION_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </HTMLSelect>
-            </>
-          )}
+          {/* 移除“再次行动”额外操作选项 */}
           {form.extraType === 'wait' && (
             <InputGroup
               value={form.waitMs}

@@ -88,6 +88,8 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
           difficulty={info.difficulty ?? OpDifficulty.UNKNOWN}
           value={info.stageName}
           fallbackLevel={preLevel as any}
+          // 默认将“游戏”筛选设置为“代号鸢”
+          defaultGame="代号鸢"
           onChange={(stageId, level) => {
             edit(() => {
               setInfo((prev) => {
@@ -187,8 +189,8 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
         helperText={t.components.editor2.InfoEditor.siming_delay_hint}
       >
         <div className="flex flex-wrap gap-4">
-          <div className="flex w-32 flex-col gap-1 text-xs text-slate-500">
-            <span className="font-medium text-slate-600">
+          <div className="flex items-center gap-2 text-xs text-slate-500 w-full sm:w-auto">
+            <span className="text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">
               {t.components.editor2.InfoEditor.siming_delay_attack}
             </span>
             <NumericInput2
@@ -200,12 +202,12 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
               wheelStepSize={100}
               value={simingDelays.attack}
               aria-label={t.components.editor2.InfoEditor.siming_delay_attack}
-              containerClassName="editor-loop-range-input w-full"
+              containerClassName="editor-loop-range-input w-28"
               onValueChange={(value) => updateSimingDelay('attack', value)}
             />
           </div>
-          <div className="flex w-32 flex-col gap-1 text-xs text-slate-500">
-            <span className="font-medium text-slate-600">
+          <div className="flex items-center gap-2 text-xs text-slate-500 w-full sm:w-auto">
+            <span className="text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">
               {t.components.editor2.InfoEditor.siming_delay_ultimate}
             </span>
             <NumericInput2
@@ -217,12 +219,12 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
               wheelStepSize={100}
               value={simingDelays.ultimate}
               aria-label={t.components.editor2.InfoEditor.siming_delay_ultimate}
-              containerClassName="editor-loop-range-input w-full"
+              containerClassName="editor-loop-range-input w-28"
               onValueChange={(value) => updateSimingDelay('ultimate', value)}
             />
           </div>
-          <div className="flex w-32 flex-col gap-1 text-xs text-slate-500">
-            <span className="font-medium text-slate-600">
+          <div className="flex items-center gap-2 text-xs text-slate-500 w-full sm:w-auto">
+            <span className="text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">
               {t.components.editor2.InfoEditor.siming_delay_defense}
             </span>
             <NumericInput2
@@ -234,7 +236,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
               wheelStepSize={100}
               value={simingDelays.defense}
               aria-label={t.components.editor2.InfoEditor.siming_delay_defense}
-              containerClassName="editor-loop-range-input w-full"
+              containerClassName="editor-loop-range-input w-28"
               onValueChange={(value) => updateSimingDelay('defense', value)}
             />
           </div>

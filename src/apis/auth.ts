@@ -1,4 +1,5 @@
 import { UserApi } from 'utils/maa-copilot-client'
+import { ApiError } from 'utils/error'
 
 export async function sendRegistrationEmail(req: { email: string }) {
   await new UserApi({ sendToken: 'never' }).sendRegistrationToken({
@@ -8,16 +9,50 @@ export async function sendRegistrationEmail(req: { email: string }) {
 
 export async function register(req: {
   email: string
-  registrationToken: string
   username: string
   password: string
+  registrationToken?: string
+  registrationCode?: string
 }) {
-  await new UserApi({ sendToken: 'never' }).register({
-    registerDTO: {
-      ...req,
-      userName: req.username,
+  // 直接使用 fetch 发送原始 JSON，以兼容后端新增字段 registrationCode
+  // 注意：OpenAPI SDK 目前要求 registrationToken 必填且会丢弃未知字段，故绕过 SDK
+  const api = (import.meta as any).env?.VITE_API as string
+  if (!api) throw new ApiError('env var VITE_API is not set')
+
+  const body: Record<string, any> = {
+    email: req.email,
+    user_name: req.username,
+    password: req.password,
+  }
+  if (req.registrationCode !== undefined) {
+    body.registration_code = req.registrationCode
+  }
+  if (req.registrationToken !== undefined) {
+    body.registration_token = req.registrationToken
+  }
+
+  const res = await fetch(`${api}/user/register`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
     },
+    body: JSON.stringify(body),
   })
+
+  if (!res.ok) {
+    let message: string | undefined
+    try {
+      const ct = res.headers.get('content-type')
+      if (ct?.includes('application/json')) {
+        message = (await res.json())?.message
+      } else if (ct?.includes('text/')) {
+        message = await res.text()
+      }
+    } catch {
+      // ignore
+    }
+    throw new ApiError(message)
+  }
 }
 
 export async function login(req: { email: string; password: string }) {

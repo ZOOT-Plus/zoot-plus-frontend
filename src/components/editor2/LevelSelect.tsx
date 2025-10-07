@@ -39,6 +39,11 @@ interface LevelSelectProps {
   onDifficultyChange?: (value: OpDifficulty, programmatically: boolean) => void
   // 当选择了“游戏”或“分类”时，上抛一个用于筛选的关键字
   onFilterChange?: (keyword: string, meta?: { game?: string; catOne?: string }) => void
+  // 可选：当没有已选关卡时，为弹层提供上次筛选的默认游戏/分类，便于回显
+  defaultGame?: string
+  defaultCategory?: string
+  // 自定义 Portal 容器，确保下拉菜单渲染在 Overlay 容器内，避免被判定为“外部点击”
+  portalContainer?: HTMLElement | undefined | null
 }
 
 export const LevelSelect: FC<LevelSelectProps> = ({
@@ -51,10 +56,30 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   onChange,
   onDifficultyChange,
   onFilterChange,
+  defaultGame,
+  defaultCategory,
+  portalContainer,
   ...inputProps
 }) => {
   const t = useTranslation()
   const relatedLevelsLabel = i18n.components.editor2.LevelSelect.related_levels
+  const NO_GAME_LABEL = '未分类'
+  const normalizeGame = (game?: string) => {
+    const g = (game || '').trim()
+    return g || NO_GAME_LABEL
+  }
+  // 让“通用”能在选择“如鸢”或“代号鸢”时一并被搜索/筛选到
+  const matchesGame = useCallback(
+    (levelGame: string | undefined, selected: string | undefined) => {
+      const ng = normalizeGame(levelGame)
+      const sg = (selected || '').trim()
+      if (!sg) return true
+      if (ng === sg) return true
+      if (ng === '通用' && (sg === '如鸢' || sg === '代号鸢')) return true
+      return false
+    },
+    [],
+  )
   // we are going to manually handle loading state so we could show the skeleton state easily,
   // without swapping the actual element.
   const { data, error: fetchError, isLoading } = useLevels()
@@ -112,15 +137,15 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     const seen = new Set<string>()
     const result: string[] = []
     for (const level of levels) {
-      const g = (level.game || '明日方舟').trim()
+      const g = normalizeGame(level.game)
       if (!seen.has(g)) {
         seen.add(g)
         result.push(g)
       }
     }
     if (selectedLevel && !isCustomLevel(selectedLevel)) {
-      const g = (selectedLevel.game || '明日方舟').trim()
-      if (!seen.has(g)) {
+      const g = normalizeGame(selectedLevel.game)
+      if (g && !seen.has(g)) {
         seen.add(g)
         result.push(g)
       }
@@ -130,16 +155,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
 
   const [selectedGame, setSelectedGame] = useState<string>(() => {
     if (selectedLevel) {
-      return (selectedLevel.game || '明日方舟').trim()
+      return normalizeGame(selectedLevel.game)
     }
-    return games[0] ?? ''
+    // 没有关卡时，尝试使用父组件传入的默认游戏以便回显
+    return normalizeGame(defaultGame)
   })
 
-  useEffect(() => {
-    if (!selectedGame && games.length) {
-      setSelectedGame(games[0])
-    }
-  }, [games, selectedGame])
+  // 取消自动选择首个游戏，避免“强制重置”
 
   const gameOptions = useMemo(() => {
     if (!selectedGame) return games
@@ -150,18 +172,17 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   const levelsInGame = useMemo(
     () =>
       selectedGame
-        ? levels.filter(
-            (l) => (l.game || '明日方舟').trim() === selectedGame.trim(),
-          )
+        ? levels.filter((l) => matchesGame(l.game, selectedGame))
         : levels,
-    [levels, selectedGame],
+    [levels, selectedGame, matchesGame],
   )
 
-  // 当选中关卡变化时，同步游戏筛选到该关卡所属游戏
+  // 当选中关卡变化时，必要时同步游戏筛选到该关卡所属游戏
+  // 仅在当前未选择游戏（或为“未分类”占位）时同步，避免用户手动更改被覆盖
   useEffect(() => {
     if (selectedLevel && !isCustomLevel(selectedLevel)) {
-      const g = (selectedLevel.game || '明日方舟').trim()
-      if (g && g !== selectedGame) {
+      const g = normalizeGame(selectedLevel.game)
+      if (g && (!selectedGame || selectedGame === NO_GAME_LABEL)) {
         setSelectedGame(g)
       }
     }
@@ -177,9 +198,16 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         result.push(category)
       }
     }
+    // 仅当“已选关卡”属于当前选中的游戏时，才补充其分类；
+    // 若选中的是“如鸢/代号鸢”，亦包含其“通用”关卡的分类（matchesGame）。
     if (selectedLevel && !isCustomLevel(selectedLevel)) {
       const category = getLevelCategory(selectedLevel)
-      if (!seen.has(category)) {
+      const levelGame = normalizeGame(selectedLevel.game)
+      if (
+        selectedGame &&
+        matchesGame(levelGame, selectedGame) &&
+        !seen.has(category)
+      ) {
         seen.add(category)
         result.push(category)
       }
@@ -191,14 +219,11 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     if (selectedLevel) {
       return getLevelCategory(selectedLevel)
     }
-    return categories[0] ?? ''
+    // 没有关卡时，尝试使用父组件传入的默认分类以便回显
+    return (defaultCategory ?? '').trim()
   })
 
-  useEffect(() => {
-    if (!selectedCategory && categories.length) {
-      setSelectedCategory(categories[0])
-    }
-  }, [categories, selectedCategory])
+  // 取消自动选择首个分类，避免“强制重置”
 
   const categoryOptions = useMemo(() => {
     if (!selectedCategory) {
@@ -224,10 +249,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         }
         return
       }
-
-      if (!selectedCategory && categories.length) {
-        setSelectedCategory(categories[0])
-      }
+      // 不再在无选中关卡时强制设定首个分类
     }
   }, [
     categories,
@@ -258,9 +280,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       const searchResults = fuse
         .search(trimmedQuery)
         .map((el) => el.item)
-        .filter(
-          (l) => !selectedGame || (l.game || '明日方舟').trim() === selectedGame,
-        )
+        .filter((l) => !selectedGame || matchesGame(l.game, selectedGame))
       const filteredResults = selectedCategory
         ? searchResults.filter(
             (level) => getLevelCategory(level) === selectedCategory,
@@ -375,7 +395,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   return (
     <div className={clsx('flex flex-col gap-2', className)}>
       <div className="flex w-full flex-wrap items-end gap-3">
-        <div className="flex flex-col gap-1 w-44">
+        <div className="flex flex-col gap-1 w-36">
           <span className="text-xs font-medium text-slate-500">游戏</span>
           <Suggest<string>
             items={gameOptions}
@@ -416,14 +436,18 @@ export const LevelSelect: FC<LevelSelectProps> = ({
                 return
               }
               setSelectedGame(game)
+              // 重置后面两个选项：分类 与 关卡输入/选择
+              setSelectedCategory('')
               setActiveItem(null)
               updateQuery('', true)
-              if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
+              if (!disabled) {
+                // 无条件清空选中关卡，避免跨游戏保留无效值
                 onChange('')
               }
-              // 选择“游戏”时触发一次筛选查询（按 游戏 + 当前分类 拼接）
-              const kw = [game, selectedCategory].filter(Boolean).join(' ')
-              onFilterChange?.(kw, { game, catOne: selectedCategory || undefined })
+              // 选择“游戏”时仅按游戏发起筛选（分类已被重置）
+              const gameForQuery = game === NO_GAME_LABEL ? '' : game
+              const kw = gameForQuery
+              onFilterChange?.(kw, { game: gameForQuery || undefined })
             }}
             inputProps={{
               large: true,
@@ -432,10 +456,14 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             }}
             popoverProps={{
               minimal: true,
+              captureDismiss: true,
+              portalContainer: portalContainer ?? undefined,
+              // 保证在父层 Overlay 之上
+              zIndex: 2147483001,
             }}
           />
         </div>
-        <div className="flex flex-col gap-1 w-56">
+        <div className="flex flex-col gap-1 w-44">
           <span className="text-xs font-medium text-slate-500">
             {t.components.editor2.LevelSelect.category_label}
           </span>
@@ -480,7 +508,8 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               setSelectedCategory(category)
               setActiveItem(null)
               updateQuery('', true)
-              if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
+              // 分类变化时无条件清空关卡，避免跨分类残留
+              if (!disabled) {
                 onChange('')
               }
               // 选择“分类”时触发一次筛选查询（按 当前游戏 + 分类 拼接）
@@ -494,10 +523,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             }}
             popoverProps={{
               minimal: true,
+              captureDismiss: true,
+              portalContainer: portalContainer ?? undefined,
+              zIndex: 2147483001,
             }}
           />
         </div>
-        <div className="flex items-end gap-2 w-[420px] max-w-full">
+        <div className="flex items-end gap-2 w-[240px] max-w-full">
           <Suggest<Level>
             items={levels}
             itemListPredicate={() => filteredLevels}
@@ -563,6 +595,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             }}
             popoverProps={{
               minimal: true,
+              captureDismiss: true,
+              portalContainer: portalContainer ?? undefined,
+              zIndex: 2147483001,
               onClosed() {
                 updateQuery('', false)
               },

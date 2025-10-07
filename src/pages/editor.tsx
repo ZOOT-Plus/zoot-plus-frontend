@@ -176,6 +176,25 @@ export const EditorPage = withSuspensable(() => {
             )
           : undefined
 
+        // 调试输出：创建作业时打印当前选择的关卡分类信息
+        if (selectedLevel) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[CreateOperation] level meta:',
+            {
+              game: selectedLevel.game,
+              catOne: selectedLevel.catOne,
+              catTwo: selectedLevel.catTwo,
+              catThree: selectedLevel.catThree,
+              stageId: selectedLevel.stageId,
+              name: selectedLevel.name,
+            },
+          )
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('[CreateOperation] level meta: <none>')
+        }
+
         const operation = await toSimingOperationRemote(
           baseOperation,
           editorOperation,
