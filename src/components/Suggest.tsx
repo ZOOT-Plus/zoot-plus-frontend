@@ -89,10 +89,12 @@ export const Suggest = <T,>({
         ),
         ...inputProps,
       }}
+      {...suggest2Props}
       popoverProps={{
         placement: 'bottom-start',
+        captureDismiss: true,
+        ...(suggest2Props as any)?.popoverProps,
       }}
-      {...suggest2Props}
     />
   )
 }

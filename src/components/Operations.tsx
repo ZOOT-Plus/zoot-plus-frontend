@@ -9,7 +9,7 @@ import {
   Tabs,
 } from '@blueprintjs/core'
 
-import { UseOperationsParams } from 'apis/operation'
+import { UseOperationsParams, useRefreshOperations } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
 import { debounce } from 'lodash-es'
@@ -22,13 +22,15 @@ import { OperationSetList } from 'components/OperationSetList'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
-import { LevelSelect } from './LevelSelect'
+// 使用 v2 关卡选择器以适配四层级（含 game）
+import { LevelSelectButton } from './LevelSelectButton'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
 
 export const Operations: ComponentType = withSuspensable(() => {
   const t = useTranslation()
+  const refreshOperations = useRefreshOperations()
   const [queryParams, setQueryParams] = useState<
     Omit<UseOperationsParams, 'operator'>
   >({
@@ -119,14 +121,24 @@ export const Operations: ComponentType = withSuspensable(() => {
                 onBlur={() => debouncedSetQueryParams.flush()}
               />
               <div className="flex flex-wrap gap-1">
-                <LevelSelect
-                  value={queryParams.levelKeyword ?? ''}
-                  onChange={(level) =>
+                <LevelSelectButton
+                  value={queryParams.levelKeyword}
+                  onChange={(stageId) => {
                     setQueryParams((old) => ({
                       ...old,
-                      levelKeyword: level,
+                      levelKeyword: stageId,
                     }))
-                  }
+                    // 主动触发一次刷新，确保立刻发起查询
+                    refreshOperations()
+                  }}
+                  onFilter={(kw) => {
+                    setQueryParams((old) => ({
+                      ...old,
+                      levelKeyword: kw,
+                    }))
+                    // 主动触发一次刷新，确保立刻发起查询
+                    refreshOperations()
+                  }}
                 />
                 <UserFilter
                   user={selectedUser}

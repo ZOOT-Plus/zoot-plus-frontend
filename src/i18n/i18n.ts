@@ -4,7 +4,16 @@ import { get, isObject, isString } from 'lodash-es'
 import mitt from 'mitt'
 import { Fragment, ReactElement, ReactNode, createElement } from 'react'
 
-import { preserveLineBreaks } from '../utils/react'
+// 本地实现：将字符串中的换行转为 <br/>（仅 JSX 模式使用）
+function preserveLineBreaks(text: string): ReactNode[] {
+  const parts = text.split('\n')
+  const result: ReactNode[] = []
+  for (let i = 0; i < parts.length; i++) {
+    if (i > 0) result.push(createElement('br', { key: 'br-' + i }))
+    result.push(parts[i])
+  }
+  return result
+}
 import ESSENTIALS from './generated/essentials'
 
 export const languages = ['cn', 'zh_tw'] as const
@@ -301,7 +310,9 @@ function setupTranslations({ language, data }: RawTranslations) {
         const interpolated = segments.map((segment, index) => {
           if (index % 2 === 0) {
             if (segment && segment.includes('\n')) {
-              return preserveLineBreaks(segment)
+              // 仅在 JSX 模式下将换行渲染为 <br/>
+              if (jsx) return preserveLineBreaks(segment)
+              return segment
             }
             return segment
           }

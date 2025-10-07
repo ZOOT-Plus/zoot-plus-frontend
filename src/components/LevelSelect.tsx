@@ -132,15 +132,8 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   }, [selectedLevel])
 
   const formatLevelLabel = (level: Level) => {
-    const parts = [level.game, level.catOne, level.catTwo, level.catThree]
-      .map((part) => part?.trim())
-      .filter(Boolean) as string[]
-    if (parts.length) {
-      return parts.join(' / ')
-    }
-    if (level.name?.trim()) {
-      return level.name
-    }
+    // 仅展示关卡名，若无则回退到 stageId
+    if (level.name?.trim()) return level.name
     return level.stageId
   }
 

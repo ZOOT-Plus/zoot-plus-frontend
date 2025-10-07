@@ -1,5 +1,4 @@
-import { AnchorButton, Classes, MenuDivider, MenuItem } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Classes, MenuDivider, MenuItem } from '@blueprintjs/core'
 import { getCreateNewItem } from '@blueprintjs/select'
 
 import clsx from 'clsx'
@@ -19,10 +18,7 @@ import { i18n, useTranslation } from '../../i18n/i18n'
 import {
   compareLevelsForDisplay,
   createCustomLevel,
-  findLevelByStageName,
-  getPrtsMapUrl,
-  getStageIdWithDifficulty,
-  isCustomLevel,
+  findLevelByStageName,  isCustomLevel,
   isHardMode,
 } from '../../models/level'
 import { Level, OpDifficulty } from '../../models/operation'
@@ -41,6 +37,8 @@ interface LevelSelectProps {
   fallbackLevel?: Level
   onChange: (stageId: string, level?: Level) => void
   onDifficultyChange?: (value: OpDifficulty, programmatically: boolean) => void
+  // 当选择了“游戏”或“分类”时，上抛一个用于筛选的关键字
+  onFilterChange?: (keyword: string, meta?: { game?: string; catOne?: string }) => void
 }
 
 export const LevelSelect: FC<LevelSelectProps> = ({
@@ -52,6 +50,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   fallbackLevel,
   onChange,
   onDifficultyChange,
+  onFilterChange,
   ...inputProps
 }) => {
   const t = useTranslation()
@@ -98,15 +97,6 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     }
     return createCustomLevel(value)
   }, [levels, value, fallbackLevel])
-
-  const prtsMapUrl = selectedLevel
-    ? getPrtsMapUrl(
-        getStageIdWithDifficulty(
-          selectedLevel.stageId,
-          difficulty ?? OpDifficulty.UNKNOWN,
-        ),
-      )
-    : undefined
 
   const getLevelCategory = useCallback(
     (level: Level) =>
@@ -376,17 +366,10 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   }
 
   const formatLevelLabel = (level: Level) => {
-    if (level.stageId === 'header') {
-      return level.name
-    }
-    const parts = [
-      (level.game || '明日方舟').trim(),
-      level.catOne?.trim(),
-      level.catTwo?.trim(),
-      level.catThree?.trim(),
-    ].filter(Boolean) as string[]
-    if (parts.length) return parts.join(' / ')
-    return formatLevelInputValue(level)
+    // 下拉项与选择后展示仅显示关卡名，若无则回退至 stageId
+    if (level.stageId === 'header') return level.name
+    const trimmedName = level.name?.trim()
+    return trimmedName || level.stageId
   }
 
   return (
@@ -438,6 +421,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
                 onChange('')
               }
+              // 选择“游戏”时触发一次筛选查询（按 游戏 + 当前分类 拼接）
+              const kw = [game, selectedCategory].filter(Boolean).join(' ')
+              onFilterChange?.(kw, { game, catOne: selectedCategory || undefined })
             }}
             inputProps={{
               large: true,
@@ -497,6 +483,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               if (!disabled && selectedLevel && !isCustomLevel(selectedLevel)) {
                 onChange('')
               }
+              // 选择“分类”时触发一次筛选查询（按 当前游戏 + 分类 拼接）
+              const kw = [selectedGame, category].filter(Boolean).join(' ')
+              onFilterChange?.(kw, { game: selectedGame || undefined, catOne: category })
             }}
             inputProps={{
               large: true,
@@ -579,20 +568,6 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               },
             }}
           />
-          <Tooltip2
-            placement="top"
-            content={t.components.editor2.LevelSelect.view_external}
-          >
-            <AnchorButton
-              minimal
-              large
-              icon="share"
-              target="_blank"
-              rel="noopener noreferrer"
-              href={prtsMapUrl}
-              disabled={disabled || !prtsMapUrl}
-            />
-          </Tooltip2>
         </div>
       </div>
       {/* 当 cat_one 为“活动”时，显示难度选择 */}
