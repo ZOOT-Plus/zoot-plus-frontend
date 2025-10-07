@@ -22,7 +22,7 @@ import { editorAtoms, useEdit } from './editor-state'
 import { DEFAULT_SIMING_ACTION_DELAYS } from './siming/constants'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
 
-import { Operation } from '../../models/operation'
+import { Level, Operation } from '../../models/operation'
 
 interface InfoEditorProps {
   className?: string
@@ -68,6 +68,46 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
     })
   }
 
+  const assignLevelMeta = (level: Level | undefined, fallbackStageId?: string) => {
+    if (!level) {
+      return fallbackStageId
+        ? {
+            stageId: fallbackStageId,
+          }
+        : undefined
+    }
+    return {
+      stageId: level.stageId || fallbackStageId,
+      levelId: level.levelId,
+      name: level.name,
+      game: level.game,
+      catOne: level.catOne,
+      catTwo: level.catTwo,
+      catThree: level.catThree,
+      width: level.width,
+      height: level.height,
+    }
+  }
+
+  useEffect(() => {
+    if (!preLevel) {
+      return
+    }
+    const nextMeta = assignLevelMeta(preLevel)
+    if (!nextMeta?.stageId) {
+      return
+    }
+    setInfo((prev) => {
+      if (prev.levelMeta?.stageId) {
+        return
+      }
+      prev.levelMeta = nextMeta
+      if (!prev.stageName) {
+        prev.stageName = nextMeta.stageId ?? ''
+      }
+    })
+  }, [preLevel, setInfo])
+
   return (
     <div
       className={clsx(
@@ -101,6 +141,12 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
                   prev.doc.title = normalizedName?.length
                     ? normalizedName
                     : level.stageId
+                }
+                prev.levelMeta = assignLevelMeta(level, stageId)
+                if (!level) {
+                  prev.levelMeta = prev.levelMeta?.stageId
+                    ? prev.levelMeta
+                    : undefined
                 }
               })
               return {

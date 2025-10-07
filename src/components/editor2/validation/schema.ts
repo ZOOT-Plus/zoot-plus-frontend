@@ -25,6 +25,20 @@ const minimum_required = z
   )
   .default('v4.0.0')
 
+const level_meta = z
+  .looseObject({
+    stage_id: z.string().optional(),
+    level_id: z.string().optional(),
+    name: z.string().optional(),
+    game: z.string().optional(),
+    cat_one: z.string().optional(),
+    cat_two: z.string().optional(),
+    cat_three: z.string().optional(),
+    width: z.number().int().optional(),
+    height: z.number().int().optional(),
+  })
+  .optional()
+
 const doc = z.looseObject({
   title: z.string().optional(),
   details: z.string().optional(),
@@ -242,6 +256,7 @@ export const operationLooseSchema = z.object({
   stage_name,
   difficulty,
   minimum_required,
+  level_meta,
   doc: doc.default({}),
   opers: z.array(operator).default([]),
   groups: z.array(group).default([]),
@@ -256,6 +271,8 @@ const KNOWN_OPERATION_KEYS = new Set([
   'difficulty',
   'minimum_required',
   'minimumRequired',
+  'level_meta',
+  'levelMeta',
   'doc',
   'opers',
   'groups',
@@ -302,6 +319,11 @@ function normalizeOperationLooseInput(raw: unknown): unknown {
   if (isRecord(camelSimingActions)) {
     normalized['siming_actions'] = camelSimingActions
     delete normalized['simingActions']
+  }
+  const camelLevelMeta = normalized['levelMeta']
+  if (isRecord(camelLevelMeta)) {
+    normalized['level_meta'] = camelLevelMeta
+    delete normalized['levelMeta']
   }
   const actions = normalized['actions']
 
@@ -352,6 +374,7 @@ export const operationSchema = z.object({
   stage_name: stage_name.unwrap(),
   difficulty,
   minimum_required,
+  level_meta,
   doc: docStrict,
   opers: z.array(operator).default([]),
   groups: z.array(groupStrict).default([]),

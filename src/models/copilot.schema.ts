@@ -15,6 +15,10 @@ export namespace CopilotDocV1 {
     minimumRequired: string
     opers?: Operator[]
     /**
+     * 关卡冗余信息，供 editorv2 直接回显使用
+     */
+    levelMeta?: LevelMeta
+    /**
      * 必填。除危机合约外，均为关卡中文名
      */
     stageName: string
@@ -204,5 +208,17 @@ export namespace CopilotDocV1 {
     Y = 2,
     A = 3,
     D = 4,
+  }
+
+  export interface LevelMeta {
+    stageId?: string
+    levelId?: string
+    name?: string
+    game?: string
+    catOne?: string
+    catTwo?: string
+    catThree?: string
+    width?: number
+    height?: number
   }
 }

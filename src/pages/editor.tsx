@@ -26,6 +26,60 @@ import { editorValidationAtom } from '../components/editor2/validation/validatio
 import { i18n, useTranslation } from '../i18n/i18n'
 import { formatError } from '../utils/error'
 import { wrapErrorMessage } from '../utils/wrapErrorMessage'
+import { Level } from '../models/operation'
+import { CopilotDocV1 } from '../models/copilot.schema'
+
+type CamelLevelMeta = CopilotDocV1.LevelMeta | undefined
+
+const buildCamelLevelMeta = (
+  level: Level | undefined,
+  stageName?: string,
+  existing?: CamelLevelMeta,
+): CamelLevelMeta => {
+  if (level) {
+    return {
+      stageId: level.stageId,
+      levelId: level.levelId,
+      name: level.name,
+      game: level.game,
+      catOne: level.catOne,
+      catTwo: level.catTwo,
+      catThree: level.catThree,
+      width: level.width,
+      height: level.height,
+    }
+  }
+  if (existing) {
+    if (!existing.stageId && stageName) {
+      return {
+        ...existing,
+        stageId: stageName,
+      }
+    }
+    return existing
+  }
+  if (!stageName) {
+    return undefined
+  }
+  return {
+    stageId: stageName,
+  }
+}
+
+const toSnakeLevelMeta = (meta: CamelLevelMeta) =>
+  meta
+    ? {
+        stage_id: meta.stageId,
+        level_id: meta.levelId,
+        name: meta.name,
+        game: meta.game,
+        cat_one: meta.catOne,
+        cat_two: meta.catTwo,
+        cat_three: meta.catThree,
+        width: meta.width,
+        height: meta.height,
+      }
+    : undefined
 
 export const EditorPage = withSuspensable(() => {
   const params = useParams()
@@ -195,9 +249,37 @@ export const EditorPage = withSuspensable(() => {
           console.log('[CreateOperation] level meta: <none>')
         }
 
+        const stageNameCandidate =
+          (baseOperation as any).stage_name ??
+          (baseOperation as any).stageName ??
+          editorOperation.stageName ??
+          (editorOperation as any).stage_name ??
+          ''
+
+        const camelLevelMeta = buildCamelLevelMeta(
+          selectedLevel,
+          stageNameCandidate,
+          editorOperation.levelMeta,
+        )
+
+        const editorOperationWithMeta = { ...editorOperation }
+        if (camelLevelMeta) {
+          editorOperationWithMeta.levelMeta = camelLevelMeta
+        } else {
+          delete (editorOperationWithMeta as any).levelMeta
+        }
+        set(editorAtoms.operation, editorOperationWithMeta)
+
+        const snakeLevelMeta = toSnakeLevelMeta(camelLevelMeta)
+        if (snakeLevelMeta) {
+          ;(baseOperation as any).level_meta = snakeLevelMeta
+        } else {
+          delete (baseOperation as any).level_meta
+        }
+
         const operation = await toSimingOperationRemote(
           baseOperation,
-          editorOperation,
+          editorOperationWithMeta,
           { level: selectedLevel },
         )
         const status =
