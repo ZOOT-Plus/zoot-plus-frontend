@@ -392,6 +392,25 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     return trimmedName || level.stageId
   }
 
+  const enhanceCustomLevel = useCallback(
+    (level: Level): Level => {
+      if (!isCustomLevel(level)) {
+        return level
+      }
+      const normalizedGame =
+        selectedGame && selectedGame !== NO_GAME_LABEL ? selectedGame : ''
+      const trimmedName = level.name?.trim() || level.stageId
+      return {
+        ...level,
+        game: normalizedGame,
+        catOne: selectedCategory?.trim() || level.catOne || '',
+        catTwo: trimmedName,
+        catThree: '',
+      }
+    },
+    [selectedCategory, selectedGame],
+  )
+
   return (
     <div className={clsx('flex flex-col gap-2', className)}>
       <div className="flex w-full flex-wrap items-end gap-3">
@@ -567,11 +586,12 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             inputValueRenderer={formatLevelInputValue}
             selectedItem={selectedLevel}
             onItemSelect={(level) => {
+              const nextLevel = enhanceCustomLevel(level)
               if (!isCustomLevel(level)) {
                 updateQuery('', true)
               }
               if (!disabled) {
-                onChange(level.stageId, level)
+                onChange(nextLevel.stageId, nextLevel)
               }
             }}
             createNewItemFromQuery={(query) => createCustomLevel(query)}

@@ -73,6 +73,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
       return fallbackStageId
         ? {
             stageId: fallbackStageId,
+            catTwo: fallbackStageId,
           }
         : undefined
     }

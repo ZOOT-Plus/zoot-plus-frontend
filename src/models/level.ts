@@ -24,8 +24,8 @@ export function createCustomLevel(name: string): Level {
     stageId: name,
     levelId: '',
     catOne: i18n.models.level.custom_level,
-    catTwo: '',
-    catThree: name,
+    catTwo: name,
+    catThree: '',
     width: 0,
     height: 0,
   }
