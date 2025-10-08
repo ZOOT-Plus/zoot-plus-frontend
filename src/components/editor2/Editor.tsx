@@ -13,15 +13,17 @@ import { OperatorEditor } from './operator/OperatorEditor'
 import { OperatorSidebarFloating } from './operator/OperatorSidebarFloating'
 import { useAutosave } from './useAutoSave'
 import { Validator } from './validation/Validator'
+import { Operation } from '../../models/operation'
 
 interface OperationEditorProps {
   subtitle?: string
   submitAction: string
   onSubmit: () => void
+  preLevel?: Operation['preLevel']
 }
 
 export const OperationEditor: FC<OperationEditorProps> = memo(
-  ({ subtitle, submitAction, onSubmit }) => {
+  ({ subtitle, submitAction, onSubmit, preLevel }) => {
     useAutosave()
     const { isMD } = useCurrentSize()
     const { undo, redo } = useHistoryControls(historyAtom)
@@ -88,13 +90,13 @@ export const OperationEditor: FC<OperationEditorProps> = memo(
           {!isMD && <OperatorSidebarFloating />}
           {isMD ? (
             <div className="panel-shadow">
-              <InfoEditor preLevel={(window as any).__editor_preLevel} />
+              <InfoEditor preLevel={preLevel} />
               <OperatorEditor />
               <ActionEditor />
             </div>
           ) : (
             <div className="panel-shadow h-full overflow-auto">
-              <InfoEditor preLevel={(window as any).__editor_preLevel} />
+              <InfoEditor preLevel={preLevel} />
               <ActionEditor />
             </div>
           )}

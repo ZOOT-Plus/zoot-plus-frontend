@@ -10,7 +10,7 @@ import {
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useMemo } from 'react'
 import { Paths } from 'type-fest'
 
 import { i18n, useTranslation } from '../../i18n/i18n'
@@ -44,6 +44,34 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
   }, [info.difficulty, setInfo])
 
   const simingDelays = info.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS
+
+  const fallbackLevel = useMemo<Level | undefined>(() => {
+    if (preLevel) {
+      return preLevel
+    }
+    const meta = info.levelMeta
+    if (!meta) return undefined
+    return {
+      stageId: meta.stageId ?? '',
+      levelId: meta.levelId ?? '',
+      name: meta.name ?? '',
+      game: meta.game ?? '',
+      catOne: meta.catOne ?? '',
+      catTwo: meta.catTwo ?? '',
+      catThree: meta.catThree ?? '',
+      width: meta.width ?? 0,
+      height: meta.height ?? 0,
+    }
+  }, [info.levelMeta, preLevel])
+
+  const normalizedGame = fallbackLevel?.game?.trim() ?? ''
+  const defaultGame =
+    normalizedGame.length > 0 ? normalizedGame : '代号鸢'
+  const defaultCategory =
+    fallbackLevel?.catOne?.trim() ||
+    fallbackLevel?.catTwo?.trim() ||
+    fallbackLevel?.catThree?.trim() ||
+    undefined
 
   const updateSimingDelay = (
     key: keyof typeof DEFAULT_SIMING_ACTION_DELAYS,
@@ -109,6 +137,29 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
     })
   }, [preLevel, setInfo])
 
+  useEffect(() => {
+    if (info.stageName?.trim()) {
+      return
+    }
+    if (!fallbackLevel?.stageId?.trim()) {
+      return
+    }
+    edit(() => {
+      setInfo((prev) => {
+        if (!prev.stageName?.trim()) {
+          prev.stageName = fallbackLevel.stageId
+        }
+        if (!prev.levelMeta?.stageId) {
+          prev.levelMeta = assignLevelMeta(fallbackLevel, fallbackLevel.stageId)
+        }
+      })
+      return {
+        action: 'hydrate-level-from-meta',
+        desc: i18n.actions.editor2.set_level,
+      }
+    })
+  }, [assignLevelMeta, edit, fallbackLevel, info.stageName, setInfo])
+
   return (
     <div
       className={clsx(
@@ -128,9 +179,9 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
         <LevelSelect
           difficulty={info.difficulty ?? OpDifficulty.UNKNOWN}
           value={info.stageName}
-          fallbackLevel={preLevel as any}
-          // 默认将“游戏”筛选设置为“代号鸢”
-          defaultGame="代号鸢"
+          fallbackLevel={fallbackLevel}
+          defaultGame={defaultGame}
+          defaultCategory={defaultCategory}
           onChange={(stageId, level) => {
             edit(() => {
               setInfo((prev) => {

@@ -68,6 +68,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     const g = (game || '').trim()
     return g || NO_GAME_LABEL
   }
+  const normalizedDefaultGame = normalizeGame(defaultGame)
   // 让“通用”能在选择“如鸢”或“代号鸢”时一并被搜索/筛选到
   const matchesGame = useCallback(
     (levelGame: string | undefined, selected: string | undefined) => {
@@ -158,8 +159,18 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       return normalizeGame(selectedLevel.game)
     }
     // 没有关卡时，尝试使用父组件传入的默认游戏以便回显
-    return normalizeGame(defaultGame)
+    return normalizedDefaultGame
   })
+
+  useEffect(() => {
+    if (selectedLevel) {
+      return
+    }
+    if (selectedGame === normalizedDefaultGame) {
+      return
+    }
+    setSelectedGame(normalizedDefaultGame)
+  }, [normalizedDefaultGame, selectedGame, selectedLevel])
 
   // 取消自动选择首个游戏，避免“强制重置”
 
@@ -215,13 +226,30 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     return result
   }, [getLevelCategory, levelsInGame, selectedLevel])
 
+  const normalizedDefaultCategory = (defaultCategory ?? '').trim()
   const [selectedCategory, setSelectedCategory] = useState<string>(() => {
     if (selectedLevel) {
       return getLevelCategory(selectedLevel)
     }
     // 没有关卡时，尝试使用父组件传入的默认分类以便回显
-    return (defaultCategory ?? '').trim()
+    return normalizedDefaultCategory
   })
+
+  useEffect(() => {
+    if (selectedLevel) {
+      return
+    }
+    if (!normalizedDefaultCategory) {
+      if (selectedCategory) {
+        setSelectedCategory('')
+      }
+      return
+    }
+    if (selectedCategory === normalizedDefaultCategory) {
+      return
+    }
+    setSelectedCategory(normalizedDefaultCategory)
+  }, [normalizedDefaultCategory, selectedCategory, selectedLevel])
 
   // 取消自动选择首个分类，避免“强制重置”
 
@@ -372,10 +400,27 @@ export const LevelSelect: FC<LevelSelectProps> = ({
 
   // 同步输入框显示为当前选中关卡，避免初次加载为空白
   useEffect(() => {
-    if (selectedLevel && !isCustomLevel(selectedLevel)) {
-      updateQuery(formatLevelInputValue(selectedLevel), true)
+    if (selectedLevel) {
+      const formatted = formatLevelInputValue(selectedLevel)
+      if (formatted) {
+        updateQuery(formatted, true)
+      }
     }
   }, [selectedLevel, updateQuery])
+
+  useEffect(() => {
+    if (selectedLevel) {
+      return
+    }
+    if (!fallbackLevel) {
+      return
+    }
+    const formatted = formatLevelInputValue(fallbackLevel)
+    if (!formatted) {
+      return
+    }
+    updateQuery(formatted, true)
+  }, [fallbackLevel, selectedLevel, updateQuery])
 
   const formatLevelInputValue = (level: Level) => {
     const trimmedName = level.name?.trim()

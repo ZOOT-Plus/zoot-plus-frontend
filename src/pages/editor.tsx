@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { OperationEditor } from 'components/editor2/Editor'
@@ -86,6 +86,15 @@ export const EditorPage = withSuspensable(() => {
   const navigate = useNavigate()
   const id = params.id ? +params.id : undefined
   const isNew = !id
+
+  const [preLevel, setPreLevel] = useState<Level | undefined>(undefined)
+  const setEditorPreLevel = useCallback(
+    (level?: Level) => {
+      setPreLevel(level)
+    },
+    [setPreLevel],
+  )
+
   const apiOperation = useOperation({
     id,
     suspense: true,
@@ -107,7 +116,7 @@ export const EditorPage = withSuspensable(() => {
 
   useLayoutEffect(() => {
     // 将后端返回的预计算关卡信息注入全局，供 InfoEditor 使用
-    ;(window as any).__editor_preLevel = apiOperation?.preLevel
+    setEditorPreLevel(apiOperation?.preLevel)
     if (apiOperation) {
       resetEditor({
         operation: toEditorOperation(
@@ -123,7 +132,7 @@ export const EditorPage = withSuspensable(() => {
     } else {
       resetEditor(defaultEditorState)
     }
-  }, [apiOperation, resetEditor])
+  }, [apiOperation, resetEditor, setEditorPreLevel])
 
   useEffect(() => {
     if (!importShortcode) {
@@ -148,6 +157,7 @@ export const EditorPage = withSuspensable(() => {
         }
 
         const operationData = await getOperation({ id: shortCodeContent.id })
+        setEditorPreLevel(operationData.preLevel)
         const operationContent = operationData.parsedContent
 
         if (
@@ -200,13 +210,7 @@ export const EditorPage = withSuspensable(() => {
     return () => {
       cancelled = true
     }
-  }, [
-    importShortcode,
-    resetEditor,
-    setSearchParams,
-    t,
-    formatError,
-  ])
+  }, [importShortcode, resetEditor, setSearchParams, setEditorPreLevel, t, formatError])
 
   const handleSubmit = useAtomCallback(
     useCallback(
@@ -328,6 +332,7 @@ export const EditorPage = withSuspensable(() => {
 
   return (
     <OperationEditor
+      preLevel={preLevel}
       subtitle={
         isNew ? t.pages.editor.create.subtitle : t.pages.editor.edit.subtitle
       }
