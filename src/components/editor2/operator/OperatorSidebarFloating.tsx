@@ -75,7 +75,8 @@ export const OperatorSidebarFloating: FC = () => {
       {shouldRender && (
         <div
           className={clsx(
-            'fixed inset-0 z-10 transition-opacity duration-200',
+            // 提升整体遮罩层级，确保悬浮窗覆盖粘性页头/其它浮层
+            'fixed inset-0 z-50 transition-opacity duration-200',
             open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
           )}
         >
@@ -93,7 +94,8 @@ export const OperatorSidebarFloating: FC = () => {
             aria-modal="true"
             aria-label={panelTitle}
             className={clsx(
-              'fixed bottom-20 right-4 z-50 flex w-[min(520px,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
+              // 面板层级设为更高，避免被其它 fixed 元素覆盖
+              'fixed bottom-20 right-4 z-[60] flex w-[min(520px,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
               'transition-all duration-200 ease-out',
               // 展开态需避免 transform，否则 dnd-kit 会使用错误坐标
               open
