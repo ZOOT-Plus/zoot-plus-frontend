@@ -166,11 +166,11 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     if (selectedLevel) {
       return
     }
-    if (selectedGame === normalizedDefaultGame) {
+    if (!normalizedDefaultGame) {
       return
     }
     setSelectedGame(normalizedDefaultGame)
-  }, [normalizedDefaultGame, selectedGame, selectedLevel])
+  }, [normalizedDefaultGame, selectedLevel])
 
   // 取消自动选择首个游戏，避免“强制重置”
 
@@ -240,16 +240,10 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       return
     }
     if (!normalizedDefaultCategory) {
-      if (selectedCategory) {
-        setSelectedCategory('')
-      }
-      return
-    }
-    if (selectedCategory === normalizedDefaultCategory) {
       return
     }
     setSelectedCategory(normalizedDefaultCategory)
-  }, [normalizedDefaultCategory, selectedCategory, selectedLevel])
+  }, [normalizedDefaultCategory, selectedLevel])
 
   // 取消自动选择首个分类，避免“强制重置”
 

@@ -281,10 +281,26 @@ export const EditorPage = withSuspensable(() => {
           delete (baseOperation as any).level_meta
         }
 
+        const levelForExport: Level | undefined =
+          selectedLevel ??
+          (camelLevelMeta
+            ? {
+                stageId: camelLevelMeta.stageId ?? '',
+                levelId: camelLevelMeta.levelId ?? '',
+                name: camelLevelMeta.name ?? '',
+                game: camelLevelMeta.game ?? '',
+                catOne: camelLevelMeta.catOne ?? '',
+                catTwo: camelLevelMeta.catTwo ?? '',
+                catThree: camelLevelMeta.catThree ?? '',
+                width: camelLevelMeta.width ?? 0,
+                height: camelLevelMeta.height ?? 0,
+              }
+            : undefined)
+
         const operation = await toSimingOperationRemote(
           baseOperation,
           editorOperationWithMeta,
-          { level: selectedLevel },
+          { level: levelForExport },
         )
         const status =
           get(editorAtoms.metadata).visibility === 'public'
