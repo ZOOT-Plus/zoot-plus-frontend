@@ -45,6 +45,8 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
       operatorId?: string
       name?: string
       value?: string
+      alias?: string
+      alt_name?: string
     }
     const items: Item[] = useMemo(() => {
       if (!isOpen) return []
@@ -55,13 +57,21 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
           operatorId: op.id,
           name: getLocalizedOperatorName(op.name, language),
           value: op.name,
+          alias: op.alias,
+          alt_name: op.alt_name,
         }))
 
-      const pickedOperators = operatorNames.map((name) => ({
-        key: name,
-        name: getLocalizedOperatorName(name, language),
-        value: name,
-      }))
+      const pickedOperators = operatorNames.map((name) => {
+        const op = OPERATORS.find((o) => o.name === name)
+        return {
+          key: name,
+          name: getLocalizedOperatorName(name, language),
+          value: name,
+          operatorId: op?.id,
+          alias: op?.alias,
+          alt_name: op?.alt_name,
+        }
+      })
 
       const unpickedOperators = (
         pickedOperators.length
@@ -72,6 +82,8 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
         operatorId: op.id,
         name: getLocalizedOperatorName(op.name, language),
         value: op.name,
+        alias: op.alias,
+        alt_name: op.alt_name,
       }))
 
       const result: Item[] = [...pickedOperators]
