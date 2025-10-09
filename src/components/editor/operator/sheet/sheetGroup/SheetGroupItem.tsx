@@ -392,6 +392,10 @@ const GroupPinOption: FC<GroupPinOptionProp> = ({
 
   return (
     <Popover2
+      // 收藏分组操作的弹层需位于遮罩上方
+      usePortal={true}
+      popoverClassName="z-[1600]"
+      portalClassName="z-[1600]"
       disabled={!pinned && !isDuplicate}
       content={
         <Menu className="p-0">

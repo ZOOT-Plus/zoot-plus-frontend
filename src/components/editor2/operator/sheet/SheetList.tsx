@@ -73,6 +73,10 @@ export const SheetList: FC<SheetListProps> = () => {
         </div>
         <div className="h-full sticky top-0 self-start shrink-0 z-10 flex flex-col items-center justify-center">
           <Popover2
+            // 弹层通过 Portal 提升层级，避免被全屏遮罩覆盖
+            usePortal={true}
+            popoverClassName="z-[1600]"
+            portalClassName="z-[1600]"
             content={
               <>
                 <OperatorRaritySelect />

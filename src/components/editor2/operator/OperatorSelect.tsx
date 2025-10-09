@@ -172,6 +172,10 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
         resetOnSelect={true}
         popoverProps={{
           placement: 'right-start',
+          // 确保下拉面板使用 Portal 并拥有更高层级，避免被悬浮窗遮挡
+          usePortal: true,
+          popoverClassName: 'z-[1600]',
+          portalClassName: 'z-[1600]',
           onOpening: () => setIsOpen(true),
           onClosed: () => setIsOpen(false),
         }}

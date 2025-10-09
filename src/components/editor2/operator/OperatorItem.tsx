@@ -33,6 +33,10 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
       >
         <div className="relative">
           <Popover2
+            // 维持全屏灰幕时，确保弹层通过 Portal 且层级高于遮罩
+            usePortal={true}
+            popoverClassName="z-[1600]"
+            portalClassName="z-[1600]"
             placement="top"
             content={
               <Menu>

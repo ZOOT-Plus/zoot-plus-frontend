@@ -99,6 +99,10 @@ export const ProfClassificationWithFilters: FC<
   const ToolBox = (
     <div className="flex flex-col absolute bottom-0">
       <Popover2
+        // 过滤器弹层需在遮罩之上
+        usePortal={true}
+        popoverClassName="z-[1600]"
+        portalClassName="z-[1600]"
         content={
           <>
             <OperatorRaritySelect />

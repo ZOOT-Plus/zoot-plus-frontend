@@ -137,6 +137,10 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({
               )
               return (
                 <Popover2
+                  // 通过 Portal 渲染并提升层级，保证在浮层灰幕上方
+                  usePortal={true}
+                  popoverClassName="z-[1600]"
+                  portalClassName="z-[1600]"
                   content={
                     <Button minimal onClick={onPinnedChange}>
                       <Icon
