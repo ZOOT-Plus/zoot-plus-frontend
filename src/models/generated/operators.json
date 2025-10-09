@@ -1,1027 +1,1047 @@
 {
   "OPERATORS": [
-  {
-    "id": "char_101_lvbu",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "吕布",
-    "name": "吕布",
-    "alias": "吕布",
-    "rarity": 5,
-    "alt_name": "吕布"
-  },
-  {
-    "id": "char_100_zhouzhong",
-    "prof": "阴",
-    "subProf": "qihuang",
-    "name_en": "周忠",
-    "name": "周忠",
-    "alias": "周忠",
-    "rarity": 5,
-    "alt_name": "周忠"
-  },
-  {
-    "id": "char_099_pangxi",
-    "prof": "风",
-    "subProf": "guidao",
-    "name_en": "庞羲",
-    "name": "庞羲",
-    "alias": "庞羲",
-    "rarity": 5,
-    "alt_name": "庞羲"
-  },
-  {
-    "id": "char_098_liuzhang",
-    "prof": "地",
-    "subProf": "shenji",
-    "name_en": "刘璋",
-    "name": "刘璋",
-    "alias": "刘璋",
-    "rarity": 5,
-    "alt_name": "刘璋"
-  },
-  {
-    "id": "char_097_zhongyao",
-    "prof": "火",
-    "subProf": "shenji",
-    "name_en": "钟繇",
-    "name": "钟繇",
-    "alias": "钟繇",
-    "rarity": 5,
-    "alt_name": "钟繇"
-  },
-  {
-    "id": "char_096_xiahouyuan",
-    "prof": "阳",
-    "subProf": "pojun",
-    "name_en": "夏侯渊",
-    "name": "夏侯渊",
-    "alias": "夏侯渊",
-    "rarity": 5,
-    "alt_name": "夏侯渊"
-  },
-  {
-    "id": "char_095_zhangyan",
-    "prof": "火",
-    "subProf": "shenji",
-    "name_en": "张燕",
-    "name": "张燕",
-    "alias": "张燕",
-    "rarity": 5,
-    "alt_name": "张燕"
-  },
-  {
-    "id": "char_094_yufan",
-    "prof": "阴",
-    "subProf": "pojun",
-    "name_en": "虞翻",
-    "name": "虞翻",
-    "alias": "虞翻",
-    "rarity": 5,
-    "alt_name": "虞翻"
-  },
-  {
-    "id": "char_093_shixie",
-    "prof": "水",
-    "subProf": "guidao",
-    "name_en": "士燮",
-    "name": "士燮",
-    "alias": "士燮",
-    "rarity": 5,
-    "alt_name": "士燮"
-  },
-  {
-    "id": "char_092_chengpu",
-    "prof": "火",
-    "subProf": "guidao",
-    "name_en": "程普",
-    "name": "程普",
-    "alias": "程普",
-    "rarity": 5,
-    "alt_name": "程普"
-  },
-  {
-    "id": "char_091_zhangzhao",
-    "prof": "风",
-    "subProf": "shenji",
-    "name_en": "张昭",
-    "name": "张昭",
-    "alias": "张昭",
-    "rarity": 5,
-    "alt_name": "张昭"
-  },
-  {
-    "id": "char_090_dongbai",
-    "prof": "地",
-    "subProf": "shenji",
-    "name_en": "董白",
-    "name": "董白",
-    "alias": "董白",
-    "rarity": 5,
-    "alt_name": "董白"
-  },
-  {
-    "id": "char_089_zhangxiu",
-    "prof": "阴",
-    "subProf": "pojun",
-    "name_en": "张绣",
-    "name": "张绣",
-    "alias": "张绣",
-    "rarity": 5,
-    "alt_name": "张绣"
-  },
-  {
-    "id": "char_088_liubao",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "刘豹",
-    "name": "刘豹",
-    "alias": "刘豹",
-    "rarity": 5,
-    "alt_name": "刘豹"
-  },
-  {
-    "id": "char_087_miheng",
-    "prof": "阳",
-    "subProf": "shenji",
-    "name_en": "祢衡",
-    "name": "祢衡",
-    "alias": "祢衡",
-    "rarity": 5,
-    "alt_name": "祢衡"
-  },
-  {
-    "id": "char_086_kuaiyue",
-    "prof": "火",
-    "subProf": "shenji",
-    "name_en": "蒯越",
-    "name": "蒯越",
-    "alias": "蒯越",
-    "rarity": 5,
-    "alt_name": "蒯越"
-  },
-  {
-    "id": "char_085_shizimiaosp",
-    "prof": "混沌",
-    "subProf": "qihuang",
-    "name_en": "史子眇·赴烛",
-    "name": "史子眇·赴烛",
-    "alias": "史子眇·赴烛",
-    "rarity": 5,
-    "alt_name": "史子眇·赴烛"
-  },
-  {
-    "id": "char_084_chendengsp",
-    "prof": "阳",
-    "subProf": "shenji",
-    "name_en": "陈登·黍王",
-    "name": "陈登·黍王",
-    "alias": "陈登·黍王",
-    "rarity": 5,
-    "alt_name": "陈登·黍王"
-  },
-  {
-    "id": "char_083_zhuran",
-    "prof": "阳",
-    "subProf": "longdun",
-    "name_en": "朱然",
-    "name": "朱然",
-    "alias": "朱然",
-    "rarity": 5,
-    "alt_name": "朱然"
-  },
-  {
-    "id": "char_082_huanggai",
-    "prof": "阴",
-    "subProf": "guidao",
-    "name_en": "黄盖",
-    "name": "黄盖",
-    "alias": "黄盖",
-    "rarity": 5,
-    "alt_name": "黄盖"
-  },
-  {
-    "id": "char_081_linghumao",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "令狐茂",
-    "name": "令狐茂",
-    "alias": "令狐茂",
-    "rarity": 5,
-    "alt_name": "令狐茂"
-  },
-  {
-    "id": "char_080_mateng",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "马腾",
-    "name": "马腾",
-    "alias": "马腾",
-    "rarity": 5,
-    "alt_name": "马腾"
-  },
-  {
-    "id": "char_079_liuyao",
-    "prof": "水",
-    "subProf": "guidao",
-    "name_en": "刘繇",
-    "name": "刘繇",
-    "alias": "刘繇",
-    "rarity": 5,
-    "alt_name": "刘繇"
-  },
-  {
-    "id": "char_078_xixue",
-    "prof": "地",
-    "subProf": "guidao",
-    "name_en": "戏学",
-    "name": "戏学",
-    "alias": "戏学",
-    "rarity": 5,
-    "alt_name": "戏学"
-  },
-  {
-    "id": "char_077_anqi",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "安期",
-    "name": "安期",
-    "alias": "安期",
-    "rarity": 5,
-    "alt_name": "安期"
-  },
-  {
-    "id": "char_076_lingtong",
-    "prof": "火",
-    "subProf": "pojun",
-    "name_en": "凌统",
-    "name": "凌统",
-    "alias": "凌统",
-    "rarity": 5,
-    "alt_name": "凌统"
-  },
-  {
-    "id": "char_075_manchong",
-    "prof": "阴",
-    "subProf": "pojun",
-    "name_en": "满宠",
-    "name": "满宠",
-    "alias": "满宠",
-    "rarity": 5,
-    "alt_name": "满宠"
-  },
-  {
-    "id": "char_074_xunyou",
-    "prof": "地",
-    "subProf": "guidao",
-    "name_en": "荀攸",
-    "name": "荀攸",
-    "alias": "荀攸",
-    "rarity": 5,
-    "alt_name": "荀攸"
-  },
-  {
-    "id": "char_073_zhugedan",
-    "prof": "火",
-    "subProf": "shenji",
-    "name_en": "诸葛诞",
-    "name": "诸葛诞",
-    "alias": "诸葛诞",
-    "rarity": 5,
-    "alt_name": "诸葛诞"
-  },
-  {
-    "id": "char_072_zhugejin",
-    "prof": "水",
-    "subProf": "pojun",
-    "name_en": "诸葛瑾",
-    "name": "诸葛瑾",
-    "alias": "诸葛瑾",
-    "rarity": 5,
-    "alt_name": "诸葛瑾"
-  },
-  {
-    "id": "char_071_caozhi",
-    "prof": "风",
-    "subProf": "guidao",
-    "name_en": "曹植",
-    "name": "曹植",
-    "alias": "曹植",
-    "rarity": 5,
-    "alt_name": "曹植"
-  },
-  {
-    "id": "char_070_dongfeng",
-    "prof": "阳",
-    "subProf": "qihuang",
-    "name_en": "董奉",
-    "name": "董奉",
-    "alias": "董奉",
-    "rarity": 5,
-    "alt_name": "董奉"
-  },
-  {
-    "id": "char_069_zhangmiao",
-    "prof": "风",
-    "subProf": "shenji",
-    "name_en": "张邈",
-    "name": "张邈",
-    "alias": "张邈",
-    "rarity": 5,
-    "alt_name": "张邈"
-  },
-  {
-    "id": "char_068_huangyueying",
-    "prof": "阳",
-    "subProf": "longdun",
-    "name_en": "黄月英",
-    "name": "黄月英",
-    "alias": "黄月英",
-    "rarity": 5,
-    "alt_name": "黄月英"
-  },
-  {
-    "id": "char_067_kongrong",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "孔融",
-    "name": "孔融",
-    "alias": "孔融",
-    "rarity": 5,
-    "alt_name": "孔融"
-  },
-  {
-    "id": "char_066_zhanglu",
-    "prof": "阴",
-    "subProf": "guidao",
-    "name_en": "张鲁",
-    "name": "张鲁",
-    "alias": "张鲁",
-    "rarity": 5,
-    "alt_name": "张鲁"
-  },
-  {
-    "id": "char_065_zhenfu",
-    "prof": "火",
-    "subProf": "shenji",
-    "name_en": "甄宓",
-    "name": "甄宓",
-    "alias": "甄宓",
-    "rarity": 5,
-    "alt_name": "甄宓"
-  },
-  {
-    "id": "char_064_ganning",
-    "prof": "水",
-    "subProf": "guidao",
-    "name_en": "甘宁",
-    "name": "甘宁",
-    "alias": "甘宁",
-    "rarity": 5,
-    "alt_name": "甘宁"
-  },
-  {
-    "id": "char_063_xushu",
-    "prof": "阳",
-    "subProf": "shenji",
-    "name_en": "徐庶",
-    "name": "徐庶",
-    "alias": "徐庶",
-    "rarity": 5,
-    "alt_name": "徐庶"
-  },
-  {
-    "id": "char_062_zhanghe",
-    "prof": "火",
-    "subProf": "shenji",
-    "name_en": "张郃",
-    "name": "张郃",
-    "alias": "张郃",
-    "rarity": 5,
-    "alt_name": "张郃"
-  },
-  {
-    "id": "char_061_gongsunshan",
-    "prof": "火",
-    "subProf": "pojun",
-    "name_en": "公孙珊",
-    "name": "公孙珊",
-    "alias": "公孙珊",
-    "rarity": 4,
-    "alt_name": "公孙珊"
-  },
-  {
-    "id": "char_060_zhangkai",
-    "prof": "阴",
-    "subProf": "guidao",
-    "name_en": "张闿",
-    "name": "张闿",
-    "alias": "张闿",
-    "rarity": 5,
-    "alt_name": "张闿"
-  },
-  {
-    "id": "char_059_taishici",
-    "prof": "风",
-    "subProf": "pojun",
-    "name_en": "太史慈",
-    "name": "太史慈",
-    "alias": "太史慈",
-    "rarity": 5,
-    "alt_name": "太史慈"
-  },
-  {
-    "id": "char_058_machao",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "马超",
-    "name": "马超",
-    "alias": "马超",
-    "rarity": 5,
-    "alt_name": "马超"
-  },
-  {
-    "id": "char_057_chengyu",
-    "prof": "火",
-    "subProf": "guidao",
-    "name_en": "程昱",
-    "name": "程昱",
-    "alias": "程昱",
-    "rarity": 5,
-    "alt_name": "程昱"
-  },
-  {
-    "id": "char_056_zhangjiao",
-    "prof": "阴",
-    "subProf": "pojun",
-    "name_en": "张角",
-    "name": "张角",
-    "alias": "张角",
-    "rarity": 5,
-    "alt_name": "张角"
-  },
-  {
-    "id": "char_055_xiahoudun",
-    "prof": "地",
-    "subProf": "longdun",
-    "name_en": "夏侯惇",
-    "name": "夏侯惇",
-    "alias": "夏侯惇",
-    "rarity": 5,
-    "alt_name": "夏侯惇"
-  },
-  {
-    "id": "char_054_wangyi",
-    "prof": "风",
-    "subProf": "longdun",
-    "name_en": "王异",
-    "name": "王异",
-    "alias": "王异",
-    "rarity": 4,
-    "alt_name": "王异"
-  },
-  {
-    "id": "char_053_zhangfei",
-    "prof": "风",
-    "subProf": "pojun",
-    "name_en": "张飞",
-    "name": "张飞",
-    "alias": "张飞",
-    "rarity": 5,
-    "alt_name": "张飞"
-  },
-  {
-    "id": "char_052_caiyan",
-    "prof": "水",
-    "subProf": "guidao",
-    "name_en": "蔡琰",
-    "name": "蔡琰",
-    "alias": "蔡琰",
-    "rarity": 5,
-    "alt_name": "蔡琰"
-  },
-  {
-    "id": "char_051_pangtong",
-    "prof": "阳",
-    "subProf": "shenji",
-    "name_en": "庞统",
-    "name": "庞统",
-    "alias": "庞统",
-    "rarity": 5,
-    "alt_name": "庞统"
-  },
-  {
-    "id": "char_050_xunyu",
-    "prof": "风",
-    "subProf": "shenji",
-    "name_en": "荀彧",
-    "name": "荀彧",
-    "alias": "荀彧",
-    "rarity": 5,
-    "alt_name": "荀彧"
-  },
-  {
-    "id": "char_049_luji",
-    "prof": "水",
-    "subProf": "guidao",
-    "name_en": "陆绩",
-    "name": "陆绩",
-    "alias": "陆绩",
-    "rarity": 4,
-    "alt_name": "陆绩"
-  },
-  {
-    "id": "char_048_xuman",
-    "prof": "阳",
-    "subProf": "guidao",
-    "name_en": "许曼",
-    "name": "许曼",
-    "alias": "许曼",
-    "rarity": 4,
-    "alt_name": "许曼"
-  },
-  {
-    "id": "char_047_gehong",
-    "prof": "阴",
-    "subProf": "guidao",
-    "name_en": "葛洪",
-    "name": "葛洪",
-    "alias": "葛洪",
-    "rarity": 5,
-    "alt_name": "葛洪"
-  },
-  {
-    "id": "char_046_zhouyu",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "周瑜",
-    "name": "周瑜",
-    "alias": "周瑜",
-    "rarity": 5,
-    "alt_name": "周瑜"
-  },
-  {
-    "id": "char_045_zhangzhongjing",
-    "prof": "地",
-    "subProf": "qihuang",
-    "name_en": "张仲景",
-    "name": "张仲景",
-    "alias": "张仲景",
-    "rarity": 5,
-    "alt_name": "张仲景"
-  },
-  {
-    "id": "char_044_zhangliao",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "张辽",
-    "name": "张辽",
-    "alias": "张辽",
-    "rarity": 5,
-    "alt_name": "张辽"
-  },
-  {
-    "id": "char_043_xiaoqiao",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "小乔",
-    "name": "小乔",
-    "alias": "小乔",
-    "rarity": 4,
-    "alt_name": "小乔"
-  },
-  {
-    "id": "char_042_wangcan",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "王粲",
-    "name": "王粲",
-    "alias": "王粲",
-    "rarity": 5,
-    "alt_name": "王粲"
-  },
-  {
-    "id": "char_041_zhangxiu",
-    "prof": "火",
-    "subProf": "guidao",
-    "name_en": "张修",
-    "name": "张修",
-    "alias": "张修",
-    "rarity": 5,
-    "alt_name": "张修"
-  },
-  {
-    "id": "char_040_sunquan",
-    "prof": "火",
-    "subProf": "longdun",
-    "name_en": "孙权",
-    "name": "孙权",
-    "alias": "孙权",
-    "rarity": 5,
-    "alt_name": "孙权"
-  },
-  {
-    "id": "char_039_guojie",
-    "prof": "火",
-    "subProf": "longdun",
-    "name_en": "郭解",
-    "name": "郭解",
-    "alias": "郭解",
-    "rarity": 5,
-    "alt_name": "郭解"
-  },
-  {
-    "id": "char_038_luxun",
-    "prof": "火",
-    "subProf": "pojun",
-    "name_en": "陆逊",
-    "name": "陆逊",
-    "alias": "陆逊",
-    "rarity": 5,
-    "alt_name": "陆逊"
-  },
-  {
-    "id": "char_037_fengshi",
-    "prof": "风",
-    "subProf": "longdun",
-    "name_en": "蜂使",
-    "name": "蜂使",
-    "alias": "蜂使",
-    "rarity": 3,
-    "alt_name": "蜂使"
-  },
-  {
-    "id": "char_036_yangfu",
-    "prof": "风",
-    "subProf": "guidao",
-    "name_en": "杨阜",
-    "name": "杨阜",
-    "alias": "杨阜",
-    "rarity": 3,
-    "alt_name": "杨阜"
-  },
-  {
-    "id": "char_035_lizhen",
-    "prof": "水",
-    "subProf": "pojun",
-    "name_en": "李真",
-    "name": "李真",
-    "alias": "李真",
-    "rarity": 3,
-    "alt_name": "李真"
-  },
-  {
-    "id": "char_034_xuxi",
-    "prof": "水",
-    "subProf": "pojun",
-    "name_en": "徐稺",
-    "name": "徐稺",
-    "alias": "徐稺",
-    "rarity": 3,
-    "alt_name": "徐稺"
-  },
-  {
-    "id": "char_033_louban",
-    "prof": "风",
-    "subProf": "shenji",
-    "name_en": "楼班",
-    "name": "楼班",
-    "alias": "楼班",
-    "rarity": 3,
-    "alt_name": "楼班"
-  },
-  {
-    "id": "char_032_lituo",
-    "prof": "地",
-    "subProf": "shenji",
-    "name_en": "李脱",
-    "name": "李脱",
-    "alias": "李脱",
-    "rarity": 3,
-    "alt_name": "李脱"
-  },
-  {
-    "id": "char_031_maojie",
-    "prof": "火",
-    "subProf": "pojun",
-    "name_en": "毛玠",
-    "name": "毛玠",
-    "alias": "毛玠",
-    "rarity": 3,
-    "alt_name": "毛玠"
-  },
-  {
-    "id": "char_030_feiyun",
-    "prof": "火",
-    "subProf": "longdun",
-    "name_en": "飞云",
-    "name": "飞云",
-    "alias": "飞云",
-    "rarity": 3,
-    "alt_name": "飞云"
-  },
-  {
-    "id": "char_029_xiuqiu",
-    "prof": "风",
-    "subProf": "pojun",
-    "name_en": "绣球",
-    "name": "绣球",
-    "alias": "绣球",
-    "rarity": 3,
-    "alt_name": "绣球"
-  },
-  {
-    "id": "char_028_zhouqun",
-    "prof": "火",
-    "subProf": "guidao",
-    "name_en": "周群",
-    "name": "周群",
-    "alias": "周群",
-    "rarity": 3,
-    "alt_name": "周群"
-  },
-  {
-    "id": "char_027_diwutian",
-    "prof": "阳",
-    "subProf": "shenji",
-    "name_en": "第五天",
-    "name": "第五天",
-    "alias": "第五天",
-    "rarity": 3,
-    "alt_name": "第五天"
-  },
-  {
-    "id": "char_026_guigu",
-    "prof": "风",
-    "subProf": "longdun",
-    "name_en": "眭固",
-    "name": "眭固",
-    "alias": "眭固",
-    "rarity": 3,
-    "alt_name": "眭固"
-  },
-  {
-    "id": "char_025_queshi",
-    "prof": "风",
-    "subProf": "shenji",
-    "name_en": "雀使",
-    "name": "雀使",
-    "alias": "雀使",
-    "rarity": 3,
-    "alt_name": "雀使"
-  },
-  {
-    "id": "char_024_ganji",
-    "prof": "火",
-    "subProf": "guidao",
-    "name_en": "干吉",
-    "name": "干吉",
-    "alias": "干吉",
-    "rarity": 5,
-    "alt_name": "干吉"
-  },
-  {
-    "id": "char_023_shizimiao",
-    "prof": "风",
-    "subProf": "qihuang",
-    "name_en": "史子眇",
-    "name": "史子眇",
-    "alias": "史子眇",
-    "rarity": 4,
-    "alt_name": "史子眇"
-  },
-  {
-    "id": "char_022_shanjiu",
-    "prof": "风",
-    "subProf": "shenji",
-    "name_en": "山九",
-    "name": "山九",
-    "alias": "山九",
-    "rarity": 3,
-    "alt_name": "山九"
-  },
-  {
-    "id": "char_021_gaolan",
-    "prof": "风",
-    "subProf": "pojun",
-    "name_en": "高览",
-    "name": "高览",
-    "alias": "高览",
-    "rarity": 3,
-    "alt_name": "高览"
-  },
-  {
-    "id": "char_020_wudan",
-    "prof": "地",
-    "subProf": "qihuang",
-    "name_en": "伍丹",
-    "name": "伍丹",
-    "alias": "伍丹",
-    "rarity": 3,
-    "alt_name": "伍丹"
-  },
-  {
-    "id": "char_019_cuilie",
-    "prof": "地",
-    "subProf": "longdun",
-    "name_en": "崔烈",
-    "name": "崔烈",
-    "alias": "崔烈",
-    "rarity": 3,
-    "alt_name": "崔烈"
-  },
-  {
-    "id": "char_018_yuanshi",
-    "prof": "风",
-    "subProf": "guidao",
-    "name_en": "鸢使",
-    "name": "鸢使",
-    "alias": "鸢使",
-    "rarity": 3,
-    "alt_name": "鸢使"
-  },
-  {
-    "id": "char_017_ganti",
-    "prof": "水",
-    "subProf": "shenji",
-    "name_en": "甘缇",
-    "name": "甘缇",
-    "alias": "甘缇",
-    "rarity": 3,
-    "alt_name": "甘缇"
-  },
-  {
-    "id": "char_016_guanjing",
-    "prof": "水",
-    "subProf": "qihuang",
-    "name_en": "关靖",
-    "name": "关靖",
-    "alias": "关靖",
-    "rarity": 3,
-    "alt_name": "关靖"
-  },
-  {
-    "id": "char_015_yanyan",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "严颜",
-    "name": "严颜",
-    "alias": "严颜",
-    "rarity": 3,
-    "alt_name": "严颜"
-  },
-  {
-    "id": "char_014_achan",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "阿蝉",
-    "name": "阿蝉",
-    "alias": "阿蝉",
-    "rarity": 4,
-    "alt_name": "阿蝉"
-  },
-  {
-    "id": "char_013_chendeng",
-    "prof": "风",
-    "subProf": "shen'ji",
-    "name_en": "陈登",
-    "name": "陈登",
-    "alias": "陈登",
-    "rarity": 4,
-    "alt_name": "陈登"
-  },
-  {
-    "id": "char_012_yanliang",
-    "prof": "水",
-    "subProf": "longdun",
-    "name_en": "颜良",
-    "name": "颜良",
-    "alias": "颜良",
-    "rarity": 4,
-    "alt_name": "颜良"
-  },
-  {
-    "id": "char_011_wenchou",
-    "prof": "火",
-    "subProf": "po'jun",
-    "name_en": "文丑",
-    "name": "文丑",
-    "alias": "文丑",
-    "rarity": 4,
-    "alt_name": "文丑"
-  },
-  {
-    "id": "char_010_xuyou",
-    "prof": "地",
-    "subProf": "guidao",
-    "name_en": "许攸",
-    "name": "许攸",
-    "alias": "许攸",
-    "rarity": 4,
-    "alt_name": "许攸"
-  },
-  {
-    "id": "char_009_yanbaihu",
-    "prof": "阴",
-    "subProf": "long'dun",
-    "name_en": "严白虎",
-    "name": "严白虎",
-    "alias": "严白虎",
-    "rarity": 4,
-    "alt_name": "严白虎"
-  },
-  {
-    "id": "char_008_huatuo",
-    "prof": "阳",
-    "subProf": "qi'huang",
-    "name_en": "华佗",
-    "name": "华佗",
-    "alias": "华佗",
-    "rarity": 5,
-    "alt_name": "华佗"
-  },
-  {
-    "id": "char_007_lvmeng",
-    "prof": "火",
-    "subProf": "pojun",
-    "name_en": "吕蒙",
-    "name": "吕蒙",
-    "alias": "吕蒙",
-    "rarity": 5,
-    "alt_name": "吕蒙"
-  },
-  {
-    "id": "char_006_eshi",
-    "prof": "地",
-    "subProf": "pojun",
-    "name_en": "蛾使",
-    "name": "蛾使",
-    "alias": "蛾使",
-    "rarity": 3,
-    "alt_name": "蛾使"
-  },
-  {
-    "id": "char_005_lusu",
-    "prof": "水",
-    "subProf": "guidao",
-    "name_en": "鲁肃",
-    "name": "鲁肃",
-    "alias": "鲁肃",
-    "rarity": 5,
-    "alt_name": "鲁肃"
-  },
-  {
-    "id": "char_004_guojia",
-    "prof": "风",
-    "subProf": "guidao",
-    "name_en": "郭嘉",
-    "name": "郭嘉",
-    "alias": "郭嘉",
-    "rarity": 5,
-    "alt_name": "郭嘉"
-  },
-  {
-    "id": "char_003_sunshangxiang",
-    "prof": "火",
-    "subProf": "pojun",
-    "name_en": "孙尚香",
-    "name": "孙尚香",
-    "alias": "孙尚香",
-    "rarity": 5,
-    "alt_name": "孙尚香"
-  },
-  {
-    "id": "char_002_jiaxu",
-    "prof": "阴",
-    "subProf": "guidao",
-    "name_en": "贾诩",
-    "name": "贾诩",
-    "alias": "贾诩",
-    "rarity": 5,
-    "alt_name": "贾诩"
-  },
-  {
-    "id": "char_001_yangxiu",
-    "prof": "阳",
-    "subProf": "shenji",
-    "name_en": "杨修",
-    "name": "杨修",
-    "alias": "杨修",
-    "rarity": 5,
-    "alt_name": "杨修"
-  }
-],
+    {
+      "id": "char_101_lvbu",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "吕布",
+      "name": "吕布",
+      "alias": "lvbu lb “吕布” 吕布",
+      "rarity": 5,
+      "alt_name": "吕布"
+    },
+    {
+      "id": "char_100_zhouzhong",
+      "prof": "阴",
+      "subProf": "qihuang",
+      "name_en": "周忠",
+      "name": "周忠",
+      "alias": "zhouzhong zz “周忠” 周忠",
+      "rarity": 5,
+      "alt_name": "周忠"
+    },
+    {
+      "id": "char_099_pangxi",
+      "prof": "风",
+      "subProf": "guidao",
+      "name_en": "庞羲",
+      "name": "庞羲",
+      "alias": "pangxi px “庞羲” 庞羲",
+      "rarity": 5,
+      "alt_name": "庞羲"
+    },
+    {
+      "id": "char_098_liuzhang",
+      "prof": "地",
+      "subProf": "shenji",
+      "name_en": "刘璋",
+      "name": "刘璋",
+      "alias": "liuzhang lz “刘璋” 刘璋",
+      "rarity": 5,
+      "alt_name": "刘璋"
+    },
+    {
+      "id": "char_097_zhongyao",
+      "prof": "火",
+      "subProf": "shenji",
+      "name_en": "钟繇",
+      "name": "钟繇",
+      "alias": "zhongyao zy “钟繇” 钟繇",
+      "rarity": 5,
+      "alt_name": "钟繇"
+    },
+    {
+      "id": "char_096_xiahouyuan",
+      "prof": "阳",
+      "subProf": "pojun",
+      "name_en": "夏侯渊",
+      "name": "夏侯渊",
+      "alias": "xiahouyuan xhy “夏侯渊” 夏侯渊",
+      "rarity": 5,
+      "alt_name": "夏侯渊"
+    },
+    {
+      "id": "char_095_zhangyan",
+      "prof": "火",
+      "subProf": "shenji",
+      "name_en": "张燕",
+      "name": "张燕",
+      "alias": "zhangyan zy “张燕” 张燕",
+      "rarity": 5,
+      "alt_name": "张燕"
+    },
+    {
+      "id": "char_094_yufan",
+      "prof": "阴",
+      "subProf": "pojun",
+      "name_en": "虞翻",
+      "name": "虞翻",
+      "alias": "yufan yf “虞翻” 虞翻",
+      "rarity": 5,
+      "alt_name": "虞翻"
+    },
+    {
+      "id": "char_093_shixie",
+      "prof": "水",
+      "subProf": "guidao",
+      "name_en": "士燮",
+      "name": "士燮",
+      "alias": "shixie sx “士燮” 士燮",
+      "rarity": 5,
+      "alt_name": "士燮"
+    },
+    {
+      "id": "char_092_chengpu",
+      "prof": "火",
+      "subProf": "guidao",
+      "name_en": "程普",
+      "name": "程普",
+      "alias": "chengpu cp “程普” 程普",
+      "rarity": 5,
+      "alt_name": "程普"
+    },
+    {
+      "id": "char_091_zhangzhao",
+      "prof": "风",
+      "subProf": "shenji",
+      "name_en": "张昭",
+      "name": "张昭",
+      "alias": "zhangzhao zz “张昭” 张昭",
+      "rarity": 5,
+      "alt_name": "张昭"
+    },
+    {
+      "id": "char_090_dongbai",
+      "prof": "地",
+      "subProf": "shenji",
+      "name_en": "董白",
+      "name": "董白",
+      "alias": "dongbai db “董白” 董白",
+      "rarity": 5,
+      "alt_name": "董白"
+    },
+    {
+      "id": "char_089_zhangxiu",
+      "prof": "阴",
+      "subProf": "pojun",
+      "name_en": "张绣",
+      "name": "张绣",
+      "alias": "zhangxiu zx “张绣” 张绣",
+      "rarity": 5,
+      "alt_name": "张绣"
+    },
+    {
+      "id": "char_088_liubao",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "刘豹",
+      "name": "刘豹",
+      "alias": "liubao lb “刘豹” 刘豹",
+      "rarity": 5,
+      "alt_name": "刘豹"
+    },
+    {
+      "id": "char_087_miheng",
+      "prof": "阳",
+      "subProf": "shenji",
+      "name_en": "祢衡",
+      "name": "祢衡",
+      "alias": "miheng mh “祢衡” 祢衡",
+      "rarity": 5,
+      "alt_name": "祢衡"
+    },
+    {
+      "id": "char_086_kuaiyue",
+      "prof": "火",
+      "subProf": "shenji",
+      "name_en": "蒯越",
+      "name": "蒯越",
+      "alias": "kuaiyue ky “蒯越” 蒯越",
+      "rarity": 5,
+      "alt_name": "蒯越"
+    },
+    {
+      "id": "char_085_shizimiaosp",
+      "prof": "混沌",
+      "subProf": "qihuang",
+      "name_en": "史子眇·赴烛",
+      "name": "史子眇·赴烛",
+      "alias": "shizimiaofuzhu szmfz “史子眇·赴烛” 史子眇·赴烛",
+      "rarity": 5,
+      "alt_name": "史子眇·赴烛"
+    },
+    {
+      "id": "char_084_chendengsp",
+      "prof": "阳",
+      "subProf": "shenji",
+      "name_en": "陈登·黍王",
+      "name": "陈登·黍王",
+      "alias": "chendengshuwang cdsw “陈登·黍王” 陈登·黍王",
+      "rarity": 5,
+      "alt_name": "陈登·黍王"
+    },
+    {
+      "id": "char_083_zhuran",
+      "prof": "阳",
+      "subProf": "longdun",
+      "name_en": "朱然",
+      "name": "朱然",
+      "alias": "zhuran zr “朱然” 朱然",
+      "rarity": 5,
+      "alt_name": "朱然"
+    },
+    {
+      "id": "char_082_huanggai",
+      "prof": "阴",
+      "subProf": "guidao",
+      "name_en": "黄盖",
+      "name": "黄盖",
+      "alias": "huanggai hg “黄盖” 黄盖",
+      "rarity": 5,
+      "alt_name": "黄盖"
+    },
+    {
+      "id": "char_081_linghumao",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "令狐茂",
+      "name": "令狐茂",
+      "alias": "linghumao lhm “令狐茂” 令狐茂",
+      "rarity": 5,
+      "alt_name": "令狐茂"
+    },
+    {
+      "id": "char_080_mateng",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "马腾",
+      "name": "马腾",
+      "alias": "mateng mt “马腾” 马腾",
+      "rarity": 5,
+      "alt_name": "马腾"
+    },
+    {
+      "id": "char_079_liuyao",
+      "prof": "水",
+      "subProf": "guidao",
+      "name_en": "刘繇",
+      "name": "刘繇",
+      "alias": "liuyao ly “刘繇” 刘繇",
+      "rarity": 5,
+      "alt_name": "刘繇"
+    },
+    {
+      "id": "char_078_xixue",
+      "prof": "地",
+      "subProf": "guidao",
+      "name_en": "戏学",
+      "name": "戏学",
+      "alias": "xixue xx “戏学” 戏学",
+      "rarity": 5,
+      "alt_name": "戏学"
+    },
+    {
+      "id": "char_077_anqi",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "安期",
+      "name": "安期",
+      "alias": "anqi aq “安期” 安期",
+      "rarity": 5,
+      "alt_name": "安期"
+    },
+    {
+      "id": "char_076_lingtong",
+      "prof": "火",
+      "subProf": "pojun",
+      "name_en": "凌统",
+      "name": "凌统",
+      "alias": "lingtong lt “凌统” 凌统",
+      "rarity": 5,
+      "alt_name": "凌统"
+    },
+    {
+      "id": "char_075_manchong",
+      "prof": "阴",
+      "subProf": "pojun",
+      "name_en": "满宠",
+      "name": "满宠",
+      "alias": "manchong mc “满宠” 满宠",
+      "rarity": 5,
+      "alt_name": "满宠"
+    },
+    {
+      "id": "char_074_xunyou",
+      "prof": "地",
+      "subProf": "guidao",
+      "name_en": "荀攸",
+      "name": "荀攸",
+      "alias": "xunyou xy “荀攸” 荀攸",
+      "rarity": 5,
+      "alt_name": "荀攸"
+    },
+    {
+      "id": "char_073_zhugedan",
+      "prof": "火",
+      "subProf": "shenji",
+      "name_en": "诸葛诞",
+      "name": "诸葛诞",
+      "alias": "zhugedan zgd “诸葛诞” 诸葛诞",
+      "rarity": 5,
+      "alt_name": "诸葛诞"
+    },
+    {
+      "id": "char_072_zhugejin",
+      "prof": "水",
+      "subProf": "pojun",
+      "name_en": "诸葛瑾",
+      "name": "诸葛瑾",
+      "alias": "zhugejin zgj “诸葛瑾” 诸葛瑾",
+      "rarity": 5,
+      "alt_name": "诸葛瑾"
+    },
+    {
+      "id": "char_071_caozhi",
+      "prof": "风",
+      "subProf": "guidao",
+      "name_en": "曹植",
+      "name": "曹植",
+      "alias": "caozhi cz “曹植” 曹植",
+      "rarity": 5,
+      "alt_name": "曹植"
+    },
+    {
+      "id": "char_070_dongfeng",
+      "prof": "阳",
+      "subProf": "qihuang",
+      "name_en": "董奉",
+      "name": "董奉",
+      "alias": "dongfeng df “董奉” 董奉",
+      "rarity": 5,
+      "alt_name": "董奉"
+    },
+    {
+      "id": "char_069_zhangmiao",
+      "prof": "风",
+      "subProf": "shenji",
+      "name_en": "张邈",
+      "name": "张邈",
+      "alias": "zhangmiao zm “张邈” 张邈",
+      "rarity": 5,
+      "alt_name": "张邈"
+    },
+    {
+      "id": "char_068_huangyueying",
+      "prof": "阳",
+      "subProf": "longdun",
+      "name_en": "黄月英",
+      "name": "黄月英",
+      "alias": "huangyueying hyy “黄月英” 黄月英",
+      "rarity": 5,
+      "alt_name": "黄月英"
+    },
+    {
+      "id": "char_067_kongrong",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "孔融",
+      "name": "孔融",
+      "alias": "kongrong kr “孔融” 孔融",
+      "rarity": 5,
+      "alt_name": "孔融"
+    },
+    {
+      "id": "char_066_zhanglu",
+      "prof": "阴",
+      "subProf": "guidao",
+      "name_en": "张鲁",
+      "name": "张鲁",
+      "alias": "zhanglu zl “张鲁” 张鲁",
+      "rarity": 5,
+      "alt_name": "张鲁"
+    },
+    {
+      "id": "char_065_zhenfu",
+      "prof": "火",
+      "subProf": "shenji",
+      "name_en": "甄宓",
+      "name": "甄宓",
+      "alias": "zhenmi zm “甄宓” 甄宓",
+      "rarity": 5,
+      "alt_name": "甄宓"
+    },
+    {
+      "id": "char_064_ganning",
+      "prof": "水",
+      "subProf": "guidao",
+      "name_en": "甘宁",
+      "name": "甘宁",
+      "alias": "ganning gn “甘宁” 甘宁",
+      "rarity": 5,
+      "alt_name": "甘宁"
+    },
+    {
+      "id": "char_063_xushu",
+      "prof": "阳",
+      "subProf": "shenji",
+      "name_en": "徐庶",
+      "name": "徐庶",
+      "alias": "xushu xs “徐庶” 徐庶",
+      "rarity": 5,
+      "alt_name": "徐庶"
+    },
+    {
+      "id": "char_062_zhanghe",
+      "prof": "火",
+      "subProf": "shenji",
+      "name_en": "张郃",
+      "name": "张郃",
+      "alias": "zhanghe zh “张郃” 张郃",
+      "rarity": 5,
+      "alt_name": "张郃"
+    },
+    {
+      "id": "char_061_gongsunshan",
+      "prof": "火",
+      "subProf": "pojun",
+      "name_en": "公孙珊",
+      "name": "公孙珊",
+      "alias": "gongsunshan gss “公孙珊” 公孙珊",
+      "rarity": 4,
+      "alt_name": "公孙珊"
+    },
+    {
+      "id": "char_060_zhangkai",
+      "prof": "阴",
+      "subProf": "guidao",
+      "name_en": "张闿",
+      "name": "张闿",
+      "alias": "zhangkai zk “张闿” 张闿",
+      "rarity": 5,
+      "alt_name": "张闿"
+    },
+    {
+      "id": "char_059_taishici",
+      "prof": "风",
+      "subProf": "pojun",
+      "name_en": "太史慈",
+      "name": "太史慈",
+      "alias": "taishici tsc “太史慈” 太史慈",
+      "rarity": 5,
+      "alt_name": "太史慈"
+    },
+    {
+      "id": "char_058_machao",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "马超",
+      "name": "马超",
+      "alias": "machao mc “马超” 马超",
+      "rarity": 5,
+      "alt_name": "马超"
+    },
+    {
+      "id": "char_057_chengyu",
+      "prof": "火",
+      "subProf": "guidao",
+      "name_en": "程昱",
+      "name": "程昱",
+      "alias": "chengyu cy “程昱” 程昱",
+      "rarity": 5,
+      "alt_name": "程昱"
+    },
+    {
+      "id": "char_056_zhangjiao",
+      "prof": "阴",
+      "subProf": "pojun",
+      "name_en": "张角",
+      "name": "张角",
+      "alias": "zhangjiao zj “张角” 张角",
+      "rarity": 5,
+      "alt_name": "张角"
+    },
+    {
+      "id": "char_055_xiahoudun",
+      "prof": "地",
+      "subProf": "longdun",
+      "name_en": "夏侯惇",
+      "name": "夏侯惇",
+      "alias": "xiahoudun xhd “夏侯惇” 夏侯惇",
+      "rarity": 5,
+      "alt_name": "夏侯惇"
+    },
+    {
+      "id": "char_054_wangyi",
+      "prof": "风",
+      "subProf": "longdun",
+      "name_en": "王异",
+      "name": "王异",
+      "alias": "wangyi wy “王异” 王异",
+      "rarity": 4,
+      "alt_name": "王异"
+    },
+    {
+      "id": "char_053_zhangfei",
+      "prof": "风",
+      "subProf": "pojun",
+      "name_en": "张飞",
+      "name": "张飞",
+      "alias": "zhangfei zf “张飞” 张飞",
+      "rarity": 5,
+      "alt_name": "张飞"
+    },
+    {
+      "id": "char_052_caiyan",
+      "prof": "水",
+      "subProf": "guidao",
+      "name_en": "蔡琰",
+      "name": "蔡琰",
+      "alias": "caiyan cy “蔡琰” 蔡琰",
+      "rarity": 5,
+      "alt_name": "蔡琰"
+    },
+    {
+      "id": "char_051_pangtong",
+      "prof": "阳",
+      "subProf": "shenji",
+      "name_en": "庞统",
+      "name": "庞统",
+      "alias": "pangtong pt “庞统” 庞统",
+      "rarity": 5,
+      "alt_name": "庞统"
+    },
+    {
+      "id": "char_050_xunyu",
+      "prof": "风",
+      "subProf": "shenji",
+      "name_en": "荀彧",
+      "name": "荀彧",
+      "alias": "xunyu xy “荀彧” 荀彧",
+      "rarity": 5,
+      "alt_name": "荀彧"
+    },
+    {
+      "id": "char_049_luji",
+      "prof": "水",
+      "subProf": "guidao",
+      "name_en": "陆绩",
+      "name": "陆绩",
+      "alias": "luji lj “陆绩” 陆绩",
+      "rarity": 4,
+      "alt_name": "陆绩"
+    },
+    {
+      "id": "char_048_xuman",
+      "prof": "阳",
+      "subProf": "guidao",
+      "name_en": "许曼",
+      "name": "许曼",
+      "alias": "xuman xm “许曼” 许曼",
+      "rarity": 4,
+      "alt_name": "许曼"
+    },
+    {
+      "id": "char_047_gehong",
+      "prof": "阴",
+      "subProf": "guidao",
+      "name_en": "葛洪",
+      "name": "葛洪",
+      "alias": "gehong gh “葛洪” 葛洪",
+      "rarity": 5,
+      "alt_name": "葛洪"
+    },
+    {
+      "id": "char_046_zhouyu",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "周瑜",
+      "name": "周瑜",
+      "alias": "zhouyu zy “周瑜” 周瑜",
+      "rarity": 5,
+      "alt_name": "周瑜"
+    },
+    {
+      "id": "char_045_zhangzhongjing",
+      "prof": "地",
+      "subProf": "qihuang",
+      "name_en": "张仲景",
+      "name": "张仲景",
+      "alias": "zhangzhongjing zzj “张仲景” 张仲景",
+      "rarity": 5,
+      "alt_name": "张仲景"
+    },
+    {
+      "id": "char_044_zhangliao",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "张辽",
+      "name": "张辽",
+      "alias": "zhangliao zl “张辽” 张辽",
+      "rarity": 5,
+      "alt_name": "张辽"
+    },
+    {
+      "id": "char_043_xiaoqiao",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "小乔",
+      "name": "小乔",
+      "alias": "xiaoqiao xq “小乔” 小乔",
+      "rarity": 4,
+      "alt_name": "小乔"
+    },
+    {
+      "id": "char_042_wangcan",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "王粲",
+      "name": "王粲",
+      "alias": "wangcan wc “王粲” 王粲",
+      "rarity": 5,
+      "alt_name": "王粲"
+    },
+    {
+      "id": "char_041_zhangxiu",
+      "prof": "火",
+      "subProf": "guidao",
+      "name_en": "张修",
+      "name": "张修",
+      "alias": "zhangxiu zx “张修” 张修",
+      "rarity": 5,
+      "alt_name": "张修"
+    },
+    {
+      "id": "char_040_sunquan",
+      "prof": "火",
+      "subProf": "longdun",
+      "name_en": "孙权",
+      "name": "孙权",
+      "alias": "sunquan sq “孙权” 孙权",
+      "rarity": 5,
+      "alt_name": "孙权"
+    },
+    {
+      "id": "char_039_guojie",
+      "prof": "火",
+      "subProf": "longdun",
+      "name_en": "郭解",
+      "name": "郭解",
+      "alias": "guojie gj “郭解” 郭解",
+      "rarity": 5,
+      "alt_name": "郭解"
+    },
+    {
+      "id": "char_038_luxun",
+      "prof": "火",
+      "subProf": "pojun",
+      "name_en": "陆逊",
+      "name": "陆逊",
+      "alias": "luxun lx “陆逊” 陆逊",
+      "rarity": 5,
+      "alt_name": "陆逊"
+    },
+    {
+      "id": "char_037_fengshi",
+      "prof": "风",
+      "subProf": "longdun",
+      "name_en": "蜂使",
+      "name": "蜂使",
+      "alias": "fengshi fs “蜂使” 蜂使",
+      "rarity": 3,
+      "alt_name": "蜂使"
+    },
+    {
+      "id": "char_036_yangfu",
+      "prof": "风",
+      "subProf": "guidao",
+      "name_en": "杨阜",
+      "name": "杨阜",
+      "alias": "yangfu yf “杨阜” 杨阜",
+      "rarity": 3,
+      "alt_name": "杨阜"
+    },
+    {
+      "id": "char_035_lizhen",
+      "prof": "水",
+      "subProf": "pojun",
+      "name_en": "李真",
+      "name": "李真",
+      "alias": "lizhen lz “李真” 李真",
+      "rarity": 3,
+      "alt_name": "李真"
+    },
+    {
+      "id": "char_034_xuxi",
+      "prof": "水",
+      "subProf": "pojun",
+      "name_en": "徐稺",
+      "name": "徐稺",
+      "alias": "xuzhi xz “徐稺” 徐稺",
+      "rarity": 3,
+      "alt_name": "徐稺"
+    },
+    {
+      "id": "char_033_louban",
+      "prof": "风",
+      "subProf": "shenji",
+      "name_en": "楼班",
+      "name": "楼班",
+      "alias": "louban lb “楼班” 楼班",
+      "rarity": 3,
+      "alt_name": "楼班"
+    },
+    {
+      "id": "char_032_lituo",
+      "prof": "地",
+      "subProf": "shenji",
+      "name_en": "李脱",
+      "name": "李脱",
+      "alias": "lituo lt “李脱” 李脱",
+      "rarity": 3,
+      "alt_name": "李脱"
+    },
+    {
+      "id": "char_031_maojie",
+      "prof": "火",
+      "subProf": "pojun",
+      "name_en": "毛玠",
+      "name": "毛玠",
+      "alias": "maojie mj “毛玠” 毛玠",
+      "rarity": 3,
+      "alt_name": "毛玠"
+    },
+    {
+      "id": "char_030_feiyun",
+      "prof": "火",
+      "subProf": "longdun",
+      "name_en": "飞云",
+      "name": "飞云",
+      "alias": "feiyun fy “飞云” 飞云",
+      "rarity": 3,
+      "alt_name": "飞云"
+    },
+    {
+      "id": "char_029_xiuqiu",
+      "prof": "风",
+      "subProf": "pojun",
+      "name_en": "绣球",
+      "name": "绣球",
+      "alias": "xiuqiu xq “绣球” 绣球",
+      "rarity": 3,
+      "alt_name": "绣球"
+    },
+    {
+      "id": "char_028_zhouqun",
+      "prof": "火",
+      "subProf": "guidao",
+      "name_en": "周群",
+      "name": "周群",
+      "alias": "zhouqun zq “周群” 周群",
+      "rarity": 3,
+      "alt_name": "周群"
+    },
+    {
+      "id": "char_027_diwutian",
+      "prof": "阳",
+      "subProf": "shenji",
+      "name_en": "第五天",
+      "name": "第五天",
+      "alias": "diwutian dwt “第五天” 第五天",
+      "rarity": 3,
+      "alt_name": "第五天"
+    },
+    {
+      "id": "char_026_guigu",
+      "prof": "风",
+      "subProf": "longdun",
+      "name_en": "眭固",
+      "name": "眭固",
+      "alias": "guigu gg “眭固” 眭固",
+      "rarity": 3,
+      "alt_name": "眭固"
+    },
+    {
+      "id": "char_025_queshi",
+      "prof": "风",
+      "subProf": "shenji",
+      "name_en": "雀使",
+      "name": "雀使",
+      "alias": "queshi qs “雀使” 雀使",
+      "rarity": 3,
+      "alt_name": "雀使"
+    },
+    {
+      "id": "char_024_ganji",
+      "prof": "火",
+      "subProf": "guidao",
+      "name_en": "干吉",
+      "name": "干吉",
+      "alias": "ganji gj “干吉” 干吉",
+      "rarity": 5,
+      "alt_name": "干吉"
+    },
+    {
+      "id": "char_023_shizimiao",
+      "prof": "风",
+      "subProf": "qihuang",
+      "name_en": "史子眇",
+      "name": "史子眇",
+      "alias": "shizimiao szm “史子眇” 史子眇",
+      "rarity": 4,
+      "alt_name": "史子眇"
+    },
+    {
+      "id": "char_022_shanjiu",
+      "prof": "风",
+      "subProf": "shenji",
+      "name_en": "山九",
+      "name": "山九",
+      "alias": "shanjiu sj “山九” 山九",
+      "rarity": 3,
+      "alt_name": "山九"
+    },
+    {
+      "id": "char_021_gaolan",
+      "prof": "风",
+      "subProf": "pojun",
+      "name_en": "高览",
+      "name": "高览",
+      "alias": "gaolan gl “高览” 高览",
+      "rarity": 3,
+      "alt_name": "高览"
+    },
+    {
+      "id": "char_020_wudan",
+      "prof": "地",
+      "subProf": "qihuang",
+      "name_en": "伍丹",
+      "name": "伍丹",
+      "alias": "wudan wd “伍丹” 伍丹",
+      "rarity": 3,
+      "alt_name": "伍丹"
+    },
+    {
+      "id": "char_019_cuilie",
+      "prof": "地",
+      "subProf": "longdun",
+      "name_en": "崔烈",
+      "name": "崔烈",
+      "alias": "cuilie cl “崔烈” 崔烈",
+      "rarity": 3,
+      "alt_name": "崔烈"
+    },
+    {
+      "id": "char_018_yuanshi",
+      "prof": "风",
+      "subProf": "guidao",
+      "name_en": "鸢使",
+      "name": "鸢使",
+      "alias": "yuanshi ys “鸢使” 鸢使",
+      "rarity": 3,
+      "alt_name": "鸢使"
+    },
+    {
+      "id": "char_017_ganti",
+      "prof": "水",
+      "subProf": "shenji",
+      "name_en": "甘缇",
+      "name": "甘缇",
+      "alias": "ganti gt “甘缇” 甘缇",
+      "rarity": 3,
+      "alt_name": "甘缇"
+    },
+    {
+      "id": "char_016_guanjing",
+      "prof": "水",
+      "subProf": "qihuang",
+      "name_en": "关靖",
+      "name": "关靖",
+      "alias": "guanjing gj “关靖” 关靖",
+      "rarity": 3,
+      "alt_name": "关靖"
+    },
+    {
+      "id": "char_015_yanyan",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "严颜",
+      "name": "严颜",
+      "alias": "yanyan yy “严颜” 严颜",
+      "rarity": 3,
+      "alt_name": "严颜"
+    },
+    {
+      "id": "char_014_achan",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "阿蝉",
+      "name": "阿蝉",
+      "alias": "achan ac “阿蝉” 阿蝉",
+      "rarity": 4,
+      "alt_name": "阿蝉"
+    },
+    {
+      "id": "char_013_chendeng",
+      "prof": "风",
+      "subProf": "shen'ji",
+      "name_en": "陈登",
+      "name": "陈登",
+      "alias": "chendeng cd “陈登” 陈登",
+      "rarity": 4,
+      "alt_name": "陈登"
+    },
+    {
+      "id": "char_012_yanliang",
+      "prof": "水",
+      "subProf": "longdun",
+      "name_en": "颜良",
+      "name": "颜良",
+      "alias": "yanliang yl “颜良” 颜良",
+      "rarity": 4,
+      "alt_name": "颜良"
+    },
+    {
+      "id": "char_011_wenchou",
+      "prof": "火",
+      "subProf": "po'jun",
+      "name_en": "文丑",
+      "name": "文丑",
+      "alias": "wenchou wc “文丑” 文丑",
+      "rarity": 4,
+      "alt_name": "文丑"
+    },
+    {
+      "id": "char_010_xuyou",
+      "prof": "地",
+      "subProf": "guidao",
+      "name_en": "许攸",
+      "name": "许攸",
+      "alias": "xuyou xy “许攸” 许攸",
+      "rarity": 4,
+      "alt_name": "许攸"
+    },
+    {
+      "id": "char_009_yanbaihu",
+      "prof": "阴",
+      "subProf": "long'dun",
+      "name_en": "严白虎",
+      "name": "严白虎",
+      "alias": "yanbaihu ybh “严白虎” 严白虎",
+      "rarity": 4,
+      "alt_name": "严白虎"
+    },
+    {
+      "id": "char_008_huatuo",
+      "prof": "阳",
+      "subProf": "qi'huang",
+      "name_en": "华佗",
+      "name": "华佗",
+      "alias": "huatuo ht “华佗” 华佗",
+      "rarity": 5,
+      "alt_name": "华佗"
+    },
+    {
+      "id": "char_007_lvmeng",
+      "prof": "火",
+      "subProf": "pojun",
+      "name_en": "吕蒙",
+      "name": "吕蒙",
+      "alias": "lvmeng lm “吕蒙” 吕蒙",
+      "rarity": 5,
+      "alt_name": "吕蒙"
+    },
+    {
+      "id": "char_006_eshi",
+      "prof": "地",
+      "subProf": "pojun",
+      "name_en": "蛾使",
+      "name": "蛾使",
+      "alias": "eshi es “蛾使” 蛾使",
+      "rarity": 3,
+      "alt_name": "蛾使"
+    },
+    {
+      "id": "char_005_lusu",
+      "prof": "水",
+      "subProf": "guidao",
+      "name_en": "鲁肃",
+      "name": "鲁肃",
+      "alias": "lusu ls “鲁肃” 鲁肃",
+      "rarity": 5,
+      "alt_name": "鲁肃"
+    },
+    {
+      "id": "char_004_guojia",
+      "prof": "风",
+      "subProf": "guidao",
+      "name_en": "郭嘉",
+      "name": "郭嘉",
+      "alias": "guojia gj “郭嘉” 郭嘉",
+      "rarity": 5,
+      "alt_name": "郭嘉"
+    },
+    {
+      "id": "char_003_sunshangxiang",
+      "prof": "火",
+      "subProf": "pojun",
+      "name_en": "孙尚香",
+      "name": "孙尚香",
+      "alias": "sunshangxiang ssx “孙尚香” 孙尚香",
+      "rarity": 5,
+      "alt_name": "孙尚香"
+    },
+    {
+      "id": "char_002_jiaxu",
+      "prof": "阴",
+      "subProf": "guidao",
+      "name_en": "贾诩",
+      "name": "贾诩",
+      "alias": "jiaxu jx “贾诩” 贾诩",
+      "rarity": 5,
+      "alt_name": "贾诩"
+    },
+    {
+      "id": "char_001_yangxiu",
+      "prof": "阳",
+      "subProf": "shenji",
+      "name_en": "杨修",
+      "name": "杨修",
+      "alias": "yangxiu yx “杨修” 杨修",
+      "rarity": 5,
+      "alt_name": "杨修"
+    }
+  ],
   "PROFESSIONS": [
     {
       "id": "混沌",
       "name": "混沌",
       "name_en": "混沌",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     },
     {
@@ -1029,11 +1049,31 @@
       "name": "地",
       "name_en": "地",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     },
     {
@@ -1041,11 +1081,31 @@
       "name": "水",
       "name_en": "水",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     },
     {
@@ -1053,11 +1113,31 @@
       "name": "火",
       "name_en": "火",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     },
     {
@@ -1065,11 +1145,31 @@
       "name": "风",
       "name_en": "风",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     },
     {
@@ -1077,11 +1177,31 @@
       "name": "阳",
       "name_en": "阳",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     },
     {
@@ -1089,11 +1209,31 @@
       "name": "阴",
       "name_en": "阴",
       "sub": [
-        { "id": "pojun", "name": "破军", "name_en": "破军" },
-        { "id": "longdun", "name": "龙盾", "name_en": "龙盾" },
-        { "id": "qihuang", "name": "岐黄", "name_en": "岐黄" },
-        { "id": "shenji", "name": "神纪", "name_en": "神纪" },
-        { "id": "guidao", "name": "诡道", "name_en": "诡道" }
+        {
+          "id": "pojun",
+          "name": "破军",
+          "name_en": "破军"
+        },
+        {
+          "id": "longdun",
+          "name": "龙盾",
+          "name_en": "龙盾"
+        },
+        {
+          "id": "qihuang",
+          "name": "岐黄",
+          "name_en": "岐黄"
+        },
+        {
+          "id": "shenji",
+          "name": "神纪",
+          "name_en": "神纪"
+        },
+        {
+          "id": "guidao",
+          "name": "诡道",
+          "name_en": "诡道"
+        }
       ]
     }
   ]

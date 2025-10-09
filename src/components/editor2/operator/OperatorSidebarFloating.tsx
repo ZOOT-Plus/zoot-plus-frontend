@@ -104,7 +104,7 @@ export const OperatorSidebarFloating: FC = () => {
             )}
             style={{ height: 'min(720px, calc(100vh - 6rem))' }}
           >
-            <div className="panel-shadow flex shrink-0 items-center justify-between rounded-lg bg-white/90 px-4 py-2 dark:bg-gray-900/90">
+            <div className="panel-shadow flex shrink-0 items-center justify-between rounded-lg  px-4 py-2 dark:bg-gray-900/90">
               <span className="font-semibold">{panelTitle}</span>
               <Button minimal icon="cross" onClick={close} aria-label={t.common.close} />
             </div>
