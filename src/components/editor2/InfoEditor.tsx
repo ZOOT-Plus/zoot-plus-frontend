@@ -5,6 +5,7 @@ import {
   Radio,
   RadioGroup,
   TextArea,
+  Tag,
 } from '@blueprintjs/core'
 
 import clsx from 'clsx'
@@ -19,6 +20,8 @@ import { OpDifficulty } from '../../models/operation'
 import { NumericInput2 } from '../editor/NumericInput2'
 import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
+import { OperatorSidebarInInfo } from './operator/OperatorSidebarInInfo'
+import { OperatorAvatar } from '../OperatorAvatar'
 import { DEFAULT_SIMING_ACTION_DELAYS } from './siming/constants'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
 
@@ -34,6 +37,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
   const [metadata, setMetadata] = useImmerAtom(editorAtoms.metadata)
   const edit = useEdit()
   const t = useTranslation()
+  const selectedOperators = useAtomValue(editorAtoms.operators)
 
   useEffect(() => {
     if (info.difficulty === undefined) {
@@ -171,6 +175,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
       <h3 className="mb-2 text-lg font-bold">
         {t.components.editor2.InfoEditor.job_info}
       </h3>
+      
       <FormGroup
         contentClassName="grow"
         label={t.components.editor2.InfoEditor.stage}
@@ -221,6 +226,28 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
           }}
         />
         <FieldError path="stage_name" />
+      </FormGroup>
+      <FormGroup
+        contentClassName="grow"
+        label={t.components.editor2.SelectorPanel.operator}
+      >
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex flex-wrap gap-2">
+            {selectedOperators.length === 0 ? (
+              <Tag minimal>{t.components.editor2.OperatorEditor.no_operators}</Tag>
+            ) : (
+              selectedOperators.map((op) => (
+                <OperatorAvatar
+                  key={op.id}
+                  name={op.name}
+                  size="verylarge"  /* 48px */
+                  sourceSize={96}
+                />
+              ))
+            )}
+          </div>
+          <OperatorSidebarInInfo />
+        </div>
       </FormGroup>
       {/* 隐藏适用难度选择，保留字段以兼容旧数据 */}
       <input

@@ -10,7 +10,6 @@ import { ActionEditor } from './action/ActionEditor'
 import { editorAtoms, historyAtom } from './editor-state'
 import { useHistoryControls } from './history'
 import { OperatorEditor } from './operator/OperatorEditor'
-import { OperatorSidebarFloating } from './operator/OperatorSidebarFloating'
 import { useAutosave } from './useAutoSave'
 import { Validator } from './validation/Validator'
 import { Operation } from '../../models/operation'
@@ -87,7 +86,6 @@ export const OperationEditor: FC<OperationEditorProps> = memo(
           onSubmit={onSubmit}
         />
         <div className={clsx('grow min-h-0 relative')}>
-          {!isMD && <OperatorSidebarFloating />}
           {isMD ? (
             <div className="panel-shadow">
               <InfoEditor preLevel={preLevel} />
