@@ -64,7 +64,7 @@ export const LevelSelectDialog: FC<Props> = ({ isOpen, onClose, value, onChange,
           // 仅向选择器传递合法的 stageId，避免将筛选关键字当作“自定义关卡”
           value={pendingStageId ?? selected?.stageId}
           // 当没有具体关卡时，使用上一次选择的筛选条件进行回显
-          defaultGame={lastFilterMeta?.game}
+          defaultGame={lastFilterMeta?.game ?? '代号鸢'}
           defaultCategory={lastFilterMeta?.catOne}
           // 上层已是 Dialog，避免再弹 Game 对话框
           useGameDialog={false}
@@ -99,4 +99,3 @@ export const LevelSelectDialog: FC<Props> = ({ isOpen, onClose, value, onChange,
 }
 
 export default LevelSelectDialog
-
