@@ -15,6 +15,8 @@ export default defineConfig(({ command, mode }) => {
     plugins: [react(), viteTsconfigPath(), generateTranslations()],
     server: {
       port: +env.PORT || undefined,
+      server:"0.0.0.0",
+      allowedHosts: true
     },
     resolve: {
       alias: {
