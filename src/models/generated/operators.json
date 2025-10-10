@@ -210,7 +210,7 @@
       "alias": "aiyafala yiyafala ayfl yyfl 艾雅法拉",
       "rarity": 6,
       "alt_name": "Eyjafjalla",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_302_glaze",
@@ -878,6 +878,17 @@
       "rarity": 6,
       "alt_name": "Raidian",
       "modules": ["", "A"]
+    },
+    {
+      "id": "char_4208_wintim",
+      "prof": "PIONEER",
+      "subProf": "agent",
+      "name_en": "Снегyрочка",
+      "name": "冬时",
+      "alias": "dongshi ds 冬時",
+      "rarity": 4,
+      "alt_name": "Снегyрочка",
+      "modules": ["", "X"]
     },
     {
       "id": "char_452_bstalk",
@@ -2782,7 +2793,8 @@
       "name": "娜仁图亚",
       "alias": "narentuya nuorentuya nrty 娜仁圖亞",
       "rarity": 6,
-      "alt_name": "Narantuya"
+      "alt_name": "Narantuya",
+      "modules": ["", "X"]
     },
     {
       "id": "char_103_angel",
@@ -3310,7 +3322,7 @@
       "alias": "shengyuesongzangren shengyaosongzangren syszr 聖約送葬人",
       "rarity": 6,
       "alt_name": "Executor the Ex Foedere",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_210_stward",
@@ -3472,7 +3484,8 @@
       "name": "水灯心",
       "alias": "shuidengxin sdx 水燈心",
       "rarity": 5,
-      "alt_name": "Brigid"
+      "alt_name": "Brigid",
+      "modules": ["", "X"]
     },
     {
       "id": "char_437_mizuki",
@@ -4060,7 +4073,7 @@
       "id": "token_10045_alanna_crane",
       "prof": "TOKEN",
       "subProf": "notchar1",
-      "name_en": "Nutlet",
+      "name_en": "Nutty",
       "name": "小螺帽",
       "alias": "xiaoluomao xlm 小螺帽",
       "rarity": 0,
@@ -4820,7 +4833,8 @@
       "name": "跃跃",
       "alias": "yueyue yy 躍躍",
       "rarity": 4,
-      "alt_name": "Caper"
+      "alt_name": "Caper",
+      "modules": ["", "X"]
     },
     {
       "id": "char_4165_ctrail",
@@ -4887,6 +4901,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_4207_branch",
+      "prof": "TANK",
+      "subProf": "unyield",
+      "name_en": "Веточки",
+      "name": "折桠",
+      "alias": "zheya sheya zy sy 折椏",
+      "rarity": 5,
+      "alt_name": "Веточки",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_195_glassb",
       "prof": "SUPPORT",
       "subProf": "slower",
@@ -4896,6 +4921,17 @@
       "rarity": 5,
       "alt_name": "Истина",
       "modules": ["", "Y"]
+    },
+    {
+      "id": "char_4204_mantra",
+      "prof": "CASTER",
+      "subProf": "primcaster",
+      "name_en": "Mantra",
+      "name": "真言",
+      "alias": "zhenyan zy 真言",
+      "rarity": 6,
+      "alt_name": "Mantra",
+      "modules": ["", "X"]
     },
     {
       "id": "char_4000_jnight",
@@ -4943,7 +4979,7 @@
       "id": "token_10050_monstr_prosts",
       "prof": "TOKEN",
       "subProf": "notchar1",
-      "name_en": "Reconstruct",
+      "name_en": "Reconstruction",
       "name": "重构体",
       "alias": "zhonggouti chonggouti zgt cgt 重構體",
       "rarity": 0,
