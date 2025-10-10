@@ -14,12 +14,17 @@ import { useLazyStorage } from '../../utils/useLazyStorage'
 import { CardTitle } from '../CardTitle'
 import { AnnDialog } from './AnnDialog'
 
+const ENABLE_ANNOUNCEMENT = !['false', '0', 'off', 'disabled', 'no'].includes(
+  String(import.meta.env.VITE_ENABLE_ANNOUNCEMENT ?? 'true').toLowerCase(),
+)
+
 interface AnnPanelProps {
   className?: string
   trigger?: (params: { handleClick: () => void }) => ReactNode
 }
 
 export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
+  if (!ENABLE_ANNOUNCEMENT) return null
   const t = useTranslation()
   const { data, error } = useAnnouncement()
   const announcement = useMemo(

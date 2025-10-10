@@ -31,7 +31,7 @@ export const SOCIAL_CONFIG = [
   },
   {
     icon: <BlueprintIcon icon="edit" className="mr-2" size={12} />,
-    href: 'https://github.com/MrSnake0208/MaaYuan-Share-frontend/issues/new',
+    href: 'https://qm.qq.com/q/2bFOe5CwsA',
     labelKey: i18nDefer.links.feedback,
   },
   {
