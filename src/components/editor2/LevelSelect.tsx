@@ -1,4 +1,4 @@
-import { Classes, MenuDivider, MenuItem } from '@blueprintjs/core'
+import { Button, Classes, MenuDivider, MenuItem } from '@blueprintjs/core'
 import { getCreateNewItem } from '@blueprintjs/select'
 
 import clsx from 'clsx'
@@ -25,6 +25,7 @@ import { Level, OpDifficulty } from '../../models/operation'
 import { formatError } from '../../utils/error'
 import { useDebouncedQuery } from '../../utils/useDebouncedQuery'
 import { Suggest } from '../Suggest'
+import GameSelectDialog from './GameSelectDialog'
 import { DifficultyPicker } from './DifficultyPicker'
 
 interface LevelSelectProps {
@@ -44,6 +45,8 @@ interface LevelSelectProps {
   defaultCategory?: string
   // 自定义 Portal 容器，确保下拉菜单渲染在 Overlay 容器内，避免被判定为“外部点击”
   portalContainer?: HTMLElement | undefined | null
+  // 是否使用“游戏”对话框；在上层已是 Dialog 时可关闭，避免嵌套
+  useGameDialog?: boolean
 }
 
 export const LevelSelect: FC<LevelSelectProps> = ({
@@ -59,11 +62,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   defaultGame,
   defaultCategory,
   portalContainer,
+  useGameDialog = true,
   ...inputProps
 }) => {
   const t = useTranslation()
   const relatedLevelsLabel = i18n.components.editor2.LevelSelect.related_levels
   const NO_GAME_LABEL = '未分类'
+  const USE_GAME_DIALOG = !!useGameDialog
   const normalizeGame = (game?: string) => {
     const g = (game || '').trim()
     return g || NO_GAME_LABEL
@@ -161,6 +166,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     // 没有关卡时，尝试使用父组件传入的默认游戏以便回显
     return normalizedDefaultGame
   })
+
+  // 游戏选择对话框开关
+  const [gameDialogOpen, setGameDialogOpen] = useState(false)
 
   useEffect(() => {
     if (selectedLevel) {
@@ -453,75 +461,99 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   return (
     <div className={clsx('flex flex-col gap-2', className)}>
       <div className="flex w-full flex-wrap items-end gap-3">
-        <div className="flex flex-col gap-1 w-36">
-          <span className="text-xs font-medium text-slate-500">游戏</span>
-          <Suggest<string>
-            items={gameOptions}
-            itemsEqual={(a, b) => a === b}
-            selectedItem={selectedGame || null}
-            disabled={disabled || isLoading || gameOptions.length === 0}
-            className="w-full"
-            itemListPredicate={(search, items) => {
-              const normalized = (search ?? '').trim().toLowerCase()
-              if (!normalized) {
-                return items
-              }
-              return items.filter((item) =>
-                item.toLowerCase().includes(normalized),
-              )
-            }}
-            itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
-              if (modifiers.matchesPredicate === false) {
-                return null
-              }
-              return (
-                <MenuItem
-                  roleStructure="listoption"
-                  key={item}
-                  className={clsx(modifiers.active && Classes.ACTIVE)}
-                  text={item}
-                  onClick={handleClick}
-                  onFocus={handleFocus}
-                  onMouseDown={onOptionMouseDown}
-                  selected={item === selectedGame}
-                  disabled={modifiers.disabled}
-                />
-              )
-            }}
-            inputValueRenderer={(item) => item ?? ''}
-            onItemSelect={(game) => {
-              if (!game || game === selectedGame) {
-                return
-              }
-              setSelectedGame(game)
-              // 重置后面两个选项：分类 与 关卡输入/选择
-              setSelectedCategory('')
-              setActiveItem(null)
-              updateQuery('', true)
-              if (!disabled) {
-                // 无条件清空选中关卡，避免跨游戏保留无效值
-                onChange('')
-              }
-              // 选择“游戏”时仅按游戏发起筛选（分类已被重置）
-              const gameForQuery = game === NO_GAME_LABEL ? '' : game
-              const kw = gameForQuery
-              onFilterChange?.(kw, { game: gameForQuery || undefined })
-            }}
-            inputProps={{
-              large: true,
-              placeholder: '游戏',
-              disabled: disabled || isLoading || gameOptions.length === 0,
-            }}
-            popoverProps={{
-              minimal: true,
-              captureDismiss: true,
-              portalContainer: portalContainer ?? undefined,
-              // 保证在父层 Overlay 之上
-              zIndex: 2147483001,
-            }}
-          />
+        <div className="flex flex-col gap-1 flex-1 min-w-[180px] max-w-[240px]">
+          {USE_GAME_DIALOG ? (
+            <>
+              <Button
+                large
+                rightIcon="double-caret-vertical"
+                className="w-full !justify-between"
+                disabled={disabled || isLoading || gameOptions.length === 0}
+                onClick={() => setGameDialogOpen(true)}
+                title={selectedGame || NO_GAME_LABEL}
+              >
+                {selectedGame || NO_GAME_LABEL}
+              </Button>
+              <GameSelectDialog
+                isOpen={gameDialogOpen}
+                onClose={() => setGameDialogOpen(false)}
+                items={gameOptions}
+                value={selectedGame || null}
+                onSelect={(game) => {
+                  if (!game || game === selectedGame) return
+                  setSelectedGame(game)
+                  // 重置后面两个选项：分类 与 关卡输入/选择
+                  setSelectedCategory('')
+                  setActiveItem(null)
+                  updateQuery('', true)
+                  if (!disabled) {
+                    // 无条件清空选中关卡，避免跨游戏保留无效值
+                    onChange('')
+                  }
+                  // 选择“游戏”时仅按游戏发起筛选（分类已被重置）
+                  const gameForQuery = game === NO_GAME_LABEL ? '' : game
+                  const kw = gameForQuery
+                  onFilterChange?.(kw, { game: gameForQuery || undefined })
+                }}
+              />
+            </>
+          ) : (
+            <Suggest<string>
+              items={gameOptions}
+              itemsEqual={(a, b) => a === b}
+              selectedItem={selectedGame || null}
+              disabled={disabled || isLoading || gameOptions.length === 0}
+              className="w-full"
+              itemListPredicate={(search, items) => {
+                const normalized = (search ?? '').trim().toLowerCase()
+                if (!normalized) {
+                  return items
+                }
+                return items.filter((item) => item.toLowerCase().includes(normalized))
+              }}
+              itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
+                if (modifiers.matchesPredicate === false) return null
+                return (
+                  <MenuItem
+                    roleStructure="listoption"
+                    key={item}
+                    className={clsx(modifiers.active && Classes.ACTIVE)}
+                    text={item}
+                    onClick={handleClick}
+                    onFocus={handleFocus}
+                    onMouseDown={onOptionMouseDown}
+                    selected={item === selectedGame}
+                    disabled={modifiers.disabled}
+                  />
+                )
+              }}
+              inputValueRenderer={(item) => item ?? ''}
+              onItemSelect={(game) => {
+                if (!game || game === selectedGame) return
+                setSelectedGame(game)
+                setSelectedCategory('')
+                setActiveItem(null)
+                updateQuery('', true)
+                if (!disabled) onChange('')
+                const gameForQuery = game === NO_GAME_LABEL ? '' : game
+                const kw = gameForQuery
+                onFilterChange?.(kw, { game: gameForQuery || undefined })
+              }}
+              inputProps={{
+                large: true,
+                placeholder: '游戏',
+                disabled: disabled || isLoading || gameOptions.length === 0,
+              }}
+              popoverProps={{
+                minimal: true,
+                captureDismiss: true,
+                portalContainer: portalContainer ?? undefined,
+                zIndex: 2147483001,
+              }}
+            />
+          )}
         </div>
-        <div className="flex flex-col gap-1 w-44">
+        <div className="flex flex-col gap-1 flex-1 min-w-[200px] max-w-[260px]">
           <span className="text-xs font-medium text-slate-500">
             {t.components.editor2.LevelSelect.category_label}
           </span>
@@ -587,7 +619,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             }}
           />
         </div>
-        <div className="flex items-end gap-2 w-[240px] max-w-full">
+        <div className="flex items-end gap-2 w-full max-w-[560px]">
           <Suggest<Level>
             items={levels}
             itemListPredicate={() => filteredLevels}
