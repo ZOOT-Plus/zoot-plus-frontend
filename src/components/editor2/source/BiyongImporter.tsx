@@ -18,6 +18,15 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
   const [pending, setPending] = useState(false)
   const [jsonText, setJsonText] = useState<string>('')
 
+  // 兼容性映射：辟雍历史标记到标准令牌
+  // 需求：N圈 -> 额外:吕布
+  const mapLegacyToken = (token: string): string => {
+    const t = token.trim()
+    // 大小写不敏感：允许 n圈 / N圈
+    if (t.toUpperCase() === 'N圈') return '额外:吕布'
+    return t
+  }
+
   const handleSubmit = async () => {
     try {
       setPending(true)
@@ -49,10 +58,12 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
           .map((entry) => {
             if (Array.isArray(entry)) {
               const v = String(entry[0] ?? '')
-              return [v.replace(/：/g, ':').replace(/\s+/g, '').trim()]
+              const norm = v.replace(/：/g, ':').replace(/\s+/g, '').trim()
+              return [mapLegacyToken(norm)]
             }
             const v = String(entry ?? '')
-            return [v.replace(/：/g, ':').replace(/\s+/g, '').trim()]
+            const norm = v.replace(/：/g, ':').replace(/\s+/g, '').trim()
+            return [mapLegacyToken(norm)]
           })
           .filter((r) => r[0])
         normalized[String(Number.parseInt(roundKey, 10) || roundKey)] = rows
