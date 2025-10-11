@@ -284,6 +284,7 @@ export const OperationViewer: ComponentType<{
 
             <div className="flex flex-wrap items-center gap-2 md:gap-4">
               {operation.uploaderId === auth.userId && (
+                // 使用 Portal 渲染，避免被头部容器裁剪/遮挡；提升层级与全局样式一致
                 <Popover2
                   content={
                     <ManageMenu
@@ -292,6 +293,8 @@ export const OperationViewer: ComponentType<{
                       onDelete={() => onCloseDrawer()}
                     />
                   }
+                  usePortal={true}
+                  portalClassName="z-[1600]"
                 >
                   <Button
                     icon="wrench"
