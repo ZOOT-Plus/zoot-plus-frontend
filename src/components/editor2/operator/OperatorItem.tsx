@@ -198,7 +198,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               minimal
                               title={selectedItem ? selectedItem.desp : `选择命盘${slot + 1}`}
                               className={clsx(
-                                'min-w-12 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                                'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
                                 selectedItem
                                   ? discColorClasses(selectedItem.color)
                                   : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
@@ -257,7 +257,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               small
                               minimal
                               title={(operator as any).discStarStones?.[slot] || '选择星石'}
-                              className={'min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
+                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
                             >
                               {(operator as any).discStarStones?.[slot] || '星石'}
                             </Button>
@@ -312,7 +312,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               small
                               minimal
                               title={(operator as any).discAssistStars?.[slot] || '选择辅星'}
-                              className={'min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
+                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
                             >
                               {(operator as any).discAssistStars?.[slot] || '辅星'}
                             </Button>
