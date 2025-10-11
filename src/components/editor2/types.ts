@@ -32,7 +32,12 @@ export type EditorOperationBase = Simplify<
 >
 
 export type EditorOperator = Simplify<
-  WithId<SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'>>
+  WithId<
+    SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'> & {
+      // UI 扩展：每个密探可选择最多 3 个命盘（索引从 1 开始；0 或缺省表示未选）
+      discsSelected?: number[]
+    }
+  >
 >
 export type EditorGroup = Simplify<
   WithId<

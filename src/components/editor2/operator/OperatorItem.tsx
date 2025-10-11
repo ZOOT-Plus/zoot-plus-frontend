@@ -47,6 +47,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
     )
     const skillCount = useMemo(() => (info ? getSkillCount(info) : 0), [info])
     const [skillLevels, setSkillLevels] = useState<Record<number, number>>({})
+    const discList = useMemo(() => (info as any)?.discs ?? [], [info])
 
     return (
       <div
@@ -118,8 +119,85 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
         {info && (
           <div className="ml-2 mt-0.5 select-none">
             <ul className="w-8 grid grid-rows-4 gap-1 ml-1 mt-1">
-              {controlsEnabled &&
-                Array.from({ length: skillCount }, (_, index) => {
+              {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
+              {discList.length > 0
+                ? (
+                    [0, 1, 2].map((slot) => {
+                      const indices = operator.discsSelected ?? []
+                      const idx1 = indices[slot] ?? 0
+                      const selectedItem = idx1 > 0 ? discList[idx1 - 1] : undefined
+                      return (
+                        <li key={'disc-slot-' + slot} className="relative">
+                          <Select
+                            className=""
+                            filterable={false}
+                            items={discList.map((d, idx) => ({ ...d, idx }))}
+                            itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
+                              <MenuItem
+                                roleStructure="listoption"
+                                key={item.idx}
+                                className={clsx(
+                                  'min-w-40 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
+                                  modifiers.active && Classes.ACTIVE,
+                                )}
+                                text={(item.abbreviation || item.name) + (item.color ? ` · ${item.color}` : '')}
+                                title={item.desp}
+                                onClick={handleClick}
+                                onFocus={handleFocus}
+                                selected={item.idx + 1 === idx1}
+                              />
+                            )}
+                            onItemSelect={(item) => {
+                              edit(() => {
+                                const chosen = (item as any).idx + 1
+                                const nextIndices = [...(operator.discsSelected ?? [0, 0, 0])]
+                                // 保证长度为3
+                                while (nextIndices.length < 3) nextIndices.push(0)
+                                // 去重：其他槽若已选相同命盘则清空
+                                for (let i = 0; i < nextIndices.length; i++) {
+                                  if (i !== slot && nextIndices[i] === chosen) {
+                                    nextIndices[i] = 0
+                                  }
+                                }
+                                nextIndices[slot] = chosen
+                                const next: EditorOperator = {
+                                  ...operator,
+                                  discsSelected: nextIndices,
+                                }
+                                onChange?.(next)
+                                return {
+                                  action: 'set-operator-skill',
+                                  desc: i18n.actions.editor2.set_operator_skill,
+                                  squashBy: operator.id,
+                                }
+                              })
+                            }}
+                            popoverProps={{
+                              placement: 'top',
+                              popoverClassName:
+                                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-40 [&_li]:!mb-0',
+                            }}
+                          >
+                            <Button
+                              small
+                              minimal
+                              title={selectedItem ? selectedItem.desp : `选择命盘${slot + 1}`}
+                              className={clsx(
+                                'min-w-24 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                                selectedItem
+                                  ? '!bg-purple-100 dark:!bg-purple-900 dark:!text-purple-200 !text-purple-800'
+                                  : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
+                              )}
+                            >
+                              {selectedItem ? (selectedItem.abbreviation || selectedItem.name) : `命盘${slot + 1}`}
+                            </Button>
+                          </Select>
+                        </li>
+                      )
+                    })
+                  )
+                : controlsEnabled &&
+                  Array.from({ length: skillCount }, (_, index) => {
                   const available = index <= (requirements.elite ?? 0)
                   const skillNumber = index + 1
                   const selected = operator.skill === skillNumber
