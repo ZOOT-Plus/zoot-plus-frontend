@@ -418,18 +418,39 @@ const OperatorCard: FC<{
         </h4>
         {selectedDiscs?.length > 0 && (
           <div className="mt-1 mx-[-4px] grid gap-1">
-            {selectedDiscs.map((d: any, i: number) => (
-              <Tooltip2 key={i} content={d.desp}>
-                <div
-                  className={clsx(
-                    'bp4-button bp4-minimal bp4-small min-w-24 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
-                    discColorClasses(d.color),
-                  )}
-                >
-                  <span className="bp4-button-text">{(d.abbreviation || d.name) as string}</span>
+            {selectedDiscs.map((d: any, i: number) => {
+              const star = ((operator as any).discStarStones ?? [])[i]
+              return (
+                <div key={i} className="flex gap-1">
+                  <Tooltip2 content={d.desp}>
+                    <div
+                      className={clsx(
+                        'bp4-button bp4-minimal bp4-small min-w-12 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                        discColorClasses(d.color),
+                      )}
+                    >
+                      <span className="bp4-button-text">{(d.abbreviation || d.name) as string}</span>
+                    </div>
+                  </Tooltip2>
+                  <div
+                    className={clsx(
+                      'bp4-button bp4-minimal bp4-small min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600',
+                    )}
+                    title={star || '主星'}
+                  >
+                    <span className="bp4-button-text">{star || '主星'}</span>
+                  </div>
+                  <div
+                    className={clsx(
+                      'bp4-button bp4-minimal bp4-small min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600',
+                    )}
+                    title={((operator as any).discAssistStars ?? [])[i] || '辅星'}
+                  >
+                    <span className="bp4-button-text">{((operator as any).discAssistStars ?? [])[i] || '辅星'}</span>
+                  </div>
                 </div>
-              </Tooltip2>
-            ))}
+              )
+            })}
           </div>
         )}
         {info && info.prof !== 'TOKEN' && (

@@ -142,7 +142,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       const idx1 = indices[slot] ?? 0
                       const selectedItem = idx1 > 0 ? discList[idx1 - 1] : undefined
                       return (
-                        <li key={'disc-slot-' + slot} className="relative h-8">
+                        <li key={'disc-slot-' + slot} className="relative h-8 flex gap-1">
                           <Select
                             className=""
                             filterable={false}
@@ -198,13 +198,123 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               minimal
                               title={selectedItem ? selectedItem.desp : `选择命盘${slot + 1}`}
                               className={clsx(
-                                'min-w-24 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                                'min-w-12 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
                                 selectedItem
                                   ? discColorClasses(selectedItem.color)
                                   : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
                               )}
                             >
                               {selectedItem ? (selectedItem.abbreviation || selectedItem.name) : `命盘${slot + 1}`}
+                            </Button>
+                          </Select>
+
+                          {/* 星石选择 */}
+                          <Select
+                            className=""
+                            filterable={false}
+                            items={[
+                              '天府','天相','巨门','太阳','廉贞','太阴','紫微','七杀','天机','武曲','破军','天同','天梁','贪狼',
+                            ]}
+                            itemRenderer={(item: string, { handleClick, handleFocus, modifiers }) => (
+                              <MenuItem
+                                roleStructure="listoption"
+                                key={item}
+                                className={clsx(
+                                  'min-w-20 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
+                                  modifiers.active && Classes.ACTIVE,
+                                )}
+                                text={item}
+                                title={item}
+                                onClick={handleClick}
+                                onFocus={handleFocus}
+                                selected={(operator as any).discStarStones?.[slot] === item}
+                              />
+                            )}
+                            onItemSelect={(item: string) => {
+                              edit(() => {
+                                const stones = [...((operator as any).discStarStones ?? ['','',''])]
+                                while (stones.length < 3) stones.push('')
+                                stones[slot] = item
+                                const next: EditorOperator = {
+                                  ...operator,
+                                  discStarStones: stones,
+                                }
+                                onChange?.(next)
+                                return {
+                                  action: 'set-operator-discStarStone',
+                                  desc: '选择命盘星石',
+                                  squashBy: operator.id,
+                                }
+                              })
+                            }}
+                            popoverProps={{
+                              placement: 'top',
+                              popoverClassName:
+                                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-20 [&_li]:!mb-0',
+                            }}
+                          >
+                            <Button
+                              small
+                              minimal
+                              title={(operator as any).discStarStones?.[slot] || '选择星石'}
+                              className={'min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
+                            >
+                              {(operator as any).discStarStones?.[slot] || '星石'}
+                            </Button>
+                          </Select>
+
+                          {/* 辅星选择 */}
+                          <Select
+                            className=""
+                            filterable={false}
+                            items={[
+                              '红鸾','阴煞','天魁','八座','陀螺','地劫','解神','禄存','文曲','天钺','火星','文昌','天巫','左辅','铃星','恩光','三台','擎羊','天贵','天姚','天马','天刑','右弼','地空',
+                            ]}
+                            itemRenderer={(item: string, { handleClick, handleFocus, modifiers }) => (
+                              <MenuItem
+                                roleStructure="listoption"
+                                key={item}
+                                className={clsx(
+                                  'min-w-20 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
+                                  modifiers.active && Classes.ACTIVE,
+                                )}
+                                text={item}
+                                title={item}
+                                onClick={handleClick}
+                                onFocus={handleFocus}
+                                selected={(operator as any).discAssistStars?.[slot] === item}
+                              />
+                            )}
+                            onItemSelect={(item: string) => {
+                              edit(() => {
+                                const assists = [...((operator as any).discAssistStars ?? ['','',''])]
+                                while (assists.length < 3) assists.push('')
+                                assists[slot] = item
+                                const next: EditorOperator = {
+                                  ...operator,
+                                  discAssistStars: assists,
+                                }
+                                onChange?.(next)
+                                return {
+                                  action: 'set-operator-discAssistStar',
+                                  desc: '选择命盘辅星',
+                                  squashBy: operator.id,
+                                }
+                              })
+                            }}
+                            popoverProps={{
+                              placement: 'top',
+                              popoverClassName:
+                                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-20 [&_li]:!mb-0',
+                            }}
+                          >
+                            <Button
+                              small
+                              minimal
+                              title={(operator as any).discAssistStars?.[slot] || '选择辅星'}
+                              className={'min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
+                            >
+                              {(operator as any).discAssistStars?.[slot] || '辅星'}
                             </Button>
                           </Select>
                         </li>

@@ -36,6 +36,10 @@ export type EditorOperator = Simplify<
     SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'> & {
       // UI 扩展：每个密探可选择最多 3 个命盘（索引从 1 开始；0 或缺省表示未选）
       discsSelected?: number[]
+      // UI 扩展：对应每个命盘的星石选择（名称字符串），长度与 discsSelected 对齐
+      discStarStones?: string[]
+      // UI 扩展：对应每个命盘的辅星选择（名称字符串），长度与 discsSelected 对齐
+      discAssistStars?: string[]
     }
   >
 >
