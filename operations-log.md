@@ -22,3 +22,11 @@ meta.date=2025-10-10 22:34:54 (UTC+8)
 - src/components/editor2/operator/OperatorSidebarInInfo.tsx:1
 - src/components/editor2/InfoEditor.tsx:16
 - src/components/editor2/Editor.tsx:1
+- meta.locale=zh-CN
+- meta.date=2025-10-11 18:28:22
+- action: 修改 SourceEditor 默认展示模式，避免抽屉初开触发 Siming 远端生成并显示错误
+- tool: Desktop Commander edit_block
+- files:
+  - src/components/editor2/source/SourceEditor.tsx: 默认 viewMode 从 'siming' 改为 'maa'
+- rationale: KISS 最小改动；仅在用户显式切换到“司命格式”时才请求远端，打开抽屉或无载荷时不再显示“Siming生成接口失败”
+- result: 抽屉初次打开不显示该错误；仅用户切换“司命格式”视图时若失败才显示
