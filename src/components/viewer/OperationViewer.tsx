@@ -374,15 +374,15 @@ const OperatorCard: FC<{
   const discColorClasses = (color?: string) => {
     switch (color) {
       case '金':
-        return 'bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-200 text-yellow-800'
+        return '!bg-yellow-100 dark:!bg-yellow-900 dark:!text-yellow-200 !text-yellow-800'
       case '紫':
-        return 'bg-purple-100 dark:bg-purple-900 dark:text-purple-200 text-purple-800'
+        return '!bg-purple-100 dark:!bg-purple-900 dark:!text-purple-200 !text-purple-800'
       case '蓝':
-        return 'bg-blue-100 dark:bg-blue-900 dark:text-blue-200 text-blue-800'
+        return '!bg-blue-100 dark:!bg-blue-900 dark:!text-blue-200 !text-blue-800'
       case '橙':
-        return 'bg-orange-100 dark:bg-orange-900 dark:text-orange-200 text-orange-800'
+        return '!bg-orange-100 dark:!bg-orange-900 dark:!text-orange-200 !text-orange-800'
       default:
-        return 'bg-gray-300 dark:bg-gray-600 opacity-80'
+        return '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50'
     }
   }
 
