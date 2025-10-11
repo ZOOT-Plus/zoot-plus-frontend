@@ -118,7 +118,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
         {/* Skills & Module controls */}
         {info && (
           <div className="ml-2 mt-0.5 select-none">
-            <ul className="w-8 grid grid-rows-4 gap-1 ml-1 mt-1">
+            <ul className="w-24 grid grid-rows-4 gap-1 ml-1 mt-1">
               {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
               {discList.length > 0
                 ? (
@@ -127,7 +127,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       const idx1 = indices[slot] ?? 0
                       const selectedItem = idx1 > 0 ? discList[idx1 - 1] : undefined
                       return (
-                        <li key={'disc-slot-' + slot} className="relative">
+                        <li key={'disc-slot-' + slot} className="relative h-8">
                           <Select
                             className=""
                             filterable={false}
