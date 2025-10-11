@@ -388,8 +388,8 @@ const OperatorCard: FC<{
 
   return (
     <div className="relative flex items-start">
-      <div className="relative w-20">
-        <div className="relative rounded-lg overflow-hidden shadow-md">
+      <div className="relative w-[23ch] shrink-0">
+        <div className="relative w-20 h-20 rounded-lg overflow-hidden shadow-md mx-auto">
           <OperatorAvatar
             id={info?.id}
             rarity={info?.rarity}
@@ -397,6 +397,13 @@ const OperatorCard: FC<{
             fallback={displayName}
             sourceSize={96}
           />
+          {info && info.prof !== 'TOKEN' && (
+            <img
+              className="absolute top-0 right-0 w-5 h-5 p-px bg-gray-600 rounded-tr-md"
+              src={'/assets/prof-icons/' + info.prof + '.png'}
+              alt={info.prof}
+            />
+          )}
           {module !== CopilotDocV1.Module.Default && (
             <div
               title={t.components.viewer.OperationViewer.module_title({
@@ -425,7 +432,7 @@ const OperatorCard: FC<{
                   <Tooltip2 content={d.desp}>
                     <div
                       className={clsx(
-                        'bp4-button bp4-minimal bp4-small min-w-12 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                        'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
                         discColorClasses(d.color),
                       )}
                     >
@@ -434,7 +441,7 @@ const OperatorCard: FC<{
                   </Tooltip2>
                   <div
                     className={clsx(
-                      'bp4-button bp4-minimal bp4-small min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600',
+                      'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
                     )}
                     title={star || '主星'}
                   >
@@ -442,7 +449,7 @@ const OperatorCard: FC<{
                   </div>
                   <div
                     className={clsx(
-                      'bp4-button bp4-minimal bp4-small min-w-6 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600',
+                      'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
                     )}
                     title={((operator as any).discAssistStars ?? [])[i] || '辅星'}
                   >
@@ -453,13 +460,7 @@ const OperatorCard: FC<{
             })}
           </div>
         )}
-        {info && info.prof !== 'TOKEN' && (
-          <img
-            className="absolute top-0 right-0 w-5 h-5 p-px bg-gray-600 rounded-tr-md"
-            src={'/assets/prof-icons/' + info.prof + '.png'}
-            alt={info.prof}
-          />
-        )}
+        {/* prof icon moved into avatar container to stick to avatar corner */}
       </div>
     </div>
   )
