@@ -143,6 +143,7 @@ const ImportOperationButton = (buttonProps: ButtonProps) => {
     <Popover2
       minimal
       position="bottom-left"
+      popoverClassName="z-50"
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       content={

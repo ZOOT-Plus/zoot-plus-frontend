@@ -183,6 +183,27 @@ body {
     }
   }
 
+  // 提升对话框覆盖层级，避免被其他浮层（如“密探”按钮/弹层）遮挡
+  // Blueprint Overlay/Backdrop 层
+  .bp4-overlay-backdrop {
+    z-index: 2900 !important;
+  }
+  .bp4-overlay {
+    z-index: 3000 !important;
+  }
+  .bp4-portal .bp4-overlay {
+    z-index: 3000 !important;
+  }
+  // 确保对话框内容层高于遮罩
+  .bp4-overlay-content {
+    position: relative;
+    z-index: 3001 !important;
+  }
+  .bp4-dialog {
+    position: relative;
+    z-index: 3002 !important;
+  }
+
   .bp4-popover2 .bp4-heading {
     @apply ~'opacity-80';
   }
