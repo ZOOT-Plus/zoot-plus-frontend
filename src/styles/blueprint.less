@@ -273,6 +273,12 @@ body {
   .bp4-popover2-transition-container {
     z-index: 1600 !important;
   }
+
+  // OperationViewer“管理”弹层的定制层级：
+  // 仅针对该实例的 Portal 容器内的 Popover2 提升 z-index，避免被 Drawer 内容（~3001）遮挡
+  .operation-viewer-portal > .bp4-popover2-transition-container {
+    z-index: 3003 !important;
+  }
 }
 
 .bp4-dark {

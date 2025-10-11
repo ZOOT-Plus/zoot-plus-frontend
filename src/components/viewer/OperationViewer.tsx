@@ -294,7 +294,8 @@ export const OperationViewer: ComponentType<{
                     />
                   }
                   usePortal={true}
-                  portalClassName="z-[1600]"
+                  // 仅对本弹层提升层级，避免被 Drawer 内容遮挡
+                  portalClassName="operation-viewer-portal"
                 >
                   <Button
                     icon="wrench"
