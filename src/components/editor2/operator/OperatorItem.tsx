@@ -132,8 +132,8 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 
         {/* Skills & Module controls */}
         {info && (
-          <div className="ml-2 mt-0.5 select-none">
-            <ul className="w-24 grid grid-rows-4 gap-1 ml-1 mt-1">
+          <div className="ml-2 mt-0.5 select-none shrink-0">
+            <ul className="w-[23ch] grid grid-rows-4 gap-1 ml-1 mt-1">
               {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
               {discList.length > 0
                 ? (
@@ -198,7 +198,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               minimal
                               title={selectedItem ? selectedItem.desp : `选择命盘${slot + 1}`}
                               className={clsx(
-                                'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                                'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
                                 selectedItem
                                   ? discColorClasses(selectedItem.color)
                                   : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
@@ -257,7 +257,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               small
                               minimal
                               title={(operator as any).discStarStones?.[slot] || '选择星石'}
-                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
+                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
                             >
                               {(operator as any).discStarStones?.[slot] || '星石'}
                             </Button>
@@ -312,7 +312,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               small
                               minimal
                               title={(operator as any).discAssistStars?.[slot] || '选择辅星'}
-                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
+                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
                             >
                               {(operator as any).discAssistStars?.[slot] || '辅星'}
                             </Button>
