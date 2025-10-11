@@ -30,3 +30,26 @@ meta.date=2025-10-10 22:34:54 (UTC+8)
   - src/components/editor2/source/SourceEditor.tsx: 默认 viewMode 从 'siming' 改为 'maa'
 - rationale: KISS 最小改动；仅在用户显式切换到“司命格式”时才请求远端，打开抽屉或无载荷时不再显示“Siming生成接口失败”
 - result: 抽屉初次打开不显示该错误；仅用户切换“司命格式”视图时若失败才显示
+
+---
+meta.locale=zh-CN
+meta.date=2025-10-11 18:38:53 (UTC+8)
+
+# 操作日志（OperationViewer 眼睛图标与星石/辅星开关）
+
+- 目标：在“密探与密探组”右侧问号的右侧新增“眼睛”图标，控制“星石/辅星”等信息显示，默认隐藏。
+
+变更摘要：
+- 在 `src/components/viewer/OperationViewer.tsx:640` 附近插入眼睛图标（Blueprint Icon：`eye-off`/`eye-open`），新增局部状态 `showExtras`（默认 false）。
+- 将 `OperatorCard` 增加可选属性 `showExtras?: boolean`，并在命盘行中按状态条件渲染“主星/辅星”两列。
+- 在两个 `OperatorCard` 调用处传入 `showExtras`，确保密探与密探组一致生效。
+
+验证要点：
+- 默认进入页面时“主星/辅星”不显示；点击眼睛图标切换显示；再次点击隐藏。
+- 布局与样式与问号图标对齐，交互区域光标为指针。
+
+工具：
+- Desktop Commander apply_patch（两处增量补丁）
+
+结果：
+- 交互与显示符合预期；全局 `tsc` 存在与本次无关的历史报错（未纳入本次修复范围）。

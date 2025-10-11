@@ -353,7 +353,8 @@ export const OperationViewer: ComponentType<{
 
 const OperatorCard: FC<{
   operator: CopilotDocV1.Operator
-}> = ({ operator }) => {
+  showExtras?: boolean
+}> = ({ operator, showExtras }) => {
   const t = useTranslation()
   const displayName = useLocalizedOperatorName(operator.name)
   const info = OPERATORS.find((o) => o.name === operator.name)
@@ -432,7 +433,10 @@ const OperatorCard: FC<{
             {selectedDiscs.map((d: any, i: number) => {
               const star = ((operator as any).discStarStones ?? [])[i]
               return (
-                <div key={i} className="flex gap-1">
+                <div
+                  key={i}
+                  className={clsx('flex gap-1', !showExtras && 'justify-center')}
+                >
                   <Tooltip2 content={d.desp}>
                     <div
                       className={clsx(
@@ -443,22 +447,26 @@ const OperatorCard: FC<{
                       <span className="bp4-button-text">{(d.abbreviation || d.name) as string}</span>
                     </div>
                   </Tooltip2>
-                  <div
-                    className={clsx(
-                      'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
-                    )}
-                    title={star || '主星'}
-                  >
-                    <span className="bp4-button-text">{star || '主星'}</span>
-                  </div>
-                  <div
-                    className={clsx(
-                      'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
-                    )}
-                    title={((operator as any).discAssistStars ?? [])[i] || '辅星'}
-                  >
-                    <span className="bp4-button-text">{((operator as any).discAssistStars ?? [])[i] || '辅星'}</span>
-                  </div>
+                  {showExtras && (
+                    <>
+                      <div
+                        className={clsx(
+                          'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
+                        )}
+                        title={star || '主星'}
+                      >
+                        <span className="bp4-button-text">{star || '主星'}</span>
+                      </div>
+                      <div
+                        className={clsx(
+                          'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
+                        )}
+                        title={((operator as any).discAssistStars ?? [])[i] || '辅星'}
+                      >
+                        <span className="bp4-button-text">{((operator as any).discAssistStars ?? [])[i] || '辅星'}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               )
             })}
@@ -628,35 +636,47 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const t = useTranslation()
   const [showOperators, setShowOperators] = useState(true)
   const [showActions, setShowActions] = useState(true)
+  // 眼睛开关：控制是否显示星石/辅星，默认关闭（不显示）
+  const [showExtras, setShowExtras] = useState(false)
 
   return (
     <div>
-      <H4
-        className="inline-flex items-center cursor-pointer hover:opacity-80"
-        onClick={() => setShowOperators((v) => !v)}
-      >
-        {t.components.viewer.OperationViewer.operators_and_groups}
+      <div className="flex items-center flex-wrap">
+        <H4
+          className="inline-flex items-center cursor-pointer hover:opacity-80"
+          onClick={() => setShowOperators((v) => !v)}
+        >
+          {t.components.viewer.OperationViewer.operators_and_groups}
+          <Icon
+            icon="chevron-down"
+            className={clsx(
+              'ml-1 transition-transform',
+              showOperators && 'rotate-180',
+            )}
+          />
+        </H4>
+        <details className="inline ml-2">
+          <summary className="inline cursor-pointer">
+            <Icon icon="help" size={14} className="mb-1 opacity-50" />
+          </summary>
+          <Callout intent="primary" icon={null} className="mb-4">
+            <p>
+              {t.components.viewer.OperationViewer.operators_and_groups_note.jsx({
+                operators: (s) => <b>{s}</b>,
+                groups: (s) => <b>{s}</b>,
+              })}
+            </p>
+          </Callout>
+        </details>
+        {/* 星石/辅星显示开关：默认闭眼（隐藏），点击切换 */}
         <Icon
-          icon="chevron-down"
-          className={clsx(
-            'ml-1 transition-transform',
-            showOperators && 'rotate-180',
-          )}
+          icon={showExtras ? 'eye-open' : 'eye-off'}
+          size={14}
+          className="ml-2 mb-1 opacity-60 cursor-pointer hover:opacity-90 align-middle"
+          onClick={() => setShowExtras((v) => !v)}
+          title={showExtras ? '隐藏星石/辅星' : '显示星石/辅星'}
         />
-      </H4>
-      <details className="inline">
-        <summary className="inline cursor-pointer">
-          <Icon icon="help" size={14} className="ml-2 mb-1 opacity-50" />
-        </summary>
-        <Callout intent="primary" icon={null} className="mb-4">
-          <p>
-            {t.components.viewer.OperationViewer.operators_and_groups_note.jsx({
-              operators: (s) => <b>{s}</b>,
-              groups: (s) => <b>{s}</b>,
-            })}
-          </p>
-        </Callout>
-      </details>
+      </div>
       <Collapse isOpen={showOperators}>
         <div className="mt-2 flex flex-wrap gap-6">
           {!operation.parsedContent.opers?.length &&
@@ -675,6 +695,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
             <OperatorCard
               key={operator.name}
               operator={operator}
+              showExtras={showExtras}
             />
           ))}
         </div>
@@ -693,6 +714,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
                     <OperatorCard
                       key={operator.name}
                       operator={operator}
+                      showExtras={showExtras}
                     />
                   ))}
 
