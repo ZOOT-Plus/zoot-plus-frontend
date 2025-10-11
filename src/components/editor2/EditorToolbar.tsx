@@ -29,6 +29,7 @@ import { SourceEditorButton } from './source/SourceEditor'
 import { FileImporter } from './source/FileImporter'
 import { XlsxImporter } from './source/XlsxImporter'
 import { ShortCodeImporter } from './source/ShortCodeImporter'
+import { BiyongImporter } from './source/BiyongImporter'
 import {
   AUTO_SAVE_INTERVAL,
   AUTO_SAVE_LIMIT,
@@ -149,6 +150,7 @@ const ImportOperationButton = (buttonProps: ButtonProps) => {
           <FileImporter onImport={handleImport} />
           <XlsxImporter onImport={handleImport} />
           <ShortCodeImporter onImport={handleImport} />
+          <BiyongImporter onImport={handleImport} />
         </Menu>
       }
     >

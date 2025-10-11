@@ -9,6 +9,7 @@ import { AppToaster } from '../../Toaster'
 import { FileImporter } from './FileImporter'
 import { ShortCodeImporter } from './ShortCodeImporter'
 import { XlsxImporter } from './XlsxImporter'
+import { BiyongImporter } from './BiyongImporter'
 import { stripOperationExportFields } from '../../../services/operation'
 
 interface SourceEditorHeaderProps {
@@ -98,6 +99,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
             <FileImporter onImport={handleImport} />
             <XlsxImporter onImport={handleImport} />
             <ShortCodeImporter onImport={handleImport} />
+            <BiyongImporter onImport={handleImport} />
           </Menu>
         }
       >
