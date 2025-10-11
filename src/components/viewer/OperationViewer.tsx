@@ -358,6 +358,34 @@ const OperatorCard: FC<{
     info?.rarity,
   )
 
+  // 读取命盘集合（从 operators.json 注入的 info.discs）与选中结果
+  const discList = (info as any)?.discs ?? []
+  let selected: number[] = Array.isArray((operator as any).discsSelected)
+    ? ((operator as any).discsSelected as number[])
+    : []
+  if ((!selected || selected.length === 0) && typeof operator.skill === 'number') {
+    // 兼容：旧数据仅有 skill（1-based），视为只选了一个命盘
+    selected = [operator.skill]
+  }
+  const selectedDiscs = (selected || [])
+    .filter((idx) => typeof idx === 'number' && idx > 0 && idx <= discList.length)
+    .map((idx) => discList[idx - 1])
+
+  const discColorClasses = (color?: string) => {
+    switch (color) {
+      case '金':
+        return 'bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-200 text-yellow-800'
+      case '紫':
+        return 'bg-purple-100 dark:bg-purple-900 dark:text-purple-200 text-purple-800'
+      case '蓝':
+        return 'bg-blue-100 dark:bg-blue-900 dark:text-blue-200 text-blue-800'
+      case '橙':
+        return 'bg-orange-100 dark:bg-orange-900 dark:text-orange-200 text-orange-800'
+      default:
+        return 'bg-gray-300 dark:bg-gray-600 opacity-80'
+    }
+  }
+
   return (
     <div className="relative flex items-start">
       <div className="relative w-20">
@@ -388,6 +416,22 @@ const OperatorCard: FC<{
         <h4 className="mt-1 -mx-2 leading-4 font-semibold tracking-tighter text-center">
           {displayName}
         </h4>
+        {selectedDiscs?.length > 0 && (
+          <div className="mt-1 mx-[-4px] grid gap-1">
+            {selectedDiscs.map((d: any, i: number) => (
+              <Tooltip2 key={i} content={d.desp}>
+                <div
+                  className={clsx(
+                    'bp4-button bp4-minimal bp4-small min-w-24 !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-none !border-2 !border-current',
+                    discColorClasses(d.color),
+                  )}
+                >
+                  <span className="bp4-button-text">{(d.abbreviation || d.name) as string}</span>
+                </div>
+              </Tooltip2>
+            ))}
+          </div>
+        )}
         {info && info.prof !== 'TOKEN' && (
           <img
             className="absolute top-0 right-0 w-5 h-5 p-px bg-gray-600 rounded-tr-md"
