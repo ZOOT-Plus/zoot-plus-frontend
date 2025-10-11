@@ -24,6 +24,7 @@ export const LanguageSwitcher: ComponentType = withGlobalErrorBoundary(() => {
   return (
     <DetailedSelect
       items={options}
+      value={language}
       onItemSelect={(item) =>
         setLanguage(item.value as (typeof options)[number]['value'])
       }

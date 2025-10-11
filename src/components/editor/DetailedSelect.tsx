@@ -39,12 +39,23 @@ export const DetailedSelect: FCC<
     onItemSelect: (item: DetailedSelectChoice) => void
   }
 > = ({ className, items, value, onItemSelect, children, ...props }) => {
+  // 依据传入的 value 推导当前选中项，用于设置 active/selected
+  const selectedItem =
+    value === undefined
+      ? undefined
+      : items.find(
+          (it) => it.type === 'choice' && (it as DetailedSelectChoice).value === value,
+        )
+
   return (
     <Select
       className={clsx('inline-flex', className)}
       items={items}
       filterable={false}
       resetOnQuery={false}
+      // 使弹出菜单默认高亮/选中当前值
+      selectedItem={selectedItem}
+      activeItem={selectedItem}
       itemDisabled={(item) => item.type === 'header' || !!item.disabled}
       itemRenderer={(action, { handleClick, handleFocus, modifiers }) => {
         if (action.type === 'header') {
