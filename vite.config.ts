@@ -23,6 +23,36 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            maacopilot: ['maa-copilot-client'],
+            react: ["react", "react-dom", "react-router-dom"],
+            reactplugins: ["react-use", "react-rating", "react-markdown", "react-ga-neo", "react-hook-form"],
+            blueprint: ["@blueprintjs/core"],
+            blueprintaddon: ["@blueprintjs/select", "@blueprintjs/popover2"],
+            sentry: ["@sentry/react", "@sentry/tracing"],
+            dnd: ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
+            jotai: ["jotai", "jotai-immer", "jotai-devtools", "immer"],
+            remark: ["remark-gfm", "remark-breaks"],
+            iconify: ["@iconify/react"],
+            ajv: ["ajv", "ajv-i18n"],
+            linkify: ['linkify-react', 'linkifyjs'],
+            utils: [
+              "lodash-es",
+              "clsx",
+              "dayjs",
+              "fuse.js",
+              "mitt",
+              "swr",
+              "swr/infinite",
+              "camelcase-keys",
+              "snakecase-keys",
+              "zod"
+            ],
+          },
+        }
+      }
     },
   }
 })
