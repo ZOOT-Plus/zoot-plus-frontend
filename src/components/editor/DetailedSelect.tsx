@@ -1,4 +1,5 @@
 import {
+  ButtonProps,
   Classes,
   H6,
   Icon,
@@ -37,8 +38,20 @@ export const DetailedSelect: FCC<
   > & {
     value?: string | number
     onItemSelect: (item: DetailedSelectChoice) => void
+    // 透传给内部 Select，用于控制是否显示重置（叉）按钮
+    canReset?: boolean
+    resetButtonProps?: ButtonProps
   }
-> = ({ className, items, value, onItemSelect, children, ...props }) => {
+> = ({
+  className,
+  items,
+  value,
+  onItemSelect,
+  children,
+  canReset,
+  resetButtonProps,
+  ...props
+}) => {
   // 依据传入的 value 推导当前选中项，用于设置 active/selected
   const selectedItem =
     value === undefined
@@ -53,6 +66,8 @@ export const DetailedSelect: FCC<
       items={items}
       filterable={false}
       resetOnQuery={false}
+      canReset={canReset}
+      resetButtonProps={resetButtonProps}
       // 使弹出菜单默认高亮/选中当前值
       selectedItem={selectedItem}
       activeItem={selectedItem}

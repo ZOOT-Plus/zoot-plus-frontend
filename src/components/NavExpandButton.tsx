@@ -12,7 +12,7 @@ export const NavExpandButton = () => {
     <Button
       className="md:!hidden"
       onClick={() => toggleExpand()}
-      icon={expanded.expanded ? 'cross' : 'menu'}
+      icon="menu"
     />
   )
 }

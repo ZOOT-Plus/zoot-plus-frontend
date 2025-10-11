@@ -376,7 +376,8 @@ export const operationSchema = z.object({
   minimum_required,
   level_meta,
   doc: docStrict,
-  opers: z.array(operator).default([]),
+  // 将 editorv2 中的“密探”(opers)设为必填：至少选择 1 名密探
+  opers: z.array(operator).min(1).default([]),
   groups: z.array(groupStrict).default([]),
   actions: z.array(actionStrict).default([]),
 })
@@ -438,6 +439,11 @@ z.config({
         issue.origin === 'string' &&
         issue.minimum === 1)
     ) {
+      return i18n.components.editor2.validation.required
+    }
+
+    // 当数组最小长度为 1 时（例如 opers 至少 1 人），也视为“必填”提示
+    if (issue.code === 'too_small' && issue.origin === 'array' && issue.minimum === 1) {
       return i18n.components.editor2.validation.required
     }
 

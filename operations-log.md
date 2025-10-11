@@ -53,3 +53,28 @@ meta.date=2025-10-11 18:38:53 (UTC+8)
 
 结果：
 - 交互与显示符合预期；全局 `tsc` 存在与本次无关的历史报错（未纳入本次修复范围）。
+
+---
+meta.locale=zh-CN
+meta.date=2025-10-11 21:59:56 (UTC+8)
+
+# 操作日志（editorv2：将“密探”设为必写）
+
+- 目标：在 editorv2 中将“密探（opers）”设置为必填，保存时至少需选择 1 名密探。
+
+变更摘要：
+- 校验：在 Zod 校验 schema 中为 `opers` 增加最小长度约束 `min(1)`，并将数组最小长度为 1 的错误提示统一映射为“必填”。
+  - 文件：`src/components/editor2/validation/schema.ts:1`
+  - 代码：
+    - `opers: z.array(operator).min(1).default([])`
+    - `if (issue.code === 'too_small' && issue.origin === 'array' && issue.minimum === 1) return i18n.components.editor2.validation.required`
+
+验证要点：
+- 进入编辑器若未选择任何密探，提交将失败，并在错误列表中显示“密探: 必填”。
+- 选择≥1 名密探后可正常提交。
+
+工具：
+- Desktop Commander apply_patch
+
+结果：
+- UI 与错误提示符合预期；`yarn tsc --noEmit` 存在与本次无关的既有报错，未纳入本次修复范围。
