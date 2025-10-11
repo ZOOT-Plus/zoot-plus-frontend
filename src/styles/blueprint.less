@@ -276,7 +276,9 @@ body {
 
   // OperationViewer“管理”弹层的定制层级：
   // 仅针对该实例的 Portal 容器内的 Popover2 提升 z-index，避免被 Drawer 内容（~3001）遮挡
-  .operation-viewer-portal > .bp4-popover2-transition-container {
+  // 注意：Blueprint 结构为 .bp4-portal > .bp4-overlay-container > .bp4-popover2-transition-container
+  // 因此需使用后代选择器，而非直接子选择器
+  .operation-viewer-portal .bp4-popover2-transition-container {
     z-index: 3003 !important;
   }
 }
