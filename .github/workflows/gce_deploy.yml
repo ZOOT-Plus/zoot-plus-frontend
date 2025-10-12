@@ -24,8 +24,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build project
-        run: |
-          npx vite build
+        run: npx vite build
 
       - name: Upload dist to VPS
         uses: appleboy/scp-action@v0.1.5
@@ -36,4 +35,5 @@ jobs:
           source: './dist/*'
           target: '/var/www/myshare-frontend/'
           overwrite: true
-          debug: true
+          strip_components: 1
+          rm: false
