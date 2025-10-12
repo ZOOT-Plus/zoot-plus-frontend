@@ -179,6 +179,10 @@ body {
   // Operator tag: stack name below avatar and center it
   // Scope with `.op-avatar-tag` to avoid affecting other Blueprint Tags
   .op-avatar-tag {
+    // make vertical padding equal to horizontal for balanced spacing
+    // ensures distance from avatar border to tag border is consistent
+    padding: 0.3rem; // 8px on all sides
+
     .bp4-fill.bp4-text-overflow-ellipsis {
       display: flex;
       flex-direction: column;
