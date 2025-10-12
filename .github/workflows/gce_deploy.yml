@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             echo "🚀 Syncing dist/ to /var/www/myshare-frontend ..."
-            rsync -avz --delete \
+            rsync -avz --checksum --delete \
               --exclude='.git' \
               --exclude='node_modules' \
               ./dist/ /var/www/myshare-frontend/

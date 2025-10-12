@@ -269,7 +269,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
   }
 
   return (
-    <div className="flex flex-wrap items-center">
+    <div className="flex flex-wrap items-start">
       {opers?.map(({ name: operatorName }, index) => {
         const displayName = getLocalizedOperatorName(operatorName, language)
 
@@ -277,7 +277,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           <Tag
             key={`${operatorName}-${index}`}
             minimal
-            className="mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
+            className="op-avatar-tag mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
           >
             <OperatorAvatar
               name={operatorName}
