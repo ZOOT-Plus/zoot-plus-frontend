@@ -20,10 +20,14 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
+        working-directory: MaaYuan-Share-frontend
         run: yarn install --frozen-lockfile
 
       - name: Build project
-        run: npx vite build
+        working-directory: MaaYuan-Share-frontend
+        run: |
+          npx vite build
+          echo "✅ Build complete. Contents of dist/:"
           ls -lh dist
 
       - name: Upload dist to VPS
@@ -32,5 +36,5 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: 'dist/*'
+          source: 'MaaYuan-Share-frontend/dist/*'
           target: '/var/www/myshare-frontend/'
