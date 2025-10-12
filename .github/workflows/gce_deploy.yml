@@ -24,7 +24,7 @@ jobs:
 
       - name: Build project
         run: |
-          yarn build || vite build
+          vite build
 
       - name: Upload dist/ to VPS
         uses: appleboy/scp-action@v0.1.7
