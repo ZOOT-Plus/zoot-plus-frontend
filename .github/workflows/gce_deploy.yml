@@ -26,14 +26,27 @@ jobs:
       - name: Build project
         run: npx vite build
 
-      - name: Upload dist to VPS
+      - name: Upload new version to temporary folder
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: './dist/*'
-          target: '/var/www/myshare-frontend/'
+          target: '/var/www/myshare-frontend_tmp/'
           overwrite: true
           strip_components: 1
-          rm: false
+
+      - name: Switch release atomically
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            if [ -d /var/www/myshare-frontend_tmp ]; then
+              mv /var/www/myshare-frontend /var/www/myshare-frontend_old || true
+              mv /var/www/myshare-frontend_tmp /var/www/myshare-frontend
+              rm -rf /var/www/myshare-frontend_old || true
+              echo "✅ Switched new release atomically"
+            fi
