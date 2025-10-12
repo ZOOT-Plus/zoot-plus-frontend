@@ -26,19 +26,6 @@ jobs:
       - name: Build project
         run: |
           npx vite build
-          echo "✅ Build complete. Contents of dist/:"
-          ls -lh dist
-
-      - name: Print directories
-        run: |
-          echo "Current working directory:"
-          pwd
-          echo "Root level contents:"
-          ls -lh
-          echo "Frontend folder contents:"
-          ls -lh MaaYuan-Share-frontend || true
-          echo "Check for dist folders recursively:"
-          find . -type d -name dist
 
       - name: Upload dist to VPS
         uses: appleboy/scp-action@v0.1.5
@@ -46,5 +33,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: 'MaaYuan-Share-frontend/dist/*'
+          source: './dist/*'
           target: '/var/www/myshare-frontend/'
+          overwrite: true
+          debug: true
