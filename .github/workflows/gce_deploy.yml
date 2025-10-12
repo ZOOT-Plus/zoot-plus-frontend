@@ -24,7 +24,7 @@ jobs:
 
       - name: Build project
         run: |
-          vite build
+          npx vite build
 
       - name: Upload dist/ to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "dist/*"
-          target: "/home/${{ secrets.VPS_USER }}/myshare-frontend"
+          target: "/var/www/myshare-frontend"
 
       - name: Restart service on VPS
         uses: appleboy/ssh-action@v1.1.0
