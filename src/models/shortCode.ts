@@ -1,10 +1,10 @@
 /*
- * Format: maa://123456
+ * Format: maay://123456
  * Note that operations and operation sets share the same ID space
  * and currently there is no way to distinguish them.
  */
 
-const shortCodeScheme = 'maa://'
+const shortCodeScheme = 'maay://'
 
 export interface ShortCodeContent {
   id: number

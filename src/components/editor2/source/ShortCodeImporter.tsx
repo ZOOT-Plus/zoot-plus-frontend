@@ -117,7 +117,7 @@ export const ShortCodeImporter: FC<{
           >
             <InputGroup
               large
-              placeholder="maa://..."
+              placeholder="maay://..."
               value={value || ''}
               onChange={onChange}
             />
