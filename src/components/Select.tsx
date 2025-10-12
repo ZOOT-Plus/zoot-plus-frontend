@@ -27,6 +27,13 @@ export const Select = <T,>({
 }: SelectProps<T>) => {
   canReset ??= selectedItem !== undefined
 
+  // 合并 Popover2 属性：强制使用 Portal 并提升层级，避免在 Dialog 内被遮挡
+  const mergedPopoverProps = {
+    ...(props as any).popoverProps,
+    usePortal: true,
+    portalClassName: clsx('z-[3100]', (props as any).popoverProps?.portalClassName),
+  }
+
   return (
     <Label className={clsx('!inline-flex items-center !mb-0', className)}>
       <Select2
@@ -41,6 +48,7 @@ export const Select = <T,>({
           ),
         }}
         {...props}
+        popoverProps={mergedPopoverProps}
       />
       {canReset && (
         <Button

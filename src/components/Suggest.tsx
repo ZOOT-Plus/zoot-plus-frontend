@@ -51,6 +51,14 @@ export const Suggest = <T,>({
     }
   }, [fieldState, updateQuery])
 
+  // 合并 Popover2 属性：强制 Portal 并提升层级，避免在 Dialog 内被遮挡
+  const basePopover = (suggest2Props as any)?.popoverProps || {}
+  const mergedPopover = {
+    ...basePopover,
+    usePortal: true,
+    portalClassName: [basePopover.portalClassName, 'z-[3100]'].filter(Boolean).join(' '),
+  }
+
   return (
     <Suggest2<T>
       ref={ref}
@@ -93,7 +101,7 @@ export const Suggest = <T,>({
       popoverProps={{
         placement: 'bottom-start',
         captureDismiss: true,
-        ...(suggest2Props as any)?.popoverProps,
+        ...mergedPopover,
       }}
     />
   )
