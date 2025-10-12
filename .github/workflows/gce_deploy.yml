@@ -1,0 +1,47 @@
+name: Build and Deploy to GCE
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build project
+        run: |
+          yarn build || vite build
+
+      - name: Upload dist/ to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "dist/*"
+          target: "/home/${{ secrets.VPS_USER }}/myshare-frontend"
+
+      - name: Restart service on VPS
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ~/myshare-frontend
+            sudo systemctl reload nginx || echo "nginx reload skipped"
+            echo "✅ Deployment complete at $(date)"
