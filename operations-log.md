@@ -1,80 +1,28 @@
 meta.locale=zh-CN
-meta.date=2025-10-10 22:34:54 (UTC+8)
+meta.date=2025-10-12 12:47:16 (UTC+8)
 
-# 操作日志（editorv2 密探按钮迁移）
+# Operations Log
 
-- 目标：将 editorv2 页面“密探”按钮内联到“作业信息”中，并展示已选密探。
+- 动作: 规划与任务拆分
+  - 工具: sequential-thinking → mcp-router(plan_task/analyze_task/reflect_task/split_tasks/list_tasks)
+  - 摘要: 生成8步计划并固化任务树与验收标准。
 
-变更摘要：
-- 新增内联触发组件：`src/components/editor2/operator/OperatorSidebarInInfo.tsx`
-- 在“作业信息”中引入按钮与展示：`src/components/editor2/InfoEditor.tsx`
-  - 导入 `Tag`、`OperatorSidebarInInfo`、`OperatorAvatar`
-  - 渲染“密探”按钮与已选密探头像（位于“关卡”下一行，头像 48px，sourceSize=96）
-  - 调整顺序：按钮移至头像右侧（同一行）
-- 移除原移动端悬浮入口：`src/components/editor2/Editor.tsx`
-  - 删除 `OperatorSidebarFloating` 渲染，避免重复入口
+- 动作: 代码定位
+  - 工具: serena(get_symbols_overview/find_symbol)
+  - 路径: src/components/editor2/operator/OperatorSidebarFloating.tsx:17
+  - 结论: 描述展示不在此组件，位于 OperatorItem 中（Button.title 与 MenuItem.title）。
 
-验证要点：
-- 在“作业信息”中可看到“密探”按钮，点击可弹出侧栏（OperatorSheet + OperatorEditor）
-- 已选密探以标签形式展示；当为空时显示“暂无密探”
+- 动作: 代码读取
+  - 工具: Desktop Commander read_file
+  - 路径: src/components/editor2/operator/OperatorItem.tsx:136
+  - 证据: MenuItem 使用 title={item.desp}；按钮 title 显示 selectedItem.desp。
 
-文件引用：
-- src/components/editor2/operator/OperatorSidebarInInfo.tsx:1
-- src/components/editor2/InfoEditor.tsx:16
-- src/components/editor2/Editor.tsx:1
-- meta.locale=zh-CN
-- meta.date=2025-10-11 18:28:22
-- action: 修改 SourceEditor 默认展示模式，避免抽屉初开触发 Siming 远端生成并显示错误
-- tool: Desktop Commander edit_block
-- files:
-  - src/components/editor2/source/SourceEditor.tsx: 默认 viewMode 从 'siming' 改为 'maa'
-- rationale: KISS 最小改动；仅在用户显式切换到“司命格式”时才请求远端，打开抽屉或无载荷时不再显示“Siming生成接口失败”
-- result: 抽屉初次打开不显示该错误；仅用户切换“司命格式”视图时若失败才显示
+- 动作: 页面复现与交互
+  - 工具: Chrome DevTools
+  - URL: http://localhost:3000/editor
+  - 步骤: 点击“密探”→ 选择“吕布”→ 打开“命盘1”下拉 → 选择“辕门射戟 · 金”。
+  - 结果: 菜单项 anchor.title 含完整描述；选择后按钮 text=“辕门射戟”，title=完整描述。
+  - 控制台: 无相关错误（存在 React/Blueprint 警告，不影响功能）。
 
----
-meta.locale=zh-CN
-meta.date=2025-10-11 18:38:53 (UTC+8)
+- 结论: 选取命盘后，命盘描述可正常显示（菜单项与已选按钮的 title）。
 
-# 操作日志（OperationViewer 眼睛图标与星石/辅星开关）
-
-- 目标：在“密探与密探组”右侧问号的右侧新增“眼睛”图标，控制“星石/辅星”等信息显示，默认隐藏。
-
-变更摘要：
-- 在 `src/components/viewer/OperationViewer.tsx:640` 附近插入眼睛图标（Blueprint Icon：`eye-off`/`eye-open`），新增局部状态 `showExtras`（默认 false）。
-- 将 `OperatorCard` 增加可选属性 `showExtras?: boolean`，并在命盘行中按状态条件渲染“主星/辅星”两列。
-- 在两个 `OperatorCard` 调用处传入 `showExtras`，确保密探与密探组一致生效。
-
-验证要点：
-- 默认进入页面时“主星/辅星”不显示；点击眼睛图标切换显示；再次点击隐藏。
-- 布局与样式与问号图标对齐，交互区域光标为指针。
-
-工具：
-- Desktop Commander apply_patch（两处增量补丁）
-
-结果：
-- 交互与显示符合预期；全局 `tsc` 存在与本次无关的历史报错（未纳入本次修复范围）。
-
----
-meta.locale=zh-CN
-meta.date=2025-10-11 21:59:56 (UTC+8)
-
-# 操作日志（editorv2：将“密探”设为必写）
-
-- 目标：在 editorv2 中将“密探（opers）”设置为必填，保存时至少需选择 1 名密探。
-
-变更摘要：
-- 校验：在 Zod 校验 schema 中为 `opers` 增加最小长度约束 `min(1)`，并将数组最小长度为 1 的错误提示统一映射为“必填”。
-  - 文件：`src/components/editor2/validation/schema.ts:1`
-  - 代码：
-    - `opers: z.array(operator).min(1).default([])`
-    - `if (issue.code === 'too_small' && issue.origin === 'array' && issue.minimum === 1) return i18n.components.editor2.validation.required`
-
-验证要点：
-- 进入编辑器若未选择任何密探，提交将失败，并在错误列表中显示“密探: 必填”。
-- 选择≥1 名密探后可正常提交。
-
-工具：
-- Desktop Commander apply_patch
-
-结果：
-- UI 与错误提示符合预期；`yarn tsc --noEmit` 存在与本次无关的既有报错，未纳入本次修复范围。
