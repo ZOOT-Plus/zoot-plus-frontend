@@ -24,7 +24,6 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build project
-        working-directory: MaaYuan-Share-frontend
         run: |
           npx vite build
           echo "✅ Build complete. Contents of dist/:"
