@@ -678,7 +678,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         />
       </div>
       <Collapse isOpen={showOperators}>
-        <div className="mt-2 flex flex-wrap gap-6">
+        <div className="mt-2 flex flex-wrap gap-8">
           {!operation.parsedContent.opers?.length &&
             !operation.parsedContent.groups?.length && (
               <NonIdealState
@@ -707,7 +707,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
               key={group.name}
             >
               <H6 className="mb-3 text-gray-800">{group.name}</H6>
-              <div className="flex flex-wrap px-2 gap-6">
+              <div className="flex flex-wrap px-2 gap-8">
                 {group.opers
                   ?.filter(Boolean)
                   .map((operator) => (
