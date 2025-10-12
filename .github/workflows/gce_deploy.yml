@@ -23,17 +23,21 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build project
-        run: |
-          npx vite build
+        run: npx vite build
 
-      - name: Upload dist/ to VPS
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy dist/ to VPS with rsync
+        uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "dist/*"
-          target: "/var/www/myshare-frontend"
+          script: |
+            echo "🚀 Syncing dist/ to /var/www/myshare-frontend ..."
+            rsync -avz --delete \
+              --exclude='.git' \
+              --exclude='node_modules' \
+              ./dist/ /var/www/myshare-frontend/
+            echo "✅ Files synced successfully."
 
       - name: Restart service on VPS
         uses: appleboy/ssh-action@v1.1.0
@@ -42,6 +46,5 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ~/myshare-frontend
             sudo systemctl reload nginx || echo "nginx reload skipped"
             echo "✅ Deployment complete at $(date)"
