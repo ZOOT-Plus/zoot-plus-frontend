@@ -457,6 +457,9 @@ function OperationSelector({
           minimal
           captureDismiss
           placement="bottom-start"
+          // 在 Dialog 内启用 Portal 并提升层级，避免被容器 overflow 或对话框内容层遮挡
+          usePortal={true}
+          portalClassName="operation-viewer-portal"
           content={
             <Menu>
               <MenuItem
