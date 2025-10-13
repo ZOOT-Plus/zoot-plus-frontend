@@ -3,7 +3,7 @@ name: Build and Deploy to GCE
 on:
   push:
     branches:
-      - test
+      - dev
 
 jobs:
   build-and-deploy:
