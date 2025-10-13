@@ -168,6 +168,7 @@ export const OperationSetViewer: ComponentType<{
             <div className="flex-1" />
 
             {operationSet.creatorId === auth.userId && (
+              // 与 OperationViewer 保持一致：使用 Portal 并提升层级，避免在 Drawer 标题区域被裁剪/遮挡
               <Popover2
                 content={
                   <ManageMenu
@@ -175,6 +176,8 @@ export const OperationSetViewer: ComponentType<{
                     onUpdate={() => onCloseDrawer()}
                   />
                 }
+                usePortal={true}
+                portalClassName="operation-viewer-portal"
               >
                 <Button
                   className="ml-4"
