@@ -373,8 +373,16 @@ const OperatorCard: FC<{
     selected = [operator.skill]
   }
   const selectedDiscs = (selected || [])
-    .filter((idx) => typeof idx === 'number' && idx > 0 && idx <= discList.length)
-    .map((idx) => discList[idx - 1])
+    .map((idx) => {
+      if (idx === -1) {
+        return { name: '任意', abbreviation: '任意', desp: '任意' } as any
+      }
+      if (typeof idx === 'number' && idx > 0 && idx <= discList.length) {
+        return discList[idx - 1]
+      }
+      return null
+    })
+    .filter(Boolean) as any[]
 
   const discColorClasses = (color?: string) => {
     switch (color) {
