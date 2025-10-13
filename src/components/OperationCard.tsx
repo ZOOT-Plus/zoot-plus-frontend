@@ -19,8 +19,8 @@ import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
 import { createCustomLevel, findLevelByStageName } from '../models/level'
 import { getLocalizedOperatorName } from '../models/operator'
-import { Paragraphs } from './Paragraphs'
 import { OperatorAvatar } from './OperatorAvatar'
+import { Paragraphs } from './Paragraphs'
 import { ReLinkRenderer } from './ReLink'
 import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
@@ -265,7 +265,11 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
   const { opers, groups } = operation.parsedContent
 
   if (!(opers?.length || groups?.length)) {
-    return <div className="text-gray-500">{t.components.OperationCard.no_records}</div>
+    return (
+      <div className="text-gray-500">
+        {t.components.OperationCard.no_records}
+      </div>
+    )
   }
 
   return (
@@ -363,7 +367,7 @@ const CardActions = ({
       >
         <Button
           small
-          icon="export"
+          icon="download"
           onClick={() =>
             handleLazyDownloadSimingJSON(
               operation.id,
