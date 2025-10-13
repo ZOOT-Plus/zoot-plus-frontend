@@ -141,12 +141,13 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       const indices = operator.discsSelected ?? []
                       const idx1 = indices[slot] ?? 0
                       const selectedItem = idx1 > 0 ? discList[idx1 - 1] : undefined
+                      const selectedIsAny = idx1 === -1
                       return (
                         <li key={'disc-slot-' + slot} className="relative h-8 flex gap-1">
                           <Select
                             className=""
                             filterable={false}
-                            items={discList.map((d, idx) => ({ ...d, idx }))}
+                            items={[{ name: '任意', abbreviation: '任意', desp: '任意', idx: -1 } as any, ...discList.map((d, idx) => ({ ...d, idx }))]}
                             itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
                               <MenuItem
                                 roleStructure="listoption"
@@ -159,19 +160,21 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                 title={item.desp}
                                 onClick={handleClick}
                                 onFocus={handleFocus}
-                                selected={item.idx + 1 === idx1}
+                                selected={item.idx === -1 ? idx1 === -1 : item.idx + 1 === idx1}
                               />
                             )}
                             onItemSelect={(item) => {
                               edit(() => {
-                                const chosen = (item as any).idx + 1
+                                const chosen = (item as any).idx === -1 ? -1 : (item as any).idx + 1
                                 const nextIndices = [...(operator.discsSelected ?? [0, 0, 0])]
                                 // 保证长度为3
                                 while (nextIndices.length < 3) nextIndices.push(0)
                                 // 去重：其他槽若已选相同命盘则清空
-                                for (let i = 0; i < nextIndices.length; i++) {
-                                  if (i !== slot && nextIndices[i] === chosen) {
-                                    nextIndices[i] = 0
+                                if (chosen > 0) {
+                                  for (let i = 0; i < nextIndices.length; i++) {
+                                    if (i !== slot && nextIndices[i] === chosen) {
+                                      nextIndices[i] = 0
+                                    }
                                   }
                                 }
                                 nextIndices[slot] = chosen
@@ -196,7 +199,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             <Button
                               small
                               minimal
-                              title={selectedItem ? selectedItem.desp : `选择命盘${slot + 1}`}
+                              title={selectedItem ? selectedItem.desp : selectedIsAny ? '任意' : `选择命盘${slot + 1}`}
                               className={clsx(
                                 'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
                                 selectedItem
@@ -204,7 +207,11 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                   : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
                               )}
                             >
-                              {selectedItem ? (selectedItem.abbreviation || selectedItem.name) : `命盘${slot + 1}`}
+                              {selectedItem
+                                ? (selectedItem.abbreviation || selectedItem.name)
+                                : selectedIsAny
+                                ? '任意'
+                                : `命盘${slot + 1}`}
                             </Button>
                           </Select>
 
@@ -213,6 +220,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             className=""
                             filterable={false}
                             items={[
+                              '任意',
                               '天府','天相','巨门','太阳','廉贞','太阴','紫微','七杀','天机','武曲','破军','天同','天梁','贪狼',
                             ]}
                             itemRenderer={(item: string, { handleClick, handleFocus, modifiers }) => (
@@ -268,6 +276,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             className=""
                             filterable={false}
                             items={[
+                              '任意',
                               '红鸾','阴煞','天魁','八座','陀螺','地劫','解神','禄存','文曲','天钺','火星','文昌','天巫','左辅','铃星','恩光','三台','擎羊','天贵','天姚','天马','天刑','右弼','地空',
                             ]}
                             itemRenderer={(item: string, { handleClick, handleFocus, modifiers }) => (

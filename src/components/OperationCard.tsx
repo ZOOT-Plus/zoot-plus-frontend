@@ -19,8 +19,8 @@ import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
 import { createCustomLevel, findLevelByStageName } from '../models/level'
 import { getLocalizedOperatorName } from '../models/operator'
-import { Paragraphs } from './Paragraphs'
 import { OperatorAvatar } from './OperatorAvatar'
+import { Paragraphs } from './Paragraphs'
 import { ReLinkRenderer } from './ReLink'
 import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
@@ -265,11 +265,15 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
   const { opers, groups } = operation.parsedContent
 
   if (!(opers?.length || groups?.length)) {
-    return <div className="text-gray-500">{t.components.OperationCard.no_records}</div>
+    return (
+      <div className="text-gray-500">
+        {t.components.OperationCard.no_records}
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-wrap items-center">
+    <div className="flex flex-wrap items-start">
       {opers?.map(({ name: operatorName }, index) => {
         const displayName = getLocalizedOperatorName(operatorName, language)
 
@@ -277,7 +281,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           <Tag
             key={`${operatorName}-${index}`}
             minimal
-            className="mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
+            className="op-avatar-tag mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
           >
             <OperatorAvatar
               name={operatorName}
@@ -363,7 +367,7 @@ const CardActions = ({
       >
         <Button
           small
-          icon="export"
+          icon="download"
           onClick={() =>
             handleLazyDownloadSimingJSON(
               operation.id,

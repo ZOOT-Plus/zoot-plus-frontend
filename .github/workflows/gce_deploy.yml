@@ -1,0 +1,51 @@
+name: Build and Deploy to GCE
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install dependencies
+        working-directory: MaaYuan-Share-frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Build project
+        run: npx vite build
+
+      - name: Upload new version to tmp folder
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: './dist/*'
+          target: '/tmp/myshare-frontend_tmp/'
+          overwrite: true
+          strip_components: 1
+
+      - name: Atomically switch release
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            sudo mkdir -p /var/www/
+            sudo mv /var/www/myshare-frontend /var/www/myshare-frontend_old || true
+            sudo mv /tmp/myshare-frontend_tmp /var/www/myshare-frontend
+            sudo rm -rf /var/www/myshare-frontend_old
+            echo "✅ Switched to new version successfully"
