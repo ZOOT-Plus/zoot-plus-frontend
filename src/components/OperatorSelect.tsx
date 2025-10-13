@@ -141,6 +141,9 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
         placement: 'bottom-start',
         minimal: true,
         matchTargetWidth: true,
+        // 对齐 LevelSelect 的做法：使用 Portal 并提升层级，避免在 Dialog 内被遮挡，保证可点击
+        usePortal: true,
+        portalClassName: 'z-[3100]',
       }}
       onItemSelect={select}
       onRemove={remove}
