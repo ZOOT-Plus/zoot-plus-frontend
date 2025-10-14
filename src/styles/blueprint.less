@@ -295,10 +295,11 @@ body {
     z-index: 3000 !important;
   }
 
-  // 确保 Blueprint Popover2 的 Overlay 容器位于应用内自定义全屏遮罩之上
-  // 注意：只提升 Popover2 的过渡容器（不会影响 Dialog/Drawer 等 Overlay），避免全局副作用
+  // 确保 Blueprint Popover/Tooltip(基于 Popover2) 的浮层高于 Drawer/Overlay
+  // Drawer/Overlay 在本项目中层级为 3000+，因此这里统一提升到 3003
+  // 说明：该选择器仅作用于 Popover2 的过渡容器，不影响 Dialog/Drawer
   .bp4-popover2-transition-container {
-    z-index: 1600 !important;
+    z-index: 3003 !important;
   }
 
   // OperationViewer“管理”弹层的定制层级：

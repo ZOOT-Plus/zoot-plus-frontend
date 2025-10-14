@@ -116,6 +116,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
       <Popover2
         minimal
         position="bottom-left"
+        popoverClassName="z-50"
         content={
           <Menu>
             <MenuItem
