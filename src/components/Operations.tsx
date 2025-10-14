@@ -151,7 +151,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 {/* 快捷筛选：如鸢 / 代号鸢 */}
                 <ButtonGroup
                   minimal
-                  className="flex flex-wrap items-center gap-1 [&>.bp4-button]:!pl-3 [&>.bp4-button]:!pr-2 [&>.bp4-button]:!border-none"
+                  className="flex flex-wrap items-center gap-1"
                 >
                   {[
                     {
@@ -167,11 +167,12 @@ export const Operations: ComponentType = withSuspensable(() => {
                   ].map(({ label, value, icon }) => (
                     <Button
                       key={label}
-                      className="[&>.bp4-icon]:!mr-1 [&>.bp4-icon]:!align-middle"
+                      className="bp4-button bp4-minimal !px-3"
                       icon={icon}
                       active={(queryParams.levelKeyword || '') === value}
                       onClick={() => {
-                        const isActive = (queryParams.levelKeyword || '') === value
+                        const isActive =
+                          (queryParams.levelKeyword || '') === value
                         // 清空已选具体关卡，仅按游戏关键字筛选
                         setSelectedStageId('')
                         // 记录当前快捷筛选的 game，打开关卡选择时作为默认 game
