@@ -19,18 +19,11 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
   const [jsonText, setJsonText] = useState<string>('')
 
   // 兼容性映射：辟雍历史标记到标准令牌
-  // 需求：数字+圈（如 1圈/２圈/10圈）→ 额外:吕布
-  // 说明：历史文档中的 “N圈/X圈” 为占位写法，这里的 N/X 实为数字
+  // 需求：N圈 -> 额外:吕布
   const mapLegacyToken = (token: string): string => {
     const t = token.trim()
-    // 将全角数字转为半角，便于统一匹配（０-９ → 0-9）
-    const ascii = t.replace(/[０-９]/g, (ch) =>
-      String.fromCharCode(ch.charCodeAt(0) - 0xff10 + 0x30),
-    )
-    // 1) 数字+圈（如 1圈/10圈）统一映射为“额外:吕布”
-    if (/^[0-9]+圈$/u.test(ascii)) return '额外:吕布'
-    // 2) 兼容极少数历史写法：字母 N/X + 圈（大小写不敏感）
-    if (/^[NX]圈$/iu.test(ascii)) return '额外:吕布'
+    // 大小写不敏感：允许 n圈 / N圈
+    if (t.toUpperCase() === 'N圈') return '额外:吕布'
     return t
   }
 

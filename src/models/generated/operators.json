@@ -4644,14 +4644,14 @@
           "ot_name": "【死战】持续回合增加",
           "color": "金",
           "name": "中天",
-          "abbreviation": "死战+1"
+          "abbreviation": "【死战】+1"
         },
         {
           "desp": "<霸蛮>的效果会【悬赏】敌方生命值最低的两名敌人",
           "ot_name": "【悬赏】目标数增加",
           "color": "金",
           "name": "延寿",
-          "abbreviation": "悬赏+！"
+          "abbreviation": "【悬赏】+！"
         },
         {
           "desp": "初始能量+1",
