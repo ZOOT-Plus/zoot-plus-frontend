@@ -149,7 +149,10 @@ export const Operations: ComponentType = withSuspensable(() => {
                   defaultGame={selectedGame}
                 />
                 {/* 快捷筛选：如鸢 / 代号鸢 */}
-                <ButtonGroup minimal className="flex-wrap">
+                <ButtonGroup
+                  minimal
+                  className="flex flex-wrap items-center gap-1 [&>.bp4-button]:!pl-3 [&>.bp4-button]:!pr-2 [&>.bp4-button]:!border-none"
+                >
                   {[
                     {
                       label: '只看如鸢',
@@ -164,9 +167,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                   ].map(({ label, value, icon }) => (
                     <Button
                       key={label}
-                      className={clsx(
-                        '!px-2 !border-none [&>.bp4-icon]:!mr-1 [&>.bp4-icon]:!align-middle',
-                      )}
+                      className="[&>.bp4-icon]:!mr-1 [&>.bp4-icon]:!align-middle"
                       icon={icon}
                       active={(queryParams.levelKeyword || '') === value}
                       onClick={() => {
