@@ -830,7 +830,7 @@ export async function toSimingOperationRemote(
     difficulty: '',
     // 洞窟时由下方逻辑设置为 catThree
     cave_type: '',
-    lantai_nav: '',
+    lantai_nav: 'true',
     attack_delay: String(delays.attack),
     ult_delay: String(delays.ultimate),
     defense_delay: String(delays.defense),
