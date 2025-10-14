@@ -445,7 +445,8 @@ const OperatorCard: FC<{
                   key={i}
                   className={clsx('flex gap-1', !showExtras && 'justify-center')}
                 >
-                  <Tooltip2 content={d.desp}>
+                  {/* 提升命盘描述 Tooltip 的层级，避免被 Drawer 内容遮挡 */}
+                  <Tooltip2 content={d.desp} usePortal={true} portalClassName="operation-viewer-portal">
                     <div
                       className={clsx(
                         'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',

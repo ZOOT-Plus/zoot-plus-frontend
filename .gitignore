@@ -29,3 +29,4 @@ src/i18n/generated
 
 # dev tooling
 .serena/
+operations-log.md
