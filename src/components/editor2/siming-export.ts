@@ -1,12 +1,10 @@
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import type { Level } from '../../models/operation'
+import { OpDifficulty, OpDifficultyBitFlag } from '../../models/operation'
 import {
   RoundActionsInput,
   editorActionsToRoundActions,
 } from './action/roundMapping'
-import { EditorOperation } from './types'
-import type { Level } from '../../models/operation'
-import { OpDifficulty, OpDifficultyBitFlag } from '../../models/operation'
-import { CopilotOperationLoose } from './validation/schema'
 import {
   DEFAULT_SIMING_ACTION_DELAYS,
   DEFAULT_SIMING_ATTACK_DELAY,
@@ -14,6 +12,8 @@ import {
   DEFAULT_SIMING_ULTIMATE_DELAY,
   SimingActionDelays,
 } from './siming/constants'
+import { EditorOperation } from './types'
+import { CopilotOperationLoose } from './validation/schema'
 
 export interface SimingActionConfig {
   action?: string
@@ -137,7 +137,7 @@ const ACTION_TEMPLATES: Record<string, SimingActionConfig> = {
     target: [646, 1060, 5, 5],
     post_delay: 3000,
   },
-  '切换敌人': {
+  切换敌人: {
     action: 'Swipe',
     begin: [77, 991, 5, 5],
     end: [77, 670, 5, 5],
@@ -183,7 +183,7 @@ const EXTRA_ACTION_TEMPLATES: Record<string, SimingActionConfig> = {
     action: 'Click',
     timeout: 1800000,
   },
-  '史子眇sp': {
+  史子眇sp: {
     text_doc: '额外:史子眇sp',
     focus: '点击史子眇sp',
     recognition: 'TemplateMatch',
@@ -278,7 +278,7 @@ function applyDelayFromToken(
   token: string,
   delays: SimingActionDelays,
 ) {
-  const raw = token.startsWith('额外:') ? token.split(':', 2)[1] ?? '' : token
+  const raw = token.startsWith('额外:') ? (token.split(':', 2)[1] ?? '') : token
   const templateKey = templateKeyFromToken(raw)
   const override = resolveDelayForTemplate(templateKey, delays)
   if (override !== undefined) {
@@ -289,9 +289,10 @@ function applyDelayFromToken(
 function createCustomDelayNode(delays: SimingActionDelays): SimingActionConfig {
   const normalize = (value: number | undefined, fallback: number) => {
     const numberLike = Number(value)
-    const normalized = Number.isFinite(numberLike) && numberLike >= 0
-      ? Math.round(numberLike)
-      : fallback
+    const normalized =
+      Number.isFinite(numberLike) && numberLike >= 0
+        ? Math.round(numberLike)
+        : fallback
     return String(normalized)
   }
 
@@ -303,7 +304,10 @@ function createCustomDelayNode(delays: SimingActionDelays): SimingActionConfig {
 }
 
 function parseDownRestartPosition(token: string): number {
-  const trimmed = token.replace(DOWN_RESTART_PREFIX, '').replace('号位阵亡', '').trim()
+  const trimmed = token
+    .replace(DOWN_RESTART_PREFIX, '')
+    .replace('号位阵亡', '')
+    .trim()
   const digit = trimmed.charAt(0)
   const position = Number.parseInt(digit, 10)
   return Number.isFinite(position) && position >= 1 ? position : 1
@@ -406,10 +410,12 @@ function buildRoundNodes(
     const nextRoundDetection =
       index < entries.length - 1 ? `检测回合${entries[index + 1][0]}` : null
 
-    const firstToken = actionList.find((entry) => {
-      const token = entry?.[0]?.trim()
-      return token && token.length > 0
-    })?.[0]?.trim()
+    const firstToken = actionList
+      .find((entry) => {
+        const token = entry?.[0]?.trim()
+        return token && token.length > 0
+      })?.[0]
+      ?.trim()
 
     if (roundsWithOrangeRestart.has(roundKey)) {
       ensureNext(result, detectionKey, `第${roundKey}回合橙星检测`)
@@ -510,13 +516,14 @@ function buildRoundNodes(
         result[actionKey] = config
       } else {
         const templateKey = templateKeyFromToken(token)
-        const baseConfig =
-          cloneConfig(templateKey ? ACTION_TEMPLATES[templateKey] : undefined) ?? {
-            action: 'Click',
-            post_delay:
-              resolveDelayForTemplate(templateKey, delays) ??
-              DEFAULT_SIMING_ATTACK_DELAY,
-          }
+        const baseConfig = cloneConfig(
+          templateKey ? ACTION_TEMPLATES[templateKey] : undefined,
+        ) ?? {
+          action: 'Click',
+          post_delay:
+            resolveDelayForTemplate(templateKey, delays) ??
+            DEFAULT_SIMING_ATTACK_DELAY,
+        }
         const config = ensureNextArray(baseConfig)
         config.text_doc = token
         applyDelayFromToken(config, token, delays)
@@ -551,7 +558,6 @@ function buildRoundNodes(
 
   return result
 }
-
 
 function handleExtraAction(
   token: string,
@@ -611,7 +617,6 @@ function handleExtraAction(
     focus: raw,
   }
 }
-
 
 function ensureNext(map: SimingActionMap, fromKey: string, toKey: string) {
   if (!map[fromKey]) {
@@ -710,7 +715,9 @@ export function simingActionsToRoundActions(
   return roundMap
 }
 
-function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined {
+function inferSimingToken(
+  action: CopilotDocV1.SimingAction,
+): string | undefined {
   const text = action.textDoc?.trim()
   if (text && /^\\d[普大下]$/.test(text)) {
     return text
@@ -757,7 +764,6 @@ function inferSimingToken(action: CopilotDocV1.SimingAction): string | undefined
   return undefined
 }
 
-
 function sanitizeSimingActionDelays(
   delays: SimingActionDelays | undefined,
 ): SimingActionDelays {
@@ -769,18 +775,9 @@ function sanitizeSimingActionDelays(
     return Math.round(numberLike)
   }
   return {
-    attack: normalize(
-      delays?.attack,
-      DEFAULT_SIMING_ATTACK_DELAY,
-    ),
-    ultimate: normalize(
-      delays?.ultimate,
-      DEFAULT_SIMING_ULTIMATE_DELAY,
-    ),
-    defense: normalize(
-      delays?.defense,
-      DEFAULT_SIMING_DEFENSE_DELAY,
-    ),
+    attack: normalize(delays?.attack, DEFAULT_SIMING_ATTACK_DELAY),
+    ultimate: normalize(delays?.ultimate, DEFAULT_SIMING_ULTIMATE_DELAY),
+    defense: normalize(delays?.defense, DEFAULT_SIMING_DEFENSE_DELAY),
   }
 }
 
@@ -822,7 +819,8 @@ export async function toSimingOperationRemote(
   const delays = sanitizeSimingActionDelays(
     editorOperation.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS,
   )
-  const stageName = (baseOperation as any).stageName ?? (baseOperation as any).stage_name ?? ''
+  const stageName =
+    (baseOperation as any).stageName ?? (baseOperation as any).stage_name ?? ''
   const payload: any = {
     // 按新规则：优先使用 catTwo；若无则回退 stageName / 占位
     level_name: (opts?.level?.catTwo ?? stageName) || 'generated_config',
@@ -832,7 +830,7 @@ export async function toSimingOperationRemote(
     difficulty: '',
     // 洞窟时由下方逻辑设置为 catThree
     cave_type: '',
-    lantai_nav: 'false',
+    lantai_nav: '',
     attack_delay: String(delays.attack),
     ult_delay: String(delays.ultimate),
     defense_delay: String(delays.defense),
@@ -858,10 +856,13 @@ export async function toSimingOperationRemote(
   } else if (opts?.level?.catOne === '活动') {
     payload.level_type = '活动有分级'
     // 难度映射：优先“普通”，否则“困难”，未知则留空
-    const diff = (editorOperation as any).difficulty ?? (baseOperation as any).difficulty
+    const diff =
+      (editorOperation as any).difficulty ?? (baseOperation as any).difficulty
     if (typeof diff === 'number') {
-      const hasRegular = (diff & OpDifficultyBitFlag.REGULAR) === OpDifficultyBitFlag.REGULAR
-      const hasHard = (diff & OpDifficultyBitFlag.HARD) === OpDifficultyBitFlag.HARD
+      const hasRegular =
+        (diff & OpDifficultyBitFlag.REGULAR) === OpDifficultyBitFlag.REGULAR
+      const hasHard =
+        (diff & OpDifficultyBitFlag.HARD) === OpDifficultyBitFlag.HARD
       if (hasRegular) {
         payload.difficulty = '普通'
       } else if (hasHard) {
@@ -880,10 +881,13 @@ export async function toSimingOperationRemote(
   ) {
     // 映射：兰台/地宫/家具/其他 -> level_type=其他，且需要难度
     payload.level_type = '其他'
-    const diff = (editorOperation as any).difficulty ?? (baseOperation as any).difficulty
+    const diff =
+      (editorOperation as any).difficulty ?? (baseOperation as any).difficulty
     if (typeof diff === 'number') {
-      const hasRegular = (diff & OpDifficultyBitFlag.REGULAR) === OpDifficultyBitFlag.REGULAR
-      const hasHard = (diff & OpDifficultyBitFlag.HARD) === OpDifficultyBitFlag.HARD
+      const hasRegular =
+        (diff & OpDifficultyBitFlag.REGULAR) === OpDifficultyBitFlag.REGULAR
+      const hasHard =
+        (diff & OpDifficultyBitFlag.HARD) === OpDifficultyBitFlag.HARD
       if (hasRegular) {
         payload.difficulty = '普通'
       } else if (hasHard) {
@@ -935,15 +939,18 @@ export async function toSimingOperationRemote(
       // 识别名优先已由 catTwo 设置，兜底时不再强制从关卡名推断
       if (!payload.difficulty) {
         if (raw.includes('普通')) payload.difficulty = '普通'
-        else if (raw.includes('困难') || raw.includes('高难')) payload.difficulty = '困难'
+        else if (raw.includes('困难') || raw.includes('高难'))
+          payload.difficulty = '困难'
       }
     } else {
       // 其他：识别名保持 catTwo 或留空
     }
   }
 
-  const baseUrl = (import.meta as any).env?.VITE_SIMING_BASE_URL ||
-    (typeof process !== 'undefined' && (process as any).env?.VITE_SIMING_BASE_URL) ||
+  const baseUrl =
+    (import.meta as any).env?.VITE_SIMING_BASE_URL ||
+    (typeof process !== 'undefined' &&
+      (process as any).env?.VITE_SIMING_BASE_URL) ||
     'http://127.0.0.1:49481'
 
   const resp = await fetch(`${String(baseUrl).replace(/\/$/, '')}/api/export`, {
@@ -971,7 +978,9 @@ export async function toSimingOperationRemote(
     throw new Error('解析Siming生成结果失败: ' + (e as Error).message)
   }
 
-  const cloned = JSON.parse(JSON.stringify(baseOperation)) as CopilotOperationLoose
+  const cloned = JSON.parse(
+    JSON.stringify(baseOperation),
+  ) as CopilotOperationLoose
   const rest = { ...cloned } as Record<string, unknown>
   delete rest.actions
   delete rest.siming_actions
