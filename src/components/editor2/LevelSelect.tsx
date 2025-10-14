@@ -18,15 +18,16 @@ import { i18n, useTranslation } from '../../i18n/i18n'
 import {
   compareLevelsForDisplay,
   createCustomLevel,
-  findLevelByStageName,  isCustomLevel,
+  findLevelByStageName,
+  isCustomLevel,
   isHardMode,
 } from '../../models/level'
 import { Level, OpDifficulty } from '../../models/operation'
 import { formatError } from '../../utils/error'
 import { useDebouncedQuery } from '../../utils/useDebouncedQuery'
 import { Suggest } from '../Suggest'
-import GameSelectDialog from './GameSelectDialog'
 import { DifficultyPicker } from './DifficultyPicker'
+import GameSelectDialog from './GameSelectDialog'
 
 interface LevelSelectProps {
   className?: string
@@ -39,7 +40,10 @@ interface LevelSelectProps {
   onChange: (stageId: string, level?: Level) => void
   onDifficultyChange?: (value: OpDifficulty, programmatically: boolean) => void
   // 当选择了“游戏”或“分类”时，上抛一个用于筛选的关键字
-  onFilterChange?: (keyword: string, meta?: { game?: string; catOne?: string }) => void
+  onFilterChange?: (
+    keyword: string,
+    meta?: { game?: string; catOne?: string },
+  ) => void
   // 可选：当没有已选关卡时，为弹层提供上次筛选的默认游戏/分类，便于回显
   defaultGame?: string
   defaultCategory?: string
@@ -123,7 +127,12 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     if (!value) return null
     const fromStageName = findLevelByStageName(levels, value)
     if (fromStageName) return fromStageName
-    if (fallbackLevel && (fallbackLevel.stageId === value || fallbackLevel.catThree === value || fallbackLevel.name === value)) {
+    if (
+      fallbackLevel &&
+      (fallbackLevel.stageId === value ||
+        fallbackLevel.catThree === value ||
+        fallbackLevel.name === value)
+    ) {
       return fallbackLevel
     }
     return createCustomLevel(value)
@@ -509,7 +518,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
                 if (!normalized) {
                   return items
                 }
-                return items.filter((item) => item.toLowerCase().includes(normalized))
+                return items.filter((item) =>
+                  item.toLowerCase().includes(normalized),
+                )
               }}
               itemRenderer={(item, { handleClick, handleFocus, modifiers }) => {
                 if (modifiers.matchesPredicate === false) return null
@@ -554,9 +565,6 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           )}
         </div>
         <div className="flex flex-col gap-1 flex-1 min-w-[200px] max-w-[260px]">
-          <span className="text-xs font-medium text-slate-500">
-            {t.components.editor2.LevelSelect.category_label}
-          </span>
           <Suggest<string>
             items={categoryOptions}
             itemsEqual={(a, b) => a === b}
@@ -604,11 +612,15 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               }
               // 选择“分类”时触发一次筛选查询（按 当前游戏 + 分类 拼接）
               const kw = [selectedGame, category].filter(Boolean).join(' ')
-              onFilterChange?.(kw, { game: selectedGame || undefined, catOne: category })
+              onFilterChange?.(kw, {
+                game: selectedGame || undefined,
+                catOne: category,
+              })
             }}
             inputProps={{
               large: true,
-              placeholder: t.components.editor2.LevelSelect.category_label,
+              placeholder:
+                t.components.editor2.LevelSelect.category_placeholder,
               disabled: disabled || isLoading || categoryOptions.length === 0,
             }}
             popoverProps={{

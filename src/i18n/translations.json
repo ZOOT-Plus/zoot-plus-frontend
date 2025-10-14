@@ -534,9 +534,17 @@
           "cn": "使用自定义关卡 \"{{name}}\"",
           "zh_tw": "使用自定義關卡 \"{{name}}\""
         },
+        "category_label": {
+          "cn": "关卡类别",
+          "zh_tw": "關卡類別"
+        },
+        "category_placeholder": {
+          "cn": "关卡类别（如 白鹄）",
+          "zh_tw": "關卡類別（如 白鵠）"
+        },
         "placeholder": {
-          "cn": "关卡名、类型、编号",
-          "zh_tw": "關卡名、類型、編號"
+          "cn": "关卡名称",
+          "zh_tw": "關卡名稱"
         },
         "view_external": {
           "cn": "在 PRTS.Map 中查看关卡",
