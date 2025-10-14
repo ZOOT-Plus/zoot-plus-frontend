@@ -399,7 +399,7 @@
           "ot_name": "琴砚共依",
           "color": "金",
           "name": "延寿",
-          "abbreviation": "琴砚共依\n"
+          "abbreviation": "琴砚共依"
         },
         {
           "desp": "回合结束时，我方拥有护盾的密探获得【急弦】(2回合)。【急弦】:技能增伤提升50",
@@ -622,7 +622,7 @@
           "abbreviation": "攻击大幅"
         },
         {
-          "desp": "初始能量+1\n",
+          "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
           "name": "阳明",
@@ -3876,7 +3876,7 @@
           "ot_name": "【入道】状态必定失控",
           "color": "金",
           "name": "北极",
-          "abbreviation": "【入道】"
+          "abbreviation": "入道"
         },
         {
           "desp": "攻击力提升8%",
@@ -4143,7 +4143,7 @@
           "ot_name": "【嘲讽】回合提升",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "【嘲讽】+1"
+          "abbreviation": "嘲讽+1"
         },
         {
           "desp": "技能不再【嘲讽】敌方全体，面是提升我方全体15触发增伤（2回合）",
@@ -4651,14 +4651,14 @@
           "ot_name": "【悬赏】目标数增加",
           "color": "金",
           "name": "延寿",
-          "abbreviation": "悬赏+！"
+          "abbreviation": "悬赏+2"
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
           "name": "益算",
-          "abbreviation": "初始能量+1"
+          "abbreviation": "初始+1"
         },
         {
           "desp": "普攻的伤害系数增加15%",
@@ -5234,7 +5234,7 @@
           "ot_name": "初始能量+1",
           "color": "紫",
           "name": "益算",
-          "abbreviation": "初始能量+1"
+          "abbreviation": "初始+1"
         },
         {
           "desp": "技能的伤害系数增加27%",
@@ -5309,7 +5309,7 @@
           "ot_name": "技能消耗提升，但效果更强",
           "color": "金",
           "name": "中天",
-          "abbreviation": "耗升效强"
+          "abbreviation": "高耗强效"
         },
         {
           "desp": "战斗中首次释放技能后，回复自身4点能量，并获得3层【音律】",
@@ -5412,7 +5412,7 @@
           "ot_name": "<五藏论>额外提供减伤",
           "color": "金",
           "name": "延寿",
-          "abbreviation": "五藏额外"
+          "abbreviation": "五藏减伤"
         },
         {
           "desp": "普攻时，使全队免伤值提升3（1回合）",
@@ -5700,7 +5700,7 @@
           "ot_name": "【同生共死】回合增加",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "【同生】+1"
+          "abbreviation": "同生+1"
         },
         {
           "desp": "释放技能时为全队提供抵御70%攻击力的伤害的护盾（2回合）",
@@ -6084,7 +6084,7 @@
           "ot_name": "普攻和技能会附加【灼伤】",
           "color": "金",
           "name": "丹曲",
-          "abbreviation": "【灼伤】"
+          "abbreviation": "攻击灼伤"
         },
         {
           "desp": "技能消耗的能量-1，战斗开始时获得的能量-1",
@@ -6098,14 +6098,14 @@
           "ot_name": "技能消耗提升但效果更强",
           "color": "金",
           "name": "中天",
-          "abbreviation": "【火种】"
+          "abbreviation": "火种附加"
         },
         {
           "desp": "作为队长时每回合会为全队附加所有效果，但生命恢复效果减半",
           "ot_name": "队长技额外效果",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "队长效果"
+          "abbreviation": "队长强化"
         },
         {
           "desp": "防御时，恢复10%最大生命值的生命",
@@ -6215,7 +6215,7 @@
           "ot_name": "普攻强化，技能免伤提升",
           "color": "紫",
           "name": "延寿",
-          "abbreviation": "普增技免"
+          "abbreviation": "普技强化"
         },
         {
           "desp": "普攻的伤害系数增加10%",
@@ -8882,7 +8882,7 @@
           "ot_name": "被动触发概率提升",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "被动概率"
+          "abbreviation": "被动提升"
         },
         {
           "desp": "初始能量+1",
@@ -9074,7 +9074,7 @@
           "ot_name": "攻击附加【灼伤】",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "【灼伤】"
+          "abbreviation": "灼伤附加"
         },
         {
           "desp": "变身扬州小红莲的概率提升15%，且变身额外持续一回合",
@@ -9348,7 +9348,7 @@
           "ot_name": "强化与贾诩的联动",
           "color": "金",
           "name": "中天",
-          "abbreviation": "强化联动"
+          "abbreviation": "联动强化"
         },
         {
           "desp": "每次普攻后，提升自身2%攻击力",
@@ -9369,7 +9369,7 @@
           "ot_name": "【解析】无限叠加",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "【解析】"
+          "abbreviation": "解析无限"
         },
         {
           "desp": "技能的伤害系数增加27%",
@@ -9540,14 +9540,14 @@
           "ot_name": "【看破】无限叠加",
           "color": "金",
           "name": "帝君",
-          "abbreviation": "【看破】"
+          "abbreviation": "看破无限"
         },
         {
           "desp": "普攻时，如果目标敌人身上有【解析】，会变成群体攻击，但伤害不会增加",
           "ot_name": "强化与郭嘉的联动",
           "color": "金",
           "name": "中天",
-          "abbreviation": "强化联动"
+          "abbreviation": "联动强化"
         },
         {
           "desp": "以降低我方全体60普攻增伤为代价，提升全队50技能增伤",
