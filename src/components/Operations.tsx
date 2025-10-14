@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
 } from '@blueprintjs/core'
+import { IconNames } from '@blueprintjs/icons'
 
 import { UseOperationsParams, useRefreshOperations } from 'apis/operation'
 import clsx from 'clsx'
@@ -150,24 +151,36 @@ export const Operations: ComponentType = withSuspensable(() => {
                 {/* 快捷筛选：如鸢 / 代号鸢 */}
                 <ButtonGroup minimal className="flex-wrap">
                   {[
-                    { label: '如鸢', value: '如鸢' },
-                    { label: '代号鸢', value: '代号鸢' },
-                  ].map(({ label, value }) => (
+                    {
+                      label: '只看如鸢',
+                      value: '如鸢',
+                      icon: IconNames.MANUAL,
+                    },
+                    {
+                      label: '只看代号鸢',
+                      value: '代号鸢',
+                      icon: IconNames.GLOBE,
+                    },
+                  ].map(({ label, value, icon }) => (
                     <Button
                       key={label}
-                      className={clsx('!px-2 !py-1 !border-none [&>.bp4-icon]:!mr-1')}
+                      className={clsx(
+                        '!px-2 !border-none [&>.bp4-icon]:!mr-1 [&>.bp4-icon]:!align-middle',
+                      )}
+                      icon={icon}
                       active={(queryParams.levelKeyword || '') === value}
                       onClick={() => {
+                        const isActive = (queryParams.levelKeyword || '') === value
                         // 清空已选具体关卡，仅按游戏关键字筛选
                         setSelectedStageId('')
                         // 记录当前快捷筛选的 game，打开关卡选择时作为默认 game
-                        setSelectedGame(label)
+                        setSelectedGame(isActive ? undefined : value)
                         setQueryParams((old) => ({
                           ...old,
                           // 仅以“游戏名”作为 levelKeyword，避免过度收窄（不附加“通用”）
-                          levelKeyword: value,
+                          levelKeyword: isActive ? undefined : value,
                           // 同时清空自由关键字，避免叠加条件导致无结果
-                          keyword: undefined,
+                          keyword: isActive ? old.keyword : undefined,
                         }))
                         // 立刻刷新列表
                         refreshOperations()
