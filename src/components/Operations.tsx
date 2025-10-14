@@ -49,6 +49,8 @@ export const Operations: ComponentType = withSuspensable(() => {
   const [multiselect, setMultiselect] = useState(false)
   // 独立保存已选中的具体关卡，用于按钮展示与弹层回显
   const [selectedStageId, setSelectedStageId] = useState<string>('')
+  // 记录由快捷筛选选择的当前 game，用于打开关卡选择时作为默认值
+  const [selectedGame, setSelectedGame] = useState<string | undefined>()
 
   return (
     <>
@@ -109,7 +111,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 className="max-w-md [&>input]:!rounded-md"
                 placeholder={t.components.Operations.search_placeholder}
                 leftIcon="search"
-                size={64}
+                size={32}
                 large
                 type="search"
                 enterKeyHint="search"
@@ -143,7 +145,38 @@ export const Operations: ComponentType = withSuspensable(() => {
                     // 主动触发一次刷新，确保立刻发起查询
                     refreshOperations()
                   }}
+                  defaultGame={selectedGame}
                 />
+                {/* 快捷筛选：如鸢 / 代号鸢 */}
+                <ButtonGroup minimal className="flex-wrap">
+                  {[
+                    { label: '如鸢', value: '如鸢' },
+                    { label: '代号鸢', value: '代号鸢' },
+                  ].map(({ label, value }) => (
+                    <Button
+                      key={label}
+                      className={clsx('!px-2 !py-1 !border-none [&>.bp4-icon]:!mr-1')}
+                      active={(queryParams.levelKeyword || '') === value}
+                      onClick={() => {
+                        // 清空已选具体关卡，仅按游戏关键字筛选
+                        setSelectedStageId('')
+                        // 记录当前快捷筛选的 game，打开关卡选择时作为默认 game
+                        setSelectedGame(label)
+                        setQueryParams((old) => ({
+                          ...old,
+                          // 仅以“游戏名”作为 levelKeyword，避免过度收窄（不附加“通用”）
+                          levelKeyword: value,
+                          // 同时清空自由关键字，避免叠加条件导致无结果
+                          keyword: undefined,
+                        }))
+                        // 立刻刷新列表
+                        refreshOperations()
+                      }}
+                    >
+                      {label}
+                    </Button>
+                  ))}
+                </ButtonGroup>
                 <UserFilter
                   user={selectedUser}
                   onChange={(user) => {
