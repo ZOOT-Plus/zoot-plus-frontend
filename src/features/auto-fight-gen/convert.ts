@@ -43,6 +43,20 @@ const themeColorMap: Record<number, string> = {
   9: '橙',
 }
 
+// 近似主题色对应的十六进制（仅用于前端色块展示）
+const themeColorHexMap: Record<number, string> = {
+  0: '#FFFFFF',
+  1: '#000000',
+  2: '#FFFFFF',
+  3: '#4F81BD',
+  4: '#4F81BD',
+  5: '#C0504D',
+  6: '#9BBB59',
+  7: '#8064A2',
+  8: '#4F81BD',
+  9: '#ED7D31',
+}
+
 const slideOperationToAction: Record<string, AutoFightNode> = {
   左侧目标: {
     text_doc: '左侧目标',
@@ -103,7 +117,7 @@ const normalizeConfig = (
   ...overrides,
 })
 
-const rgbToNamedColor = (r: number, g: number, b: number): string => {
+export const rgbToNamedColor = (r: number, g: number, b: number): string => {
   const rf = r / 255
   const gf = g / 255
   const bf = b / 255
@@ -121,9 +135,7 @@ const rgbToNamedColor = (r: number, g: number, b: number): string => {
   } else {
     h = 60 * ((rf - gf) / delta + 4)
   }
-  if (h < 0) {
-    h += 360
-  }
+  if (h < 0) h += 360
 
   const s = max === 0 ? 0 : delta / max
   const v = max
@@ -131,16 +143,19 @@ const rgbToNamedColor = (r: number, g: number, b: number): string => {
   const sat = s * 255
   const val = v * 255
 
+  // 黑/白/灰优先（与原阈值兼容）
   if (sat <= 43 && val <= 46) return NAMED_COLORS.黑
   if (sat <= 30 && val >= 221) return NAMED_COLORS.白
   if (sat <= 43 && val > 46 && val < 221) return NAMED_COLORS.灰
-  if ((h >= 0 && h <= 10) || (h >= 156 && h <= 180)) return NAMED_COLORS.红
-  if (h >= 11 && h <= 23) return NAMED_COLORS.橙
-  if (h >= 24 && h <= 34) return NAMED_COLORS.黄
-  if (h >= 35 && h <= 82) return NAMED_COLORS.绿
-  if (h >= 83 && h <= 124) return NAMED_COLORS.蓝
-  if (h >= 125 && h <= 155) return NAMED_COLORS.紫
-  return `${h.toFixed(2)} ${sat.toFixed(2)} ${val.toFixed(2)}`
+
+  // 使用 0..360 的 Hue 统一映射到常用中文色
+  // 近似区间：红[0,20]|[345,360] 橙(20,46] 黄(46,68] 绿(68,164] 蓝(164,248] 紫(248,345]
+  if (h <= 20 || h > 345) return NAMED_COLORS.红
+  if (h <= 46) return NAMED_COLORS.橙
+  if (h <= 68) return NAMED_COLORS.黄
+  if (h <= 164) return NAMED_COLORS.绿
+  if (h <= 248) return NAMED_COLORS.蓝
+  return NAMED_COLORS.紫
 }
 
 const argbToRgb = (argb: string): [number, number, number] => {
@@ -151,6 +166,49 @@ const argbToRgb = (argb: string): [number, number, number] => {
   return [r, g, b]
 }
 
+export const hexToNamedColor = (hex: string): string => {
+  const noHash = hex.startsWith('#') ? hex.slice(1) : hex
+  if (noHash.length !== 6) return '白'
+  const r = parseInt(noHash.slice(0, 2), 16)
+  const g = parseInt(noHash.slice(2, 4), 16)
+  const b = parseInt(noHash.slice(4, 6), 16)
+  return rgbToNamedColor(r, g, b)
+}
+
+const rgbTupleToHex = (rgb: [number, number, number]): string =>
+  `#${rgb[0].toString(16).padStart(2, '0')}${rgb[1]
+    .toString(16)
+    .padStart(2, '0')}${rgb[2].toString(16).padStart(2, '0')}`.toUpperCase()
+
+// 读取单元格填充颜色（优先 rgb，其次 theme），返回 RGB 十六进制字符串
+const getCellFillRgbHex = (cell: CellObject): string | null => {
+  const anyCell = cell as unknown as {
+    s?: {
+      fgColor?: { rgb?: string; theme?: number }
+      fill?: {
+        fgColor?: { rgb?: string; theme?: number }
+        bgColor?: { rgb?: string; theme?: number }
+      }
+    }
+  }
+  const s = anyCell?.s
+  const tryColors = [
+    s?.fgColor?.rgb,
+    s?.fill?.fgColor?.rgb,
+    s?.fill?.bgColor?.rgb,
+  ].filter(Boolean) as string[]
+  if (tryColors.length > 0) {
+    const [r, g, b] = argbToRgb(tryColors[0]!)
+    return rgbTupleToHex([r, g, b])
+  }
+  const theme =
+    s?.fgColor?.theme ?? s?.fill?.fgColor?.theme ?? s?.fill?.bgColor?.theme
+  if (typeof theme === 'number') {
+    return themeColorHexMap[theme] ?? null
+  }
+  return null
+}
+
 const pickCellColor = (
   cell: CellObject,
   config: AutoFightConfig,
@@ -159,30 +217,25 @@ const pickCellColor = (
     return ''
   }
 
+  // 文本模式：前缀以 colorList 中的任意标识开头（允许使用字母令牌）
   if (config.colorType === 'text') {
     const raw = typeof cell.v === 'string' ? cell.v.trim() : ''
-    if (!raw) {
-      return ''
-    }
-    const matched = config.colorList.find((color) => raw.startsWith(color))
+    if (!raw) return ''
+    const matched = config.colorList.find((token) => raw.startsWith(token))
     return matched ?? ''
   }
 
-  const style = cell.s as unknown as
-    | { fgColor?: { rgb?: string; theme?: number } }
-    | undefined
-  const fgColor = style?.fgColor
-  if (!fgColor) {
-    return '白'
+  // 填充模式：使用 paletteHexList 来确保“按原色块”精准区分
+  const fillHex = getCellFillRgbHex(cell)
+  if (!fillHex) return ''
+  const palette = (config.paletteHexList ?? []).map((h) => h.toUpperCase())
+  const tokens = config.colorTokenList && config.colorTokenList.length > 0 ? config.colorTokenList : config.colorList
+  const idx = palette.indexOf(fillHex.toUpperCase())
+  if (idx >= 0 && tokens[idx]) {
+    // 返回单字符令牌（例如 A/B/C/...），便于后续解析与最短旋转
+    return tokens[idx]
   }
-  if (typeof fgColor.theme === 'number') {
-    return themeColorMap[fgColor.theme] ?? '白'
-  }
-  if (fgColor.rgb) {
-    const [r, g, b] = argbToRgb(fgColor.rgb)
-    return rgbToNamedColor(r, g, b)
-  }
-  return '白'
+  return ''
 }
 
 const readSheetRows = (
@@ -232,6 +285,98 @@ const readSheetRows = (
   }
 
   return rows
+}
+
+// 提取 Excel 中出现的命名颜色（仅统计含内容的单元格）
+export const detectXlsxColors = (
+  arrayBuffer: ArrayBuffer,
+  overrides?: Partial<AutoFightConfig>,
+): string[] => {
+  // 强制启用颜色解析做检测，但颜色来源遵循 overrides 中的 colorType
+  const config = normalizeConfig({ useColor: true, ...overrides })
+  const workbook = read(arrayBuffer, { type: 'array', cellStyles: true })
+  const [sheetName] = workbook.SheetNames
+  if (!sheetName) {
+    return []
+  }
+  const sheet = workbook.Sheets[sheetName]
+  const rangeRef = sheet['!ref']
+  if (!rangeRef) {
+    return []
+  }
+  const range = utils.decode_range(rangeRef)
+  const set = new Set<string>()
+
+  for (let r = range.s.r; r <= range.e.r; r += 1) {
+    if (config.useHeader && r === range.s.r) continue
+    for (let c = range.s.c; c <= range.e.c; c += 1) {
+      const cellAddress = utils.encode_cell({ r, c })
+      const cell = sheet[cellAddress] as CellObject | undefined
+      if (!cell) continue
+      const rawText = cell.v === undefined || cell.v === null ? '' : String(cell.v).trim()
+      // 没有文本也允许统计，只要单元格存在填充色
+      const fillHex = getCellFillRgbHex(cell)
+      if (fillHex) {
+        // 转命名色以对齐生成逻辑
+        const hexNoHash = fillHex.replace('#', '')
+        const r = parseInt(hexNoHash.slice(0, 2), 16)
+        const g = parseInt(hexNoHash.slice(2, 4), 16)
+        const b = parseInt(hexNoHash.slice(4, 6), 16)
+        const colorName = rgbToNamedColor(r, g, b)
+        if (colorName) set.add(colorName)
+        continue
+      }
+      if (rawText) {
+        const color = pickCellColor(cell, config)
+        if (color) set.add(color)
+      }
+    }
+  }
+
+  return Array.from(set)
+}
+
+export interface DetectedColor {
+  label: string
+  rgb: string
+}
+
+// 提取 Excel 中出现的颜色调色板（包含色块展示所需的 RGB）
+export const detectXlsxPalette = (
+  arrayBuffer: ArrayBuffer,
+  overrides?: Partial<AutoFightConfig>,
+): DetectedColor[] => {
+  const config = normalizeConfig({ useColor: true, ...overrides })
+  const workbook = read(arrayBuffer, { type: 'array', cellStyles: true })
+  const [sheetName] = workbook.SheetNames
+  if (!sheetName) return []
+  const sheet = workbook.Sheets[sheetName]
+  const rangeRef = sheet['!ref']
+  if (!rangeRef) return []
+  const range = utils.decode_range(rangeRef)
+
+  const map = new Map<string, DetectedColor>() // key: rgb hex
+
+  for (let r = range.s.r; r <= range.e.r; r += 1) {
+    if (config.useHeader && r === range.s.r) continue
+    for (let c = range.s.c; c <= range.e.c; c += 1) {
+      const cellAddress = utils.encode_cell({ r, c })
+      const cell = sheet[cellAddress] as CellObject | undefined
+      if (!cell) continue
+      const fillHex = getCellFillRgbHex(cell)
+      if (!fillHex) continue
+      const hexNoHash = fillHex.replace('#', '')
+      const r8 = parseInt(hexNoHash.slice(0, 2), 16)
+      const g8 = parseInt(hexNoHash.slice(2, 4), 16)
+      const b8 = parseInt(hexNoHash.slice(4, 6), 16)
+      const label = rgbToNamedColor(r8, g8, b8)
+      if (!map.has(fillHex)) {
+        map.set(fillHex, { label, rgb: fillHex })
+      }
+    }
+  }
+
+  return Array.from(map.values())
 }
 
 const getActionTemplate = (actionCode: string) => {

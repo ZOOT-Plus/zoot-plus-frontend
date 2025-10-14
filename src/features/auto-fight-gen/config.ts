@@ -12,6 +12,9 @@ export interface AutoFightConfig {
   useColor: boolean
   colorList: string[]
   colorType: 'fill' | 'text'
+  // 新增：用于“色块→内部令牌”的映射（保持顺序一致）
+  paletteHexList?: string[]
+  colorTokenList?: string[]
 }
 
 export const defaultAutoFightConfig: AutoFightConfig = {
@@ -25,6 +28,8 @@ export const defaultAutoFightConfig: AutoFightConfig = {
   useColor: false,
   colorList: ['白', '蓝'],
   colorType: 'fill',
+  paletteHexList: [],
+  colorTokenList: [],
 }
 
 export const actionMap: Record<string, string> = {
