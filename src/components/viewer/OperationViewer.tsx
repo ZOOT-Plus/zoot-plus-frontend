@@ -363,26 +363,62 @@ const OperatorCard: FC<{
     info?.rarity,
   )
 
-  // 读取命盘集合（从 operators.json 注入的 info.discs）与选中结果
-  const discList = (info as any)?.discs ?? []
-  let selected: number[] = Array.isArray((operator as any).discsSelected)
-    ? ((operator as any).discsSelected as number[])
-    : []
-  if ((!selected || selected.length === 0) && typeof operator.skill === 'number') {
-    // 兼容：旧数据仅有 skill（1-based），视为只选了一个命盘
-    selected = [operator.skill]
+  // —— 属性拓展读取（extensions）+ 兼容旧字段 ——
+  type DiscSlot = { index: number; disc: number; starStone?: string; assistStar?: string }
+  const getDiscSlots = (op: CopilotDocV1.Operator): DiscSlot[] => {
+    // 原方案优先：并行数组（camelCase）；viewer 接口层已 camel 化
+    const ds = (op as any).discsSelected ?? []
+    const ss = (op as any).discStarStones ?? []
+    const as = (op as any).discAssistStars ?? []
+    const hasLegacy = ds.length > 0 || ss.length > 0 || as.length > 0
+    if (hasLegacy) {
+      return [0, 1, 2].map((i) => ({
+        index: i,
+        disc: ds[i] ?? 0,
+        starStone: ss[i] ?? '',
+        assistStar: as[i] ?? '',
+      }))
+    }
+    // 回退：extensions.slots
+    const ext = (op as any).extensions as
+      | { discs?: { slots?: DiscSlot[] }; stats?: { starLevel?: number; attack?: number; hp?: number } }
+      | undefined
+    const slots = ext?.discs?.slots
+    if (slots && slots.length > 0) {
+      const norm = [...slots]
+        .filter((s) => s && typeof s.index === 'number')
+        .map((s, i) => ({ index: s.index ?? i, disc: s.disc ?? 0, starStone: s.starStone ?? '', assistStar: s.assistStar ?? '' }))
+        .sort((a, b) => a.index - b.index)
+      while (norm.length < 3) norm.push({ index: norm.length, disc: 0 })
+      return norm.slice(0, 3)
+    }
+    return [0, 1, 2].map((i) => ({ index: i, disc: 0 }))
   }
-  const selectedDiscs = (selected || [])
-    .map((idx) => {
-      if (idx === -1) {
-        return { name: '任意', abbreviation: '任意', desp: '任意' } as any
+  const getStats = (op: CopilotDocV1.Operator): { starLevel: number; attack: number; hp: number } => {
+    const ext = (op as any).extensions as { stats?: { starLevel?: number; attack?: number; hp?: number } } | undefined
+    const rarity = info?.rarity ?? 6
+    return {
+      starLevel: ext?.stats?.starLevel ?? Math.min(5, Math.max(1, (Number((op as any).starLevel) || rarity || 5))),
+      attack: (ext?.stats?.attack ?? Number((op as any).attack)) || 0,
+      hp: (ext?.stats?.hp ?? Number((op as any).hp)) || 0,
+    }
+  }
+
+  // 读取命盘集合与选中结果（优先 extensions.slots；回退 discsSelected）
+  const discList = (info as any)?.discs ?? []
+  const slots = getDiscSlots(operator)
+  const selectedDiscs = slots.filter((s) => s.disc !== 0).map((s) => s)
+  const selectedDiscsDisplay = selectedDiscs
+    .map((s) => {
+      if (s.disc === -1) {
+        return { _slot: s.index, item: { name: '任意', abbreviation: '任意', desp: '任意' } as any }
       }
-      if (typeof idx === 'number' && idx > 0 && idx <= discList.length) {
-        return discList[idx - 1]
+      if (typeof s.disc === 'number' && s.disc > 0 && s.disc <= discList.length) {
+        return { _slot: s.index, item: discList[s.disc - 1] }
       }
       return null
     })
-    .filter(Boolean) as any[]
+    .filter(Boolean) as { _slot: number; item: any }[]
 
   const discColorClasses = (color?: string) => {
     switch (color) {
@@ -436,10 +472,35 @@ const OperatorCard: FC<{
         <h4 className="mt-1 -mx-2 leading-4 font-semibold tracking-tighter text-center">
           {displayName}
         </h4>
+        {/* 星级（展示 1..5）与基础数值 */}
+        {(() => {
+          const stats = getStats(operator)
+          const current = Math.min(5, Math.max(1, stats.starLevel))
+          return (
+            <div className="mt-1 flex flex-col items-center gap-1 select-none">
+              <div className="flex items-center gap-1">
+                {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
+                  <Icon
+                    key={n}
+                    icon="star"
+                    className={clsx(
+                      'w-4 h-4',
+                      n <= current ? 'text-yellow-500 opacity-100' : 'text-gray-500 opacity-40',
+                    )}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center gap-2 text-xs opacity-80">
+                <span title="攻击">攻: {Math.max(0, stats.attack)}</span>
+                <span title="生命">生: {Math.max(0, stats.hp)}</span>
+              </div>
+            </div>
+          )
+        })()}
         {selectedDiscs?.length > 0 && (
           <div className="mt-1 mx-[-4px] grid gap-1">
-            {selectedDiscs.map((d: any, i: number) => {
-              const star = ((operator as any).discStarStones ?? [])[i]
+            {selectedDiscsDisplay.map(({ item: d, _slot }, i: number) => {
+              const star = slots.find((s) => s.index === _slot)?.starStone
               return (
                 <div
                   key={i}
@@ -470,9 +531,9 @@ const OperatorCard: FC<{
                         className={clsx(
                           'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
                         )}
-                        title={((operator as any).discAssistStars ?? [])[i] || '辅星'}
+                        title={slots.find((s) => s.index === _slot)?.assistStar || '辅星'}
                       >
-                        <span className="bp4-button-text">{((operator as any).discAssistStars ?? [])[i] || '辅星'}</span>
+                        <span className="bp4-button-text">{slots.find((s) => s.index === _slot)?.assistStar || '辅星'}</span>
                       </div>
                     </>
                   )}

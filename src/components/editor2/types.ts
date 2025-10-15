@@ -31,6 +31,29 @@ export type EditorOperationBase = Simplify<
   }
 >
 
+// Editor-only 扩展容器（v1）：统一承载命盘/星石/辅星与基础数值
+export interface EditorOperatorExtensionsV1 {
+  version: 1
+  discs?: {
+    // 固定最多 3 槽；允许未满 3 长度；读写时请自行填充
+    slots: Array<{
+      // 0-based 槽位索引
+      index: number
+      // 与旧字段 discsSelected 语义一致：-1=任意，0=未选，>0=第 (value) 个命盘（1 基）
+      disc: number
+      // 星石/辅星名称，可空
+      starStone?: string
+      assistStar?: string
+    }>
+  }
+  stats?: {
+    // 基础数值（仅编辑器使用，不导出到协议）
+    starLevel?: number // [1..6]
+    attack?: number // >= 0
+    hp?: number // >= 0
+  }
+}
+
 export type EditorOperator = Simplify<
   WithId<
     SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'> & {
@@ -40,6 +63,12 @@ export type EditorOperator = Simplify<
       discStarStones?: string[]
       // UI 扩展：对应每个命盘的辅星选择（名称字符串），长度与 discsSelected 对齐
       discAssistStars?: string[]
+      // 基础数值（原方案直挂根上；用于 Viewer 回退与导出 toMaaOperation 的 snake_case）
+      starLevel?: number
+      attack?: number
+      hp?: number
+      // 统一扩展容器（v1）：承载命盘/星石/辅星与基础数值，Editor-only
+      extensions?: EditorOperatorExtensionsV1
     }
   >
 >

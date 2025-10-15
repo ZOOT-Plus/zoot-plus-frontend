@@ -91,10 +91,11 @@ export function dehydrateOperation(
 ): DehydratedEditorOperation {
   return {
     ...source,
-    opers: source.opers.map(({ id, ...operator }) => operator),
+    // 剥离仅供编辑器使用的字段（如 id / extensions）
+    opers: source.opers.map(({ id, extensions, ...operator }) => operator),
     groups: source.groups.map(({ id, opers, ...group }) => ({
       ...group,
-      opers: opers.map(({ id, ...operator }) => operator),
+      opers: opers.map(({ id, extensions, ...operator }) => operator),
     })),
     actions: source.actions.map(({ id, ...action }) => action),
   }

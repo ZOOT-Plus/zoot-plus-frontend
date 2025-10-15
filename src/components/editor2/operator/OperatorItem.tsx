@@ -25,6 +25,118 @@ import { SortableItemProps } from '../../dnd'
 import { EditorOperator, useEdit } from '../editor-state'
 import { editorFavOperatorsAtom } from '../reconciliation'
 
+// —— 属性拓展（extensions）统一读写 ——
+type DiscSlot = { index: number; disc: number; starStone?: string; assistStar?: string }
+
+function getDiscSlots(operator: EditorOperator): DiscSlot[] {
+  // 原方案优先：使用并行数组（camelCase）
+  const ds = operator.discsSelected ?? []
+  const ss = (operator as any).discStarStones ?? []
+  const as = (operator as any).discAssistStars ?? []
+  const hasLegacy = ds.length > 0 || ss.length > 0 || as.length > 0
+  if (hasLegacy) {
+    return [0, 1, 2].map((i) => ({
+      index: i,
+      disc: ds[i] ?? 0,
+      starStone: ss[i] ?? '',
+      assistStar: as[i] ?? '',
+    }))
+  }
+  // 兼容回退：若没有并行数组，则读取 extensions（如存在）
+  const slots = operator.extensions?.discs?.slots
+  if (slots && slots.length > 0) {
+    const norm = [...slots]
+      .filter((s) => s && typeof s.index === 'number')
+      .map((s, i) => ({ index: s.index ?? i, disc: s.disc ?? 0, starStone: s.starStone ?? '', assistStar: s.assistStar ?? '' }))
+    while (norm.length < 3) norm.push({ index: norm.length, disc: 0 })
+    return norm.sort((a, b) => a.index - b.index).slice(0, 3)
+  }
+  return [0, 1, 2].map((i) => ({ index: i, disc: 0 }))
+}
+
+function syncLegacyArraysFromSlots(slots: DiscSlot[]) {
+  const discsSelected = [0, 0, 0]
+  const discStarStones = ['', '', '']
+  const discAssistStars = ['', '', '']
+  for (const s of slots) {
+    if (s.index >= 0 && s.index < 3) {
+      discsSelected[s.index] = s.disc ?? 0
+      discStarStones[s.index] = s.starStone ?? ''
+      discAssistStars[s.index] = s.assistStar ?? ''
+    }
+  }
+  return { discsSelected, discStarStones, discAssistStars }
+}
+
+function setDiscSlot(
+  operator: EditorOperator,
+  slotIndex: number,
+  updates: Partial<Pick<DiscSlot, 'disc' | 'starStone' | 'assistStar'>>,
+): EditorOperator {
+  const prev = getDiscSlots(operator)
+  const nextSlots = prev.map((s) =>
+    s.index === slotIndex ? { ...s, ...updates } : { ...s },
+  )
+
+  // 去重：如果选择了某个具体命盘（>0），清除其它槽位的相同选择
+  const chosen = nextSlots[slotIndex]?.disc
+  if (typeof chosen === 'number' && chosen > 0) {
+    for (let i = 0; i < nextSlots.length; i++) {
+      if (i !== slotIndex && nextSlots[i].disc === chosen) {
+        nextSlots[i] = { ...nextSlots[i], disc: 0 }
+      }
+    }
+  }
+
+  const { discsSelected, discStarStones, discAssistStars } =
+    syncLegacyArraysFromSlots(nextSlots)
+
+  const next: EditorOperator = {
+    ...operator,
+    // 按原方案落盘：并行数组为主
+    discsSelected,
+    discStarStones,
+    discAssistStars,
+    // 若已有其他 extensions 字段（如 stats），保留但不写 discs
+    ...(operator.extensions ? { extensions: { ...operator.extensions, discs: operator.extensions.discs } } : {}),
+  }
+  return next
+}
+
+function getStats(
+  operator: EditorOperator,
+  rarityFallback = 6,
+): { starLevel: number; attack: number; hp: number } {
+  const s = operator.extensions?.stats
+  return {
+    starLevel: s?.starLevel ?? (typeof (operator as any).starLevel === 'number' ? (operator as any).starLevel : (rarityFallback || 6)),
+    attack: s?.attack ?? (typeof (operator as any).attack === 'number' ? (operator as any).attack : 0),
+    hp: s?.hp ?? (typeof (operator as any).hp === 'number' ? (operator as any).hp : 0),
+  }
+}
+
+function setStats(
+  operator: EditorOperator,
+  updates: Partial<{ starLevel: number; attack: number; hp: number }>,
+): EditorOperator {
+  const prevStats = operator.extensions?.stats ?? {}
+  const nextStats = { ...prevStats, ...updates }
+  const next: EditorOperator = {
+    ...operator,
+    // 同步原方案根级字段，便于回退与导出
+    ...(updates.starLevel !== undefined ? { starLevel: updates.starLevel } : {}),
+    ...(updates.attack !== undefined ? { attack: updates.attack } : {}),
+    ...(updates.hp !== undefined ? { hp: updates.hp } : {}),
+    extensions: {
+      version: 1 as const,
+      ...(operator.extensions ?? {}),
+      discs: operator.extensions?.discs,
+      stats: nextStats,
+    },
+  }
+  return next
+}
+
 interface OperatorItemProps extends Partial<SortableItemProps> {
   operator: EditorOperator
   onOverlay?: boolean
@@ -128,18 +240,50 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               )}
             </Card>
           </Popover2>
+          {/* 星级（5星可点）——移出 Card，避免误触头像/名字 */}
+          <div className="mt-1 flex items-center justify-center gap-1 select-none">
+            {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => {
+              const current = clamp(getStats(operator, info?.rarity).starLevel, 1, 5)
+              const filled = n <= current
+              return (
+                <button
+                  key={'star-' + n}
+                  type="button"
+                  title={`星级 ${n}`}
+                  className={clsx(
+                    'w-4 h-4 p-0 inline-flex items-center justify-center',
+                    'transition-opacity',
+                    filled ? 'opacity-100 text-yellow-500' : 'opacity-40 text-gray-500',
+                  )}
+                  onClick={() =>
+                    edit(() => {
+                      const next = setStats(operator, { starLevel: n })
+                      onChange?.(next)
+                      return {
+                        action: 'set-operator-starLevel',
+                        desc: '设置密探星级',
+                        squashBy: operator.id,
+                      }
+                    })
+                  }
+                >
+                  <Icon icon="star" />
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* Skills & Module controls */}
         {info && (
           <div className="ml-2 mt-0.5 select-none shrink-0">
-            <ul className="w-[23ch] grid grid-rows-4 gap-1 ml-1 mt-1">
+            <ul className="w-[23ch] grid grid-rows-5 gap-1 ml-1 mt-1">
               {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
               {discList.length > 0
                 ? (
                     [0, 1, 2].map((slot) => {
-                      const indices = operator.discsSelected ?? []
-                      const idx1 = indices[slot] ?? 0
+                      const slots = getDiscSlots(operator)
+                      const idx1 = slots[slot]?.disc ?? 0
                       const selectedItem = idx1 > 0 ? discList[idx1 - 1] : undefined
                       const selectedIsAny = idx1 === -1
                       return (
@@ -166,22 +310,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             onItemSelect={(item) => {
                               edit(() => {
                                 const chosen = (item as any).idx === -1 ? -1 : (item as any).idx + 1
-                                const nextIndices = [...(operator.discsSelected ?? [0, 0, 0])]
-                                // 保证长度为3
-                                while (nextIndices.length < 3) nextIndices.push(0)
-                                // 去重：其他槽若已选相同命盘则清空
-                                if (chosen > 0) {
-                                  for (let i = 0; i < nextIndices.length; i++) {
-                                    if (i !== slot && nextIndices[i] === chosen) {
-                                      nextIndices[i] = 0
-                                    }
-                                  }
-                                }
-                                nextIndices[slot] = chosen
-                                const next: EditorOperator = {
-                                  ...operator,
-                                  discsSelected: nextIndices,
-                                }
+                                const next = setDiscSlot(operator, slot, { disc: chosen })
                                 onChange?.(next)
                                 return {
                                   action: 'set-operator-skill',
@@ -235,18 +364,12 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                 title={item}
                                 onClick={handleClick}
                                 onFocus={handleFocus}
-                                selected={(operator as any).discStarStones?.[slot] === item}
+                                selected={getDiscSlots(operator)[slot]?.starStone === item}
                               />
                             )}
                             onItemSelect={(item: string) => {
                               edit(() => {
-                                const stones = [...((operator as any).discStarStones ?? ['','',''])]
-                                while (stones.length < 3) stones.push('')
-                                stones[slot] = item
-                                const next: EditorOperator = {
-                                  ...operator,
-                                  discStarStones: stones,
-                                }
+                                const next = setDiscSlot(operator, slot, { starStone: item })
                                 onChange?.(next)
                                 return {
                                   action: 'set-operator-discStarStone',
@@ -264,10 +387,10 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             <Button
                               small
                               minimal
-                              title={(operator as any).discStarStones?.[slot] || '选择星石'}
+                              title={getDiscSlots(operator)[slot]?.starStone || '选择星石'}
                               className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
                             >
-                              {(operator as any).discStarStones?.[slot] || '星石'}
+                              {getDiscSlots(operator)[slot]?.starStone || '星石'}
                             </Button>
                           </Select>
 
@@ -291,18 +414,12 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                 title={item}
                                 onClick={handleClick}
                                 onFocus={handleFocus}
-                                selected={(operator as any).discAssistStars?.[slot] === item}
+                                selected={getDiscSlots(operator)[slot]?.assistStar === item}
                               />
                             )}
                             onItemSelect={(item: string) => {
                               edit(() => {
-                                const assists = [...((operator as any).discAssistStars ?? ['','',''])]
-                                while (assists.length < 3) assists.push('')
-                                assists[slot] = item
-                                const next: EditorOperator = {
-                                  ...operator,
-                                  discAssistStars: assists,
-                                }
+                                const next = setDiscSlot(operator, slot, { assistStar: item })
                                 onChange?.(next)
                                 return {
                                   action: 'set-operator-discAssistStar',
@@ -320,10 +437,10 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             <Button
                               small
                               minimal
-                              title={(operator as any).discAssistStars?.[slot] || '选择辅星'}
+                              title={getDiscSlots(operator)[slot]?.assistStar || '选择辅星'}
                               className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
                             >
-                              {(operator as any).discAssistStars?.[slot] || '辅星'}
+                              {getDiscSlots(operator)[slot]?.assistStar || '辅星'}
                             </Button>
                           </Select>
                         </li>
@@ -470,10 +587,67 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   )
                 })}
 
-              {/* Row 4: Module selector */}
+              {/* Row 4: Stats (攻击/生命) —— 星级已移动到头像卡片下方 */}
+              {controlsEnabled && (
+                <li className="row-start-4 h-8 flex gap-1 items-center">
+                  {/* 攻击 */}
+                  <NumericInput2
+                    intOnly
+                    min={0}
+                    buttonPosition="none"
+                    title={'攻击'}
+                    value={Math.max(0, getStats(operator, info?.rarity).attack)}
+                    inputClassName={clsx(
+                      '!w-14 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current',
+                    )}
+                    onValueChange={(_, valueStr) => {
+                      edit(() => {
+                        let v = Number(valueStr)
+                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
+                        v = Math.max(0, Math.round(v))
+                        const next = setStats(operator, { attack: v })
+                        onChange?.(next)
+                        return {
+                          action: 'set-operator-attack',
+                          desc: '设置密探攻击',
+                          squashBy: operator.id,
+                        }
+                      })
+                    }}
+                  />
+
+                  {/* 生命 */}
+                  <NumericInput2
+                    intOnly
+                    min={0}
+                    buttonPosition="none"
+                    title={'生命'}
+                    value={Math.max(0, getStats(operator, info?.rarity).hp)}
+                    inputClassName={clsx(
+                      '!w-14 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current',
+                    )}
+                    onValueChange={(_, valueStr) => {
+                      edit(() => {
+                        let v = Number(valueStr)
+                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
+                        v = Math.max(0, Math.round(v))
+                        const next = setStats(operator, { hp: v })
+                        onChange?.(next)
+                        return {
+                          action: 'set-operator-hp',
+                          desc: '设置密探生命',
+                          squashBy: operator.id,
+                        }
+                      })
+                    }}
+                  />
+                </li>
+              )}
+
+              {/* Row 5: Module selector */}
               {controlsEnabled && info?.modules && (
                 <Select
-                  className="row-start-4"
+                  className="row-start-5"
                   filterable={false}
                   items={[
                     CopilotDocV1.Module.Default,
