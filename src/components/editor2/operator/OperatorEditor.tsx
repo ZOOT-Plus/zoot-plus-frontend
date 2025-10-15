@@ -90,6 +90,11 @@ export const OperatorEditor: FC = memo(() => {
         <CreateOperatorButton />
       </div>
       <div className="grow md:overflow-auto px-4 pt-4">
+        {/* 必填提示：密探为必填，手动展示星号 */}
+        <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-200">
+          {t.components.editor2.label.opers._item}
+          <span className="ml-1 text-slate-600">*</span>
+        </div>
         <OperatorError />
         {operatorAtoms.length === 0 ? (
           <NonIdealState
@@ -244,4 +249,3 @@ const OperatorError = () => {
     </Callout>
   )
 }
-

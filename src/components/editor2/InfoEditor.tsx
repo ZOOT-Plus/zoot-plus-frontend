@@ -49,6 +49,39 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
 
   const simingDelays = info.simingActionDelays ?? DEFAULT_SIMING_ACTION_DELAYS
 
+  // 司命延迟快捷预设
+  const presetFast = { attack: 2000, ultimate: 4000, defense: 2000 } as const
+  const presetNormal = { attack: 3000, ultimate: 5000, defense: 3000 } as const
+  const presetSlow = { attack: 6000, ultimate: 10000, defense: 6000 } as const
+
+  const isPresetEqual = (
+    a: { attack: number; ultimate: number; defense: number },
+    b: { attack: number; ultimate: number; defense: number },
+  ) => a.attack === b.attack && a.ultimate === b.ultimate && a.defense === b.defense
+
+  const currentIsFast = isPresetEqual(simingDelays, presetFast)
+  const currentIsNormal = isPresetEqual(simingDelays, presetNormal)
+  const currentIsSlow = isPresetEqual(simingDelays, presetSlow)
+
+  const applyPreset = (
+    preset: 'fast' | 'normal' | 'slow',
+    values:
+      | typeof presetFast
+      | typeof presetNormal
+      | typeof presetSlow,
+  ) => {
+    edit(() => {
+      setInfo((prev) => {
+        prev.simingActionDelays = { ...values }
+      })
+      return {
+        action: 'set-siming-preset',
+        desc: i18n.actions.editor2.set_siming_preset,
+        squashBy: 'siming-preset-' + preset,
+      }
+    })
+  }
+
   const fallbackLevel = useMemo<Level | undefined>(() => {
     if (preLevel) {
       return preLevel
@@ -313,6 +346,45 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
         label={t.components.editor2.InfoEditor.siming_settings}
         helperText={t.components.editor2.InfoEditor.siming_delay_hint}
       >
+        {/* 预设选项：极速 / 普通 / 超慢 */}
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <span className="text-xs text-slate-500 whitespace-nowrap">
+            {t.components.editor2.InfoEditor.siming_preset_label}
+          </span>
+          <Tag
+            interactive
+            minimal={!currentIsFast}
+            intent={currentIsFast ? 'primary' : 'none'}
+            onClick={() => applyPreset('fast', presetFast)}
+          >
+            {t.components.editor2.InfoEditor.siming_preset_fast}
+            <span className="ml-1 opacity-70">(2000/4000/2000)</span>
+          </Tag>
+          <Tag
+            interactive
+            minimal={!currentIsNormal}
+            intent={currentIsNormal ? 'primary' : 'none'}
+            onClick={() => applyPreset('normal', presetNormal)}
+          >
+            {t.components.editor2.InfoEditor.siming_preset_normal}
+            <span className="ml-1 opacity-70">(3000/5000/3000)</span>
+          </Tag>
+          <Tag
+            interactive
+            minimal={!currentIsSlow}
+            intent={currentIsSlow ? 'primary' : 'none'}
+            onClick={() => applyPreset('slow', presetSlow)}
+          >
+            {t.components.editor2.InfoEditor.siming_preset_slow}
+            <span className="ml-1 opacity-70">(6000/10000/6000)</span>
+          </Tag>
+          {!(currentIsFast || currentIsNormal || currentIsSlow) && (
+            <Tag minimal className="ml-1" intent="none">
+              {t.components.editor2.InfoEditor.siming_preset_custom}
+            </Tag>
+          )}
+        </div>
+
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-2 text-xs text-slate-500 w-full sm:w-auto">
             <span className="text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">
