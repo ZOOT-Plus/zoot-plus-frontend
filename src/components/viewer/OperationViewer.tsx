@@ -394,14 +394,27 @@ const OperatorCard: FC<{
     }
     return [0, 1, 2].map((i) => ({ index: i, disc: 0 }))
   }
-  const getStats = (op: CopilotDocV1.Operator): { starLevel: number; attack: number; hp: number } => {
+  const readStats = (
+    op: CopilotDocV1.Operator,
+  ): {
+    starLevel: number
+    attack: number
+    hp: number
+    hasStar: boolean
+    hasAttack: boolean
+    hasHp: boolean
+  } => {
     const ext = (op as any).extensions as { stats?: { starLevel?: number; attack?: number; hp?: number } } | undefined
-    return {
-      // 默认 0 星
-      starLevel: (ext?.stats?.starLevel ?? Number((op as any).starLevel)) || 0,
-      attack: (ext?.stats?.attack ?? Number((op as any).attack)) || 0,
-      hp: (ext?.stats?.hp ?? Number((op as any).hp)) || 0,
-    }
+    const starRaw = ext?.stats?.starLevel ?? (op as any).starLevel
+    const atkRaw = ext?.stats?.attack ?? (op as any).attack
+    const hpRaw = ext?.stats?.hp ?? (op as any).hp
+    const hasStar = starRaw !== undefined
+    const hasAttack = atkRaw !== undefined
+    const hasHp = hpRaw !== undefined
+    const starLevel = Number(starRaw) || 0
+    const attack = Number(atkRaw) || 0
+    const hp = Number(hpRaw) || 0
+    return { starLevel, attack, hp, hasStar, hasAttack, hasHp }
   }
 
   // 读取命盘集合与选中结果（优先 extensions.slots；回退 discsSelected）
@@ -472,28 +485,38 @@ const OperatorCard: FC<{
         <h4 className="mt-1 -mx-2 leading-4 font-semibold tracking-tighter text-center">
           {displayName}
         </h4>
-        {/* 星级（展示 1..5）与基础数值 */}
+        {/* 星级（展示 1..5）与基础数值（仅当作业有设置时显示） */}
         {(() => {
-          const stats = getStats(operator)
+          const stats = readStats(operator)
+          const show = stats.hasStar || stats.hasAttack || stats.hasHp
+          if (!show) return null
           const current = Math.min(5, Math.max(0, stats.starLevel))
           return (
             <div className="mt-1 flex flex-col items-center gap-1 select-none">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
-                  <Icon
-                    key={n}
-                    icon="star"
-                    className={clsx(
-                      'w-4 h-4',
-                      n <= current ? 'text-yellow-500 opacity-100' : 'text-gray-500 opacity-40',
-                    )}
-                  />
-                ))}
-              </div>
-              <div className="flex items-center gap-2 text-xs opacity-80">
-                <span title="攻击">攻: {Math.max(0, stats.attack)}</span>
-                <span title="生命">生: {Math.max(0, stats.hp)}</span>
-              </div>
+              {stats.hasStar && (
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
+                    <Icon
+                      key={n}
+                      icon="star"
+                      className={clsx(
+                        'w-4 h-4',
+                        n <= current ? 'text-yellow-500 opacity-100' : 'text-gray-500 opacity-40',
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
+              {(stats.hasAttack || stats.hasHp) && (
+                <div className="flex items-center gap-2 text-xs opacity-80">
+                  {stats.hasAttack && (
+                    <span title="攻击">攻: {Math.max(0, stats.attack)}</span>
+                  )}
+                  {stats.hasHp && (
+                    <span title="生命">生: {Math.max(0, stats.hp)}</span>
+                  )}
+                </div>
+              )}
             </div>
           )
         })()}
