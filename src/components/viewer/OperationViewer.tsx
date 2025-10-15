@@ -396,9 +396,9 @@ const OperatorCard: FC<{
   }
   const getStats = (op: CopilotDocV1.Operator): { starLevel: number; attack: number; hp: number } => {
     const ext = (op as any).extensions as { stats?: { starLevel?: number; attack?: number; hp?: number } } | undefined
-    const rarity = info?.rarity ?? 6
     return {
-      starLevel: ext?.stats?.starLevel ?? Math.min(5, Math.max(1, (Number((op as any).starLevel) || rarity || 5))),
+      // 默认 0 星
+      starLevel: (ext?.stats?.starLevel ?? Number((op as any).starLevel)) || 0,
       attack: (ext?.stats?.attack ?? Number((op as any).attack)) || 0,
       hp: (ext?.stats?.hp ?? Number((op as any).hp)) || 0,
     }
@@ -475,7 +475,7 @@ const OperatorCard: FC<{
         {/* 星级（展示 1..5）与基础数值 */}
         {(() => {
           const stats = getStats(operator)
-          const current = Math.min(5, Math.max(1, stats.starLevel))
+          const current = Math.min(5, Math.max(0, stats.starLevel))
           return (
             <div className="mt-1 flex flex-col items-center gap-1 select-none">
               <div className="flex items-center gap-1">

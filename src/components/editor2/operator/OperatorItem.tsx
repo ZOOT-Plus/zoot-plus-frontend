@@ -105,11 +105,13 @@ function setDiscSlot(
 
 function getStats(
   operator: EditorOperator,
-  rarityFallback = 6,
+  _rarityFallback = 6,
 ): { starLevel: number; attack: number; hp: number } {
   const s = operator.extensions?.stats
   return {
-    starLevel: s?.starLevel ?? (typeof (operator as any).starLevel === 'number' ? (operator as any).starLevel : (rarityFallback || 6)),
+    // 默认 0 星
+    starLevel:
+      (s?.starLevel ?? (typeof (operator as any).starLevel === 'number' ? (operator as any).starLevel : undefined)) ?? 0,
     attack: s?.attack ?? (typeof (operator as any).attack === 'number' ? (operator as any).attack : 0),
     hp: s?.hp ?? (typeof (operator as any).hp === 'number' ? (operator as any).hp : 0),
   }
@@ -240,10 +242,10 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               )}
             </Card>
           </Popover2>
-          {/* 星级（5星可点）——移出 Card，避免误触头像/名字 */}
+          {/* 星级（5星可点，默认0；重复点击当前星 -> 0）——移出 Card，避免误触头像/名字 */}
           <div className="mt-1 flex items-center justify-center gap-1 select-none">
             {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => {
-              const current = clamp(getStats(operator, info?.rarity).starLevel, 1, 5)
+              const current = clamp(getStats(operator, info?.rarity).starLevel ?? 0, 0, 5)
               const filled = n <= current
               return (
                 <button
@@ -257,7 +259,9 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   )}
                   onClick={() =>
                     edit(() => {
-                      const next = setStats(operator, { starLevel: n })
+                      const cur = getStats(operator, info?.rarity).starLevel ?? 0
+                      const nextLevel = cur === n ? 0 : n
+                      const next = setStats(operator, { starLevel: nextLevel })
                       onChange?.(next)
                       return {
                         action: 'set-operator-starLevel',
@@ -278,6 +282,77 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
         {info && (
           <div className="ml-2 mt-0.5 select-none shrink-0">
             <ul className="w-[23ch] grid grid-rows-5 gap-1 ml-1 mt-1">
+              {/* 攻击力/生命值（置于命盘上方） */}
+              {controlsEnabled && (
+                <li className="h-8 flex gap-2 items-center">
+                  <span className="text-xs opacity-80 w-9">攻击力</span>
+                  <NumericInput2
+                    intOnly
+                    min={0}
+                    buttonPosition="none"
+                    title={'攻击力'}
+                    value={Math.max(0, getStats(operator, info?.rarity).attack)}
+                    inputClassName={clsx(
+                      '!w-16 h-8 !px-2 !leading-8',
+                      'text-center font-bold text-base',
+                      '!rounded-md !border-2 transition-colors',
+                      // 亮色主题
+                      '!bg-white !text-slate-800 !border-slate-400',
+                      'focus:!border-sky-500 focus:!ring-2 focus:!ring-sky-400',
+                      // 暗色主题：提高前景/边框对比度与聚焦可见度
+                      'dark:!bg-slate-800 dark:!text-slate-100 dark:!border-slate-300',
+                      'dark:focus:!border-sky-400 dark:focus:!ring-sky-400',
+                    )}
+                    onValueChange={(_, valueStr) => {
+                      edit(() => {
+                        let v = Number(valueStr)
+                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
+                        v = Math.max(0, Math.round(v))
+                        const next = setStats(operator, { attack: v })
+                        onChange?.(next)
+                        return {
+                          action: 'set-operator-attack',
+                          desc: '设置密探攻击',
+                          squashBy: operator.id,
+                        }
+                      })
+                    }}
+                  />
+                  <span className="text-xs opacity-80 w-9 text-right">生命值</span>
+                  <NumericInput2
+                    intOnly
+                    min={0}
+                    buttonPosition="none"
+                    title={'生命值'}
+                    value={Math.max(0, getStats(operator, info?.rarity).hp)}
+                    inputClassName={clsx(
+                      '!w-16 h-8 !px-2 !leading-8',
+                      'text-center font-bold text-base',
+                      '!rounded-md !border-2 transition-colors',
+                      // 亮色主题
+                      '!bg-white !text-slate-800 !border-slate-400',
+                      'focus:!border-sky-500 focus:!ring-2 focus:!ring-sky-400',
+                      // 暗色主题：提高前景/边框对比度与聚焦可见度
+                      'dark:!bg-slate-800 dark:!text-slate-100 dark:!border-slate-300',
+                      'dark:focus:!border-sky-400 dark:focus:!ring-sky-400',
+                    )}
+                    onValueChange={(_, valueStr) => {
+                      edit(() => {
+                        let v = Number(valueStr)
+                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
+                        v = Math.max(0, Math.round(v))
+                        const next = setStats(operator, { hp: v })
+                        onChange?.(next)
+                        return {
+                          action: 'set-operator-hp',
+                          desc: '设置密探生命',
+                          squashBy: operator.id,
+                        }
+                      })
+                    }}
+                  />
+                </li>
+              )}
               {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
               {discList.length > 0
                 ? (
@@ -587,67 +662,12 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   )
                 })}
 
-              {/* Row 4: Stats (攻击/生命) —— 星级已移动到头像卡片下方 */}
-              {controlsEnabled && (
-                <li className="row-start-4 h-8 flex gap-1 items-center">
-                  {/* 攻击 */}
-                  <NumericInput2
-                    intOnly
-                    min={0}
-                    buttonPosition="none"
-                    title={'攻击'}
-                    value={Math.max(0, getStats(operator, info?.rarity).attack)}
-                    inputClassName={clsx(
-                      '!w-14 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current',
-                    )}
-                    onValueChange={(_, valueStr) => {
-                      edit(() => {
-                        let v = Number(valueStr)
-                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
-                        v = Math.max(0, Math.round(v))
-                        const next = setStats(operator, { attack: v })
-                        onChange?.(next)
-                        return {
-                          action: 'set-operator-attack',
-                          desc: '设置密探攻击',
-                          squashBy: operator.id,
-                        }
-                      })
-                    }}
-                  />
-
-                  {/* 生命 */}
-                  <NumericInput2
-                    intOnly
-                    min={0}
-                    buttonPosition="none"
-                    title={'生命'}
-                    value={Math.max(0, getStats(operator, info?.rarity).hp)}
-                    inputClassName={clsx(
-                      '!w-14 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current',
-                    )}
-                    onValueChange={(_, valueStr) => {
-                      edit(() => {
-                        let v = Number(valueStr)
-                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
-                        v = Math.max(0, Math.round(v))
-                        const next = setStats(operator, { hp: v })
-                        onChange?.(next)
-                        return {
-                          action: 'set-operator-hp',
-                          desc: '设置密探生命',
-                          squashBy: operator.id,
-                        }
-                      })
-                    }}
-                  />
-                </li>
-              )}
+              
 
               {/* Row 5: Module selector */}
               {controlsEnabled && info?.modules && (
                 <Select
-                  className="row-start-5"
+                  className=""
                   filterable={false}
                   items={[
                     CopilotDocV1.Module.Default,
