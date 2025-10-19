@@ -537,7 +537,7 @@ const OperatorCard: FC<{
                         discColorClasses(d.color),
                       )}
                     >
-                      <span className="bp4-button-text">{(d.abbreviation || d.name) as string}</span>
+                      <span className="bp4-button-text">{d.abbreviation as string}</span>
                     </div>
                   </Tooltip2>
                   {showExtras && (

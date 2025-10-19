@@ -375,7 +375,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                   'min-w-40 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
                                   modifiers.active && Classes.ACTIVE,
                                 )}
-                                text={(item.abbreviation || item.name) + (item.color ? ` · ${item.color}` : '')}
+                                text={item.abbreviation + (item.color ? ` · ${item.color}` : '')}
                                 title={item.desp}
                                 onClick={handleClick}
                                 onFocus={handleFocus}
@@ -412,7 +412,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               )}
                             >
                               {selectedItem
-                                ? (selectedItem.abbreviation || selectedItem.name)
+                                ? selectedItem.abbreviation
                                 : selectedIsAny
                                 ? '任意'
                                 : `命盘${slot + 1}`}
