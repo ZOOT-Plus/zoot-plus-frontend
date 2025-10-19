@@ -14,7 +14,7 @@
         # 我们在这个 Shell 中需要的构建工具和依赖
         buildInputs = with pkgs; [
           # 1. 根据 @types/node 和 vite 的版本，我们选择 Node.js 20
-          nodejs-20.18.0
+          nodejs_20
 
           # 2. 根据 package.json 中的脚本，我们选择 yarn 作为包管理器
           yarn
