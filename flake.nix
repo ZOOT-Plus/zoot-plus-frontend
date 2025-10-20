@@ -42,6 +42,8 @@
           echo "    ✓ npm registry set to: $(npm config get registry)"
           echo " "
           echo "    You can now run 'yarn install' to install dependencies."
+          echo "    After that, use 'yarn dev' to start the development server."
+          echo "    Or 'yarn build' to create a production build."
           echo " "
         '';
 

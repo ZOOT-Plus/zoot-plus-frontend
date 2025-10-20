@@ -32,3 +32,4 @@ src/i18n/generated
 .docs/
 operations-log.md
 .direnv/
+/result*
