@@ -877,17 +877,17 @@
       "alias": "dianhu dh 電弧",
       "rarity": 6,
       "alt_name": "Raidian",
-      "modules": ["", "A"]
+      "modules": ["", "A", "B"]
     },
     {
       "id": "char_4208_wintim",
       "prof": "PIONEER",
       "subProf": "agent",
-      "name_en": "Снегyрочка",
+      "name_en": "Снегурочка",
       "name": "冬时",
       "alias": "dongshi ds 冬時",
       "rarity": 4,
-      "alt_name": "Снегyрочка",
+      "alt_name": "Снегурочка",
       "modules": ["", "X"]
     },
     {
