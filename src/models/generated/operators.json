@@ -4550,73 +4550,92 @@
           "desp": "使用技能后按自身15%攻击力回复自身生命并进入防御状态",
           "ot_name": "技能后防御并回复",
           "color": "金",
-          "abbreviation": "技能回血"
+          "abbreviation": "技能回血",
+          "__abbrEdited": true
         },
         {
           "desp": "我方所有阴属性密探的免伤值提升5，增伤值提升10",
           "ot_name": "阴属性密探强化",
           "color": "金",
-          "abbreviation": "阴属性"
+          "abbreviation": "阴属性",
+          "__abbrEdited": true
         },
         {
           "desp": "受到致命伤害时，可以免除一次死亡，并回复10%最大生命",
           "ot_name": "狡兔三窟",
           "color": "金",
-          "abbreviation": "狡兔三窟"
+          "abbreviation": "狡兔三窟",
+          "__abbrEdited": false
         },
         {
           "desp": "技能消耗的能量-1，技能增伤降低25",
           "ot_name": "技能消耗降低但伤害降低",
           "color": "金",
-          "abbreviation": "消降伤降"
+          "abbreviation": "消降伤降",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时，恢复最大生命值10%的生命",
           "ot_name": "防御时恢复生命",
           "color": "紫",
-          "abbreviation": "防御回血"
+          "abbreviation": "防御回血",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加27%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加15%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值高于50%时，自身攻击力提升10%",
           "ot_name": "生命高时攻击提升",
           "color": "蓝",
-          "abbreviation": "血高攻高"
+          "abbreviation": "血高攻高",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加5%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "最大生命中幅提升",
+          "abbreviation": "生命中幅",
+          "color": "紫",
+          "desp": "最大生命提升6%"
         }
       ]
     },
@@ -4634,91 +4653,106 @@
           "desp": "普攻增伤降低10，技能增伤提升20",
           "ot_name": "削弱普攻强化技能",
           "color": "金",
-          "abbreviation": "削普强技"
+          "abbreviation": "削普强技",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+2",
           "ot_name": "初始能量+2",
           "color": "金",
-          "abbreviation": "初始+2"
+          "abbreviation": "初始+2",
+          "__abbrEdited": true
         },
         {
           "desp": "技能消耗的能量+1，触发额外效果需要的【音律】层数+1。技能的伤害系数提升60%，且触发额外效果时本次伤害有10%概率提升100%",
           "ot_name": "技能消耗提升，但效果更强",
           "color": "金",
-          "abbreviation": "高耗强效"
+          "abbreviation": "高耗强效",
+          "__abbrEdited": true
         },
         {
           "desp": "战斗中首次释放技能后，回复自身4点能量，并获得3层【音律】",
           "ot_name": "余音绕梁",
           "color": "金",
-          "abbreviation": "余音绕梁"
+          "abbreviation": "余音绕梁",
+          "__abbrEdited": false
         },
         {
           "desp": "防御时，恢复10%最大生命值的生命",
           "ot_name": "防御时恢复生命",
           "color": "紫",
-          "abbreviation": "防御回血"
+          "abbreviation": "防御回血",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加27%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加15%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值高于50%时，自身攻击力提升10%",
           "ot_name": "生命高时攻击提升",
           "color": "蓝",
-          "abbreviation": "血高攻高"
+          "abbreviation": "血高攻高",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加5%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻增伤降低30，技能增伤提升20，提供的护盾效果提升20",
           "ot_name": "琴式变换",
           "color": "金",
-          "abbreviation": "琴式变换"
+          "abbreviation": "琴式变换",
+          "__abbrEdited": false
         },
         {
           "desp": "技能消耗的能量+1，技能的伤害系数提升60%。使用技能时，若自身有【音律-红】，有概率使造成的伤害翻倍，每一层【音律-红】会使概率提升10%",
           "ot_name": "七弦音",
           "color": "金",
-          "abbreviation": "七弦音"
+          "abbreviation": "七弦音",
+          "__abbrEdited": false
         },
         {
           "desp": "下拉防御后，获得一层【音律-蓝】",
           "ot_name": "轻微淡远",
           "color": "金",
-          "abbreviation": "轻微淡远"
+          "abbreviation": "轻微淡远",
+          "__abbrEdited": false
         }
       ]
     },
@@ -4736,73 +4770,97 @@
           "desp": "<五藏论>也会让3号位的免伤值提升10",
           "ot_name": "<五藏论>额外提供减伤",
           "color": "金",
-          "abbreviation": "五藏减伤"
+          "abbreviation": "五藏减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻时，使全队免伤值提升3（1回合）",
           "ot_name": "普攻附加全队减伤",
           "color": "金",
-          "abbreviation": "普攻减伤"
+          "abbreviation": "普攻减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "技能会先额外选择5号位为目标，再选择我方生命值百分比最低的队员为目标，但治疗量降低50%",
           "ot_name": "技能额外选择目标",
           "color": "金",
-          "abbreviation": "额外目标"
+          "abbreviation": "额外目标",
+          "__abbrEdited": true
         },
         {
           "desp": "自身提供的治疗效果提升15%",
           "ot_name": "治疗效果大幅提升",
           "color": "金",
-          "abbreviation": "治疗大幅"
+          "abbreviation": "治疗大幅",
+          "__abbrEdited": true
         },
         {
           "desp": "作为队长时，全队免伤值提升5",
           "ot_name": "队长技提供减伤",
-          "color": "紫",
-          "abbreviation": "队长减伤"
+          "color": "金",
+          "abbreviation": "队长减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "自身提供的治疗效果提升10%",
           "ot_name": "治疗效果中幅提升",
           "color": "紫",
-          "abbreviation": "治疗中幅"
+          "abbreviation": "治疗中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "最大生命提升8%",
           "ot_name": "最大生命中幅提升",
           "color": "紫",
-          "abbreviation": "生命中幅"
+          "abbreviation": "生命中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "最大生命提升3%",
           "ot_name": "最大生命小幅提升",
           "color": "蓝",
-          "abbreviation": "生命小幅"
+          "abbreviation": "生命小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值高于50%时，自身攻击力提升10%",
           "ot_name": "生命高时攻击提升",
           "color": "蓝",
-          "abbreviation": "血高攻低"
+          "abbreviation": "血高攻低",
+          "__abbrEdited": true
         },
         {
           "desp": "自身提供的治疗效果提升5%",
           "ot_name": "治疗效果小幅提升",
           "color": "蓝",
-          "abbreviation": "治疗小幅"
+          "abbreviation": "治疗小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "额外附加济世",
+          "abbreviation": "额外济世",
+          "desp": "<五藏论>的效果变为：战斗开始时，为我方生命值最低的两个单位附加【济世】\""
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "普攻后附加护盾",
+          "abbreviation": "普攻盾",
+          "desp": "使用普攻后，为我方全体附加护盾（1回合），护盾量相当于自身20%的攻击力\""
         }
       ]
     },
@@ -5240,73 +5298,109 @@
           "desp": "技能的伤害系数增加20%",
           "ot_name": "技能伤害大幅增加",
           "color": "金",
-          "abbreviation": "技伤大幅"
+          "abbreviation": "技伤大幅",
+          "__abbrEdited": true
         },
         {
           "desp": "攻击郭解的单位降低6%攻击力（2回合）",
           "ot_name": "受击降低敌人攻击",
           "color": "金",
-          "abbreviation": "受击降攻"
+          "abbreviation": "受击降攻",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值低于50%时，免伤值提升10",
           "ot_name": "生命低时获得减伤",
           "color": "金",
-          "abbreviation": "血低减伤"
+          "abbreviation": "血低减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "每次受到伤害后不再进行反击，而是使自身免伤值提升8（2回合，可叠加3层）",
           "ot_name": "不再反击，获得额外减伤",
           "color": "金",
-          "abbreviation": "不再反击"
+          "abbreviation": "不再反击",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "回合开始时，郭解将不再会退场",
           "ot_name": "郭解不会再退场",
           "color": "紫",
-          "abbreviation": "不再退场"
+          "abbreviation": "不再退场",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加15%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加5%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值低于50%时，自身攻击力提升10%",
           "ot_name": "生命低时攻击提升",
           "color": "蓝",
-          "abbreviation": "血低攻高"
+          "abbreviation": "血低攻高",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加8%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "受攻降低敌人攻击",
+          "abbreviation": "降敌攻击",
+          "desp": "受到来自敌人的攻击时，降低其6%攻击力（2回合）"
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "<旺眦>的反击概率提升至100%，但这个效果一回合只能触发一次\"",
+          "ot_name": "反击概率提升，次数降低",
+          "abbreviation": "反击提升"
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "使用普攻后，为我方全体附加护盾，护盾量相当于自身80%的攻击力（1回合）\"",
+          "ot_name": "普攻后获得护盾",
+          "abbreviation": "普攻盾"
+        },
+        {
+          "__abbrEdited": false,
+          "desp": "自身提供的护盾效果提升20%",
+          "ot_name": "变阵",
+          "abbreviation": "变阵"
         }
       ]
     },
@@ -5324,73 +5418,103 @@
           "desp": "普攻和技能都会附加一层【灼伤】",
           "ot_name": "普攻和技能会附加【灼伤】",
           "color": "金",
-          "abbreviation": "攻击灼伤"
+          "abbreviation": "攻击灼伤",
+          "__abbrEdited": true
         },
         {
           "desp": "技能消耗的能量-1，战斗开始时获得的能量-1",
           "ot_name": "技能消耗能量-1",
           "color": "金",
-          "abbreviation": "技耗-1"
+          "abbreviation": "技耗-1",
+          "__abbrEdited": true
         },
         {
           "desp": "技能需要的能量+1，但会附加2层【火种】，且伤害提升20%",
           "ot_name": "技能消耗提升但效果更强",
           "color": "金",
-          "abbreviation": "火种附加"
+          "abbreviation": "火种附加",
+          "__abbrEdited": true
         },
         {
           "desp": "作为队长时每回合会为全队附加所有效果，但生命恢复效果减半",
           "ot_name": "队长技额外效果",
           "color": "金",
-          "abbreviation": "队长强化"
+          "abbreviation": "队长强化",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时，恢复10%最大生命值的生命",
           "ot_name": "防御时恢复生命",
           "color": "紫",
-          "abbreviation": "防御回血"
+          "abbreviation": "防御回血",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加15%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值高于50%时，自身攻击力提升10%",
           "ot_name": "生命高时攻击提升",
           "color": "蓝",
-          "abbreviation": "血高攻高"
+          "abbreviation": "血高攻高",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加5%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加8%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "技能消耗降低",
+          "abbreviation": "技能耗低",
+          "desp": "技能消耗的能量-1\""
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "战斗开始时，若敌人的数量小于3，自身的火属性增伤提升40，且普攻会额外为攻击的目标附加1层【火种】",
+          "ot_name": "敌人较少时提升能力",
+          "abbreviation": "敌少提升"
+        },
+        {
+          "__abbrEdited": false,
+          "desp": "如果队伍中至少有4名火属性密探。作为队长时额外提升使我放全体的火属性增伤提升20\"",
+          "ot_name": "烈火同心",
+          "abbreviation": "烈火同心"
         }
       ]
     },
@@ -7928,73 +8052,109 @@
           "desp": "变身扬州小红莲时提升全队10%生命上限和攻击力",
           "ot_name": "变身时提升属性",
           "color": "金",
-          "abbreviation": "变身强化"
+          "abbreviation": "变身强化",
+          "__abbrEdited": true
         },
         {
           "desp": "每回合开始时，必定触发<不打不相识>的额外攻击效果",
           "ot_name": "必定额外攻击",
           "color": "金",
-          "abbreviation": "必定攻击"
+          "abbreviation": "必定攻击",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻和技能都会附加一层【灼伤】",
           "ot_name": "攻击附加【灼伤】",
           "color": "金",
-          "abbreviation": "灼伤附加"
+          "abbreviation": "灼伤附加",
+          "__abbrEdited": true
         },
         {
           "desp": "变身扬州小红莲的概率提升15%，且变身额外持续一回合",
           "ot_name": "变身概率提升",
           "color": "金",
-          "abbreviation": "变身率高"
+          "abbreviation": "变身率高",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加15%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时，恢复10%最大生命值的生命",
           "ot_name": "防御时恢复生命",
           "color": "紫",
-          "abbreviation": "防御回血"
+          "abbreviation": "防御回血",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加8%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加5%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值高于50%时，自身攻击力提升10%",
           "ot_name": "生命高时攻击提升",
           "color": "蓝",
-          "abbreviation": "血高攻高"
+          "abbreviation": "血高攻高",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "初始能量+2",
+          "abbreviation": "初始+2",
+          "desp": "初始能量+2"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "鼓舞",
+          "abbreviation": "鼓舞",
+          "desp": "从普通状体变身为小红莲时，提升我放全体10%攻击力和10%最大生命值（3回合）"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "红莲蓄力",
+          "abbreviation": "红莲蓄力",
+          "desp": "技能消耗的能练-1，技能伤害系数降低70%。不会再有概率变身为小红莲，而是每2次成功使用技能时必定变身"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "一触即发",
+          "abbreviation": "一触即发",
+          "desp": "每回合开始时，必定触发<不打不相识>的额外攻击效果"
         }
       ]
     },
@@ -8180,73 +8340,116 @@
           "desp": "使用技能时，如果目标身上有【看破】，技能变为群体攻击，但不会再获得伤害提升",
           "ot_name": "强化与贾诩的联动",
           "color": "金",
-          "abbreviation": "联动强化"
+          "abbreviation": "联动强化",
+          "__abbrEdited": true
         },
         {
           "desp": "每次普攻后，提升自身2%攻击力",
           "ot_name": "普攻后提升攻击",
           "color": "金",
-          "abbreviation": "普攻攻升"
+          "abbreviation": "普攻攻升",
+          "__abbrEdited": true
         },
         {
           "desp": "郭嘉死亡时，全队获得15%最大生命和攻击力加成，并使免伤值提升10",
           "ot_name": "死亡时提升全队属性",
           "color": "金",
-          "abbreviation": "死亡提升"
+          "abbreviation": "死亡提升",
+          "__abbrEdited": true
         },
         {
           "desp": "【解析】层数可以无限叠加，但每层【解析】的普攻免伤降低效果降低至2",
           "ot_name": "【解析】无限叠加",
           "color": "金",
-          "abbreviation": "解析无限"
+          "abbreviation": "解析无限",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加27%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "使用普攻和技能时消耗的血量减半",
           "ot_name": "血量消耗降低",
           "color": "紫",
-          "abbreviation": "血耗降低"
+          "abbreviation": "血耗降低",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加4%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "生命值低于50%时，自身攻击力提升10%",
           "ot_name": "生命低时攻击提升",
           "color": "蓝",
-          "abbreviation": "血低攻高"
+          "abbreviation": "血低攻高",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加2%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "普攻变为群体攻击",
+          "abbreviation": "普变群攻",
+          "desp": "普攻变为群体攻击，会为敌方全体附加【解析】（1回合）。但伤害系数降低70%"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "遗计",
+          "abbreviation": "遗计",
+          "desp": "<盛县花>的效果变为：被攻击时，有概率闪避。\n自身死亡时，提升我方全体20普攻增伤（可叠加2层），随后对敌方全体造成180%攻击力的伤害，这个伤害属于普攻伤害"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "普攻伤害大幅增加",
+          "abbreviation": "普攻大幅",
+          "desp": "普攻的伤害系数增加20%"
+        },
+        {
+          "__abbrEdited": false,
+          "color": "紫",
+          "ot_name": "技能不再消耗生命",
+          "abbreviation": "技能不再消耗生命",
+          "desp": "使用技能时不再消耗生命"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "奇袭计",
+          "abbreviation": "奇袭计",
+          "desp": "战斗开始时，为我方全体附加【奇袭计】。【奇袭计】：技能造成的伤害会视为普攻伤害。使用技能后解除该效果"
         }
       ]
     },
@@ -8348,73 +8551,103 @@
           "desp": "【看破】BUFF层数将可以无限叠加，但每层【看破】的技能免伤降低效果至10",
           "ot_name": "【看破】无限叠加",
           "color": "金",
-          "abbreviation": "看破无限"
+          "abbreviation": "看破无限",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻时，如果目标敌人身上有【解析】，会变成群体攻击，但伤害不会增加",
           "ot_name": "强化与郭嘉的联动",
           "color": "金",
-          "abbreviation": "联动强化"
+          "abbreviation": "联动强化",
+          "__abbrEdited": true
         },
         {
           "desp": "以降低我方全体60普攻增伤为代价，提升全队50技能增伤",
           "ot_name": "冷酷毒计",
           "color": "金",
-          "abbreviation": "冷酷毒计"
+          "abbreviation": "冷酷毒计",
+          "__abbrEdited": false
         },
         {
           "desp": "抽签抽到吉时，提升全队15技能增伤",
           "ot_name": "抽到吉时伤害提升",
           "color": "金",
-          "abbreviation": "吉时增伤"
+          "abbreviation": "吉时增伤",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加15%",
           "ot_name": "普攻伤害中幅增加",
           "color": "紫",
-          "abbreviation": "普攻中幅"
+          "abbreviation": "普攻中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加14%",
           "ot_name": "技能伤害中幅增加",
           "color": "紫",
-          "abbreviation": "技伤中幅"
+          "abbreviation": "技伤中幅",
+          "__abbrEdited": true
         },
         {
           "desp": "初始能量+1",
           "ot_name": "初始能量+1",
           "color": "紫",
-          "abbreviation": "初始+1"
+          "abbreviation": "初始+1",
+          "__abbrEdited": true
         },
         {
           "desp": "每回合伤害转移的最大次数+1",
           "ot_name": "伤害转移次数提升",
           "color": "紫",
-          "abbreviation": "转移+1"
+          "abbreviation": "转移+1",
+          "__abbrEdited": true
         },
         {
           "desp": "抽签抽到凶时消耗的血量减半",
           "ot_name": "抽到凶时受伤降低",
           "color": "紫",
-          "abbreviation": "凶时减耗"
+          "abbreviation": "凶时减耗",
+          "__abbrEdited": true
         },
         {
           "desp": "技能的伤害系数增加8%",
           "ot_name": "技能伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "技伤小幅"
+          "abbreviation": "技伤小幅",
+          "__abbrEdited": true
         },
         {
           "desp": "防御时额外使自身防御系数提升10",
           "ot_name": "防御减伤提升",
           "color": "蓝",
-          "abbreviation": "防御减伤"
+          "abbreviation": "防御减伤",
+          "__abbrEdited": true
         },
         {
           "desp": "普攻的伤害系数增加5%",
           "ot_name": "普攻伤害小幅增加",
           "color": "蓝",
-          "abbreviation": "普攻小幅"
+          "abbreviation": "普攻小幅",
+          "__abbrEdited": true
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "技能伤害大幅增加",
+          "abbreviation": "技能大幅",
+          "desp": "技能的伤害系数增加20%"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "初始能量+2",
+          "abbreviation": "初始+2",
+          "desp": "初始能量+2"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "技能不再消耗生命",
+          "abbreviation": "不消耗命",
+          "desp": "抽签抽到凶时不再失去生命"
         }
       ]
     },
@@ -8499,6 +8732,95 @@
           "ot_name": "防御减伤提升",
           "color": "蓝",
           "abbreviation": "防御减伤"
+        }
+      ]
+    },
+    {
+      "id": "char_102_jianyong",
+      "name": "简雍",
+      "rarity": 5,
+      "prof": "火",
+      "subProf": "shenji",
+      "alias": "jianyong jy “简雍” 简雍",
+      "name_en": "简雍",
+      "discs": [
+        {
+          "__abbrEdited": true,
+          "ot_name": "普攻伤害中幅增加",
+          "abbreviation": "普攻中幅",
+          "color": "紫",
+          "desp": "普攻的伤害系数增加15%"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "攻击力大幅提升",
+          "abbreviation": "攻击大幅",
+          "desp": "攻击力提升12%"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "普攻伤害大幅增加",
+          "abbreviation": "普攻大幅",
+          "desp": "普攻的伤害系数增加20%"
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "初始能量+2",
+          "ot_name": "初始能量+2",
+          "abbreviation": "初始+2"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "攻击力小幅提升",
+          "abbreviation": "攻击小幅",
+          "color": "蓝",
+          "desp": "攻击力提升3%"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "最大生命中幅提升",
+          "abbreviation": "生命中幅",
+          "color": "紫",
+          "desp": "最大生命提升8%"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "赋闲返聘",
+          "abbreviation": "赋闲返聘",
+          "desp": "<盘纡>：随机获得的【伤疤】增加一种 :【伤疤·曲戾】：强刃增伤提升35，且效果替换为自身同时存在4种【伤疤】时，【伤疤】回合数延长50回合，使用技能后回复1点能量，且行动后，为我方全体提供自身攻击力120%的护盾（1回合），之后对我方全体造成一次自身攻击力40%的固定伤害"
+        },
+        {
+          "__abbrEdited": false,
+          "desp": "回合开始时，我方全体的技能增伤降低80（1回合），但我方全体的强刃增伤提升40（1回合）",
+          "ot_name": "职场老人",
+          "abbreviation": "职场老人"
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "最大生命提升3%",
+          "ot_name": "最大生命小幅提升",
+          "abbreviation": "生命小幅",
+          "color": "蓝"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "看着叫人火大",
+          "abbreviation": "火大",
+          "desp": "回合开始时，若敌方只存在火属性的敌人，则自身普攻增伤提升20，水属性增伤提升20，强刃增伤提升20（1回合）"
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "攻击力提升8%",
+          "ot_name": "攻击力中幅提升",
+          "abbreviation": "攻击中幅",
+          "color": "紫"
+        },
+        {
+          "__abbrEdited": true,
+          "desp": "生命值高于50%时，自身攻击力提升10%",
+          "ot_name": "生命高时攻击提升",
+          "abbreviation": "命高提升",
+          "color": "蓝"
         }
       ]
     }
