@@ -31,3 +31,4 @@ src/i18n/generated
 .serena/
 .docs/
 operations-log.md
+.direnv/

@@ -261,7 +261,7 @@ export const AuthFormUsernameField = <T extends FieldValues>({
         render: (renderProps) => (
           <InputGroup
             id={field}
-            placeholder="Pallas-Bot"
+            placeholder="绣球书法家"
             autoComplete={autoComplete}
             {...renderProps.field}
             value={renderProps.field.value || ''}

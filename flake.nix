@@ -33,15 +33,19 @@
 
         # 当你进入这个 Shell 时，自动运行的命令
         shellHook = ''
+          npm config set registry https://registry.npmmirror.com
           echo " "
-          echo ">>> Welcome to the MAA Copilot UI dev environment <<<"
+          echo ">>> Welcome to the MYShare Frontend dev environment <<<"
           echo " "
           echo "    Node.js version: $(node --version)"
           echo "    Yarn version: $(yarn --version)"
+          echo "    ✓ npm registry set to: $(npm config get registry)"
           echo " "
           echo "    You can now run 'yarn install' to install dependencies."
           echo " "
         '';
+
+        DIRENV_LOG_FORMAT = "";
       };
     };
 }
