@@ -3,6 +3,7 @@ import { useAtomCallback } from 'jotai/utils'
 import { throttle } from 'lodash-es'
 import { FC, memo, useCallback, useEffect } from 'react'
 
+import { Operation } from '../../models/operation'
 import { useCurrentSize } from '../../utils/useCurrenSize'
 import { EditorToolbar } from './EditorToolbar'
 import { InfoEditor } from './InfoEditor'
@@ -12,7 +13,6 @@ import { useHistoryControls } from './history'
 import { OperatorEditor } from './operator/OperatorEditor'
 import { useAutosave } from './useAutoSave'
 import { Validator } from './validation/Validator'
-import { Operation } from '../../models/operation'
 
 interface OperationEditorProps {
   subtitle?: string

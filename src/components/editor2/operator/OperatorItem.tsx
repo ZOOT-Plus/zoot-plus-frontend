@@ -3,30 +3,35 @@ import { Popover2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
 import { useSetAtom } from 'jotai'
+import { clamp } from 'lodash-es'
 import { FC, memo, useMemo, useState } from 'react'
 
 import { i18n, useTranslation } from '../../../i18n/i18n'
+import { CopilotDocV1 } from '../../../models/copilot.schema'
 import {
-  OPERATORS,
-  useLocalizedOperatorName,
-  getSkillCount,
-  withDefaultRequirements,
+  findOperatorByName,
   getDefaultRequirements,
   getModuleName,
+  getSkillCount,
+  useLocalizedOperatorName,
+  withDefaultRequirements,
 } from '../../../models/operator'
-import { CopilotDocV1 } from '../../../models/copilot.schema'
-import { clamp } from 'lodash-es'
-import { OperatorAvatar } from '../../OperatorAvatar'
 import { MasteryIcon } from '../../MasteryIcon'
+import { OperatorAvatar } from '../../OperatorAvatar'
 import { Select } from '../../Select'
-import { NumericInput2 } from '../../editor/NumericInput2'
 import { AppToaster } from '../../Toaster'
 import { SortableItemProps } from '../../dnd'
+import { NumericInput2 } from '../../editor/NumericInput2'
 import { EditorOperator, useEdit } from '../editor-state'
 import { editorFavOperatorsAtom } from '../reconciliation'
 
 // —— 属性拓展（extensions）统一读写 ——
-type DiscSlot = { index: number; disc: number; starStone?: string; assistStar?: string }
+type DiscSlot = {
+  index: number
+  disc: number
+  starStone?: string
+  assistStar?: string
+}
 
 function getDiscSlots(operator: EditorOperator): DiscSlot[] {
   // 原方案优先：使用并行数组（camelCase）
@@ -43,15 +48,26 @@ function getDiscSlots(operator: EditorOperator): DiscSlot[] {
     }))
   }
   // 兼容回退：若没有并行数组，则读取 extensions（如存在）
-  const slots = operator.extensions?.discs?.slots
+  const slots = operator.extensions?.discs?.slots as DiscSlot[] | undefined
   if (slots && slots.length > 0) {
     const norm = [...slots]
       .filter((s) => s && typeof s.index === 'number')
-      .map((s, i) => ({ index: s.index ?? i, disc: s.disc ?? 0, starStone: s.starStone ?? '', assistStar: s.assistStar ?? '' }))
-    while (norm.length < 3) norm.push({ index: norm.length, disc: 0 })
+      .map((s, i) => ({
+        index: s.index ?? i,
+        disc: s.disc ?? 0,
+        starStone: s.starStone ?? '',
+        assistStar: s.assistStar ?? '',
+      }))
+    while (norm.length < 3)
+      norm.push({ index: norm.length, disc: 0, starStone: '', assistStar: '' })
     return norm.sort((a, b) => a.index - b.index).slice(0, 3)
   }
-  return [0, 1, 2].map((i) => ({ index: i, disc: 0 }))
+  return [0, 1, 2].map((i) => ({
+    index: i,
+    disc: 0,
+    starStone: '',
+    assistStar: '',
+  }))
 }
 
 function syncLegacyArraysFromSlots(slots: DiscSlot[]) {
@@ -98,7 +114,14 @@ function setDiscSlot(
     discStarStones,
     discAssistStars,
     // 若已有其他 extensions 字段（如 stats），保留但不写 discs
-    ...(operator.extensions ? { extensions: { ...operator.extensions, discs: operator.extensions.discs } } : {}),
+    ...(operator.extensions
+      ? {
+          extensions: {
+            ...operator.extensions,
+            discs: operator.extensions.discs,
+          },
+        }
+      : {}),
   }
   return next
 }
@@ -111,9 +134,19 @@ function getStats(
   return {
     // 默认 0 星
     starLevel:
-      (s?.starLevel ?? (typeof (operator as any).starLevel === 'number' ? (operator as any).starLevel : undefined)) ?? 0,
-    attack: s?.attack ?? (typeof (operator as any).attack === 'number' ? (operator as any).attack : 0),
-    hp: s?.hp ?? (typeof (operator as any).hp === 'number' ? (operator as any).hp : 0),
+      s?.starLevel ??
+      (typeof (operator as any).starLevel === 'number'
+        ? (operator as any).starLevel
+        : undefined) ??
+      0,
+    attack:
+      s?.attack ??
+      (typeof (operator as any).attack === 'number'
+        ? (operator as any).attack
+        : 0),
+    hp:
+      s?.hp ??
+      (typeof (operator as any).hp === 'number' ? (operator as any).hp : 0),
   }
 }
 
@@ -126,7 +159,9 @@ function setStats(
   const next: EditorOperator = {
     ...operator,
     // 同步原方案根级字段，便于回退与导出
-    ...(updates.starLevel !== undefined ? { starLevel: updates.starLevel } : {}),
+    ...(updates.starLevel !== undefined
+      ? { starLevel: updates.starLevel }
+      : {}),
     ...(updates.attack !== undefined ? { attack: updates.attack } : {}),
     ...(updates.hp !== undefined ? { hp: updates.hp } : {}),
     extensions: {
@@ -151,7 +186,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
     const t = useTranslation()
     const displayName = useLocalizedOperatorName(operator.name)
     const setFavOperators = useSetAtom(editorFavOperatorsAtom)
-    const info = OPERATORS.find(({ name }) => name === operator.name)
+    const info = findOperatorByName(operator.name)
     const edit = useEdit()
 
     const controlsEnabled = true
@@ -161,7 +196,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
     )
     const skillCount = useMemo(() => (info ? getSkillCount(info) : 0), [info])
     const [skillLevels, setSkillLevels] = useState<Record<number, number>>({})
-    const discList = useMemo(() => (info as any)?.discs ?? [], [info])
+    const discList = useMemo(() => info?.discs ?? [], [info])
 
     const discColorClasses = (color?: string) => {
       switch (color) {
@@ -245,7 +280,11 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
           {/* 星级（5星可点，默认0；重复点击当前星 -> 0）——移出 Card，避免误触头像/名字 */}
           <div className="mt-1 flex items-center justify-center gap-1 select-none">
             {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => {
-              const current = clamp(getStats(operator, info?.rarity).starLevel ?? 0, 0, 5)
+              const current = clamp(
+                getStats(operator, info?.rarity).starLevel ?? 0,
+                0,
+                5,
+              )
               const filled = n <= current
               return (
                 <button
@@ -255,11 +294,14 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   className={clsx(
                     'w-4 h-4 p-0 inline-flex items-center justify-center',
                     'transition-opacity',
-                    filled ? 'opacity-100 text-yellow-500' : 'opacity-40 text-gray-500',
+                    filled
+                      ? 'opacity-100 text-yellow-500'
+                      : 'opacity-40 text-gray-500',
                   )}
                   onClick={() =>
                     edit(() => {
-                      const cur = getStats(operator, info?.rarity).starLevel ?? 0
+                      const cur =
+                        getStats(operator, info?.rarity).starLevel ?? 0
                       const nextLevel = cur === n ? 0 : n
                       const next = setStats(operator, { starLevel: nextLevel })
                       onChange?.(next)
@@ -306,7 +348,8 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     onValueChange={(_, valueStr) => {
                       edit(() => {
                         let v = Number(valueStr)
-                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
+                        if (!Number.isFinite(v))
+                          return { action: 'skip', desc: 'skip' }
                         v = Math.max(0, Math.round(v))
                         const next = setStats(operator, { attack: v })
                         onChange?.(next)
@@ -318,7 +361,9 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       })
                     }}
                   />
-                  <span className="text-xs opacity-80 w-9 text-right">生命值</span>
+                  <span className="text-xs opacity-80 w-9 text-right">
+                    生命值
+                  </span>
                   <NumericInput2
                     intOnly
                     min={0}
@@ -339,7 +384,8 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     onValueChange={(_, valueStr) => {
                       edit(() => {
                         let v = Number(valueStr)
-                        if (!Number.isFinite(v)) return { action: 'skip', desc: 'skip' }
+                        if (!Number.isFinite(v))
+                          return { action: 'skip', desc: 'skip' }
                         v = Math.max(0, Math.round(v))
                         const next = setStats(operator, { hp: v })
                         onChange?.(next)
@@ -355,314 +401,411 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               )}
               {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
               {discList.length > 0
-                ? (
-                    [0, 1, 2].map((slot) => {
-                      const slots = getDiscSlots(operator)
-                      const idx1 = slots[slot]?.disc ?? 0
-                      const selectedItem = idx1 > 0 ? discList[idx1 - 1] : undefined
-                      const selectedIsAny = idx1 === -1
-                      return (
-                        <li key={'disc-slot-' + slot} className="relative h-8 flex gap-1">
-                          <Select
-                            className=""
-                            filterable={false}
-                            items={[{ name: '任意', abbreviation: '任意', desp: '任意', idx: -1 } as any, ...discList.map((d, idx) => ({ ...d, idx }))]}
-                            itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
-                              <MenuItem
-                                roleStructure="listoption"
-                                key={item.idx}
-                                className={clsx(
-                                  'min-w-40 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
-                                  modifiers.active && Classes.ACTIVE,
-                                )}
-                                text={item.abbreviation + (item.color ? ` · ${item.color}` : '')}
-                                title={item.desp}
-                                onClick={handleClick}
-                                onFocus={handleFocus}
-                                selected={item.idx === -1 ? idx1 === -1 : item.idx + 1 === idx1}
-                              />
-                            )}
-                            onItemSelect={(item) => {
-                              edit(() => {
-                                const chosen = (item as any).idx === -1 ? -1 : (item as any).idx + 1
-                                const next = setDiscSlot(operator, slot, { disc: chosen })
-                                onChange?.(next)
-                                return {
-                                  action: 'set-operator-skill',
-                                  desc: i18n.actions.editor2.set_operator_skill,
-                                  squashBy: operator.id,
-                                }
-                              })
-                            }}
-                            popoverProps={{
-                              placement: 'top',
-                              popoverClassName:
-                                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-40 [&_li]:!mb-0',
-                            }}
-                          >
-                            <Button
-                              small
-                              minimal
-                              title={selectedItem ? selectedItem.desp : selectedIsAny ? '任意' : `选择命盘${slot + 1}`}
+                ? [0, 1, 2].map((slot) => {
+                    const slots = getDiscSlots(operator)
+                    const idx1 = slots[slot]?.disc ?? 0
+                    const selectedItem =
+                      idx1 > 0 ? discList[idx1 - 1] : undefined
+                    const selectedIsAny = idx1 === -1
+                    return (
+                      <li
+                        key={'disc-slot-' + slot}
+                        className="relative h-8 flex gap-1"
+                      >
+                        <Select
+                          className=""
+                          filterable={false}
+                          items={[
+                            {
+                              name: '任意',
+                              abbreviation: '任意',
+                              desp: '任意',
+                              idx: -1,
+                            } as any,
+                            ...discList.map((d, idx) => ({ ...d, idx })),
+                          ]}
+                          itemRenderer={(
+                            item,
+                            { handleClick, handleFocus, modifiers },
+                          ) => (
+                            <MenuItem
+                              roleStructure="listoption"
+                              key={item.idx}
                               className={clsx(
-                                'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
-                                selectedItem
-                                  ? discColorClasses(selectedItem.color)
-                                  : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
+                                'min-w-40 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
+                                modifiers.active && Classes.ACTIVE,
                               )}
-                            >
-                              {selectedItem
-                                ? selectedItem.abbreviation
+                              text={
+                                item.abbreviation +
+                                (item.color ? ` · ${item.color}` : '')
+                              }
+                              title={item.desp}
+                              onClick={handleClick}
+                              onFocus={handleFocus}
+                              selected={
+                                item.idx === -1
+                                  ? idx1 === -1
+                                  : item.idx + 1 === idx1
+                              }
+                            />
+                          )}
+                          onItemSelect={(item) => {
+                            edit(() => {
+                              const chosen =
+                                (item as any).idx === -1
+                                  ? -1
+                                  : (item as any).idx + 1
+                              const next = setDiscSlot(operator, slot, {
+                                disc: chosen,
+                              })
+                              onChange?.(next)
+                              return {
+                                action: 'set-operator-skill',
+                                desc: i18n.actions.editor2.set_operator_skill,
+                                squashBy: operator.id,
+                              }
+                            })
+                          }}
+                          popoverProps={{
+                            placement: 'top',
+                            popoverClassName:
+                              '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-40 [&_li]:!mb-0',
+                          }}
+                        >
+                          <Button
+                            small
+                            minimal
+                            title={
+                              selectedItem
+                                ? selectedItem.desp
                                 : selectedIsAny
+                                  ? '任意'
+                                  : `选择命盘${slot + 1}`
+                            }
+                            className={clsx(
+                              'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
+                              selectedItem
+                                ? discColorClasses(selectedItem.color)
+                                : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
+                            )}
+                          >
+                            {selectedItem
+                              ? selectedItem.abbreviation
+                              : selectedIsAny
                                 ? '任意'
                                 : `命盘${slot + 1}`}
-                            </Button>
-                          </Select>
+                          </Button>
+                        </Select>
 
-                          {/* 星石选择 */}
-                          <Select
-                            className=""
-                            filterable={false}
-                            items={[
-                              '任意',
-                              '天府','天相','巨门','太阳','廉贞','太阴','紫微','七杀','天机','武曲','破军','天同','天梁','贪狼',
-                            ]}
-                            itemRenderer={(item: string, { handleClick, handleFocus, modifiers }) => (
-                              <MenuItem
-                                roleStructure="listoption"
-                                key={item}
-                                className={clsx(
-                                  'min-w-20 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
-                                  modifiers.active && Classes.ACTIVE,
-                                )}
-                                text={item}
-                                title={item}
-                                onClick={handleClick}
-                                onFocus={handleFocus}
-                                selected={getDiscSlots(operator)[slot]?.starStone === item}
-                              />
-                            )}
-                            onItemSelect={(item: string) => {
-                              edit(() => {
-                                const next = setDiscSlot(operator, slot, { starStone: item })
-                                onChange?.(next)
-                                return {
-                                  action: 'set-operator-discStarStone',
-                                  desc: '选择命盘星石',
-                                  squashBy: operator.id,
-                                }
+                        {/* 星石选择 */}
+                        <Select
+                          className=""
+                          filterable={false}
+                          items={[
+                            '任意',
+                            '天府',
+                            '天相',
+                            '巨门',
+                            '太阳',
+                            '廉贞',
+                            '太阴',
+                            '紫微',
+                            '七杀',
+                            '天机',
+                            '武曲',
+                            '破军',
+                            '天同',
+                            '天梁',
+                            '贪狼',
+                          ]}
+                          itemRenderer={(
+                            item: string,
+                            { handleClick, handleFocus, modifiers },
+                          ) => (
+                            <MenuItem
+                              roleStructure="listoption"
+                              key={item}
+                              className={clsx(
+                                'min-w-20 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
+                                modifiers.active && Classes.ACTIVE,
+                              )}
+                              text={item}
+                              title={item}
+                              onClick={handleClick}
+                              onFocus={handleFocus}
+                              selected={
+                                getDiscSlots(operator)[slot]?.starStone === item
+                              }
+                            />
+                          )}
+                          onItemSelect={(item: string) => {
+                            edit(() => {
+                              const next = setDiscSlot(operator, slot, {
+                                starStone: item,
                               })
-                            }}
-                            popoverProps={{
-                              placement: 'top',
-                              popoverClassName:
-                                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-20 [&_li]:!mb-0',
-                            }}
+                              onChange?.(next)
+                              return {
+                                action: 'set-operator-discStarStone',
+                                desc: '选择命盘星石',
+                                squashBy: operator.id,
+                              }
+                            })
+                          }}
+                          popoverProps={{
+                            placement: 'top',
+                            popoverClassName:
+                              '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-20 [&_li]:!mb-0',
+                          }}
+                        >
+                          <Button
+                            small
+                            minimal
+                            title={
+                              getDiscSlots(operator)[slot]?.starStone ||
+                              '选择星石'
+                            }
+                            className={
+                              'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'
+                            }
                           >
-                            <Button
-                              small
-                              minimal
-                              title={getDiscSlots(operator)[slot]?.starStone || '选择星石'}
-                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
-                            >
-                              {getDiscSlots(operator)[slot]?.starStone || '星石'}
-                            </Button>
-                          </Select>
+                            {getDiscSlots(operator)[slot]?.starStone || '星石'}
+                          </Button>
+                        </Select>
 
-                          {/* 辅星选择 */}
-                          <Select
-                            className=""
-                            filterable={false}
-                            items={[
-                              '任意',
-                              '红鸾','阴煞','天魁','八座','陀螺','地劫','解神','禄存','文曲','天钺','火星','文昌','天巫','左辅','铃星','恩光','三台','擎羊','天贵','天姚','天马','天刑','右弼','地空',
-                            ]}
-                            itemRenderer={(item: string, { handleClick, handleFocus, modifiers }) => (
-                              <MenuItem
-                                roleStructure="listoption"
-                                key={item}
-                                className={clsx(
-                                  'min-w-20 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
-                                  modifiers.active && Classes.ACTIVE,
-                                )}
-                                text={item}
-                                title={item}
-                                onClick={handleClick}
-                                onFocus={handleFocus}
-                                selected={getDiscSlots(operator)[slot]?.assistStar === item}
-                              />
-                            )}
-                            onItemSelect={(item: string) => {
-                              edit(() => {
-                                const next = setDiscSlot(operator, slot, { assistStar: item })
-                                onChange?.(next)
-                                return {
-                                  action: 'set-operator-discAssistStar',
-                                  desc: '选择命盘辅星',
-                                  squashBy: operator.id,
-                                }
+                        {/* 辅星选择 */}
+                        <Select
+                          className=""
+                          filterable={false}
+                          items={[
+                            '任意',
+                            '红鸾',
+                            '阴煞',
+                            '天魁',
+                            '八座',
+                            '陀螺',
+                            '地劫',
+                            '解神',
+                            '禄存',
+                            '文曲',
+                            '天钺',
+                            '火星',
+                            '文昌',
+                            '天巫',
+                            '左辅',
+                            '铃星',
+                            '恩光',
+                            '三台',
+                            '擎羊',
+                            '天贵',
+                            '天姚',
+                            '天马',
+                            '天刑',
+                            '右弼',
+                            '地空',
+                          ]}
+                          itemRenderer={(
+                            item: string,
+                            { handleClick, handleFocus, modifiers },
+                          ) => (
+                            <MenuItem
+                              roleStructure="listoption"
+                              key={item}
+                              className={clsx(
+                                'min-w-20 !rounded-none text-sm font-serif text-slate-700 dark:text-slate-200',
+                                modifiers.active && Classes.ACTIVE,
+                              )}
+                              text={item}
+                              title={item}
+                              onClick={handleClick}
+                              onFocus={handleFocus}
+                              selected={
+                                getDiscSlots(operator)[slot]?.assistStar ===
+                                item
+                              }
+                            />
+                          )}
+                          onItemSelect={(item: string) => {
+                            edit(() => {
+                              const next = setDiscSlot(operator, slot, {
+                                assistStar: item,
                               })
-                            }}
-                            popoverProps={{
-                              placement: 'top',
-                              popoverClassName:
-                                '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-20 [&_li]:!mb-0',
-                            }}
+                              onChange?.(next)
+                              return {
+                                action: 'set-operator-discAssistStar',
+                                desc: '选择命盘辅星',
+                                squashBy: operator.id,
+                              }
+                            })
+                          }}
+                          popoverProps={{
+                            placement: 'top',
+                            popoverClassName:
+                              '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-20 [&_li]:!mb-0',
+                          }}
+                        >
+                          <Button
+                            small
+                            minimal
+                            title={
+                              getDiscSlots(operator)[slot]?.assistStar ||
+                              '选择辅星'
+                            }
+                            className={
+                              'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'
+                            }
                           >
-                            <Button
-                              small
-                              minimal
-                              title={getDiscSlots(operator)[slot]?.assistStar || '选择辅星'}
-                              className={'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'}
-                            >
-                              {getDiscSlots(operator)[slot]?.assistStar || '辅星'}
-                            </Button>
-                          </Select>
-                        </li>
-                      )
-                    })
-                  )
+                            {getDiscSlots(operator)[slot]?.assistStar || '辅星'}
+                          </Button>
+                        </Select>
+                      </li>
+                    )
+                  })
                 : controlsEnabled &&
                   Array.from({ length: skillCount }, (_, index) => {
-                  const available = index <= (requirements.elite ?? 0)
-                  const skillNumber = index + 1
-                  const selected = operator.skill === skillNumber
-                  const maxSkillLevel = (requirements.elite ?? 0) === 2 ? 10 : 7
-                  const skillLevel = selected
-                    ? requirements.skillLevel ??
-                      getDefaultRequirements(info?.rarity).skillLevel
-                    : skillLevels[skillNumber] ??
-                      getDefaultRequirements(info?.rarity).skillLevel
+                    const available = index <= (requirements.elite ?? 0)
+                    const skillNumber = index + 1
+                    const selected = operator.skill === skillNumber
+                    const maxSkillLevel =
+                      (requirements.elite ?? 0) === 2 ? 10 : 7
+                    const skillLevel = selected
+                      ? (requirements.skillLevel ??
+                        getDefaultRequirements(info?.rarity).skillLevel)
+                      : (skillLevels[skillNumber] ??
+                        getDefaultRequirements(info?.rarity).skillLevel)
 
-                  const selectSkill = () => {
-                    if (operator.skill !== skillNumber) {
-                      edit(() => {
-                        ;(operator as EditorOperator) // narrow type for editor
-                        const next: EditorOperator = {
-                          ...operator,
-                          skill: skillNumber,
-                          requirements: {
-                            ...operator.requirements,
-                            // override with the current skill level
-                            skillLevel,
-                          },
-                        }
-                        // 触发上层 onChange 以持久化
-                        onChange?.(next)
-                        return {
-                          action: 'set-operator-skill',
-                          desc: i18n.actions.editor2.set_operator_skill,
-                        }
-                      })
-                    }
-                  }
-
-                  return (
-                    <li
-                      key={index}
-                      className={clsx(
-                        'relative',
-                        selected
-                          ? available
-                            ? '!bg-purple-100 dark:!bg-purple-900 dark:text-purple-200 text-purple-800'
-                            : '!bg-red-100 dark:!bg-red-900 dark:text-red-200 text-red-800'
-                          : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
-                      )}
-                    >
-                      <NumericInput2
-                        intOnly
-                        title={
-                          available
-                            ? t.models.operator.skill_number({ count: skillNumber })
-                            : t.components.editor2.OperatorItem.skill_not_available
-                        }
-                        min={0}
-                        buttonPosition="none"
-                        value={skillLevel <= 7 ? skillLevel : ''}
-                        inputClassName={clsx(
-                          '!w-8 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current [&:not(:focus)]:cursor-pointer',
-                          skillLevel > 7 && '!pl-4',
-                        )}
-                        onClick={selectSkill}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            selectSkill()
+                    const selectSkill = () => {
+                      if (operator.skill !== skillNumber) {
+                        edit(() => {
+                          operator as EditorOperator // narrow type for editor
+                          const next: EditorOperator = {
+                            ...operator,
+                            skill: skillNumber,
+                            requirements: {
+                              ...operator.requirements,
+                              // override with the current skill level
+                              skillLevel,
+                            },
                           }
-                        }}
-                        onValueChange={(_, valueStr) => {
-                          edit(() => {
-                            let newLevel = Number(valueStr)
-                            if (!Number.isFinite(newLevel)) return {
-                              action: 'skip',
-                              desc: 'Skip checkpoint',
-                            }
-                            if (newLevel === 0) newLevel = 10
-                            newLevel = clamp(newLevel, 1, maxSkillLevel)
+                          // 触发上层 onChange 以持久化
+                          onChange?.(next)
+                          return {
+                            action: 'set-operator-skill',
+                            desc: i18n.actions.editor2.set_operator_skill,
+                          }
+                        })
+                      }
+                    }
 
-                            setSkillLevels((prev) => ({
-                              ...prev,
-                              [skillNumber]: newLevel,
-                            }))
-                            const next: EditorOperator = {
-                              ...operator,
-                              requirements: {
-                                ...operator.requirements,
-                                skillLevel: newLevel,
-                              },
+                    return (
+                      <li
+                        key={index}
+                        className={clsx(
+                          'relative',
+                          selected
+                            ? available
+                              ? '!bg-purple-100 dark:!bg-purple-900 dark:text-purple-200 text-purple-800'
+                              : '!bg-red-100 dark:!bg-red-900 dark:text-red-200 text-red-800'
+                            : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
+                        )}
+                      >
+                        <NumericInput2
+                          intOnly
+                          title={
+                            available
+                              ? t.models.operator.skill_number({
+                                  count: skillNumber,
+                                })
+                              : t.components.editor2.OperatorItem
+                                  .skill_not_available
+                          }
+                          min={0}
+                          buttonPosition="none"
+                          value={skillLevel <= 7 ? skillLevel : ''}
+                          inputClassName={clsx(
+                            '!w-8 h-8 !p-0 !leading-8 !bg-transparent text-center font-bold text-xl !text-inherit !rounded-none !border-2 !border-current [&:not(:focus)]:cursor-pointer',
+                            skillLevel > 7 && '!pl-4',
+                          )}
+                          onClick={selectSkill}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              selectSkill()
                             }
-                            onChange?.(next)
-                            return {
-                              action: 'set-operator-skillLevel',
-                              desc: i18n.actions.editor2.set_operator_skill_level,
-                              squashBy: operator.id,
-                            }
-                          })
-                        }}
-                        onWheelFocused={(e) => {
-                          e.preventDefault()
-                          edit(() => {
-                            const newLevel = clamp(
-                              (requirements.skillLevel ??
-                                getDefaultRequirements(info?.rarity).skillLevel) +
-                                (e.deltaY > 0 ? -1 : 1),
-                              1,
-                              maxSkillLevel,
-                            )
-                            setSkillLevels((prev) => ({
-                              ...prev,
-                              [skillNumber]: newLevel,
-                            }))
-                            const next: EditorOperator = {
-                              ...operator,
-                              requirements: {
-                                ...operator.requirements,
-                                skillLevel: newLevel,
-                              },
-                            }
-                            onChange?.(next)
-                            return {
-                              action: 'set-operator-skillLevel',
-                              desc: i18n.actions.editor2.set_operator_skill_level,
-                              squashBy: operator.id,
-                            }
-                          })
-                        }}
-                      />
-                      {skillLevel > 7 && (
-                        <MasteryIcon
-                          className="absolute top-0 left-0 w-full h-full p-2 pointer-events-none"
-                          mastery={skillLevel - 7}
+                          }}
+                          onValueChange={(_, valueStr) => {
+                            edit(() => {
+                              let newLevel = Number(valueStr)
+                              if (!Number.isFinite(newLevel))
+                                return {
+                                  action: 'skip',
+                                  desc: 'Skip checkpoint',
+                                }
+                              if (newLevel === 0) newLevel = 10
+                              newLevel = clamp(newLevel, 1, maxSkillLevel)
+
+                              setSkillLevels((prev) => ({
+                                ...prev,
+                                [skillNumber]: newLevel,
+                              }))
+                              const next: EditorOperator = {
+                                ...operator,
+                                requirements: {
+                                  ...operator.requirements,
+                                  skillLevel: newLevel,
+                                },
+                              }
+                              onChange?.(next)
+                              return {
+                                action: 'set-operator-skillLevel',
+                                desc: i18n.actions.editor2
+                                  .set_operator_skill_level,
+                                squashBy: operator.id,
+                              }
+                            })
+                          }}
+                          onWheelFocused={(e) => {
+                            e.preventDefault()
+                            edit(() => {
+                              const newLevel = clamp(
+                                (requirements.skillLevel ??
+                                  getDefaultRequirements(info?.rarity)
+                                    .skillLevel) + (e.deltaY > 0 ? -1 : 1),
+                                1,
+                                maxSkillLevel,
+                              )
+                              setSkillLevels((prev) => ({
+                                ...prev,
+                                [skillNumber]: newLevel,
+                              }))
+                              const next: EditorOperator = {
+                                ...operator,
+                                requirements: {
+                                  ...operator.requirements,
+                                  skillLevel: newLevel,
+                                },
+                              }
+                              onChange?.(next)
+                              return {
+                                action: 'set-operator-skillLevel',
+                                desc: i18n.actions.editor2
+                                  .set_operator_skill_level,
+                                squashBy: operator.id,
+                              }
+                            })
+                          }}
                         />
-                      )}
-                      {!available && (
-                        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-current rotate-45 -translate-y-px pointer-events-none" />
-                      )}
-                    </li>
-                  )
-                })}
-
-              
+                        {skillLevel > 7 && (
+                          <MasteryIcon
+                            className="absolute top-0 left-0 w-full h-full p-2 pointer-events-none"
+                            mastery={skillLevel - 7}
+                          />
+                        )}
+                        {!available && (
+                          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-current rotate-45 -translate-y-px pointer-events-none" />
+                        )}
+                      </li>
+                    )
+                  })}
 
               {/* Row 5: Module selector */}
               {controlsEnabled && info?.modules && (
@@ -681,7 +824,10 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       )
                       .filter((m) => m !== undefined),
                   ]}
-                  itemRenderer={(value, { handleClick, handleFocus, modifiers }) => (
+                  itemRenderer={(
+                    value,
+                    { handleClick, handleFocus, modifiers },
+                  ) => (
                     <MenuItem
                       roleStructure="listoption"
                       key={value}
@@ -737,9 +883,11 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       t.components.editor2.OperatorItem.module +
                       ': ' +
                       t.components.editor2.OperatorItem.module_title({
-                        count: requirements.module ?? CopilotDocV1.Module.Default,
+                        count:
+                          requirements.module ?? CopilotDocV1.Module.Default,
                         name: getModuleName(
-                          (requirements.module ?? CopilotDocV1.Module.Default) as CopilotDocV1.Module,
+                          (requirements.module ??
+                            CopilotDocV1.Module.Default) as CopilotDocV1.Module,
                         ),
                       })
                     }

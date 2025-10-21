@@ -1,7 +1,7 @@
-import { CopilotDocV1 } from '../../models/copilot.schema'
-import { PartialDeep } from '../../utils/partial-deep'
 import { SetRequired, Simplify } from 'type-fest'
 
+import { CopilotDocV1 } from '../../models/copilot.schema'
+import { PartialDeep } from '../../utils/partial-deep'
 import { SimingActionDelays } from './siming/constants'
 
 export type WithId<T = {}> = T extends never ? never : T & { id: string }

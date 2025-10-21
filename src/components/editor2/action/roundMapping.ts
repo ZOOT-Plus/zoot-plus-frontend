@@ -147,7 +147,8 @@ function parseToken(token: string): {
     if (againMatch) {
       const slot = Number(againMatch[1])
       const symbol = againMatch[2]
-      const payload = symbol === '普' ? 'normal' : symbol === '大' ? 'ultimate' : 'defense'
+      const payload =
+        symbol === '普' ? 'normal' : symbol === '大' ? 'ultimate' : 'defense'
       return { kind: 'again', slot, payload }
     }
   }
@@ -191,15 +192,16 @@ function mapParsedAction(
         name: slotConfig.name,
         location: slotConfig.location,
         doc: formatDoc(docPrefix, descriptor, action.token),
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'wait': {
-      const waitMs = typeof action.payload === 'number' ? action.payload : postDelay
+      const waitMs =
+        typeof action.payload === 'number' ? action.payload : postDelay
       return createAction({
         type: CopilotDocV1.Type.Output,
         doc: formatDoc(docPrefix, `等待${waitMs}毫秒`, `额外:等待:${waitMs}`),
-        postDelay: waitMs,
+        intermediatePostDelay: waitMs,
       })
     }
     case 'switchLeft': {
@@ -207,7 +209,7 @@ function mapParsedAction(
         type: CopilotDocV1.Type.MoveCamera,
         doc: formatDoc(docPrefix, '切换至左侧目标', '额外:左侧目标'),
         distance: [-CAMERA_SHIFT, 0],
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'switchRight': {
@@ -215,28 +217,28 @@ function mapParsedAction(
         type: CopilotDocV1.Type.MoveCamera,
         doc: formatDoc(docPrefix, '切换至右侧目标', '额外:右侧目标'),
         distance: [CAMERA_SHIFT, 0],
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'restartFull': {
       return createAction({
         type: CopilotDocV1.Type.SkillDaemon,
         doc: formatDoc(docPrefix, '触发全灭重开', '重开:全灭'),
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'restartManual': {
       return createAction({
         type: CopilotDocV1.Type.SkillDaemon,
         doc: formatDoc(docPrefix, '触发左上角重开', '重开:左上角'),
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'restartOrange': {
       return createAction({
         type: CopilotDocV1.Type.SkillDaemon,
         doc: formatDoc(docPrefix, '触发无橙星检测', '重开:无橙星'),
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'restartDown': {
@@ -248,45 +250,46 @@ function mapParsedAction(
           `检测槽位${position}阵亡`,
           `重开:检测${position}号位阵亡`,
         ),
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'extraLvbu': {
       return createAction({
         type: CopilotDocV1.Type.Output,
         doc: formatDoc(docPrefix, '吕布切换形态', '额外:吕布'),
-        postDelay: LVBU_POST_DELAY,
+        intermediatePostDelay: LVBU_POST_DELAY,
       })
     }
     case 'extraAuto': {
       return createAction({
         type: CopilotDocV1.Type.Output,
         doc: formatDoc(docPrefix, '开启自动战斗', '额外:开自动'),
-        postDelay,
+        intermediatePostDelay: postDelay,
       })
     }
     case 'extraSp': {
       return createAction({
         type: CopilotDocV1.Type.Output,
         doc: formatDoc(docPrefix, '点击史子眇sp', '额外:史子眇sp'),
-        postDelay: SP_POST_DELAY,
+        intermediatePostDelay: SP_POST_DELAY,
       })
     }
     default: {
       const rawText = action.token || action.raw.join(' ')
       return createAction({
         type: CopilotDocV1.Type.Output,
-        doc: formatDoc(docPrefix, `未识别动作（${rawText}）`, rawText || '未知'),
-        postDelay,
+        doc: formatDoc(
+          docPrefix,
+          `未识别动作（${rawText}）`,
+          rawText || '未知',
+        ),
+        intermediatePostDelay: postDelay,
       })
     }
   }
 }
 
-function resolveSlotConfig(
-  slot: number,
-  options?: MappingOptions,
-): SlotConfig {
+function resolveSlotConfig(slot: number, options?: MappingOptions): SlotConfig {
   const base = DEFAULT_SLOT_CONFIG[slot] ?? DEFAULT_SLOT_CONFIG[1]
   const override = options?.slotAssignments?.[slot]
   if (!override) {
@@ -349,7 +352,9 @@ export function editorActionsToRoundActions(
       .sort(([a], [b]) => Number(a) - Number(b))
       .map(([roundKey, entries]) => [
         roundKey,
-        entries.filter((entry) => entry && entry[0]?.trim()).map((entry) => [entry[0].trim()]),
+        entries
+          .filter((entry) => entry && entry[0]?.trim())
+          .map((entry) => [entry[0].trim()]),
       ]),
   )
 }
@@ -402,7 +407,9 @@ function guessTokenFromAction(action: EditorAction): string {
       }
       if (action.doc?.includes('等待')) {
         const waitMatch = action.doc.match(/等待(\d+)毫秒/)
-        const waitMs = waitMatch ? Number(waitMatch[1]) : getActionPostDelay(action) ?? DEFAULT_POST_DELAY
+        const waitMs = waitMatch
+          ? Number(waitMatch[1])
+          : (getActionPostDelay(action) ?? DEFAULT_POST_DELAY)
         return '额外:等待:' + waitMs
       }
       if (action.doc?.includes('未识别动作')) {
@@ -413,10 +420,18 @@ function guessTokenFromAction(action: EditorAction): string {
       }
       return '额外:等待:' + (getActionPostDelay(action) ?? DEFAULT_POST_DELAY)
     case CopilotDocV1.Type.Skill:
-      if (action.doc && (action.doc.includes('大招') || action.doc.includes('↑'))) {
+      if (
+        action.doc &&
+        (action.doc.includes('大招') || action.doc.includes('↑'))
+      ) {
         return `${slot}大`
       }
-      if (action.doc && (action.doc.includes('下拉') || action.doc.includes('防御') || action.doc.includes('↓'))) {
+      if (
+        action.doc &&
+        (action.doc.includes('下拉') ||
+          action.doc.includes('防御') ||
+          action.doc.includes('↓'))
+      ) {
         return `${slot}下`
       }
       if (action.doc?.includes('再次行动')) {
@@ -448,7 +463,11 @@ function mapVariantToSymbol(label?: string) {
   if (normalized.includes('↑') || normalized.includes('大')) {
     return '大'
   }
-  if (normalized.includes('↓') || normalized.includes('下') || normalized.includes('防')) {
+  if (
+    normalized.includes('↓') ||
+    normalized.includes('下') ||
+    normalized.includes('防')
+  ) {
     return '下'
   }
   if (normalized.toUpperCase().includes('A') || normalized.includes('普')) {

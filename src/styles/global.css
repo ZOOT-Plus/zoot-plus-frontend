@@ -1,7 +1,17 @@
 body {
   margin: 0;
-  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    'Noto Sans SC',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -303,7 +313,6 @@ body,
   border-color: rgba(100, 116, 139, 0.3);
   color: rgba(148, 163, 184, 0.55);
 }
-
 
 .dark .editor-round-pill {
   --editor-pill-bg: rgba(30, 41, 59, 0.75);

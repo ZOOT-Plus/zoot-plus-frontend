@@ -43,4 +43,3 @@ export const updateEditorDebug = (key: string, payload: unknown) => {
     // ignore console failures in restricted environments
   }
 }
-

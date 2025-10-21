@@ -28,6 +28,7 @@ const createArbitraryOperator = (name: string): OperatorInfo => ({
   name_en: '',
   prof: '',
   rarity: 0,
+  discs: [],
 })
 
 export const EditorOperatorName = <T extends FieldValues>({

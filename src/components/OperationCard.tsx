@@ -4,11 +4,7 @@ import { Tooltip2 } from '@blueprintjs/popover2'
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
-import {
-  copyShortCode,
-  handleLazyDownloadJSON,
-  handleLazyDownloadSimingJSON,
-} from 'services/operation'
+import { copyShortCode, handleLazyDownloadSimingJSON } from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
@@ -19,6 +15,7 @@ import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
 import { createCustomLevel, findLevelByStageName } from '../models/level'
 import { getLocalizedOperatorName } from '../models/operator'
+import { readOperatorStats } from '../utils/operatorStats'
 import { OperatorAvatar } from './OperatorAvatar'
 import { Paragraphs } from './Paragraphs'
 import { ReLinkRenderer } from './ReLink'
@@ -274,8 +271,11 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
 
   return (
     <div className="flex flex-wrap items-start">
-      {opers?.map(({ name: operatorName }, index) => {
+      {opers?.map((operator, index) => {
+        const operatorName = operator.name
         const displayName = getLocalizedOperatorName(operatorName, language)
+        const stats = readOperatorStats(operator)
+        const starLevel = Math.min(5, Math.max(0, stats.starLevel))
 
         return (
           <Tag
@@ -288,6 +288,22 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
               size="verylarge"
               className="shrink-0 self-center"
             />
+            {stats.hasStar && (
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
+                  <Icon
+                    key={n}
+                    icon="star"
+                    className={clsx(
+                      'w-3 h-3',
+                      n <= starLevel
+                        ? 'text-yellow-500 opacity-100'
+                        : 'text-gray-500 opacity-40',
+                    )}
+                  />
+                ))}
+              </div>
+            )}
             <span>{displayName}</span>
           </Tag>
         )

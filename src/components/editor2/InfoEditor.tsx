@@ -4,28 +4,25 @@ import {
   InputGroup,
   Radio,
   RadioGroup,
-  TextArea,
   Tag,
+  TextArea,
 } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
-import { memo, useEffect, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo } from 'react'
 import { Paths } from 'type-fest'
 
 import { i18n, useTranslation } from '../../i18n/i18n'
-import { isCustomLevel } from '../../models/level'
-import { OpDifficulty } from '../../models/operation'
+import { Level, OpDifficulty, Operation } from '../../models/operation'
+import { OperatorAvatar } from '../OperatorAvatar'
 import { NumericInput2 } from '../editor/NumericInput2'
 import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
 import { OperatorSidebarInInfo } from './operator/OperatorSidebarInInfo'
-import { OperatorAvatar } from '../OperatorAvatar'
 import { DEFAULT_SIMING_ACTION_DELAYS } from './siming/constants'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
-
-import { Level, Operation } from '../../models/operation'
 
 interface InfoEditorProps {
   className?: string
@@ -57,7 +54,10 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
   const isPresetEqual = (
     a: { attack: number; ultimate: number; defense: number },
     b: { attack: number; ultimate: number; defense: number },
-  ) => a.attack === b.attack && a.ultimate === b.ultimate && a.defense === b.defense
+  ) =>
+    a.attack === b.attack &&
+    a.ultimate === b.ultimate &&
+    a.defense === b.defense
 
   const currentIsFast = isPresetEqual(simingDelays, presetFast)
   const currentIsNormal = isPresetEqual(simingDelays, presetNormal)
@@ -65,10 +65,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
 
   const applyPreset = (
     preset: 'fast' | 'normal' | 'slow',
-    values:
-      | typeof presetFast
-      | typeof presetNormal
-      | typeof presetSlow,
+    values: typeof presetFast | typeof presetNormal | typeof presetSlow,
   ) => {
     edit(() => {
       setInfo((prev) => {
@@ -102,8 +99,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
   }, [info.levelMeta, preLevel])
 
   const normalizedGame = fallbackLevel?.game?.trim() ?? ''
-  const defaultGame =
-    normalizedGame.length > 0 ? normalizedGame : '代号鸢'
+  const defaultGame = normalizedGame.length > 0 ? normalizedGame : '代号鸢'
   const defaultCategory =
     fallbackLevel?.catOne?.trim() ||
     fallbackLevel?.catTwo?.trim() ||
@@ -133,27 +129,30 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
     })
   }
 
-  const assignLevelMeta = (level: Level | undefined, fallbackStageId?: string) => {
-    if (!level) {
-      return fallbackStageId
-        ? {
-            stageId: fallbackStageId,
-            catTwo: fallbackStageId,
-          }
-        : undefined
-    }
-    return {
-      stageId: level.stageId || fallbackStageId,
-      levelId: level.levelId,
-      name: level.name,
-      game: level.game,
-      catOne: level.catOne,
-      catTwo: level.catTwo,
-      catThree: level.catThree,
-      width: level.width,
-      height: level.height,
-    }
-  }
+  const assignLevelMeta = useCallback(
+    (level: Level | undefined, fallbackStageId?: string) => {
+      if (!level) {
+        return fallbackStageId
+          ? {
+              stageId: fallbackStageId,
+              catTwo: fallbackStageId,
+            }
+          : undefined
+      }
+      return {
+        stageId: level.stageId || fallbackStageId,
+        levelId: level.levelId,
+        name: level.name,
+        game: level.game,
+        catOne: level.catOne,
+        catTwo: level.catTwo,
+        catThree: level.catThree,
+        width: level.width,
+        height: level.height,
+      }
+    },
+    [],
+  )
 
   useEffect(() => {
     if (!preLevel) {
@@ -172,7 +171,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
         prev.stageName = nextMeta.stageId ?? ''
       }
     })
-  }, [preLevel, setInfo])
+  }, [assignLevelMeta, preLevel, setInfo])
 
   useEffect(() => {
     if (info.stageName?.trim()) {
@@ -208,7 +207,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
       <h3 className="mb-2 text-lg font-bold">
         {t.components.editor2.InfoEditor.job_info}
       </h3>
-      
+
       <FormGroup
         contentClassName="grow"
         label={t.components.editor2.InfoEditor.stage}
@@ -267,13 +266,15 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex flex-wrap gap-2">
             {selectedOperators.length === 0 ? (
-              <Tag minimal>{t.components.editor2.OperatorEditor.no_operators}</Tag>
+              <Tag minimal>
+                {t.components.editor2.OperatorEditor.no_operators}
+              </Tag>
             ) : (
               selectedOperators.map((op) => (
                 <OperatorAvatar
                   key={op.id}
                   name={op.name}
-                  size="verylarge"  /* 48px */
+                  size="verylarge" /* 48px */
                   sourceSize={96}
                 />
               ))

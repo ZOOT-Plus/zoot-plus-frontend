@@ -22,10 +22,13 @@ import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 
 import { useTranslation } from '../../i18n/i18n'
+import { findLevelByStageName } from '../../models/level'
 import { formatError } from '../../utils/error'
 import { toEditorOperation } from '../editor2/reconciliation'
-import { SimingOperation, toSimingOperationRemote } from '../editor2/siming-export'
-import { findLevelByStageName } from '../../models/level'
+import {
+  SimingOperation,
+  toSimingOperationRemote,
+} from '../editor2/siming-export'
 import { parseOperationLoose } from '../editor2/validation/schema'
 import { parseOperationFile, patchOperation, validateOperation } from './utils'
 
@@ -93,7 +96,9 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
 
           const selectedLevel = findLevelByStageName(
             levels,
-            (baseOperation as any).stageName ?? (baseOperation as any).stage_name ?? '',
+            (baseOperation as any).stageName ??
+              (baseOperation as any).stage_name ??
+              '',
           )
           entry.operation = await toSimingOperationRemote(
             baseOperation,

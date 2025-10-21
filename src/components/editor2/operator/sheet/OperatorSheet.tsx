@@ -56,7 +56,7 @@ export const OperatorSheet = () => {
           }),
           intent: 'danger',
         })
-        return false
+        return skip
       }
 
       const newOperation = produce(operation, (draft) => {

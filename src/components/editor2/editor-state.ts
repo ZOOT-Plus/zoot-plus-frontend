@@ -8,10 +8,10 @@ import {
 import { atomWithStorage, splitAtom } from 'jotai/utils'
 import { noop } from 'lodash-es'
 import { useMemo } from 'react'
+import { Simplify } from 'type-fest'
 
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { createHistoryAtom, useHistoryEdit } from './history'
-import { Simplify } from 'type-fest'
 import { toEditorOperation, toMaaOperation } from './reconciliation'
 import {
   EditorAction,
@@ -246,7 +246,10 @@ export const editorAtoms = {
     (get, set, editorState: EditorState = defaultEditorState) => {
       set(historyAtom, 'RESET')
       set(editorAtom, editorState)
-      set(sourceEditorTextAtom, JSON.stringify(toMaaOperation(editorState.operation), null, 2))
+      set(
+        sourceEditorTextAtom,
+        JSON.stringify(toMaaOperation(editorState.operation), null, 2),
+      )
       set(editorGlobalErrorsAtom, [])
       set(editorEntityErrorsAtom, {})
     },

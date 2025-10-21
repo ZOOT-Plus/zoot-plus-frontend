@@ -37,7 +37,7 @@ export const NumericInput2 = ({
   containerClassName,
   className,
   fill,
-  buttonPosition = "none",
+  buttonPosition = 'none',
   size,
   ...props
 }: NumericInput2Props) => {

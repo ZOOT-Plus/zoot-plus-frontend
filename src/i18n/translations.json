@@ -480,34 +480,34 @@
           "cn": "如：作者名、参考的视频攻略链接（如有）等",
           "zh_tw": "如：作者名、參考的視頻攻略鏈接（如有）等"
         },
-      "siming_settings": {
-        "cn": "司命设置",
-        "zh_tw": "司命設定"
-      },
-      "siming_preset_label": {
-        "cn": "快捷模式",
-        "zh_tw": "快捷模式"
-      },
-      "siming_preset_fast": {
-        "cn": "极速",
-        "zh_tw": "極速"
-      },
-      "siming_preset_normal": {
-        "cn": "普通",
-        "zh_tw": "普通"
-      },
-      "siming_preset_slow": {
-        "cn": "超慢",
-        "zh_tw": "超慢"
-      },
-      "siming_preset_custom": {
-        "cn": "自定义",
-        "zh_tw": "自定義"
-      },
-      "siming_delay_hint": {
-        "cn": "用于调整导出司命行动的默认行动后延迟（1000ms=1s）",
-        "zh_tw": "用於調整導出司命行動的預設行動後延遲（1000ms=1s）"
-      },
+        "siming_settings": {
+          "cn": "司命设置",
+          "zh_tw": "司命設定"
+        },
+        "siming_preset_label": {
+          "cn": "快捷模式",
+          "zh_tw": "快捷模式"
+        },
+        "siming_preset_fast": {
+          "cn": "极速",
+          "zh_tw": "極速"
+        },
+        "siming_preset_normal": {
+          "cn": "普通",
+          "zh_tw": "普通"
+        },
+        "siming_preset_slow": {
+          "cn": "超慢",
+          "zh_tw": "超慢"
+        },
+        "siming_preset_custom": {
+          "cn": "自定义",
+          "zh_tw": "自定義"
+        },
+        "siming_delay_hint": {
+          "cn": "用于调整导出司命行动的默认行动后延迟（1000ms=1s）",
+          "zh_tw": "用於調整導出司命行動的預設行動後延遲（1000ms=1s）"
+        },
         "siming_delay_attack": {
           "cn": "普攻",
           "zh_tw": "普攻"

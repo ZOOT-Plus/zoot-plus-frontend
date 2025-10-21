@@ -162,7 +162,7 @@ const action = z
     if ('direction' in value && value.direction !== undefined) {
       const result = actionWithDirection.safeParse(value)
       if (result.error) {
-        issues.push(...result.error.issues)
+        issues.push(...(result.error.issues as unknown as typeof issues))
       }
     }
   })
@@ -227,7 +227,7 @@ const actionStrict = z
     if ('direction' in value && value.direction !== undefined) {
       const result = actionWithDirection.safeParse(value)
       if (result.error) {
-        issues.push(...result.error.issues)
+        issues.push(...(result.error.issues as unknown as typeof issues))
       }
     }
     if (
@@ -315,6 +315,9 @@ function normalizeOperationLooseInput(raw: unknown): unknown {
   }
 
   const normalized: Record<string, unknown> = { ...raw }
+  if (!('level_meta' in normalized) && !('levelMeta' in normalized)) {
+    normalized['level_meta'] = {}
+  }
   const camelSimingActions = normalized['simingActions']
   if (isRecord(camelSimingActions)) {
     normalized['siming_actions'] = camelSimingActions
@@ -393,6 +396,7 @@ type Labeled<T> = T extends Primitive
 export function getLabel(path: PropertyKey[]) {
   const labels: Labeled<CopilotOperation> = {
     ...i18n.components.editor2.label.operation,
+    level_meta: i18n.components.editor.OperationEditor.stage,
     opers: i18n.components.editor2.label.opers,
     groups: {
       ...i18n.components.editor2.label.operation.groups,
@@ -443,12 +447,16 @@ z.config({
     }
 
     // 当数组最小长度为 1 时（例如 opers 至少 1 人），也视为“必填”提示
-    if (issue.code === 'too_small' && issue.origin === 'array' && issue.minimum === 1) {
+    if (
+      issue.code === 'too_small' &&
+      issue.origin === 'array' &&
+      issue.minimum === 1
+    ) {
       return i18n.components.editor2.validation.required
     }
 
     return i18n.currentLanguage === 'cn'
-      ? cnError.localeError(issue)
-      : enError.localeError(issue)
+      ? (cnError.localeError as (issue: unknown) => any)(issue)
+      : (enError.localeError as (issue: unknown) => any)(issue)
   },
 })

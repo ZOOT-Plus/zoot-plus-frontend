@@ -1,7 +1,6 @@
 import {
   AnchorButton,
   Button,
-  ButtonGroup,
   Callout,
   H4,
   Icon,
@@ -26,7 +25,7 @@ import {
 import { FormField, FormField2 } from 'components/FormField'
 import { HelperText } from 'components/HelperText'
 import type { CopilotDocV1 } from 'models/copilot.schema'
-import { Level, OpDifficulty, OpDifficultyBitFlag } from 'models/operation'
+import { Level, OpDifficulty } from 'models/operation'
 
 import { useTranslation } from '../../i18n/i18n'
 import {
@@ -35,7 +34,6 @@ import {
   findLevelByStageName,
   getPrtsMapUrl,
   getStageIdWithDifficulty,
-  hasHardMode,
   isCustomLevel,
   isHardMode,
   toNormalMode,
@@ -251,7 +249,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
         const normalizedName = level.name?.trim()
         setValue(
           'doc.title',
-          normalizedName?.length ? normalizedName : level.stageName,
+          normalizedName?.length ? normalizedName : level.stageId,
         )
       }
     }

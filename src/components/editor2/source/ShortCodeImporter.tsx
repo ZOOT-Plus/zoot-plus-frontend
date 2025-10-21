@@ -6,9 +6,9 @@ import { useController, useForm } from 'react-hook-form'
 
 import { useTranslation } from '../../../i18n/i18n'
 import { parseShortCode } from '../../../models/shortCode'
+import { stripOperationExportFields } from '../../../services/operation'
 import { formatError } from '../../../utils/error'
 import { FormField2 } from '../../FormField'
-import { stripOperationExportFields } from '../../../services/operation'
 
 interface ShortCodeForm {
   code: string

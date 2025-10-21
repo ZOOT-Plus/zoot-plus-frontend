@@ -61,7 +61,9 @@ export const OperatorEditor: FC = memo(() => {
           return
         }
         const operation = get(editorAtoms.operation)
-        const activeIndex = operation.opers.findIndex((op) => op.id === active.id)
+        const activeIndex = operation.opers.findIndex(
+          (op) => op.id === active.id,
+        )
         const overIndex = operation.opers.findIndex((op) => op.id === over.id)
         if (activeIndex === -1 || overIndex === -1) {
           return

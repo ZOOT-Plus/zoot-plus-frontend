@@ -1,4 +1,4 @@
-import { Button, Classes, MenuDivider, MenuItem } from '@blueprintjs/core'
+import { Button, Classes, MenuItem } from '@blueprintjs/core'
 import { getCreateNewItem } from '@blueprintjs/select'
 
 import clsx from 'clsx'
@@ -241,7 +241,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       }
     }
     return result
-  }, [getLevelCategory, levelsInGame, selectedLevel])
+  }, [getLevelCategory, levelsInGame, matchesGame, selectedGame, selectedLevel])
 
   const normalizedDefaultCategory = (defaultCategory ?? '').trim()
   const [selectedCategory, setSelectedCategory] = useState<string>(() => {
@@ -392,7 +392,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     ensureIncludesSelected,
     fuse,
     getLevelCategory,
+    levels,
     levelsInGame,
+    matchesGame,
     relatedLevelsLabel,
     selectedCategory,
     selectedLevel,
@@ -553,13 +555,11 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               inputProps={{
                 large: true,
                 placeholder: '游戏',
-                disabled: disabled || isLoading || gameOptions.length === 0,
               }}
               popoverProps={{
                 minimal: true,
                 captureDismiss: true,
                 portalContainer: portalContainer ?? undefined,
-                zIndex: 2147483001,
               }}
             />
           )}
@@ -621,13 +621,11 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               large: true,
               placeholder:
                 t.components.editor2.LevelSelect.category_placeholder,
-              disabled: disabled || isLoading || categoryOptions.length === 0,
             }}
             popoverProps={{
               minimal: true,
               captureDismiss: true,
               portalContainer: portalContainer ?? undefined,
-              zIndex: 2147483001,
             }}
           />
         </div>
@@ -693,14 +691,12 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               large: true,
               placeholder: t.components.editor2.LevelSelect.placeholder,
               inputRef,
-              disabled,
               ...inputProps,
             }}
             popoverProps={{
               minimal: true,
               captureDismiss: true,
               portalContainer: portalContainer ?? undefined,
-              zIndex: 2147483001,
               onClosed() {
                 updateQuery('', false)
               },

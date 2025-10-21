@@ -1,5 +1,4 @@
 import camelcaseKeys from 'camelcase-keys'
-import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
 import { uniqueId } from 'lodash-es'
 import { PartialDeep } from 'type-fest'
@@ -8,22 +7,20 @@ import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
-import { createAction, createOperator } from './factories'
+import { roundActionsToEditorActions } from './action/roundMapping'
+import { simingActionsToRoundActions } from './siming-export'
 import {
   DEFAULT_SIMING_ACTION_DELAYS,
   SimingActionDelays,
 } from './siming/constants'
 import {
   EditorAction,
-  EditorGroup,
   EditorOperation,
   EditorOperator,
   WithId,
   WithPartialCoordinates,
 } from './types'
 import { CopilotOperationLoose } from './validation/schema'
-import { roundActionsToEditorActions } from './action/roundMapping'
-import { simingActionsToRoundActions } from './siming-export'
 
 export { createAction, createOperator } from './factories'
 
@@ -199,7 +196,8 @@ export function toMaaOperation(
 ): CopilotOperationLoose {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
-  const { simingActionDelays: _simingActionDelays, ...restDehydrated } = dehydrated
+  const { simingActionDelays: _simingActionDelays, ...restDehydrated } =
+    dehydrated
   const converted = {
     ...restDehydrated,
     actions: dehydrated.actions.map((action, index, actions) => {
@@ -247,7 +245,9 @@ export function toMaaOperation(
     }
   }
 
-  return snakeCaseKeysUnicode(converted, { deep: true })
+  return snakeCaseKeysUnicode(converted, {
+    deep: true,
+  }) as unknown as CopilotOperationLoose
 }
 
 function extractSimingActionDelays(
@@ -284,7 +284,13 @@ function extractSimingActionDelays(
 
   return {
     attack: read(['attack_delay', 'attackDelay'], defaults.attack),
-    ultimate: read(['ult_delay', 'ultimate_delay', 'ultDelay'], defaults.ultimate),
-    defense: read(['defense_delay', 'defence_delay', 'defenseDelay'], defaults.defense),
+    ultimate: read(
+      ['ult_delay', 'ultimate_delay', 'ultDelay'],
+      defaults.ultimate,
+    ),
+    defense: read(
+      ['defense_delay', 'defence_delay', 'defenseDelay'],
+      defaults.defense,
+    ),
   }
 }

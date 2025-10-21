@@ -17,35 +17,39 @@ export function toEditableOperation(
   operation = JSON.parse(JSON.stringify(operation))
 
   // generate IDs
-  compact(
+  const entities = compact(
     [
       operation.actions,
       operation.opers,
       operation.groups,
       operation.groups?.map((group) => group?.opers),
     ].flat(2),
-  ).forEach((item) => {
+  ) as Array<{ _id?: string }>
+
+  entities.forEach((item) => {
     item._id = uniqueId()
   })
 
-  operation.actions?.forEach((action) => {
-    const type = findActionType(action?.type)
+  if (Array.isArray(operation.actions)) {
+    operation.actions.forEach((action) => {
+      const type = findActionType(action?.type)
 
-    // normalize action type, e.g. '部署' -> 'Deploy'
-    if (type.value !== 'Unknown') {
-      action!.type = type.value
-    }
-
-    if (type.value === 'Deploy') {
-      const deployAction = action as CopilotDocV1.ActionDeploy
-      const direction = findOperatorDirection(deployAction.direction).value
-
-      // normalize direction, e.g. '上' -> 'Up'
-      if (direction !== null) {
-        deployAction.direction = direction
+      // normalize action type, e.g. '部署' -> 'Deploy'
+      if (type.value !== 'Unknown') {
+        action!.type = type.value
       }
-    }
-  })
+
+      if (type.value === 'Deploy') {
+        const deployAction = action as CopilotDocV1.ActionDeploy
+        const direction = findOperatorDirection(deployAction.direction).value
+
+        // normalize direction, e.g. '上' -> 'Up'
+        if (direction !== null) {
+          deployAction.direction = direction
+        }
+      }
+    })
+  }
 
   return operation
 }
@@ -61,14 +65,16 @@ export function toMaaOperation(
   operation.minimumRequired ||= MinimumRequired.V4_0_0
 
   // strip IDs
-  compact(
+  const entities = compact(
     [
       operation.actions,
       operation.opers,
       operation.groups,
       operation.groups?.map((group) => group?.opers),
     ].flat(2),
-  ).forEach((item) => {
+  ) as Array<{ _id?: string; id?: string }>
+
+  entities.forEach((item) => {
     delete item._id
 
     // the id may leak out when editing

@@ -24,7 +24,7 @@ interface AnnPanelProps {
 }
 
 export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
-  if (!ENABLE_ANNOUNCEMENT) return null
+  const enabled = ENABLE_ANNOUNCEMENT
   const t = useTranslation()
   const { data, error } = useAnnouncement()
   const announcement = useMemo(
@@ -41,6 +41,9 @@ export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
   const [isOpen, setIsOpen] = useState<{ yes: boolean; manually: boolean }>()
 
   useEffect(() => {
+    if (!enabled) {
+      return
+    }
     const freshSections = announcement?.sections.filter(
       ({ meta: { time, level } = {} }) =>
         level !== 'verbose' && +(time || 0) > lastNoticed,
@@ -51,7 +54,7 @@ export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
       setDisplaySections(freshSections)
       setLastNoticed(Date.now())
     }
-  }, [announcement, lastNoticed, setLastNoticed])
+  }, [announcement, enabled, lastNoticed, setLastNoticed])
 
   const handleClick = () => {
     setIsOpen({ yes: true, manually: true })
@@ -67,9 +70,9 @@ export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
       <div className="flex">
         {announcement && (
           <ul className="grow list-disc pl-4">
-            {announcement?.sections
-              .slice(0, 3)
-              .map(({ title }) => <li key={title}>{title}</li>)}
+            {announcement?.sections.slice(0, 3).map(({ title }) => (
+              <li key={title}>{title}</li>
+            ))}
           </ul>
         )}
         {!announcement && error && (
@@ -86,13 +89,15 @@ export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
 
   return (
     <>
-      {trigger({ handleClick })}
-      <AnnDialog
-        sections={displaySections}
-        isOpen={!!isOpen?.yes}
-        canOutsideClickClose={isOpen?.manually}
-        onClose={() => setIsOpen(undefined)}
-      />
+      {enabled && trigger({ handleClick })}
+      {enabled && (
+        <AnnDialog
+          sections={displaySections}
+          isOpen={!!isOpen?.yes}
+          canOutsideClickClose={isOpen?.manually}
+          onClose={() => setIsOpen(undefined)}
+        />
+      )}
     </>
   )
 }

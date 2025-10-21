@@ -14,7 +14,9 @@ import { OPERATORS, PROFESSIONS } from '../models/generated/operators.json'
 
 export { OPERATORS, PROFESSIONS }
 
-export type OperatorInfo = (typeof OPERATORS)[number]
+export type OperatorInfo = (typeof OPERATORS)[number] & {
+  modules?: (keyof typeof CopilotDocV1.Module | null)[]
+}
 export type Profession = (typeof PROFESSIONS)[number]
 
 const OPERATORS_BY_ID = Object.fromEntries(
@@ -291,7 +293,6 @@ export function getSkillUsageTitle(
     skillTimes !== undefined
   ) {
     return i18n.models.operator.skill_usage.ready_to_use_times.format({
-      count: skillTimes,
       times: skillTimes,
     })
   }

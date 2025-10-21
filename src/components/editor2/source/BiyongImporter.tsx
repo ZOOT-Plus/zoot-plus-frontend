@@ -4,8 +4,8 @@ import { FC, useState } from 'react'
 
 import { AppToaster } from '../../Toaster'
 import { roundActionsToEditorActions } from '../action/roundMapping'
-import { toMaaOperation } from '../reconciliation'
 import { createOperator } from '../factories'
+import { toMaaOperation } from '../reconciliation'
 import { EditorOperator } from '../types'
 
 /**
@@ -59,7 +59,9 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
 
       // 归一化
       const normalized: Record<string, string[][]> = {}
-      for (const [roundKey, list] of Object.entries(top as Record<string, unknown>)) {
+      for (const [roundKey, list] of Object.entries(
+        top as Record<string, unknown>,
+      )) {
         const arr = Array.isArray(list) ? (list as unknown[]) : []
         const rows: string[][] = arr
           .map((entry) => {
@@ -83,10 +85,21 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
         for (const item of rawOpers) {
           if (typeof item === 'string') {
             parsedOpers.push(createOperator({ name: item }))
-          } else if (item && typeof item === 'object' && typeof (item as any).name === 'string') {
-            const { name, requirements, skill, skillUsage, skillTimes } = item as any
+          } else if (
+            item &&
+            typeof item === 'object' &&
+            typeof (item as any).name === 'string'
+          ) {
+            const { name, requirements, skill, skillUsage, skillTimes } =
+              item as any
             parsedOpers.push(
-              createOperator({ name, requirements, skill, skillUsage, skillTimes }),
+              createOperator({
+                name,
+                requirements,
+                skill,
+                skillUsage,
+                skillTimes,
+              }),
             )
           }
         }
@@ -97,10 +110,21 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
         for (const [, item] of entries) {
           if (typeof item === 'string') {
             parsedOpers.push(createOperator({ name: item }))
-          } else if (item && typeof item === 'object' && typeof (item as any).name === 'string') {
-            const { name, requirements, skill, skillUsage, skillTimes } = item as any
+          } else if (
+            item &&
+            typeof item === 'object' &&
+            typeof (item as any).name === 'string'
+          ) {
+            const { name, requirements, skill, skillUsage, skillTimes } =
+              item as any
             parsedOpers.push(
-              createOperator({ name, requirements, skill, skillUsage, skillTimes }),
+              createOperator({
+                name,
+                requirements,
+                skill,
+                skillUsage,
+                skillTimes,
+              }),
             )
           }
         }
@@ -109,7 +133,9 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
       const editorActions = roundActionsToEditorActions(normalized)
 
       const docTitle =
-        (data as any)?.doc && typeof (data as any).doc.title === 'string' && (data as any).doc.title.trim()
+        (data as any)?.doc &&
+        typeof (data as any).doc.title === 'string' &&
+        (data as any).doc.title.trim()
           ? (data as any).doc.title
           : '辟雍导入'
 
@@ -128,10 +154,16 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
       onImport(content)
       setDialogOpen(false)
       setJsonText('')
-      AppToaster.show({ message: '已导入辟雍 JSON（含密探）', intent: 'success' })
+      AppToaster.show({
+        message: '已导入辟雍 JSON（含密探）',
+        intent: 'success',
+      })
     } catch (error) {
       console.warn('Failed to import Biyong JSON:', error)
-      AppToaster.show({ message: '无法解析 JSON 或格式不正确', intent: 'danger' })
+      AppToaster.show({
+        message: '无法解析 JSON 或格式不正确',
+        intent: 'danger',
+      })
     } finally {
       setPending(false)
     }
@@ -161,11 +193,22 @@ export const BiyongImporter: FC<{ onImport: (content: string) => void }> = ({
             growVertically={false}
             placeholder={'在此粘贴辟雍 JSON 内容（支持包含 actions 与 opers）'}
             value={jsonText}
-            onChange={(e) => setJsonText((e.target as HTMLTextAreaElement).value)}
+            onChange={(e) =>
+              setJsonText((e.target as HTMLTextAreaElement).value)
+            }
           />
           <div className="flex justify-end gap-2">
-            <Button text="取消" onClick={() => setDialogOpen(false)} disabled={pending} />
-            <Button intent="primary" icon="import" loading={pending} onClick={handleSubmit}>
+            <Button
+              text="取消"
+              onClick={() => setDialogOpen(false)}
+              disabled={pending}
+            />
+            <Button
+              intent="primary"
+              icon="import"
+              loading={pending}
+              onClick={handleSubmit}
+            >
               导入
             </Button>
           </div>

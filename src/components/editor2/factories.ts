@@ -5,10 +5,13 @@ import { CopilotDocV1 } from '../../models/copilot.schema'
 import { EditorAction, EditorOperator } from './types'
 
 export function createAction(
-  initialValues: SetRequired<Partial<Omit<EditorAction, 'id'>>, 'type'>,
+  initialValues: SetRequired<Partial<EditorAction>, 'type'>,
 ): EditorAction {
-  const action: EditorAction = defaults({ id: uniqueId() }, initialValues)
-  if (action.type === CopilotDocV1.Type.SkillUsage && action.skillUsage === undefined) {
+  const action = defaults({ id: uniqueId() }, initialValues) as EditorAction
+  if (
+    action.type === CopilotDocV1.Type.SkillUsage &&
+    action.skillUsage === undefined
+  ) {
     action.skillUsage = CopilotDocV1.SkillUsageType.ReadyToUse
   }
   return action

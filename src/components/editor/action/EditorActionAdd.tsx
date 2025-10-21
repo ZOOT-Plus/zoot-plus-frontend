@@ -178,7 +178,7 @@ export const EditorActionAdd = ({
     setValue(
       'skillTimes',
       skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-        ? (editingAction as CopilotDocV1.ActionSkillUsage)?.skillTimes ?? 1
+        ? ((editingAction as CopilotDocV1.ActionSkillUsage)?.skillTimes ?? 1)
         : undefined,
     )
   }, [skillUsage, editingAction, setValue])

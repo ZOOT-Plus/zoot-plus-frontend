@@ -58,10 +58,7 @@ export const SheetList: FC<SheetListProps> = () => {
                     className="flex items-center flex-0 w-full h-32"
                     key={index}
                   >
-                    <SheetOperatorItem
-                      name={name}
-                      showSkillTrigger={false}
-                    />
+                    <SheetOperatorItem name={name} showSkillTrigger={false} />
                   </div>
                 ))}
               </div>

@@ -118,7 +118,9 @@ export const ProfClassification: FC<ProfClassification> = () => {
           <ProfIcon
             key={prof.id}
             profId={prof.id}
-            name={language === 'zh_tw' && prof.name_en ? prof.name_en : prof.name}
+            name={
+              language === 'zh_tw' && prof.name_en ? prof.name_en : prof.name
+            }
             selected={selectedProf.includes(prof.id)}
             onProfClick={() =>
               setProfFilter((prev) => ({

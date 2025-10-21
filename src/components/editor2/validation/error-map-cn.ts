@@ -1,6 +1,5 @@
-import type * as errors from '@zod/core/src/errors'
-
 import { Primitive } from 'type-fest'
+import type { core } from 'zod'
 
 const Sizable: Record<string, { unit: string; verb: string }> = {
   string: { unit: '字符', verb: '有' },
@@ -52,7 +51,7 @@ export function joinValues<T extends Primitive[]>(
   return array.map((val) => stringifyPrimitive(val)).join(separator)
 }
 
-const error: errors.$ZodErrorMap = (issue) => {
+const error: core.$ZodErrorMap = (issue) => {
   switch (issue.code) {
     case 'invalid_type':
       return `无效的输入：期望 ${issue.expected}，收到 ${parsedType(issue.input)}`
@@ -77,7 +76,7 @@ const error: errors.$ZodErrorMap = (issue) => {
       return `太小了：期望 ${issue.origin} ${adj}${issue.minimum.toString()}`
     }
     case 'invalid_format': {
-      const _issue = issue as errors.$ZodStringFormatIssues
+      const _issue = issue as core.$ZodStringFormatIssues
       if (_issue.format === 'starts_with') {
         return `无效的字符串：必须以 "${_issue.prefix}" 开头`
       }
@@ -106,7 +105,7 @@ const error: errors.$ZodErrorMap = (issue) => {
 
 export { error }
 
-export default function (): { localeError: errors.$ZodErrorMap } {
+export default function (): { localeError: core.$ZodErrorMap } {
   return {
     localeError: error,
   }

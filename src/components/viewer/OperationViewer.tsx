@@ -31,9 +31,16 @@ import {
   BanCommentsStatusEnum,
   CopilotInfoStatusEnum,
 } from 'maa-copilot-client'
-import { ComponentType, FC, useEffect, useState } from 'react'
+import {
+  ComponentType,
+  FC,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
-import { copyShortCode, handleDownloadJSON } from 'services/operation'
+import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
 import { Paragraphs } from 'components/Paragraphs'
@@ -60,12 +67,13 @@ import {
   withDefaultRequirements,
 } from '../../models/operator'
 import { formatError } from '../../utils/error'
+import { readOperatorStats } from '../../utils/operatorStats'
 import { Confirm } from '../Confirm'
 import { OperatorAvatar } from '../OperatorAvatar'
 import { ReLinkRenderer } from '../ReLink'
 import { UserName } from '../UserName'
-import { CommentArea } from './comment/CommentArea'
 import { ActionSequenceViewer } from './ActionSequenceViewer'
+import { CommentArea } from './comment/CommentArea'
 
 const ManageMenu: FC<{
   operation: Operation
@@ -128,11 +136,15 @@ const ManageMenu: FC<{
           className="hover:text-inherit hover:no-underline"
           to={`/editor/${operation.id}`}
           target="_blank"
-          render={({ className, ...props }) => (
+          render={({ className, href, onClick, onKeyDown, target }) => (
             <MenuItem
               icon="edit"
               text={t.components.viewer.OperationViewer.modify_task_v2}
-              {...props}
+              className={className}
+              href={href}
+              target={target}
+              onClick={onClick as MouseEventHandler<HTMLElement>}
+              onKeyDown={onKeyDown as KeyboardEventHandler<HTMLElement>}
             />
           )}
         />
@@ -364,7 +376,12 @@ const OperatorCard: FC<{
   )
 
   // —— 属性拓展读取（extensions）+ 兼容旧字段 ——
-  type DiscSlot = { index: number; disc: number; starStone?: string; assistStar?: string }
+  type DiscSlot = {
+    index: number
+    disc: number
+    starStone?: string
+    assistStar?: string
+  }
   const getDiscSlots = (op: CopilotDocV1.Operator): DiscSlot[] => {
     // 原方案优先：并行数组（camelCase）；viewer 接口层已 camel 化
     const ds = (op as any).discsSelected ?? []
@@ -381,42 +398,38 @@ const OperatorCard: FC<{
     }
     // 回退：extensions.slots
     const ext = (op as any).extensions as
-      | { discs?: { slots?: DiscSlot[] }; stats?: { starLevel?: number; attack?: number; hp?: number } }
+      | {
+          discs?: { slots?: DiscSlot[] }
+          stats?: { starLevel?: number; attack?: number; hp?: number }
+        }
       | undefined
     const slots = ext?.discs?.slots
     if (slots && slots.length > 0) {
       const norm = [...slots]
         .filter((s) => s && typeof s.index === 'number')
-        .map((s, i) => ({ index: s.index ?? i, disc: s.disc ?? 0, starStone: s.starStone ?? '', assistStar: s.assistStar ?? '' }))
+        .map((s, i) => ({
+          index: s.index ?? i,
+          disc: s.disc ?? 0,
+          starStone: s.starStone ?? '',
+          assistStar: s.assistStar ?? '',
+        }))
         .sort((a, b) => a.index - b.index)
-      while (norm.length < 3) norm.push({ index: norm.length, disc: 0 })
+      while (norm.length < 3)
+        norm.push({
+          index: norm.length,
+          disc: 0,
+          starStone: '',
+          assistStar: '',
+        })
       return norm.slice(0, 3)
     }
-    return [0, 1, 2].map((i) => ({ index: i, disc: 0 }))
+    return [0, 1, 2].map((i) => ({
+      index: i,
+      disc: 0,
+      starStone: '',
+      assistStar: '',
+    }))
   }
-  const readStats = (
-    op: CopilotDocV1.Operator,
-  ): {
-    starLevel: number
-    attack: number
-    hp: number
-    hasStar: boolean
-    hasAttack: boolean
-    hasHp: boolean
-  } => {
-    const ext = (op as any).extensions as { stats?: { starLevel?: number; attack?: number; hp?: number } } | undefined
-    const starRaw = ext?.stats?.starLevel ?? (op as any).starLevel
-    const atkRaw = ext?.stats?.attack ?? (op as any).attack
-    const hpRaw = ext?.stats?.hp ?? (op as any).hp
-    const hasStar = starRaw !== undefined
-    const hasAttack = atkRaw !== undefined
-    const hasHp = hpRaw !== undefined
-    const starLevel = Number(starRaw) || 0
-    const attack = Number(atkRaw) || 0
-    const hp = Number(hpRaw) || 0
-    return { starLevel, attack, hp, hasStar, hasAttack, hasHp }
-  }
-
   // 读取命盘集合与选中结果（优先 extensions.slots；回退 discsSelected）
   const discList = (info as any)?.discs ?? []
   const slots = getDiscSlots(operator)
@@ -424,9 +437,16 @@ const OperatorCard: FC<{
   const selectedDiscsDisplay = selectedDiscs
     .map((s) => {
       if (s.disc === -1) {
-        return { _slot: s.index, item: { name: '任意', abbreviation: '任意', desp: '任意' } as any }
+        return {
+          _slot: s.index,
+          item: { name: '任意', abbreviation: '任意', desp: '任意' } as any,
+        }
       }
-      if (typeof s.disc === 'number' && s.disc > 0 && s.disc <= discList.length) {
+      if (
+        typeof s.disc === 'number' &&
+        s.disc > 0 &&
+        s.disc <= discList.length
+      ) {
         return { _slot: s.index, item: discList[s.disc - 1] }
       }
       return null
@@ -487,7 +507,7 @@ const OperatorCard: FC<{
         </h4>
         {/* 星级（展示 1..5）与基础数值（仅当作业有设置时显示） */}
         {(() => {
-          const stats = readStats(operator)
+          const stats = readOperatorStats(operator)
           const show = stats.hasStar || stats.hasAttack || stats.hasHp
           if (!show) return null
           const current = Math.min(5, Math.max(0, stats.starLevel))
@@ -501,7 +521,9 @@ const OperatorCard: FC<{
                       icon="star"
                       className={clsx(
                         'w-4 h-4',
-                        n <= current ? 'text-yellow-500 opacity-100' : 'text-gray-500 opacity-40',
+                        n <= current
+                          ? 'text-yellow-500 opacity-100'
+                          : 'text-gray-500 opacity-40',
                       )}
                     />
                   ))}
@@ -527,17 +549,26 @@ const OperatorCard: FC<{
               return (
                 <div
                   key={i}
-                  className={clsx('flex gap-1', !showExtras && 'justify-center')}
+                  className={clsx(
+                    'flex gap-1',
+                    !showExtras && 'justify-center',
+                  )}
                 >
                   {/* 提升命盘描述 Tooltip 的层级，避免被 Drawer 内容遮挡 */}
-                  <Tooltip2 content={d.desp} usePortal={true} portalClassName="operation-viewer-portal">
+                  <Tooltip2
+                    content={d.desp}
+                    usePortal={true}
+                    portalClassName="operation-viewer-portal"
+                  >
                     <div
                       className={clsx(
                         'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
                         discColorClasses(d.color),
                       )}
                     >
-                      <span className="bp4-button-text">{d.abbreviation as string}</span>
+                      <span className="bp4-button-text">
+                        {d.abbreviation as string}
+                      </span>
                     </div>
                   </Tooltip2>
                   {showExtras && (
@@ -548,15 +579,23 @@ const OperatorCard: FC<{
                         )}
                         title={star || '主星'}
                       >
-                        <span className="bp4-button-text">{star || '主星'}</span>
+                        <span className="bp4-button-text">
+                          {star || '主星'}
+                        </span>
                       </div>
                       <div
                         className={clsx(
                           'bp4-button bp4-minimal bp4-small w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600',
                         )}
-                        title={slots.find((s) => s.index === _slot)?.assistStar || '辅星'}
+                        title={
+                          slots.find((s) => s.index === _slot)?.assistStar ||
+                          '辅星'
+                        }
                       >
-                        <span className="bp4-button-text">{slots.find((s) => s.index === _slot)?.assistStar || '辅星'}</span>
+                        <span className="bp4-button-text">
+                          {slots.find((s) => s.index === _slot)?.assistStar ||
+                            '辅星'}
+                        </span>
                       </div>
                     </>
                   )}
@@ -754,10 +793,12 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
           </summary>
           <Callout intent="primary" icon={null} className="mb-4">
             <p>
-              {t.components.viewer.OperationViewer.operators_and_groups_note.jsx({
-                operators: (s) => <b>{s}</b>,
-                groups: (s) => <b>{s}</b>,
-              })}
+              {t.components.viewer.OperationViewer.operators_and_groups_note.jsx(
+                {
+                  operators: (s) => <b>{s}</b>,
+                  groups: (s) => <b>{s}</b>,
+                },
+              )}
             </p>
           </Callout>
         </details>
@@ -801,15 +842,13 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
             >
               <H6 className="mb-3 text-gray-800">{group.name}</H6>
               <div className="flex flex-wrap px-2 gap-8">
-                {group.opers
-                  ?.filter(Boolean)
-                  .map((operator) => (
-                    <OperatorCard
-                      key={operator.name}
-                      operator={operator}
-                      showExtras={showExtras}
-                    />
-                  ))}
+                {group.opers?.filter(Boolean).map((operator) => (
+                  <OperatorCard
+                    key={operator.name}
+                    operator={operator}
+                    showExtras={showExtras}
+                  />
+                ))}
 
                 {group.opers?.filter(Boolean).length === 0 && (
                   <span className="text-zinc-500">

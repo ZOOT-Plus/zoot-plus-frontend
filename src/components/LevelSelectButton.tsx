@@ -1,4 +1,5 @@
 import { Button } from '@blueprintjs/core'
+
 import clsx from 'clsx'
 import { FC, useMemo, useState } from 'react'
 
@@ -19,7 +20,13 @@ interface Props {
 // 一个按钮样式的 Level 选择器：
 // - 外观保持为图标按钮
 // - 弹出层内复用 v2 选择器，适配四层级（含 game）
-export const LevelSelectButton: FC<Props> = ({ className, value, onChange, onFilter, defaultGame }) => {
+export const LevelSelectButton: FC<Props> = ({
+  className,
+  value,
+  onChange,
+  onFilter,
+  defaultGame,
+}) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
   const [open, setOpen] = useState(false)
@@ -30,7 +37,10 @@ export const LevelSelectButton: FC<Props> = ({ className, value, onChange, onFil
     return levels.find((el) => el.stageId === value)
   }, [levels, value])
 
-  const label = selected?.name?.trim() || selected?.stageId || t.components.LevelSelect.level
+  const label =
+    selected?.name?.trim() ||
+    selected?.stageId ||
+    t.components.LevelSelect.level
 
   return (
     <>

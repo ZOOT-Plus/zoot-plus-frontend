@@ -1,7 +1,5 @@
 import type { IconName } from '@blueprintjs/core'
 import { Button, Card, HTMLSelect, Icon, InputGroup } from '@blueprintjs/core'
-import { AppToaster } from '../../Toaster'
-import { NumericInput2 } from '../../editor/NumericInput2'
 import {
   DndContext,
   DragEndEvent,
@@ -10,14 +8,17 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { DraggableAttributes, SyntheticListenerMap } from '@dnd-kit/core'
+import type { DraggableAttributes } from '@dnd-kit/core'
 import { SortableContext, arrayMove } from '@dnd-kit/sortable'
+
 import clsx from 'clsx'
-import isEqual from 'lodash-es/isEqual'
-import { Droppable, Sortable } from '../../dnd'
 import { useAtomValue } from 'jotai'
+import isEqual from 'lodash-es/isEqual'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
+import { AppToaster } from '../../Toaster'
+import { Droppable, Sortable } from '../../dnd'
+import { NumericInput2 } from '../../editor/NumericInput2'
 import { editorAtoms, useEdit } from '../editor-state'
 import {
   MappingOptions,
@@ -60,7 +61,8 @@ const BASIC_ACTION_LABEL_MAP: Record<RoundFormState['basicAction'], string> = {
   下: '↓',
 }
 
-const getActionSortableId = (roundKey: string, index: number) => `${roundKey}-action-${index}`
+const getActionSortableId = (roundKey: string, index: number) =>
+  `${roundKey}-action-${index}`
 const EXTRA_TYPES = [
   { value: 'wait', label: '等待' },
   { value: 'left', label: '切换至左侧目标' },
@@ -88,6 +90,8 @@ const clampNumber = (value: number, min: number, max: number) => {
 
 type ActionViewMode = 'round' | 'round2'
 
+type SyntheticListenerMap = Record<string, Function>
+
 const VIEW_MODE_META: Record<
   ActionViewMode,
   { label: string; icon: IconName; description: string }
@@ -95,14 +99,12 @@ const VIEW_MODE_META: Record<
   round: {
     label: '动作链视图',
     icon: 'timeline-events',
-    description:
-      ''
+    description: '',
   },
   round2: {
     label: '类表格视图',
     icon: 'layout-grid',
-    description:
-      '按密探分组展示动作，调整布局不影响导出的 JSON 内容。',
+    description: '按密探分组展示动作，调整布局不影响导出的 JSON 内容。',
   },
 }
 
@@ -177,9 +179,13 @@ const ActionEditorHeader: FC<ActionEditorHeaderProps> = ({
             </button>
           </div>
           <div className="editor-loop-controls flex flex-wrap items-center justify-end gap-y-2 gap-x-3 sm:gap-x-4 text-sm text-gray-600 dark:text-gray-300">
-            <span className="font-medium text-gray-700 dark:text-gray-200 flex-shrink-0 whitespace-nowrap">生成循环</span>
+            <span className="font-medium text-gray-700 dark:text-gray-200 flex-shrink-0 whitespace-nowrap">
+              生成循环
+            </span>
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
-              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">起始</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+                起始
+              </span>
               <NumericInput2
                 containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
                 inputClassName="!text-center"
@@ -192,7 +198,9 @@ const ActionEditorHeader: FC<ActionEditorHeaderProps> = ({
               />
             </div>
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 basis-full sm:basis-auto sm:flex-nowrap">
-              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">结束</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+                结束
+              </span>
               <NumericInput2
                 containerClassName={`editor-loop-range-input w-20 flex-none sm:w-24${hasRounds ? '' : ' is-disabled'}`}
                 inputClassName="!text-center"
@@ -220,7 +228,6 @@ const ActionEditorHeader: FC<ActionEditorHeaderProps> = ({
     </div>
   )
 }
-
 
 interface RoundChipProps {
   label: string
@@ -356,9 +363,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
   const [loopRange, setLoopRange] = useState(() => ({ start: 1, end: 1 }))
   const hasRounds = numericRoundKeys.length > 0
   const minRound = hasRounds ? numericRoundKeys[0] : 1
-  const maxRound = hasRounds
-    ? numericRoundKeys[numericRoundKeys.length - 1]
-    : 1
+  const maxRound = hasRounds ? numericRoundKeys[numericRoundKeys.length - 1] : 1
   const loopStart = loopRange.start
   const loopEnd = loopRange.end
   const [roundForms, setRoundForms] = useState<Record<string, RoundFormState>>(
@@ -416,7 +421,11 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     }
     setLoopRange((prev) => {
       const nextStart = clampNumber(prev.start, minRound, maxRound)
-      const nextEnd = clampNumber(Math.max(nextStart, prev.end), minRound, maxRound)
+      const nextEnd = clampNumber(
+        Math.max(nextStart, prev.end),
+        minRound,
+        maxRound,
+      )
       if (nextStart === prev.start && nextEnd === prev.end) {
         return prev
       }
@@ -450,15 +459,18 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
     [edit, slotAssignments],
   )
 
-  const updateForm = useCallback((roundKey: string, patch: Partial<RoundFormState>) => {
-    setRoundForms((prev) => ({
-      ...prev,
-      [roundKey]: {
-        ...prev[roundKey],
-        ...patch,
-      },
-    }))
-  }, [])
+  const updateForm = useCallback(
+    (roundKey: string, patch: Partial<RoundFormState>) => {
+      setRoundForms((prev) => ({
+        ...prev,
+        [roundKey]: {
+          ...prev[roundKey],
+          ...patch,
+        },
+      }))
+    },
+    [],
+  )
 
   const handleLoopRangeChange = useCallback(
     (field: 'start' | 'end', nextValue: number) => {
@@ -736,71 +748,68 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
 
       return token
     },
-    [],
+    [slotAssignments],
   )
 
-  const formatTokenSummary = useCallback(
-    (rawToken: string) => {
-      const token = rawToken.trim()
-      if (!token) {
-        return '未设定'
+  const formatTokenSummary = useCallback((rawToken: string) => {
+    const token = rawToken.trim()
+    if (!token) {
+      return '未设定'
+    }
+
+    const baseMatch = token.match(/^(\d)([普大下])$/)
+    if (baseMatch) {
+      const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
+      return BASIC_ACTION_LABEL_MAP[actionSymbol]
+    }
+
+    if (token.startsWith('额外:')) {
+      const extraPayload = token.slice('额外:'.length)
+      const againMatch = extraPayload.match(/^(\d)([普大下])$/)
+      if (againMatch) {
+        const actionSymbol = againMatch[2] as RoundFormState['basicAction']
+        return `额外·${BASIC_ACTION_LABEL_MAP[actionSymbol]}`
       }
 
-      const baseMatch = token.match(/^(\d)([普大下])$/)
-      if (baseMatch) {
-        const actionSymbol = baseMatch[2] as RoundFormState['basicAction']
-        return BASIC_ACTION_LABEL_MAP[actionSymbol]
+      if (extraPayload.startsWith('等待:')) {
+        const wait = extraPayload.split(':')[1] ?? ''
+        return `等待 ${wait}ms`
       }
 
-      if (token.startsWith('额外:')) {
-        const extraPayload = token.slice('额外:'.length)
-        const againMatch = extraPayload.match(/^(\d)([普大下])$/)
-        if (againMatch) {
-          const actionSymbol = againMatch[2] as RoundFormState['basicAction']
-          return `额外·${BASIC_ACTION_LABEL_MAP[actionSymbol]}`
-        }
-
-        if (extraPayload.startsWith('等待:')) {
-          const wait = extraPayload.split(':')[1] ?? ''
-          return `等待 ${wait}ms`
-        }
-
-        if (extraPayload === '左侧目标') {
-          return '切换左侧目标'
-        }
-        if (extraPayload === '右侧目标') {
-          return '切换右侧目标'
-        }
-        if (extraPayload === '吕布') {
-          return '吕布切换'
-        }
-        if (extraPayload === '开自动') {
-          return '开启自动'
-        }
-        if (extraPayload === '史子眇sp') {
-          return '史子眇sp'
-        }
-
-        return extraPayload
+      if (extraPayload === '左侧目标') {
+        return '切换左侧目标'
+      }
+      if (extraPayload === '右侧目标') {
+        return '切换右侧目标'
+      }
+      if (extraPayload === '吕布') {
+        return '吕布切换'
+      }
+      if (extraPayload === '开自动') {
+        return '开启自动'
+      }
+      if (extraPayload === '史子眇sp') {
+        return '史子眇sp'
       }
 
-      if (token === '重开:无橙星') {
-        return '无橙星'
-      }
-      if (token === '重开:左上角') {
-        return '左上角重开'
-      }
-      if (token === '重开:全灭') {
-        return '全灭重开'
-      }
-      if (token.startsWith('重开:检测')) {
-        return token.replace('重开:', '')
-      }
+      return extraPayload
+    }
 
-      return token
-    },
-    [],
-  )
+    if (token === '重开:无橙星') {
+      return '无橙星'
+    }
+    if (token === '重开:左上角') {
+      return '左上角重开'
+    }
+    if (token === '重开:全灭') {
+      return '全灭重开'
+    }
+    if (token.startsWith('重开:检测')) {
+      return token.replace('重开:', '')
+    }
+
+    return token
+  }, [])
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -854,7 +863,12 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
           | { type?: string; roundKey?: string; index?: number }
           | undefined
         const overRound = overData?.roundKey
-        if (!activeRound || activeIndex === undefined || !overRound || activeRound !== overRound) {
+        if (
+          !activeRound ||
+          activeIndex === undefined ||
+          !overRound ||
+          activeRound !== overRound
+        ) {
           return
         }
         const list = roundActions[activeRound] ?? []
@@ -900,7 +914,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
         <div className="flex flex-wrap gap-2 items-center">
           <HTMLSelect
             value={form.slot}
-            onChange={(e) => updateForm(roundKey, { slot: e.currentTarget.value })}
+            onChange={(e) =>
+              updateForm(roundKey, { slot: e.currentTarget.value })
+            }
           >
             {SLOT_OPTIONS.map((value) => (
               <option key={value} value={value}>
@@ -948,7 +964,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
           {form.extraType === 'wait' && (
             <InputGroup
               value={form.waitMs}
-              onChange={(e) => updateForm(roundKey, { waitMs: e.currentTarget.value })}
+              onChange={(e) =>
+                updateForm(roundKey, { waitMs: e.currentTarget.value })
+              }
               type="number"
               min={0}
               placeholder="毫秒"
@@ -966,7 +984,8 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
             value={form.restartType}
             onChange={(e) =>
               updateForm(roundKey, {
-                restartType: e.currentTarget.value as RoundFormState['restartType'],
+                restartType: e.currentTarget
+                  .value as RoundFormState['restartType'],
               })
             }
           >
@@ -992,7 +1011,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
               ))}
             </HTMLSelect>
           )}
-          <Button onClick={() => handleAddRestartAction(roundKey)}>＋重开</Button>
+          <Button onClick={() => handleAddRestartAction(roundKey)}>
+            ＋重开
+          </Button>
         </div>
       </div>
     </div>
@@ -1046,7 +1067,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                             >
                               <Icon icon="drag-handle-vertical" />
                               <div>
-                                <h4 className="text-base font-semibold">第 {Number(roundKey)} 回合</h4>
+                                <h4 className="text-base font-semibold">
+                                  第 {Number(roundKey)} 回合
+                                </h4>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   共 {actions.length} 个动作
                                 </p>
@@ -1082,8 +1105,12 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                     }) => (
                                       <RoundChip
                                         label={formatTokenLabel(entry[0] ?? '')}
-                                        variant={resolveChipVariant(entry[0] ?? '')}
-                                        onRemove={() => handleRemoveToken(roundKey, index)}
+                                        variant={resolveChipVariant(
+                                          entry[0] ?? '',
+                                        )}
+                                        onRemove={() =>
+                                          handleRemoveToken(roundKey, index)
+                                        }
                                         draggableAttributes={actionAttributes}
                                         draggableListeners={actionListeners}
                                         isDraggable
@@ -1111,13 +1138,15 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                 const assignedSlots = SLOT_OPTIONS.filter((slot) =>
                   Boolean(slotAssignments?.[Number(slot)]?.name),
                 )
-                const slotsWithTokens = SLOT_OPTIONS.filter((slot) =>
-                  (slotMap[slot]?.length ?? 0) > 0,
+                const slotsWithTokens = SLOT_OPTIONS.filter(
+                  (slot) => (slotMap[slot]?.length ?? 0) > 0,
                 )
                 const slotsToRender =
                   assignedSlots.length > 0
                     ? SLOT_OPTIONS.filter(
-                        (slot) => assignedSlots.includes(slot) || slotsWithTokens.includes(slot),
+                        (slot) =>
+                          assignedSlots.includes(slot) ||
+                          slotsWithTokens.includes(slot),
                       )
                     : slotsWithTokens.length > 0
                       ? slotsWithTokens
@@ -1140,7 +1169,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                           >
                             <Icon icon="drag-handle-vertical" />
                             <div>
-                              <h4 className="text-base font-semibold">第 {Number(roundKey)} 回合</h4>
+                              <h4 className="text-base font-semibold">
+                                第 {Number(roundKey)} 回合
+                              </h4>
                               <p className="text-xs text-gray-500 dark:text-gray-400">
                                 共 {actions.length} 个动作
                               </p>
@@ -1169,7 +1200,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                     key={slot}
                                     role="button"
                                     tabIndex={0}
-                                    onClick={() => handleSelectSpy(roundKey, slot)}
+                                    onClick={() =>
+                                      handleSelectSpy(roundKey, slot)
+                                    }
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault()
@@ -1197,8 +1230,15 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                             <RoundChip
                                               key={`${roundKey}-${slot}-${entry.index}-${entry.token}`}
                                               label={summaryLabel}
-                                              variant={resolveChipVariant(entry.token)}
-                                              onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                              variant={resolveChipVariant(
+                                                entry.token,
+                                              )}
+                                              onRemove={() =>
+                                                handleRemoveToken(
+                                                  roundKey,
+                                                  entry.index,
+                                                )
+                                              }
                                               className="text-xs sm:text-sm"
                                             />
                                           )
@@ -1228,7 +1268,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                                       key={`${roundKey}-other-${entry.index}-${entry.token}`}
                                       label={summaryLabel}
                                       variant={resolveChipVariant(entry.token)}
-                                      onRemove={() => handleRemoveToken(roundKey, entry.index)}
+                                      onRemove={() =>
+                                        handleRemoveToken(roundKey, entry.index)
+                                      }
                                       className="text-xs sm:text-sm"
                                     />
                                   )
@@ -1248,7 +1290,6 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
           </SortableContext>
         </DndContext>
       )}
-
     </div>
   )
 }

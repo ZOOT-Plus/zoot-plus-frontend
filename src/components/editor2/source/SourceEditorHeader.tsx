@@ -5,12 +5,12 @@ import { FC, useState } from 'react'
 
 import { useTranslation } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
+import { stripOperationExportFields } from '../../../services/operation'
 import { AppToaster } from '../../Toaster'
+import { BiyongImporter } from './BiyongImporter'
 import { FileImporter } from './FileImporter'
 import { ShortCodeImporter } from './ShortCodeImporter'
 import { XlsxImporter } from './XlsxImporter'
-import { BiyongImporter } from './BiyongImporter'
-import { stripOperationExportFields } from '../../../services/operation'
 
 interface SourceEditorHeaderProps {
   text: string
@@ -75,7 +75,8 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
     URL.revokeObjectURL(url)
 
     AppToaster.show({
-      message: t.components.editor.source.SourceEditorHeader.job_json_downloaded,
+      message:
+        t.components.editor.source.SourceEditorHeader.job_json_downloaded,
       intent: 'success',
     })
   }
