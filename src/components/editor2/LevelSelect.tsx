@@ -176,6 +176,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     return normalizedDefaultGame
   })
   const previousDefaultGameRef = useRef(normalizedDefaultGame)
+  const manuallySelectedGameRef = useRef<'system' | 'user'>('system')
 
   // 游戏选择对话框开关
   const [gameDialogOpen, setGameDialogOpen] = useState(false)
@@ -191,9 +192,21 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       return
     }
     setSelectedGame((prev) => {
+      if (manuallySelectedGameRef.current === 'user') {
+        return prev ?? normalizedDefaultGame
+      }
       const normalizedPrev = (prev ?? '').trim()
       const normalizedPrevDefault = (prevDefaultGame ?? '').trim()
-      if (!normalizedPrev || normalizedPrev === normalizedPrevDefault) {
+      if (!normalizedPrev) {
+        manuallySelectedGameRef.current = 'system'
+        return normalizedDefaultGame
+      }
+      if (
+        manuallySelectedGameRef.current !== 'user' &&
+        normalizedPrev === normalizedPrevDefault &&
+        normalizedPrev !== normalizedDefaultGame
+      ) {
+        manuallySelectedGameRef.current = 'system'
         return normalizedDefaultGame
       }
       return prev ?? normalizedDefaultGame
@@ -222,6 +235,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     if (selectedLevel && !isCustomLevel(selectedLevel)) {
       const g = normalizeGame(selectedLevel.game)
       if (g && (!selectedGame || selectedGame === NO_GAME_LABEL)) {
+        manuallySelectedGameRef.current = 'system'
         setSelectedGame(g)
       }
     }
@@ -503,6 +517,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
                 value={selectedGame || null}
                 onSelect={(game) => {
                   if (!game || game === selectedGame) return
+                  manuallySelectedGameRef.current = 'user'
                   setSelectedGame(game)
                   // 重置后面两个选项：分类 与 关卡输入/选择
                   setSelectedCategory('')
@@ -553,12 +568,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               }}
               inputValueRenderer={(item) => item ?? ''}
               onItemSelect={(game) => {
-                if (!game || game === selectedGame) return
-                setSelectedGame(game)
-                setSelectedCategory('')
-                setActiveItem(null)
-                updateQuery('', true)
-                if (!disabled) onChange('')
+              if (!game || game === selectedGame) return
+              manuallySelectedGameRef.current = 'user'
+              setSelectedGame(game)
+              setSelectedCategory('')
+              setActiveItem(null)
+              updateQuery('', true)
+              if (!disabled) onChange('')
                 const gameForQuery = game === NO_GAME_LABEL ? '' : game
                 const kw = gameForQuery
                 onFilterChange?.(kw, { game: gameForQuery || undefined })
@@ -654,6 +670,9 @@ export const LevelSelect: FC<LevelSelectProps> = ({
             query={query}
             onQueryChange={(query) => updateQuery(query, false)}
             onReset={() => {
+              manuallySelectedGameRef.current = 'user'
+              setActiveItem(null)
+              setSelectedCategory('')
               if (!disabled) {
                 onChange('')
               }
