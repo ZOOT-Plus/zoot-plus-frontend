@@ -175,18 +175,29 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     // 没有关卡时，尝试使用父组件传入的默认游戏以便回显
     return normalizedDefaultGame
   })
+  const previousDefaultGameRef = useRef(normalizedDefaultGame)
 
   // 游戏选择对话框开关
   const [gameDialogOpen, setGameDialogOpen] = useState(false)
 
   useEffect(() => {
+    const prevDefaultGame = previousDefaultGameRef.current
+    previousDefaultGameRef.current = normalizedDefaultGame
+
     if (selectedLevel) {
       return
     }
     if (!normalizedDefaultGame) {
       return
     }
-    setSelectedGame(normalizedDefaultGame)
+    setSelectedGame((prev) => {
+      const normalizedPrev = (prev ?? '').trim()
+      const normalizedPrevDefault = (prevDefaultGame ?? '').trim()
+      if (!normalizedPrev || normalizedPrev === normalizedPrevDefault) {
+        return normalizedDefaultGame
+      }
+      return prev ?? normalizedDefaultGame
+    })
   }, [normalizedDefaultGame, selectedLevel])
 
   // 取消自动选择首个游戏，避免“强制重置”

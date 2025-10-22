@@ -535,7 +535,7 @@ const OperatorCard: FC<{
                     <span title="攻击">攻: {Math.max(0, stats.attack)}</span>
                   )}
                   {stats.hasHp && (
-                    <span title="生命">生: {Math.max(0, stats.hp)}</span>
+                    <span title="生命">血: {Math.max(0, stats.hp)}</span>
                   )}
                 </div>
               )}

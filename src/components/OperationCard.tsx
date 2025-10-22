@@ -276,35 +276,49 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
         const displayName = getLocalizedOperatorName(operatorName, language)
         const stats = readOperatorStats(operator)
         const starLevel = Math.min(5, Math.max(0, stats.starLevel))
+        const showStar = stats.hasStar
+        const showBaseStats = stats.hasAttack || stats.hasHp
 
         return (
           <Tag
             key={`${operatorName}-${index}`}
             minimal
-            className="op-avatar-tag mr-2 last:mr-0 mb-1 last:mb-0 inline-flex items-center gap-1"
+            className="op-avatar-tag mr-2 last:mr-0 mb-1 last:mb-0 inline-flex flex-col items-center gap-1 py-2 px-2"
           >
             <OperatorAvatar
               name={operatorName}
               size="verylarge"
-              className="shrink-0 self-center"
+              className="shrink-0"
             />
-            {stats.hasStar && (
-              <div className="flex items-center gap-0.5">
+            {showStar && (
+              <div className="flex items-center justify-center gap-0.5 mb-1">
                 {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
                   <Icon
                     key={n}
                     icon="star"
+                    iconSize={12}
                     className={clsx(
-                      'w-3 h-3',
                       n <= starLevel
                         ? 'text-yellow-500 opacity-100'
-                        : 'text-gray-500 opacity-40',
+                        : 'text-gray-500 opacity-40 dark:opacity-30',
                     )}
                   />
                 ))}
               </div>
             )}
-            <span>{displayName}</span>
+            <span className="text-sm font-medium leading-tight text-slate-900 dark:text-slate-100 mb-1.3">
+              {displayName}
+            </span>
+            {showBaseStats && (
+              <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-slate-200">
+                {stats.hasAttack && (
+                  <span title="攻击">攻: {Math.max(0, stats.attack)}</span>
+                )}
+                {stats.hasHp && (
+                  <span title="生命">血: {Math.max(0, stats.hp)}</span>
+                )}
+              </div>
+            )}
           </Tag>
         )
       })}
