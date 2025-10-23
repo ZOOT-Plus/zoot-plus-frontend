@@ -2,15 +2,26 @@ import { useSetAtom } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { OperationEditor } from 'components/editor2/Editor'
 
-import { createOperation, getOperation, updateOperation, useOperation } from '../apis/operation'
+import { useLevels } from '../apis/level'
+import {
+  createOperation,
+  getOperation,
+  updateOperation,
+  useOperation,
+} from '../apis/operation'
 import { withSuspensable } from '../components/Suspensable'
 import { AppToaster } from '../components/Toaster'
-import { stripOperationExportFields } from '../services/operation'
 import {
   defaultEditorState,
   editorAtoms,
@@ -18,16 +29,16 @@ import {
 } from '../components/editor2/editor-state'
 import { toEditorOperation } from '../components/editor2/reconciliation'
 import { toSimingOperationRemote } from '../components/editor2/siming-export'
-import { useLevels } from '../apis/level'
-import { findLevelByStageName } from '../models/level'
-import { parseShortCode } from '../models/shortCode'
 import { parseOperationLoose } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
+import { CopilotDocV1 } from '../models/copilot.schema'
+import { findLevelByStageName } from '../models/level'
+import { Level } from '../models/operation'
+import { parseShortCode } from '../models/shortCode'
+import { stripOperationExportFields } from '../services/operation'
 import { formatError } from '../utils/error'
 import { wrapErrorMessage } from '../utils/wrapErrorMessage'
-import { Level } from '../models/operation'
-import { CopilotDocV1 } from '../models/copilot.schema'
 
 type CamelLevelMeta = CopilotDocV1.LevelMeta | undefined
 
@@ -194,14 +205,16 @@ export const EditorPage = withSuspensable(() => {
         })
         importedShortcodeRef.current = importShortcode
       } finally {
-        if (cancelled) {
-          return
+        if (!cancelled) {
+          setSearchParams(
+            (prev) => {
+              const next = new URLSearchParams(prev)
+              next.delete('shortcode')
+              return next
+            },
+            { replace: true },
+          )
         }
-        setSearchParams((prev) => {
-          const next = new URLSearchParams(prev)
-          next.delete('shortcode')
-          return next
-        }, { replace: true })
       }
     }
 
@@ -210,7 +223,7 @@ export const EditorPage = withSuspensable(() => {
     return () => {
       cancelled = true
     }
-  }, [importShortcode, resetEditor, setSearchParams, setEditorPreLevel, t, formatError])
+  }, [importShortcode, resetEditor, setSearchParams, setEditorPreLevel, t])
 
   const handleSubmit = useAtomCallback(
     useCallback(
@@ -230,24 +243,25 @@ export const EditorPage = withSuspensable(() => {
         const selectedLevel = levels
           ? findLevelByStageName(
               levels,
-              (baseOperation as any).stageName ?? (baseOperation as any).stage_name ?? editorOperation.stageName ?? editorOperation['stage_name'] ?? '',
+              (baseOperation as any).stageName ??
+                (baseOperation as any).stage_name ??
+                editorOperation.stageName ??
+                editorOperation['stage_name'] ??
+                '',
             )
           : undefined
 
         // 调试输出：创建作业时打印当前选择的关卡分类信息
         if (selectedLevel) {
           // eslint-disable-next-line no-console
-          console.log(
-            '[CreateOperation] level meta:',
-            {
-              game: selectedLevel.game,
-              catOne: selectedLevel.catOne,
-              catTwo: selectedLevel.catTwo,
-              catThree: selectedLevel.catThree,
-              stageId: selectedLevel.stageId,
-              name: selectedLevel.name,
-            },
-          )
+          console.log('[CreateOperation] level meta:', {
+            game: selectedLevel.game,
+            catOne: selectedLevel.catOne,
+            catTwo: selectedLevel.catTwo,
+            catThree: selectedLevel.catThree,
+            stageId: selectedLevel.stageId,
+            name: selectedLevel.name,
+          })
         } else {
           // eslint-disable-next-line no-console
           console.log('[CreateOperation] level meta: <none>')
@@ -342,7 +356,7 @@ export const EditorPage = withSuspensable(() => {
         )
         return true
       },
-      [id, navigate],
+      [id, levels, navigate],
     ),
   )
 

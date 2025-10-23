@@ -1,4 +1,4 @@
-import { read, utils, type CellObject } from 'xlsx'
+import { type CellObject, read, utils } from 'xlsx'
 
 import {
   AutoFightConfig,
@@ -29,19 +29,6 @@ const NAMED_COLORS = {
   蓝: '蓝',
   紫: '紫',
 } as const
-
-const themeColorMap: Record<number, string> = {
-  0: '白',
-  1: '黑',
-  2: '白',
-  3: '蓝',
-  4: '蓝',
-  5: '红',
-  6: '绿',
-  7: '紫',
-  8: '蓝',
-  9: '橙',
-}
 
 // 近似主题色对应的十六进制（仅用于前端色块展示）
 const themeColorHexMap: Record<number, string> = {
@@ -209,10 +196,7 @@ const getCellFillRgbHex = (cell: CellObject): string | null => {
   return null
 }
 
-const pickCellColor = (
-  cell: CellObject,
-  config: AutoFightConfig,
-): string => {
+const pickCellColor = (cell: CellObject, config: AutoFightConfig): string => {
   if (!config.useColor) {
     return ''
   }
@@ -229,7 +213,10 @@ const pickCellColor = (
   const fillHex = getCellFillRgbHex(cell)
   if (!fillHex) return ''
   const palette = (config.paletteHexList ?? []).map((h) => h.toUpperCase())
-  const tokens = config.colorTokenList && config.colorTokenList.length > 0 ? config.colorTokenList : config.colorList
+  const tokens =
+    config.colorTokenList && config.colorTokenList.length > 0
+      ? config.colorTokenList
+      : config.colorList
   const idx = palette.indexOf(fillHex.toUpperCase())
   if (idx >= 0 && tokens[idx]) {
     // 返回单字符令牌（例如 A/B/C/...），便于后续解析与最短旋转
@@ -313,7 +300,8 @@ export const detectXlsxColors = (
       const cellAddress = utils.encode_cell({ r, c })
       const cell = sheet[cellAddress] as CellObject | undefined
       if (!cell) continue
-      const rawText = cell.v === undefined || cell.v === null ? '' : String(cell.v).trim()
+      const rawText =
+        cell.v === undefined || cell.v === null ? '' : String(cell.v).trim()
       // 没有文本也允许统计，只要单元格存在填充色
       const fillHex = getCellFillRgbHex(cell)
       if (fillHex) {
@@ -405,15 +393,20 @@ const getSlideOperations = (
   if (previousIndex === -1 || targetIndex === -1) {
     return []
   }
-  const clockwiseDistance = (targetIndex - previousIndex + colors.length) % colors.length
-  const counterDistance = (previousIndex - targetIndex + colors.length) % colors.length
+  const clockwiseDistance =
+    (targetIndex - previousIndex + colors.length) % colors.length
+  const counterDistance =
+    (previousIndex - targetIndex + colors.length) % colors.length
   if (clockwiseDistance <= counterDistance) {
     return new Array(clockwiseDistance).fill('右侧目标')
   }
   return new Array(counterDistance).fill('左侧目标')
 }
 
-const parseActionsForRow = (row: string[], config: AutoFightConfig): ActionOrder => {
+const parseActionsForRow = (
+  row: string[],
+  config: AutoFightConfig,
+): ActionOrder => {
   const actionOrder: ActionOrder = {}
 
   row.forEach((seq, idx) => {

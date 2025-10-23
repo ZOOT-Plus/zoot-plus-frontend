@@ -57,7 +57,9 @@ export const DetailedSelect: FCC<
     value === undefined
       ? undefined
       : items.find(
-          (it) => it.type === 'choice' && (it as DetailedSelectChoice).value === value,
+          (it) =>
+            it.type === 'choice' &&
+            (it as DetailedSelectChoice).value === value,
         )
 
   return (

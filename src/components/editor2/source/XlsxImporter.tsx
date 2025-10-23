@@ -1,13 +1,12 @@
 import { Button, Dialog, DialogBody, MenuItem } from '@blueprintjs/core'
 
-import { ChangeEventHandler, FC, useMemo, useRef, useState } from 'react'
-
 import {
+  type DetectedColor,
   convertXlsxToAutoFightJson,
   detectXlsxPalette,
-  hexToNamedColor,
-  type DetectedColor,
 } from 'features/auto-fight-gen/convert'
+import { ChangeEventHandler, FC, useRef, useState } from 'react'
+
 import { useTranslation } from '../../../i18n/i18n'
 import { AppToaster } from '../../Toaster'
 import { updateOperationDocTitle } from './updateDocTitle'
@@ -63,15 +62,15 @@ export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
     }
   }
 
-
-
   const confirmMapping = async () => {
     if (!pendingBuffer) {
       setIsMappingOpen(false)
       return
     }
     try {
-      const tokens = colorOrder.map((_, idx) => String.fromCharCode('A'.charCodeAt(0) + idx))
+      const tokens = colorOrder.map((_, idx) =>
+        String.fromCharCode('A'.charCodeAt(0) + idx),
+      )
       const json = convertXlsxToAutoFightJson(pendingBuffer, {
         useColor: true,
         colorType: 'fill',
@@ -136,7 +135,14 @@ export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
         <DialogBody>
           <div className="mb-2">已检测到以下敌人颜色，请设置敌方目标顺序：</div>
           {palette.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: 8,
+                flexWrap: 'wrap',
+                marginBottom: 8,
+              }}
+            >
               {palette.map((p, i) => (
                 <span
                   key={`${p.rgb}-${i}`}
@@ -157,7 +163,15 @@ export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
           ) : (
             <div style={{ display: 'grid', gap: 8 }}>
               {colorOrder.map((selected, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    gap: 8,
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                  }}
+                >
                   <span style={{ width: 64 }}>第{idx + 1}个敌人</span>
                   <span
                     title={selected}
@@ -183,7 +197,10 @@ export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
                           width: 22,
                           height: 22,
                           backgroundColor: p.rgb,
-                          border: selected === p.rgb ? '2px solid #106BA3' : '1px solid #ccc',
+                          border:
+                            selected === p.rgb
+                              ? '2px solid #106BA3'
+                              : '1px solid #ccc',
                           cursor: 'pointer',
                         }}
                         aria-label={`选择颜色 ${p.rgb}`}
@@ -195,7 +212,14 @@ export const XlsxImporter: FC<{ onImport: (content: string) => void }> = ({
               ))}
             </div>
           )}
-          <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'flex-end' }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              marginTop: 12,
+              justifyContent: 'flex-end',
+            }}
+          >
             <Button onClick={cancelMapping}>取消</Button>
             <Button intent="primary" onClick={confirmMapping}>
               确认

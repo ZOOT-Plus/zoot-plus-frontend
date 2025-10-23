@@ -695,9 +695,7 @@ const ActionTarget: FC<{
           <OperatorAvatar
             className="w-16 h-16"
             name={name}
-            fallback={
-              name ?? t.components.editor2.ActionItem.select_target
-            }
+            fallback={name ?? t.components.editor2.ActionItem.select_target}
             sourceSize={96}
           />
           <div className="ml-1 w-[6.5em]">

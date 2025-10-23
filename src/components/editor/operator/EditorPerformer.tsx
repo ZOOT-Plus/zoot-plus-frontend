@@ -89,7 +89,7 @@ export const EditorPerformer: FC<EditorPerformerProps> = ({ control }) => {
   const groups: Group[] = _groups
 
   const additionalOperatorsFromActions = useMemo(() => {
-    if (!actions) return []
+    if (!Array.isArray(actions)) return []
 
     const additionalOperators = actions.map((action) => {
       if (

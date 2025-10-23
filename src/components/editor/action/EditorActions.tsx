@@ -34,13 +34,28 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
   const t = useTranslation()
   const [draggingAction, setDraggingAction] = useState<CopilotDocV1.Action>()
 
-  const { fields, append, insert, update, move, remove } = useFieldArray({
+  const { fields, append, insert, update, move, remove } = useFieldArray<
+    CopilotDocV1.Operation,
+    'actions',
+    '_id'
+  >({
     name: 'actions',
     control,
   })
 
   // upcast to prevent misuse of `.id`
-  const actions: CopilotDocV1.Action[] = fields
+  const actions = fields as unknown as CopilotDocV1.Action[]
+  const appendAction = append as unknown as (value: CopilotDocV1.Action) => void
+  const insertAction = insert as unknown as (
+    index: number,
+    value: CopilotDocV1.Action,
+  ) => void
+  const updateAction = update as unknown as (
+    index: number,
+    value: CopilotDocV1.Action,
+  ) => void
+  const moveAction = move as unknown as (from: number, to: number) => void
+  const removeAction = remove as unknown as (index: number) => void
 
   const [editingAction, setEditingAction] = useState<CopilotDocV1.Action>()
 
@@ -57,7 +72,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
     if (over && active.id !== over.id) {
       const oldIndex = actions.findIndex((el) => getId(el) === active.id)
       const newIndex = actions.findIndex((el) => getId(el) === over.id)
-      if (oldIndex !== -1 && newIndex !== -1) move(oldIndex, newIndex)
+      if (oldIndex !== -1 && newIndex !== -1) moveAction(oldIndex, newIndex)
     }
   }
 
@@ -69,7 +84,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
     const action = JSON.parse(JSON.stringify(actions[index]))
     action._id = uniqueId()
     unset(action, 'id')
-    insert(index + 1, action)
+    insertAction(index + 1, action)
   }
 
   const onSubmit: EditorActionAddProps['onSubmit'] = (action, setError) => {
@@ -81,7 +96,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
       const index = actions.findIndex((field) => isEditing(field))
       if (index !== -1) {
         action._id = getId(editingAction)
-        update(index, action)
+        updateAction(index, action)
         setEditingAction(undefined)
       } else {
         setError('global' as any, {
@@ -92,7 +107,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
       }
     } else {
       action._id = uniqueId()
-      append(action)
+      appendAction(action)
     }
 
     return true
@@ -139,7 +154,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
                           )
                         }
                         onDuplicate={() => handleDuplicate(i)}
-                        onRemove={() => remove(i)}
+                        onRemove={() => removeAction(i)}
                         {...attrs}
                       />
                     )}

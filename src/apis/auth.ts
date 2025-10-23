@@ -1,5 +1,5 @@
-import { UserApi } from 'utils/maa-copilot-client'
 import { ApiError } from 'utils/error'
+import { UserApi } from 'utils/maa-copilot-client'
 
 export async function sendRegistrationEmail(req: { email: string }) {
   await new UserApi({ sendToken: 'never' }).sendRegistrationToken({

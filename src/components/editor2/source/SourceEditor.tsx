@@ -12,21 +12,29 @@ import {
 
 import { useAtom } from 'jotai'
 import { debounce } from 'lodash-es'
-import { FC, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { ZodError } from 'zod'
 
+import { useLevels } from '../../../apis/level'
 import { i18n, useTranslation } from '../../../i18n/i18n'
+import { findLevelByStageName } from '../../../models/level'
 import { formatError } from '../../../utils/error'
 import { Confirm } from '../../Confirm'
 import { withSuspensable } from '../../Suspensable'
 import { DrawerLayout } from '../../drawer/DrawerLayout'
-import { SourceEditorHeader } from './SourceEditorHeader'
 import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
 import { toSimingOperationRemote } from '../siming-export'
 import { ZodIssue, parseOperationLoose } from '../validation/schema'
-import { useLevels } from '../../../apis/level'
-import { findLevelByStageName } from '../../../models/level'
+import { SourceEditorHeader } from './SourceEditorHeader'
 
 interface SourceEditorProps {
   onUnsavedChanges?: (hasUnsavedChanges: boolean) => void
@@ -62,7 +70,9 @@ const SourceEditor = withSuspensable(
               (base as any).stageName ?? (base as any).stage_name ?? '',
             )
           : undefined
-        const result = await toSimingOperationRemote(base, operation, { level: selectedLevel })
+        const result = await toSimingOperationRemote(base, operation, {
+          level: selectedLevel,
+        })
         setSimingText(JSON.stringify(result, null, 2))
       } catch (e) {
         setSimingError(formatError(e))
@@ -135,7 +145,7 @@ const SourceEditor = withSuspensable(
           update.flush()
         }
       },
-      [update, viewMode],
+      [setText, update, viewMode],
     )
 
     const handleChange = useCallback(
@@ -157,7 +167,11 @@ const SourceEditor = withSuspensable(
     return (
       <DrawerLayout
         title={
-          <SourceEditorHeader text={displayedText} onChange={handleChange} onImport={handleImport} />
+          <SourceEditorHeader
+            text={displayedText}
+            onChange={handleChange}
+            onImport={handleImport}
+          />
         }
       >
         <div className="px-8 py-4 flex-grow flex flex-col gap-2 bg-zinc-50 dark:bg-slate-900 dark:text-white">

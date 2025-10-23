@@ -145,8 +145,8 @@ const LEVEL_CATEGORY_ORDER = [
   '其他',
 ] as const
 
-const LEVEL_CATEGORY_ORDER_MAP = new Map(
-  LEVEL_CATEGORY_ORDER.map((category, index) => [category, index] as const),
+const LEVEL_CATEGORY_ORDER_MAP = new Map<string, number>(
+  LEVEL_CATEGORY_ORDER.map((category, index) => [category, index]),
 )
 
 function normalizeLevelCategory(level: Level) {

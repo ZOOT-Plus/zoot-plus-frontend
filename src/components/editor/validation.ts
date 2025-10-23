@@ -36,7 +36,7 @@ export function validateOperation(
     )
   }
 
-  if (actions) {
+  if (Array.isArray(actions)) {
     for (let i = 0; i < actions.length; i++) {
       const action = actions[i]
 

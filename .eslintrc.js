@@ -37,6 +37,7 @@ module.exports = {
     'no-unused-vars': 'off',
     eqeqeq: 'error',
     'react-hooks/exhaustive-deps': 'error',
+    'import/no-named-as-default': 'off',
   },
   settings: {
     react: {

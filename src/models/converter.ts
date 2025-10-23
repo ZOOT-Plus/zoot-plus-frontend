@@ -4,7 +4,6 @@ import { CopilotInfo } from 'maa-copilot-client'
 import { CopilotDocV1 } from 'models/copilot.schema'
 
 import { i18n } from '../i18n/i18n'
-import { findOperatorByName } from './operator'
 
 export function toCopilotOperation(
   apiOperation: CopilotInfo,
@@ -39,18 +38,30 @@ export function migrateOperation(
       ...operation,
       version: CopilotDocV1.VERSION,
       opers: operation.opers?.map((operator) => {
-        if (operator.requirements?.module === undefined) {
+        const moduleValue = operator.requirements?.module
+        if (moduleValue === undefined) {
           return operator
         }
-        const modules = findOperatorByName(operator.name)?.modules
-        if (!modules) {
-          return operator
+
+        const moduleMap: Record<number, CopilotDocV1.Module> = {
+          0: CopilotDocV1.Module.Original,
+          1: CopilotDocV1.Module.X,
+          2: CopilotDocV1.Module.Y,
+          3: CopilotDocV1.Module.A,
+          4: CopilotDocV1.Module.D,
         }
-        const actualModuleName = modules[operator.requirements.module]
-        const actualModule =
-          actualModuleName in CopilotDocV1.Module
-            ? (CopilotDocV1.Module[actualModuleName] as CopilotDocV1.Module)
-            : CopilotDocV1.Module.Default
+
+        let actualModule = CopilotDocV1.Module.Default
+        if (typeof moduleValue === 'number') {
+          actualModule = moduleMap[moduleValue] ?? CopilotDocV1.Module.Default
+        } else if (typeof moduleValue === 'string') {
+          const key = moduleValue as keyof typeof CopilotDocV1.Module
+          actualModule =
+            key in CopilotDocV1.Module
+              ? CopilotDocV1.Module[key]
+              : CopilotDocV1.Module.Default
+        }
+
         return {
           ...operator,
           requirements: {
@@ -67,7 +78,9 @@ export function migrateOperation(
 function normalizeOperation(
   operation: CopilotDocV1.Operation,
 ): CopilotDocV1.Operation {
-  const { actions } = operation as { actions?: CopilotDocV1.Action[] | CopilotDocV1.SimingActionMap }
+  const { actions } = operation as {
+    actions?: CopilotDocV1.Action[] | CopilotDocV1.SimingActionMap
+  }
   if (actions && !Array.isArray(actions) && typeof actions === 'object') {
     const simingActions =
       operation.simingActions ?? (actions as CopilotDocV1.SimingActionMap)

@@ -13,12 +13,12 @@ export const NeoELevel: FC<{
   level: Level
 }> = ({ level }) => {
   const t = useTranslation()
-  let { game, catOne, catTwo, catThree } = level
+  const { game } = level
+  let { catOne, catTwo } = level
 
   if (isCustomLevel(level)) {
     catOne = t.components.entity.ELevel.custom_level
     catTwo = ''
-    catThree = level.name
   }
 
   return (

@@ -1,6 +1,12 @@
 export type BasicActionSymbol = '普' | '大' | '下'
 
-export type ChipVariant = 'warm' | 'danger' | 'info' | 'teal' | 'success' | 'neutral'
+export type ChipVariant =
+  | 'warm'
+  | 'danger'
+  | 'info'
+  | 'teal'
+  | 'success'
+  | 'neutral'
 
 export const BASIC_ACTION_VARIANTS: Record<BasicActionSymbol, ChipVariant> = {
   普: 'warm',
@@ -115,10 +121,16 @@ export function resolveChipVariant(rawToken: string): ChipVariant {
     if (extraPayload.includes('吕布')) {
       return 'success'
     }
-    if (extraPayload.includes('自动') || normalizedExtraPayload.includes('auto')) {
+    if (
+      extraPayload.includes('自动') ||
+      normalizedExtraPayload.includes('auto')
+    ) {
       return 'info'
     }
-    if (extraPayload.includes('史子眇') || normalizedExtraPayload.includes('sp')) {
+    if (
+      extraPayload.includes('史子眇') ||
+      normalizedExtraPayload.includes('sp')
+    ) {
       return 'warm'
     }
     return 'neutral'

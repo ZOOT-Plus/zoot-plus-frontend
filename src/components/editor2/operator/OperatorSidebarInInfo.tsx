@@ -1,4 +1,5 @@
 import { Button } from '@blueprintjs/core'
+
 import clsx from 'clsx'
 import { FC, useCallback, useEffect, useId, useState } from 'react'
 
@@ -42,7 +43,10 @@ export const OperatorSidebarInInfo: FC<OperatorSidebarInInfoProps> = ({
       setShouldRender(true)
       return
     }
-    const timeout = window.setTimeout(() => setShouldRender(false), TRANSITION_MS)
+    const timeout = window.setTimeout(
+      () => setShouldRender(false),
+      TRANSITION_MS,
+    )
     return () => window.clearTimeout(timeout)
   }, [open])
 
@@ -61,7 +65,9 @@ export const OperatorSidebarInInfo: FC<OperatorSidebarInInfoProps> = ({
   }, [open, close])
 
   const panelTitle = t.components.editor2.OperatorEditor.add_operator
-  const triggerText = open ? t.common.close : label ?? t.components.editor2.SelectorPanel.operator
+  const triggerText = open
+    ? t.common.close
+    : (label ?? t.components.editor2.SelectorPanel.operator)
 
   return (
     <>
@@ -79,7 +85,9 @@ export const OperatorSidebarInInfo: FC<OperatorSidebarInInfoProps> = ({
           className={clsx(
             // 提升整体遮罩层级，确保悬浮窗覆盖粘性页头/其它浮层
             'fixed inset-0 z-50 transition-opacity duration-200',
-            open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
+            open
+              ? 'pointer-events-auto opacity-100'
+              : 'pointer-events-none opacity-0',
           )}
         >
           <div
@@ -100,13 +108,20 @@ export const OperatorSidebarInInfo: FC<OperatorSidebarInInfoProps> = ({
               'fixed bottom-20 right-4 z-[60] flex w-[min(520px,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
               'transition-all duration-200 ease-out',
               // 展开态需避免 transform，否则 dnd-kit 会使用错误坐标
-              open ? 'opacity-100' : 'translate-y-4 opacity-0 pointer-events-none',
+              open
+                ? 'opacity-100'
+                : 'translate-y-4 opacity-0 pointer-events-none',
             )}
             style={{ height: 'min(720px, calc(100vh - 6rem))' }}
           >
             <div className="panel-shadow flex shrink-0 items-center justify-between rounded-lg  px-4 py-2 dark:bg-gray-900/90">
               <span className="font-semibold">{panelTitle}</span>
-              <Button minimal icon="cross" onClick={close} aria-label={t.common.close} />
+              <Button
+                minimal
+                icon="cross"
+                onClick={close}
+                aria-label={t.common.close}
+              />
             </div>
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
               <div className="flex-1 h-full overflow-hidden">
@@ -123,4 +138,3 @@ export const OperatorSidebarInInfo: FC<OperatorSidebarInInfoProps> = ({
     </>
   )
 }
-

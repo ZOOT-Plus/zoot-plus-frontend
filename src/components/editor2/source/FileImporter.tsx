@@ -4,7 +4,6 @@ import { ChangeEventHandler, FC, useRef } from 'react'
 
 import { useTranslation } from '../../../i18n/i18n'
 import { AppToaster } from '../../Toaster'
-import { updateOperationDocTitle } from './updateDocTitle'
 import { roundActionsToEditorActions } from '../action/roundMapping'
 import { toMaaOperation } from '../reconciliation'
 

@@ -90,7 +90,7 @@ export const fightActionTemplates: Record<string, FightAction> = {
     target: [68, 1103, 31, 33],
     post_delay: 5000,
   },
-  '切换敌人': {
+  切换敌人: {
     action: 'Swipe',
     begin: [77, 991, 10, 10],
     end: [77, 670, 10, 10],

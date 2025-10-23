@@ -24,7 +24,7 @@ export function useLazyStorage<T>(
 
     return reviver
       ? reviver(savedValue, defaultValue)
-      : savedValue ?? defaultValue
+      : (savedValue ?? defaultValue)
   })
 
   const latestValue = useLatest(value)

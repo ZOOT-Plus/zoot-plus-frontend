@@ -14,8 +14,8 @@ import {
   AuthFormEmailField,
   AuthFormPasswordField,
   AuthFormUsernameField,
-  AuthRegistrationTokenField,
   AuthRegistrationCodeField,
+  AuthRegistrationTokenField,
 } from './AuthFormShared'
 
 export interface RegisterFormValues {
@@ -31,8 +31,9 @@ export const RegisterPanel: FC<{
 }> = ({ onComplete }) => {
   const t = useTranslation()
   const useRegCode =
-    ((import.meta as any).env?.VITE_USE_REG_CODE ?? '').toString().toLowerCase() ===
-    'true'
+    ((import.meta as any).env?.VITE_USE_REG_CODE ?? '')
+      .toString()
+      .toLowerCase() === 'true'
 
   const {
     control,
@@ -118,7 +119,9 @@ export const RegisterPanel: FC<{
         <div className="mt-6 flex justify-end">
           <Button
             disabled={
-              (!isValid && !isDirty) || isSubmitting || isSendEmailButtonDisabled
+              (!isValid && !isDirty) ||
+              isSubmitting ||
+              isSendEmailButtonDisabled
             }
             intent="primary"
             type="button"

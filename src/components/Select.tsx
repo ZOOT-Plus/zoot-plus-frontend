@@ -31,7 +31,10 @@ export const Select = <T,>({
   const mergedPopoverProps = {
     ...(props as any).popoverProps,
     usePortal: true,
-    portalClassName: clsx('z-[3100]', (props as any).popoverProps?.portalClassName),
+    portalClassName: clsx(
+      'z-[3100]',
+      (props as any).popoverProps?.portalClassName,
+    ),
   }
 
   return (

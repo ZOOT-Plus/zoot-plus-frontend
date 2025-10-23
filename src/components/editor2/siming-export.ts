@@ -750,7 +750,10 @@ function inferSimingToken(
     return `重开:检测${digit}号位阵亡`
   }
   if (action.customAction === 'DownRestart') {
-    const position = Number(action.customActionParam?.position)
+    const positionParam = (
+      action.customActionParam as { position?: unknown } | undefined
+    )?.position
+    const position = Number(positionParam)
     const safePosition =
       Number.isFinite(position) && position >= 1 ? position : 1
     return `重开:检测${safePosition}号位阵亡`
@@ -915,21 +918,6 @@ export async function toSimingOperationRemote(
   // 进一步兜底：从关卡名推断 主线/白鹄/活动/其他，并尽力提取识别名与难度
   if (!payload.level_type) {
     const raw = String(stageName || '')
-    const stripBrackets = (s: string) => s.replace(/\(.*?\)/g, '')
-    const splitParts = (s: string) =>
-      stripBrackets(s)
-        .split(/[-_]/)
-        .map((p) => p.trim())
-        .filter(Boolean)
-    const parts = splitParts(raw)
-    const lastPart = (() => {
-      let last = parts[parts.length - 1] || ''
-      if (last === '左' || last === '右') {
-        last = parts[parts.length - 2] || last
-      }
-      return last
-    })()
-
     if (raw.includes('主线')) {
       payload.level_type = '主线'
     } else if (raw.includes('白鹄')) {

@@ -84,7 +84,7 @@ export const EditorPerformerOperator = ({
     setValue(
       'skillTimes',
       skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-        ? operator?.skillTimes ?? 1
+        ? (operator?.skillTimes ?? 1)
         : undefined,
     )
   }, [skillUsage, setValue, operator])

@@ -40,7 +40,9 @@ export const Paragraphs: FC<{
       }}
     >
       <div ref={paragraphElementRef}>
-        {paragraphs?.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+        {paragraphs?.map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
       </div>
     </div>
   )

@@ -56,7 +56,9 @@ export const Suggest = <T,>({
   const mergedPopover = {
     ...basePopover,
     usePortal: true,
-    portalClassName: [basePopover.portalClassName, 'z-[3100]'].filter(Boolean).join(' '),
+    portalClassName: [basePopover.portalClassName, 'z-[3100]']
+      .filter(Boolean)
+      .join(' '),
   }
 
   return (

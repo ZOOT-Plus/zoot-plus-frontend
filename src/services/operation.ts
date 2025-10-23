@@ -8,7 +8,9 @@ import { OperationApi } from '../utils/maa-copilot-client'
 import { snakeCaseKeysUnicode } from '../utils/object'
 import { wrapErrorMessage } from '../utils/wrapErrorMessage'
 
-export const stripOperationExportFields = (payload: Record<string, unknown>) => {
+export const stripOperationExportFields = (
+  payload: Record<string, unknown>,
+) => {
   const sanitized = { ...payload }
   delete sanitized.minimum_required
   delete sanitized.minimumRequired
@@ -30,7 +32,10 @@ const doTriggerDownloadJSON = (content: string, filename: string) => {
 
 export const handleDownloadJSON = (operationDoc: CopilotDocV1.Operation) => {
   // pretty print the JSON
-  const snakeCaseDoc = snakeCaseKeysUnicode(operationDoc as any) as Record<string, unknown>
+  const snakeCaseDoc = snakeCaseKeysUnicode(operationDoc as any) as Record<
+    string,
+    unknown
+  >
   const sanitizedDoc = stripOperationExportFields(snakeCaseDoc)
   const json = JSON.stringify(sanitizedDoc, null, 2)
 
@@ -83,7 +88,10 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
   })
 }
 
-export const handleLazyDownloadSimingJSON = async (id: number, title: string) => {
+export const handleLazyDownloadSimingJSON = async (
+  id: number,
+  title: string,
+) => {
   const snakeCaseDoc = await getSnakeCaseOperationDoc(id)
   if (!snakeCaseDoc) {
     return
@@ -105,8 +113,7 @@ export const handleLazyDownloadSimingJSON = async (id: number, title: string) =>
     return
   }
 
-  const simingActions =
-    simingActionsCandidate as CopilotDocV1.SimingActionMap
+  const simingActions = simingActionsCandidate as CopilotDocV1.SimingActionMap
 
   const json = JSON.stringify(simingActions, null, 2)
   doTriggerDownloadJSON(json, `MAACopilot_Siming_${title}.json`)

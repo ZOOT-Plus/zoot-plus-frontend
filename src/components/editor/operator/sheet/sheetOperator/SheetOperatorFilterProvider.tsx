@@ -115,6 +115,7 @@ const generateCustomizedOperInfo = (name: string): OperatorInfo => ({
   alias: 'customized-operator',
   rarity: 0,
   alt_name: 'custormized operator named' + name,
+  discs: [],
 })
 
 const useOperatorFiltered = (

@@ -4,6 +4,8 @@ import { get, isObject, isString } from 'lodash-es'
 import mitt from 'mitt'
 import { Fragment, ReactElement, ReactNode, createElement } from 'react'
 
+import ESSENTIALS from './generated/essentials'
+
 // 本地实现：将字符串中的换行转为 <br/>（仅 JSX 模式使用）
 function preserveLineBreaks(text: string): ReactNode[] {
   const parts = text.split('\n')
@@ -14,7 +16,6 @@ function preserveLineBreaks(text: string): ReactNode[] {
   }
   return result
 }
-import ESSENTIALS from './generated/essentials'
 
 export const languages = ['cn', 'zh_tw'] as const
 const browserLanguage = navigator.language.toLowerCase()

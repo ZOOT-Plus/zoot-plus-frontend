@@ -1,4 +1,5 @@
-import { Button, Dialog, DialogBody, DialogFooter, H6 } from '@blueprintjs/core'
+import { Button, Dialog, DialogBody, DialogFooter } from '@blueprintjs/core'
+
 import { FC, useMemo, useState } from 'react'
 
 import { useLevels } from '../../apis/level'
@@ -16,13 +17,23 @@ interface Props {
   defaultGame?: string
 }
 
-export const LevelSelectDialog: FC<Props> = ({ isOpen, onClose, value, onChange, onFilter, defaultGame }) => {
+export const LevelSelectDialog: FC<Props> = ({
+  isOpen,
+  onClose,
+  value,
+  onChange,
+  onFilter,
+  defaultGame,
+}) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
 
   const [pendingStageId, setPendingStageId] = useState<string | undefined>()
   const [pendingKeyword, setPendingKeyword] = useState<string | undefined>()
-  const [lastFilterMeta, setLastFilterMeta] = useState<{ game?: string; catOne?: string }>()
+  const [lastFilterMeta, setLastFilterMeta] = useState<{
+    game?: string
+    catOne?: string
+  }>()
 
   const selected = useMemo<Level | undefined>(() => {
     if (!value) return undefined
@@ -34,7 +45,11 @@ export const LevelSelectDialog: FC<Props> = ({ isOpen, onClose, value, onChange,
       onChange(pendingStageId)
     } else if (pendingKeyword || lastFilterMeta) {
       let kw =
-        pendingKeyword ?? [lastFilterMeta?.game, lastFilterMeta?.catOne].filter(Boolean).join(' ').trim()
+        pendingKeyword ??
+        [lastFilterMeta?.game, lastFilterMeta?.catOne]
+          .filter(Boolean)
+          .join(' ')
+          .trim()
       const game = (lastFilterMeta?.game || '').trim()
       if (!pendingKeyword && (game === '如鸢' || game === '代号鸢')) {
         kw = [kw, '通用'].filter(Boolean).join(' ')
@@ -60,7 +75,11 @@ export const LevelSelectDialog: FC<Props> = ({ isOpen, onClose, value, onChange,
   }
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title={t.components.LevelSelect.level}>
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t.components.LevelSelect.level}
+    >
       <DialogBody>
         <LevelSelectV2
           // 仅向选择器传递合法的 stageId，避免将筛选关键字当作“自定义关卡”
