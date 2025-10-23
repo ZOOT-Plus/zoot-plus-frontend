@@ -277,7 +277,10 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
         const stats = readOperatorStats(operator)
         const starLevel = Math.min(5, Math.max(0, stats.starLevel))
         const showStar = stats.hasStar
-        const showBaseStats = stats.hasAttack || stats.hasHp
+        const baseStatTexts = [
+          stats.hasAttack ? `攻: ${Math.max(0, stats.attack)}` : null,
+          stats.hasHp ? `血: ${Math.max(0, stats.hp)}` : null,
+        ].filter((text): text is string => Boolean(text))
 
         return (
           <Tag
@@ -291,7 +294,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
               className="shrink-0"
             />
             {showStar && (
-              <div className="flex items-center justify-center gap-0.5 mb-1">
+              <div className="flex items-center justify-center gap-0.5 mb-1.5">
                 {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (
                   <Icon
                     key={n}
@@ -306,17 +309,16 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
                 ))}
               </div>
             )}
-            <span className="text-sm font-medium leading-tight text-slate-900 dark:text-slate-100 mb-1.3">
+            <span className="text-sm font-medium leading-tight text-slate-900 dark:text-slate-100">
               {displayName}
             </span>
-            {showBaseStats && (
-              <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-slate-200">
-                {stats.hasAttack && (
-                  <span title="攻击">攻: {Math.max(0, stats.attack)}</span>
-                )}
-                {stats.hasHp && (
-                  <span title="生命">血: {Math.max(0, stats.hp)}</span>
-                )}
+            {baseStatTexts.length > 0 && (
+              <div className="text-center text-xs leading-tight text-zinc-600 dark:text-slate-200">
+                {baseStatTexts.map((text) => (
+                  <span key={text} className="block whitespace-nowrap">
+                    {text}
+                  </span>
+                ))}
               </div>
             )}
           </Tag>
