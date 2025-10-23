@@ -38,6 +38,7 @@ module.exports = {
     eqeqeq: 'error',
     'react-hooks/exhaustive-deps': 'error',
     'import/no-named-as-default': 'off',
+    'import/no-unresolved': ['error', { ignore: ['\\?raw$'] }],
   },
   settings: {
     react: {

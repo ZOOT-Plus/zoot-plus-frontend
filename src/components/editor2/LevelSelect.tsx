@@ -192,7 +192,8 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       return
     }
     setSelectedGame((prev) => {
-      if (manuallySelectedGameRef.current === 'user') {
+      const userOverride = manuallySelectedGameRef.current === 'user'
+      if (userOverride) {
         return prev ?? normalizedDefaultGame
       }
       const normalizedPrev = (prev ?? '').trim()
@@ -202,7 +203,6 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         return normalizedDefaultGame
       }
       if (
-        manuallySelectedGameRef.current !== 'user' &&
         normalizedPrev === normalizedPrevDefault &&
         normalizedPrev !== normalizedDefaultGame
       ) {
@@ -568,13 +568,13 @@ export const LevelSelect: FC<LevelSelectProps> = ({
               }}
               inputValueRenderer={(item) => item ?? ''}
               onItemSelect={(game) => {
-              if (!game || game === selectedGame) return
-              manuallySelectedGameRef.current = 'user'
-              setSelectedGame(game)
-              setSelectedCategory('')
-              setActiveItem(null)
-              updateQuery('', true)
-              if (!disabled) onChange('')
+                if (!game || game === selectedGame) return
+                manuallySelectedGameRef.current = 'user'
+                setSelectedGame(game)
+                setSelectedCategory('')
+                setActiveItem(null)
+                updateQuery('', true)
+                if (!disabled) onChange('')
                 const gameForQuery = game === NO_GAME_LABEL ? '' : game
                 const kw = gameForQuery
                 onFilterChange?.(kw, { game: gameForQuery || undefined })
