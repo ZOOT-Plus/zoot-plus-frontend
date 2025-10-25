@@ -339,7 +339,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               {controlsEnabled && (
                 <li className="flex flex-col gap-1">
                   <div className="flex items-center">
-                    <span className="text-xs opacity-80 w-12">
+                    <span className="text-xs opacity-80 w-12 ml-2">
                       攻击力
                     </span>
                     <NumericInput2
@@ -353,7 +353,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       )}
                       containerClassName="flex-1 min-w-0"
                       inputClassName={clsx(
-                        'h-8 !w-24 !px-2 !leading-8',
+                        'h-6 !w-24 !px-2 !leading-8',
                         'text-center font-bold text-base',
                         '!rounded-md !border-2 transition-colors',
                         // 亮色主题
@@ -380,7 +380,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       }}
                     />
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center ml-2">
                     <span className="text-xs opacity-80 w-12">
                       生命值
                     </span>
@@ -392,7 +392,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       value={Math.max(0, getStats(operator, info?.rarity).hp)}
                       containerClassName="flex-1 min-w-0"
                       inputClassName={clsx(
-                        'h-8 !w-24 !px-2 !leading-8',
+                        'h-6 !w-24 !px-2 !leading-8',
                         'text-center font-bold text-base',
                         '!rounded-md !border-2 transition-colors',
                         // 亮色主题
@@ -432,7 +432,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     return (
                       <li
                         key={'disc-slot-' + slot}
-                        className="relative h-8 flex gap-1"
+                        className="relative h-8 flex gap-1 ml-1"
                       >
                         <Select
                           filterable={false}
