@@ -229,7 +229,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
           isDragging && 'invisible',
         )}
       >
-        <div className="relative items-center">
+        <div className="relative self-center">
           <Popover2
             // 维持全屏灰幕时，确保弹层通过 Portal 且层级高于遮罩
             usePortal={true}
@@ -261,7 +261,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
           >
             <Card
               interactive
-              className="card-shadow-subtle relative w-20 p-0 !py-0 flex flex-col overflow-hidden select-none pointer-events-auto"
+              className="card-shadow-subtle relative w-20 p-0 !py-0 flex flex-col items-center overflow-hidden select-none pointer-events-auto"
               {...attributes}
               {...listeners}
             >
@@ -273,7 +273,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               />
               <h4
                 className={clsx(
-                  'm-1 leading-4 font-semibold tracking-tighter pointer-events-none',
+                  'm-1 leading-4 font-semibold tracking-tighter text-center pointer-events-none',
                   displayName.length >= 12 && 'text-xs',
                 )}
               >
