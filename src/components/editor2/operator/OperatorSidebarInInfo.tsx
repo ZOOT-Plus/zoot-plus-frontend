@@ -124,11 +124,11 @@ export const OperatorSidebarInInfo: FC<OperatorSidebarInInfoProps> = ({
               />
             </div>
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-              <div className="flex-1 h-full overflow-hidden">
+              <div className="flex-[1_1_0%] min-h-0 overflow-hidden">
                 <OperatorSheet />
               </div>
               <div className="h-1 bg-white dark:bg-[#383e47]" />
-              <div className="flex-1 h-full overflow-auto">
+              <div className="flex-[1.3_1_0%] min-h-0 overflow-auto">
                 <OperatorEditor />
               </div>
             </div>

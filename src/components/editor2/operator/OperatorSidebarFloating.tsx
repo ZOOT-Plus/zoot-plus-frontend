@@ -120,13 +120,21 @@ export const OperatorSidebarFloating: FC = () => {
                 className="flex-1"
                 style={{ height: '100%' }}
               >
-                <Panel className="panel-shadow relative flex-1 overflow-hidden">
+                <Panel
+                  className="panel-shadow relative flex-1 overflow-hidden"
+                  defaultSize={33}
+                  minSize={20}
+                >
                   <div className="absolute inset-0">
                     <OperatorSheet />
                   </div>
                 </Panel>
                 <PanelResizeHandle className="h-1 bg-white dark:bg-[#383e47]" />
-                <Panel className="panel-shadow flex-1 overflow-hidden">
+                <Panel
+                  className="panel-shadow flex-1 overflow-hidden"
+                  defaultSize={67}
+                  minSize={40}
+                >
                   <div className="h-full overflow-auto">
                     <OperatorEditor />
                   </div>
