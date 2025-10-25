@@ -261,7 +261,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
           >
             <Card
               interactive
-              className="card-shadow-subtle relative w-20 p-0 !py-0 flex flex-col items-center overflow-hidden select-none pointer-events-auto"
+              className="card-shadow-subtle relative w-20 p-0 !py-0 flex flex-col items-center overflow-hidden select-none pointer-events-auto ml-1.5"
               {...attributes}
               {...listeners}
             >
@@ -289,7 +289,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
             </Card>
           </Popover2>
           {/* 星级（5星可点，默认0；重复点击当前星 -> 0）——移出 Card，避免误触头像/名字 */}
-          <div className="mt-1 flex items-center justify-center gap-1 select-none">
+          <div className="mt-2 flex items-center justify-center gap-1 select-none">
             {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => {
               const current = clamp(
                 getStats(operator, info?.rarity).starLevel ?? 0,
@@ -333,7 +333,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 
         {/* Skills & Module controls */}
         {info && (
-          <div className="mt-2 select-none shrink-0">
+          <div className="mt-2 ml-5 select-none shrink-0">
             <ul className="w-[23ch]">
               {/* 攻击力/生命值（置于命盘上方） */}
               {controlsEnabled && (

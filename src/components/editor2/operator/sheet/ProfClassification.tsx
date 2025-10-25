@@ -65,6 +65,29 @@ export const ProfClassification: FC<ProfClassification> = () => {
     ],
     [t],
   )
+  const aggregatedSubProfs = useMemo(() => {
+    const seen = new Set<string>()
+    const subs: {
+      id: string
+      name: string
+      name_en?: string
+    }[] = []
+    formattedProfessions
+      .filter(
+        (prof) =>
+          !(Object.values(DEFAULTPROFID) as string[]).includes(prof.id),
+      )
+      .forEach((prof) => {
+        prof.sub?.forEach((sub) => {
+          if (!seen.has(sub.id)) {
+            seen.add(sub.id)
+            subs.push(sub)
+          }
+        })
+      })
+    return subs
+  }, [formattedProfessions])
+
   const subProfs = useMemo(() => {
     return [
       {
@@ -83,10 +106,14 @@ export const ProfClassification: FC<ProfClassification> = () => {
           t.components.editor.operator.sheet.sheetOperator
             .ProfClassificationWithFilters.selected,
       },
-      ...(formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub ||
-        []),
+      ...((Object.values(DEFAULTPROFID) as string[]).includes(
+        selectedProf[0],
+      )
+        ? aggregatedSubProfs
+        : formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub ||
+          []),
     ]
-  }, [selectedProf, formattedProfessions, t])
+  }, [aggregatedSubProfs, selectedProf, formattedProfessions, t])
 
   return (
     <div>
