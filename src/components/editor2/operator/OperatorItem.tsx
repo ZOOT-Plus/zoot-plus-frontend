@@ -182,7 +182,15 @@ interface OperatorItemProps extends Partial<SortableItemProps> {
 }
 
 export const OperatorItem: FC<OperatorItemProps> = memo(
-  ({ operator, onRemove, onChange, isDragging, attributes, listeners }) => {
+  ({
+    operator,
+    onRemove,
+    onChange,
+    onOverlay,
+    isDragging,
+    attributes,
+    listeners,
+  }) => {
     const t = useTranslation()
     const displayName = useLocalizedOperatorName(operator.name)
     const setFavOperators = useSetAtom(editorFavOperatorsAtom)
@@ -215,7 +223,11 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 
     return (
       <div
-        className={clsx('relative flex items-start', isDragging && 'invisible')}
+        className={clsx(
+          'relative flex items-start',
+          !onOverlay && 'w-full',
+          isDragging && 'invisible',
+        )}
       >
         <div className="relative">
           <Popover2
