@@ -50,12 +50,12 @@ export const SheetList: FC<SheetListProps> = () => {
             <>
               <div
                 key="operatorContainer"
-                className="grid auto-rows-auto grid-cols-[repeat(auto-fit,minmax(128px,1fr))]"
+                className="grid auto-rows-auto gap-1 grid-cols-[repeat(auto-fit,minmax(90px,1fr))]"
                 ref={operatorScrollRef}
               >
                 {operatorFilteredData.map(({ name }, index) => (
                   <div
-                    className="flex items-center flex-0 w-full h-32"
+                    className="flex items-center justify-center w-full h-25"
                     key={index}
                   >
                     <SheetOperatorItem name={name} showSkillTrigger={false} />
