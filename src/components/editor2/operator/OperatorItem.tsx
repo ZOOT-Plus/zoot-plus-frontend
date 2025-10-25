@@ -261,16 +261,15 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
           >
             <Card
               interactive
-              className="card-shadow-subtle relative w-24 p-0 !py-0 flex flex-col overflow-hidden select-none pointer-events-auto"
+              className="card-shadow-subtle relative w-20 p-0 !py-0 flex flex-col overflow-hidden select-none pointer-events-auto"
               {...attributes}
               {...listeners}
             >
               <OperatorAvatar
                 id={info?.id}
                 rarity={info?.rarity}
-                className="w-24 h-24 rounded-b-none"
+                className="w-20 h-20 rounded-b-none"
                 fallback={displayName}
-                sourceSize={96}
               />
               <h4
                 className={clsx(

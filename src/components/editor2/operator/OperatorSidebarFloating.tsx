@@ -95,7 +95,7 @@ export const OperatorSidebarFloating: FC = () => {
             aria-label={panelTitle}
             className={clsx(
               // 面板层级设为更高，避免被其它 fixed 元素覆盖
-              'fixed bottom-20 right-4 z-[60] flex w-[min(75vw,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
+              'fixed bottom-20 right-4 z-[60] flex w-[min(95vw,calc(100vw-2rem))] flex-col gap-3 overflow-hidden rounded-xl bg-white/95 dark:bg-slate-900/95 shadow-lg',
               'transition-all duration-200 ease-out',
               // 展开态需避免 transform，否则 dnd-kit 会使用错误坐标
               open
