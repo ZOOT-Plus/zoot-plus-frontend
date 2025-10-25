@@ -102,7 +102,7 @@ export const OperatorSidebarFloating: FC = () => {
                 ? 'opacity-100'
                 : 'translate-y-4 opacity-0 pointer-events-none',
             )}
-            style={{ height: 'min(720px, calc(100vh - 6rem))' }}
+            style={{ height: 'min(900px, calc(100vh - 6rem))' }}
           >
             <div className="panel-shadow flex shrink-0 items-center justify-between rounded-lg  px-4 py-2 dark:bg-gray-900/90">
               <span className="font-semibold">{panelTitle}</span>

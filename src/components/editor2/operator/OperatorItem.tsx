@@ -224,12 +224,12 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
     return (
       <div
         className={clsx(
-          'relative flex items-start',
+          'relative flex flex-col gap-1',
           !onOverlay && 'w-full',
           isDragging && 'invisible',
         )}
       >
-        <div className="relative">
+        <div className="relative items-center">
           <Popover2
             // 维持全屏灰幕时，确保弹层通过 Portal 且层级高于遮罩
             usePortal={true}
@@ -333,81 +333,92 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 
         {/* Skills & Module controls */}
         {info && (
-          <div className="ml-2 mt-0.5 select-none shrink-0">
-            <ul className="w-[23ch] grid grid-rows-5 gap-1 ml-1 mt-1">
+          <div className="mt-2 select-none shrink-0">
+            <ul className="w-[23ch]">
               {/* 攻击力/生命值（置于命盘上方） */}
               {controlsEnabled && (
-                <li className="h-8 flex gap-2 items-center">
-                  <span className="text-xs opacity-80 w-9">攻击力</span>
-                  <NumericInput2
-                    intOnly
-                    min={0}
-                    buttonPosition="none"
-                    title={'攻击力'}
-                    value={Math.max(0, getStats(operator, info?.rarity).attack)}
-                    inputClassName={clsx(
-                      '!w-16 h-8 !px-2 !leading-8',
-                      'text-center font-bold text-base',
-                      '!rounded-md !border-2 transition-colors',
-                      // 亮色主题
-                      '!bg-white !text-slate-800 !border-slate-400',
-                      'focus:!border-sky-500 focus:!ring-2 focus:!ring-sky-400',
-                      // 暗色主题：提高前景/边框对比度与聚焦可见度
-                      'dark:!bg-slate-800 dark:!text-slate-100 dark:!border-slate-300',
-                      'dark:focus:!border-sky-400 dark:focus:!ring-sky-400',
-                    )}
-                    onValueChange={(_, valueStr) => {
-                      edit(() => {
-                        let v = Number(valueStr)
-                        if (!Number.isFinite(v))
-                          return { action: 'skip', desc: 'skip' }
-                        v = Math.max(0, Math.round(v))
-                        const next = setStats(operator, { attack: v })
-                        onChange?.(next)
-                        return {
-                          action: 'set-operator-attack',
-                          desc: '设置密探攻击',
-                          squashBy: operator.id,
-                        }
-                      })
-                    }}
-                  />
-                  <span className="text-xs opacity-80 w-9 text-right">
-                    生命值
-                  </span>
-                  <NumericInput2
-                    intOnly
-                    min={0}
-                    buttonPosition="none"
-                    title={'生命值'}
-                    value={Math.max(0, getStats(operator, info?.rarity).hp)}
-                    inputClassName={clsx(
-                      '!w-16 h-8 !px-2 !leading-8',
-                      'text-center font-bold text-base',
-                      '!rounded-md !border-2 transition-colors',
-                      // 亮色主题
-                      '!bg-white !text-slate-800 !border-slate-400',
-                      'focus:!border-sky-500 focus:!ring-2 focus:!ring-sky-400',
-                      // 暗色主题：提高前景/边框对比度与聚焦可见度
-                      'dark:!bg-slate-800 dark:!text-slate-100 dark:!border-slate-300',
-                      'dark:focus:!border-sky-400 dark:focus:!ring-sky-400',
-                    )}
-                    onValueChange={(_, valueStr) => {
-                      edit(() => {
-                        let v = Number(valueStr)
-                        if (!Number.isFinite(v))
-                          return { action: 'skip', desc: 'skip' }
-                        v = Math.max(0, Math.round(v))
-                        const next = setStats(operator, { hp: v })
-                        onChange?.(next)
-                        return {
-                          action: 'set-operator-hp',
-                          desc: '设置密探生命',
-                          squashBy: operator.id,
-                        }
-                      })
-                    }}
-                  />
+                <li className="flex flex-col gap-1">
+                  <div className="flex items-center">
+                    <span className="text-xs opacity-80 w-12">
+                      攻击力
+                    </span>
+                    <NumericInput2
+                      intOnly
+                      min={0}
+                      buttonPosition="none"
+                      title={'攻击力'}
+                      value={Math.max(
+                        0,
+                        getStats(operator, info?.rarity).attack,
+                      )}
+                      containerClassName="flex-1 min-w-0"
+                      inputClassName={clsx(
+                        'h-8 !w-24 !px-2 !leading-8',
+                        'text-center font-bold text-base',
+                        '!rounded-md !border-2 transition-colors',
+                        // 亮色主题
+                        '!bg-white !text-slate-800 !border-slate-400',
+                        'focus:!border-sky-500 focus:!ring-2 focus:!ring-sky-400',
+                        // 暗色主题：提高前景/边框对比度与聚焦可见度
+                        'dark:!bg-slate-800 dark:!text-slate-100 dark:!border-slate-300',
+                        'dark:focus:!border-sky-400 dark:focus:!ring-sky-400',
+                      )}
+                      onValueChange={(_, valueStr) => {
+                        edit(() => {
+                          let v = Number(valueStr)
+                          if (!Number.isFinite(v))
+                            return { action: 'skip', desc: 'skip' }
+                          v = Math.max(0, Math.round(v))
+                          const next = setStats(operator, { attack: v })
+                          onChange?.(next)
+                          return {
+                            action: 'set-operator-attack',
+                            desc: '设置密探攻击',
+                            squashBy: operator.id,
+                          }
+                        })
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs opacity-80 w-12">
+                      生命值
+                    </span>
+                    <NumericInput2
+                      intOnly
+                      min={0}
+                      buttonPosition="none"
+                      title={'生命值'}
+                      value={Math.max(0, getStats(operator, info?.rarity).hp)}
+                      containerClassName="flex-1 min-w-0"
+                      inputClassName={clsx(
+                        'h-8 !w-24 !px-2 !leading-8',
+                        'text-center font-bold text-base',
+                        '!rounded-md !border-2 transition-colors',
+                        // 亮色主题
+                        '!bg-white !text-slate-800 !border-slate-400',
+                        'focus:!border-sky-500 focus:!ring-2 focus:!ring-sky-400',
+                        // 暗色主题：提高前景/边框对比度与聚焦可见度
+                        'dark:!bg-slate-800 dark:!text-slate-100 dark:!border-slate-300',
+                        'dark:focus:!border-sky-400 dark:focus:!ring-sky-400',
+                      )}
+                      onValueChange={(_, valueStr) => {
+                        edit(() => {
+                          let v = Number(valueStr)
+                          if (!Number.isFinite(v))
+                            return { action: 'skip', desc: 'skip' }
+                          v = Math.max(0, Math.round(v))
+                          const next = setStats(operator, { hp: v })
+                          onChange?.(next)
+                          return {
+                            action: 'set-operator-hp',
+                            desc: '设置密探生命',
+                            squashBy: operator.id,
+                          }
+                        })
+                      }}
+                    />
+                  </div>
                 </li>
               )}
               {/* 如果有命盘定义，则以命盘集合驱动 skill 选择；否则回退为原来的 1/2/3 技能选择 */}
@@ -424,7 +435,6 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                         className="relative h-8 flex gap-1"
                       >
                         <Select
-                          className=""
                           filterable={false}
                           items={[
                             {
@@ -494,7 +504,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                   : `选择命盘${slot + 1}`
                             }
                             className={clsx(
-                              'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
+                              'w-[7ch] whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current',
                               selectedItem
                                 ? discColorClasses(selectedItem.color)
                                 : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
@@ -575,9 +585,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               getDiscSlots(operator)[slot]?.starStone ||
                               '选择星石'
                             }
-                            className={
-                              'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'
-                            }
+                            className="w-[4ch] whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600"
                           >
                             {getDiscSlots(operator)[slot]?.starStone || '星石'}
                           </Button>
@@ -661,9 +669,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                               getDiscSlots(operator)[slot]?.assistStar ||
                               '选择辅星'
                             }
-                            className={
-                              'w-[7ch] shrink-0 whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600'
-                            }
+                            className="w-[4ch] whitespace-nowrap !p-0 px-1 flex items-center justify-center font-serif !font-bold !text-sm !rounded-md !border-2 !border-current bg-slate-200 dark:bg-slate-600"
                           >
                             {getDiscSlots(operator)[slot]?.assistStar || '辅星'}
                           </Button>
@@ -820,97 +826,99 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 
               {/* Row 5: Module selector */}
               {controlsEnabled && info?.modules && (
-                <Select
-                  className=""
-                  filterable={false}
-                  items={[
-                    CopilotDocV1.Module.Default,
-                    ...info.modules
-                      .map((m) =>
-                        m
-                          ? (CopilotDocV1.Module[m] as
-                              | CopilotDocV1.Module
-                              | undefined)
-                          : CopilotDocV1.Module.Original,
-                      )
-                      .filter((m) => m !== undefined),
-                  ]}
-                  itemRenderer={(
-                    value,
-                    { handleClick, handleFocus, modifiers },
-                  ) => (
-                    <MenuItem
-                      roleStructure="listoption"
-                      key={value}
-                      className={clsx(
-                        'min-w-12 !rounded-none text-base font-serif font-bold text-center text-slate-600 dark:text-slate-300',
-                        modifiers.active && Classes.ACTIVE,
-                      )}
-                      text={
-                        value === CopilotDocV1.Module.Default ? (
-                          <Icon icon="disable" />
-                        ) : value === CopilotDocV1.Module.Original ? (
-                          <Icon icon="small-square" />
-                        ) : (
-                          getModuleName(value)
+                <li>
+                  <Select
+                    className=""
+                    filterable={false}
+                    items={[
+                      CopilotDocV1.Module.Default,
+                      ...info.modules
+                        .map((m) =>
+                          m
+                            ? (CopilotDocV1.Module[m] as
+                                | CopilotDocV1.Module
+                                | undefined)
+                            : CopilotDocV1.Module.Original,
                         )
-                      }
-                      title={t.components.editor2.OperatorItem.module_title({
-                        count: value as number,
-                        name: getModuleName(value as CopilotDocV1.Module),
-                      })}
-                      onClick={handleClick}
-                      onFocus={handleFocus}
-                      selected={value === requirements.module}
-                    />
-                  )}
-                  onItemSelect={(value) => {
-                    edit(() => {
-                      const next: EditorOperator = {
-                        ...operator,
-                        requirements: {
-                          ...operator.requirements,
-                          module: value as CopilotDocV1.Module,
-                        },
-                      }
-                      onChange?.(next)
-                      return {
-                        action: 'set-operator-module',
-                        desc: i18n.actions.editor2.set_operator_module,
-                        squashBy: operator.id,
-                      }
-                    })
-                  }}
-                  popoverProps={{
-                    placement: 'top',
-                    popoverClassName:
-                      '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-0 [&_li]:!mb-0',
-                  }}
-                >
-                  <Button
-                    small
-                    minimal
-                    title={
-                      t.components.editor2.OperatorItem.module +
-                      ': ' +
-                      t.components.editor2.OperatorItem.module_title({
-                        count:
-                          requirements.module ?? CopilotDocV1.Module.Default,
-                        name: getModuleName(
-                          (requirements.module ??
-                            CopilotDocV1.Module.Default) as CopilotDocV1.Module,
-                        ),
-                      })
-                    }
-                    className={clsx(
-                      'w-4 h-4 !p-0 flex items-center justify-center font-serif !font-bold !text-base !rounded-none !border-2 !border-current',
-                      (requirements.module ?? CopilotDocV1.Module.Default) !==
-                        CopilotDocV1.Module.Default
-                        ? '!bg-purple-100 dark:!bg-purple-900 dark:!text-purple-200 !text-purple-800'
-                        : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
+                        .filter((m) => m !== undefined),
+                    ]}
+                    itemRenderer={(
+                      value,
+                      { handleClick, handleFocus, modifiers },
+                    ) => (
+                      <MenuItem
+                        roleStructure="listoption"
+                        key={value}
+                        className={clsx(
+                          'min-w-12 !rounded-none text-base font-serif font-bold text-center text-slate-600 dark:text-slate-300',
+                          modifiers.active && Classes.ACTIVE,
+                        )}
+                        text={
+                          value === CopilotDocV1.Module.Default ? (
+                            <Icon icon="disable" />
+                          ) : value === CopilotDocV1.Module.Original ? (
+                            <Icon icon="small-square" />
+                          ) : (
+                            getModuleName(value)
+                          )
+                        }
+                        title={t.components.editor2.OperatorItem.module_title({
+                          count: value as number,
+                          name: getModuleName(value as CopilotDocV1.Module),
+                        })}
+                        onClick={handleClick}
+                        onFocus={handleFocus}
+                        selected={value === requirements.module}
+                      />
                     )}
-                  />
-                </Select>
+                    onItemSelect={(value) => {
+                      edit(() => {
+                        const next: EditorOperator = {
+                          ...operator,
+                          requirements: {
+                            ...operator.requirements,
+                            module: value as CopilotDocV1.Module,
+                          },
+                        }
+                        onChange?.(next)
+                        return {
+                          action: 'set-operator-module',
+                          desc: i18n.actions.editor2.set_operator_module,
+                          squashBy: operator.id,
+                        }
+                      })
+                    }}
+                    popoverProps={{
+                      placement: 'top',
+                      popoverClassName:
+                        '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-0 [&_li]:!mb-0',
+                    }}
+                  >
+                    <Button
+                      small
+                      minimal
+                      title={
+                        t.components.editor2.OperatorItem.module +
+                        ': ' +
+                        t.components.editor2.OperatorItem.module_title({
+                          count:
+                            requirements.module ?? CopilotDocV1.Module.Default,
+                          name: getModuleName(
+                            (requirements.module ??
+                              CopilotDocV1.Module.Default) as CopilotDocV1.Module,
+                          ),
+                        })
+                      }
+                      className={clsx(
+                        'w-4 h-4 !p-0 flex items-center justify-center font-serif !font-bold !text-base !rounded-none !border-2 !border-current',
+                        (requirements.module ?? CopilotDocV1.Module.Default) !==
+                          CopilotDocV1.Module.Default
+                          ? '!bg-purple-100 dark:!bg-purple-900 dark:!text-purple-200 !text-purple-800'
+                          : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
+                      )}
+                    />
+                  </Select>
+                </li>
               )}
             </ul>
           </div>

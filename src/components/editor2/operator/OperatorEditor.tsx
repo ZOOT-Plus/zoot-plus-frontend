@@ -107,14 +107,14 @@ export const OperatorEditor: FC = memo(() => {
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <Droppable id={globalContainerId} data={{ type: 'operator-list' }}>
               <SortableContext items={operatorIds}>
-                <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                <ul className="flex flex-wrap gap-4 list-none p-0 m-0">
                   {operatorAtoms.map((operatorAtom) => (
                     <AtomRenderer
                       atom={operatorAtom}
                       key={operatorAtom.toString()}
                       render={(operator, { onChange }) => (
                         <Sortable
-                          className="flex h-full"
+                          className="flex h-full shrink-0 grow-0 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-[20%] 2xl:max-w-[20%] min-w-[11.5rem]"
                           id={operator.id}
                           data={{
                             type: 'operator',
