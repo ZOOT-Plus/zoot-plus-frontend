@@ -17,7 +17,8 @@
     "scripts:update": "yarn install && npm-run-all --parallel scripts:update-operators scripts:update-operator-avatars scripts:update-prof-icons",
     "scripts:update-operators": "esno scripts/update-operators.ts",
     "scripts:update-operator-avatars": "esno scripts/update-operator-avatars.ts",
-    "scripts:update-prof-icons": "yarn install && esno scripts/update-prof-icons.ts"
+    "scripts:update-prof-icons": "yarn install && esno scripts/update-prof-icons.ts",
+    "scripts:verify-editor-import": "esno scripts/verify-editorv2-import.ts"
   },
   "dependencies": {
     "@blueprintjs/core": "^4.15.1",

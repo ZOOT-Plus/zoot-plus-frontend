@@ -8823,6 +8823,96 @@
           "color": "蓝"
         }
       ]
+    },
+    {
+      "id": "char_103_caopi",
+      "name": "曹丕",
+      "rarity": 5,
+      "prof": "风",
+      "subProf": "guidao",
+      "alias": "caopi cp “曹丕” 曹丕",
+      "name_en": "曹丕",
+      "discs": [
+        {
+          "__abbrEdited": true,
+          "ot_name": "防御时恢复生命",
+          "abbreviation": "防御回血",
+          "color": "紫",
+          "desp": "防御时，恢复10%最大生命值的生命"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "攻击力大幅提升",
+          "abbreviation": "攻击大幅",
+          "desp": "攻击力提升12%"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "猛气",
+          "abbreviation": "猛气",
+          "desp": "普攻也会使顺位上一位的队友失去2点能量，随后根据两人空缺的能量数提升各自的攻击力（每缺1点能量，提升10%攻击力，1回合，上限5层）"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "普攻时恢复生命",
+          "abbreviation": "普攻回血",
+          "desp": "每次普攻恢复自身8%最大生命",
+          "color": "紫"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "攻击力小幅提升",
+          "abbreviation": "攻击小幅",
+          "color": "蓝",
+          "desp": "攻击力提升3%"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "最大生命中幅提升",
+          "abbreviation": "生命中幅",
+          "color": "紫",
+          "desp": "最大生命提升8%"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "受禅之刃",
+          "abbreviation": "受禅之刃",
+          "desp": "死亡后放逐自身，将刀势传递给下一个行动的队友。该队友将永久处于【拔刀】状态，能够触发<收割>"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "最大生命小幅提升",
+          "abbreviation": "生命小幅",
+          "color": "蓝",
+          "desp": "最大生命提升3%"
+        },
+        {
+          "__abbrEdited": false,
+          "ot_name": "曳我裳",
+          "abbreviation": "曳我裳",
+          "desp": "能量为0的友方使用技能时，攻击力提升50%（1回合）"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "攻击力中幅提升",
+          "abbreviation": "攻击中幅",
+          "desp": "攻击力提升8%",
+          "color": "紫"
+        },
+        {
+          "__abbrEdited": true,
+          "ot_name": "生命高时攻击提升\t",
+          "abbreviation": "血高攻高\t",
+          "desp": "生命值高于50%时，自身攻击力提升10%",
+          "color": "蓝"
+        },
+        {
+          "__abbrEdited": false,
+          "desp": "<收割>改为：对当前目标造成300%攻击力的触发伤害并施加1层【流血】（可叠加5层）。【流血】：普攻和触发伤害免伤降低5",
+          "ot_name": "碧血",
+          "abbreviation": "碧血"
+        }
+      ]
     }
   ],
   "PROFESSIONS": [

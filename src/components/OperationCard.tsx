@@ -4,7 +4,7 @@ import { Tooltip2 } from '@blueprintjs/popover2'
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
-import { copyShortCode, handleLazyDownloadSimingJSON } from 'services/operation'
+import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
@@ -370,7 +370,7 @@ const CardActions = ({
     />
   ) : (
     <div className={clsx('flex gap-1', className)}>
-      {/* <Tooltip2
+      <Tooltip2
         placement="bottom"
         content={
           <div className="max-w-sm dark:text-slate-900">
@@ -388,8 +388,8 @@ const CardActions = ({
             )
           }
         />
-      </Tooltip2> */}
-      <Tooltip2
+      </Tooltip2>
+      {/* <Tooltip2
         placement="bottom"
         content={
           <div className="max-w-sm dark:text-slate-900">
@@ -407,7 +407,7 @@ const CardActions = ({
             )
           }
         />
-      </Tooltip2>
+      </Tooltip2> */}
       <Tooltip2
         placement="bottom"
         content={
