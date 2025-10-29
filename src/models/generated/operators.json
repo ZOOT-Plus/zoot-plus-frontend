@@ -3770,7 +3770,7 @@
       "id": "token_10056_angel2_target",
       "prof": "TOKEN",
       "subProf": "notchar1",
-      "name_en": "Delivery coordinates",
+      "name_en": "Delivery Coordinates",
       "name": "投递坐标",
       "alias": "toudizuobiao tdzb 投遞坐標",
       "rarity": 0,
@@ -5114,7 +5114,7 @@
         { "id": "librator", "name": "解放者", "name_en": "Liberator" },
         { "id": "crusher", "name": "重剑手", "name_en": "Crusher" },
         { "id": "hammer", "name": "撼地者", "name_en": "Earthshaker" },
-        { "id": "primguard", "name": "本源近卫", "name_en": "Primguard" }
+        { "id": "primguard", "name": "本源近卫", "name_en": "Primal Guard" }
       ]
     },
     {
