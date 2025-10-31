@@ -1,0 +1,14 @@
+[[redirects]]
+from = "/api/*"
+to = "https://share-backend.maayuan.top/api/:splat"
+status = 200
+force = true
+[[redirects]]
+from = "/simingapi/*"
+to = "https://share-backend.maayuan.top/simingapi/:splat"
+status = 200
+force = true
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
