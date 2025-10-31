@@ -413,7 +413,6 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
                 }}
                 onBlur={() => edit()}
               />
-              
             </FormGroup>
             <FormGroup
               contentClassName="grow"
@@ -440,7 +439,10 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
                   onBlur={() => edit()}
                 >
                   <option value="" disabled>
-                    {t.components.editor2.InfoEditor.repost_platform_placeholder}
+                    {
+                      t.components.editor2.InfoEditor
+                        .repost_platform_placeholder
+                    }
                   </option>
                   <option value="小红书">小红书</option>
                   <option value="作业站">作业站</option>

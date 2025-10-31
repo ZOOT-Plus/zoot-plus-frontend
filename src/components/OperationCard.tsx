@@ -41,7 +41,11 @@ export const NeoOperationCard = ({
     // 兼容后端 snake_case 字段
     (operation.metadata as any)?.source_type
   const sourceLabel =
-    sourceType === 'original' ? '【原创】' : sourceType === 'repost' ? '【搬运】' : ''
+    sourceType === 'original'
+      ? '【原创】'
+      : sourceType === 'repost'
+        ? '【搬运】'
+        : ''
 
   try {
     // 诊断：输出元数据形态与映射结果
@@ -177,7 +181,11 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
     // 兼容后端 snake_case 字段
     (operation.metadata as any)?.source_type
   const sourceLabel =
-    sourceType === 'original' ? '【原创】' : sourceType === 'repost' ? '【搬运】' : ''
+    sourceType === 'original'
+      ? '【原创】'
+      : sourceType === 'repost'
+        ? '【搬运】'
+        : ''
 
   try {
     // 诊断：输出元数据形态与映射结果
@@ -207,9 +215,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
-                    {sourceLabel && (
-                      <span className="mr-1">{sourceLabel}</span>
-                    )}
+                    {sourceLabel && <span className="mr-1">{sourceLabel}</span>}
                     {operation.parsedContent.doc.title}
                     {operation.status === CopilotInfoStatusEnum.Private && (
                       <Tag minimal className="ml-2 font-normal opacity-75">

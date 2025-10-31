@@ -339,9 +339,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               {controlsEnabled && (
                 <li className="flex flex-col gap-1">
                   <div className="flex items-center">
-                    <span className="text-xs opacity-80 w-12 ml-2">
-                      攻击力
-                    </span>
+                    <span className="text-xs opacity-80 w-12 ml-2">攻击力</span>
                     <NumericInput2
                       intOnly
                       min={0}
@@ -381,9 +379,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     />
                   </div>
                   <div className="flex items-center ml-2">
-                    <span className="text-xs opacity-80 w-12">
-                      生命值
-                    </span>
+                    <span className="text-xs opacity-80 w-12">生命值</span>
                     <NumericInput2
                       intOnly
                       min={0}
@@ -905,7 +901,8 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                             requirements.module ?? CopilotDocV1.Module.Default,
                           name: getModuleName(
                             (requirements.module ??
-                              CopilotDocV1.Module.Default) as CopilotDocV1.Module,
+                              CopilotDocV1.Module
+                                .Default) as CopilotDocV1.Module,
                           ),
                         })
                       }

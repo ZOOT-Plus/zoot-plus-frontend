@@ -1,16 +1,18 @@
 import { Button, NonIdealState } from '@blueprintjs/core'
 import { Tooltip2 } from '@blueprintjs/popover2'
-import { ComponentType } from 'react'
 
 import {
   UseOperationSetsParams,
-  useOperationSetSearch,
   deleteOperationSet,
+  useOperationSetSearch,
   useRefreshOperationSets,
 } from 'apis/operation-set'
-import { withSuspensable } from 'components/Suspensable'
-import { OperationSetCard } from 'components/OperationSetCard'
+import { ComponentType } from 'react'
+
 import { Confirm } from 'components/Confirm'
+import { OperationSetCard } from 'components/OperationSetCard'
+import { withSuspensable } from 'components/Suspensable'
+
 import { useTranslation } from '../../i18n/i18n'
 
 interface AdminOperationSetListProps extends UseOperationSetsParams {}
@@ -37,11 +39,13 @@ export const AdminOperationSetList: ComponentType<AdminOperationSetListProps> =
                 canOutsideClickCancel
                 canEscapeKeyCancel
                 trigger={({ handleClick }) => (
-                  <Tooltip2
-                    placement="bottom"
-                    content={t.common.delete}
-                  >
-                    <Button small icon="trash" intent="danger" onClick={handleClick} />
+                  <Tooltip2 placement="bottom" content={t.common.delete}>
+                    <Button
+                      small
+                      icon="trash"
+                      intent="danger"
+                      onClick={handleClick}
+                    />
                   </Tooltip2>
                 )}
                 onConfirm={async () => {
@@ -54,7 +58,10 @@ export const AdminOperationSetList: ComponentType<AdminOperationSetListProps> =
         ))}
 
         {isReachingEnd && operationSets.length === 0 && (
-          <NonIdealState icon="slash" title={t.components.OperationSetList.no_job_sets_found} />
+          <NonIdealState
+            icon="slash"
+            title={t.components.OperationSetList.no_job_sets_found}
+          />
         )}
 
         {!isReachingEnd && (
@@ -73,4 +80,3 @@ export const AdminOperationSetList: ComponentType<AdminOperationSetListProps> =
   })
 
 AdminOperationSetList.displayName = 'AdminOperationSetList'
-

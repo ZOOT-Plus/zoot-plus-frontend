@@ -115,7 +115,12 @@ export function useOperations({
       const api = new OperationApi({ sendToken: 'optional', requireData: true })
       const rawResponse = await api.queriesCopilotRaw(req)
       const rawJson = (await rawResponse.raw.json()) as {
-        data?: { data?: any[]; has_next?: boolean; page?: number; total?: number }
+        data?: {
+          data?: any[]
+          has_next?: boolean
+          page?: number
+          total?: number
+        }
       }
       const payload = rawJson?.data ?? { data: [], has_next: false, total: 0 }
 

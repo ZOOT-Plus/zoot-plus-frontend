@@ -1,8 +1,8 @@
 import { Button, Dialog, InputGroup, MenuItem } from '@blueprintjs/core'
 
 import { getOperation } from 'apis/operation'
-import { FC, useState } from 'react'
 import { useSetAtom } from 'jotai'
+import { FC, useState } from 'react'
 import { useController, useForm } from 'react-hook-form'
 
 import { useTranslation } from '../../../i18n/i18n'
@@ -88,13 +88,13 @@ export const ShortCodeImporter: FC<{
           // 修正：导入后本次编辑视为“搬运”；若原作业为搬运则沿用原作业元数据
           sourceType: 'repost',
           repostAuthor: isRepost
-            ? operationData.metadata?.repostAuthor ?? ''
-            : operationData.uploader ?? '',
+            ? (operationData.metadata?.repostAuthor ?? '')
+            : (operationData.uploader ?? ''),
           repostPlatform: isRepost
-            ? operationData.metadata?.repostPlatform ?? ''
+            ? (operationData.metadata?.repostPlatform ?? '')
             : '作业站',
           repostUrl: isRepost
-            ? operationData.metadata?.repostUrl ?? ''
+            ? (operationData.metadata?.repostUrl ?? '')
             : `https://share.maayuan.top/?op=${id}`,
         }
       })

@@ -74,8 +74,7 @@ export const ProfClassification: FC<ProfClassification> = () => {
     }[] = []
     formattedProfessions
       .filter(
-        (prof) =>
-          !(Object.values(DEFAULTPROFID) as string[]).includes(prof.id),
+        (prof) => !(Object.values(DEFAULTPROFID) as string[]).includes(prof.id),
       )
       .forEach((prof) => {
         prof.sub?.forEach((sub) => {
@@ -106,9 +105,7 @@ export const ProfClassification: FC<ProfClassification> = () => {
           t.components.editor.operator.sheet.sheetOperator
             .ProfClassificationWithFilters.selected,
       },
-      ...((Object.values(DEFAULTPROFID) as string[]).includes(
-        selectedProf[0],
-      )
+      ...((Object.values(DEFAULTPROFID) as string[]).includes(selectedProf[0])
         ? aggregatedSubProfs
         : formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub ||
           []),
@@ -191,7 +188,10 @@ const ProfIcon: FC<ProfIconProp> = ({
       ) : (
         <img
           {...restImgProps}
-          className={clsx('w-8 h-6 object-contain dark:invert-0', restImgProps.className)}
+          className={clsx(
+            'w-8 h-6 object-contain dark:invert-0',
+            restImgProps.className,
+          )}
           src={'/assets/prof-icons/' + profId + '.png'}
           alt=""
           title={name}

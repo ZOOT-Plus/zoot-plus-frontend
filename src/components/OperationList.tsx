@@ -32,7 +32,13 @@ interface OperationListProps extends UseOperationsParams {
 }
 
 export const OperationList: ComponentType<OperationListProps> = withSuspensable(
-  ({ multiselect, onUpdate, renderMultiSelectActions, sourceTypeFilter, ...params }) => {
+  ({
+    multiselect,
+    onUpdate,
+    renderMultiSelectActions,
+    sourceTypeFilter,
+    ...params
+  }) => {
     const t = useTranslation()
     const neoLayout = useAtomValue(neoLayoutAtom)
 
@@ -70,9 +76,7 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
 
     // 根据需要进行客户端过滤（例如按来源：原创/搬运）
     const displayedOperations = sourceTypeFilter
-      ? operations.filter(
-          (op) => op.metadata?.sourceType === sourceTypeFilter,
-        )
+      ? operations.filter((op) => op.metadata?.sourceType === sourceTypeFilter)
       : operations
 
     const items: ReactNode = neoLayout ? (

@@ -1,24 +1,38 @@
-import { Button, ButtonGroup, Card, Divider, H6, InputGroup, Tab, Tabs } from '@blueprintjs/core'
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  Divider,
+  H6,
+  InputGroup,
+  Tab,
+  Tabs,
+} from '@blueprintjs/core'
+import { IconNames } from '@blueprintjs/icons'
 import { Tooltip2 } from '@blueprintjs/popover2'
+
+import {
+  UseOperationsParams,
+  deleteOperation,
+  useRefreshOperations,
+} from 'apis/operation'
 import clsx from 'clsx'
+import { useAtomValue } from 'jotai'
 import { debounce } from 'lodash-es'
 import { ComponentType, useMemo, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 
-import { UseOperationsParams, useRefreshOperations } from 'apis/operation'
-import { deleteOperation } from 'apis/operation'
-import { OperationList } from 'components/OperationList'
-import { withGlobalErrorBoundary } from 'components/GlobalErrorBoundary'
 import { Confirm } from 'components/Confirm'
+import { withGlobalErrorBoundary } from 'components/GlobalErrorBoundary'
 import { LevelSelectButton } from 'components/LevelSelectButton'
+import { OperationList } from 'components/OperationList'
 import { OperatorFilter, useOperatorFilter } from 'components/OperatorFilter'
 import { UserFilter } from 'components/UserFilter'
 import { AdminOperationSetList } from 'components/admin/AdminOperationSetList'
 import { OperationDrawer } from 'components/drawer/OperationDrawer'
+
 import { useTranslation } from '../i18n/i18n'
 import { authAtom, isAdmin } from '../store/auth'
-import { useAtomValue } from 'jotai'
-import { IconNames } from '@blueprintjs/icons'
 
 export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
   const t = useTranslation()
@@ -34,7 +48,10 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
   const [queryParams, setQueryParams] = useState<
     Omit<UseOperationsParams, 'operator'>
   >({ limit: 20, orderBy: 'id', descending: true })
-  const debouncedSetQueryParams = useMemo(() => debounce(setQueryParams, 500), [])
+  const debouncedSetQueryParams = useMemo(
+    () => debounce(setQueryParams, 500),
+    [],
+  )
 
   const { operatorFilter, setOperatorFilter } = useOperatorFilter()
   const [selectedStageId, setSelectedStageId] = useState<string>('')
@@ -54,16 +71,24 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
             id="admin-operation-tabs"
             large
             selectedTabId={tab}
-            onChange={(newTab) => setTab(newTab as 'operation' | 'operationSet')}
+            onChange={(newTab) =>
+              setTab(newTab as 'operation' | 'operationSet')
+            }
           >
             <Tab
-              className={clsx('text-inherit', tab !== 'operation' && 'opacity-75')}
+              className={clsx(
+                'text-inherit',
+                tab !== 'operation' && 'opacity-75',
+              )}
               id="operation"
               title={t.components.Operations.operations}
             />
             <Divider className="self-center h-[1em]" />
             <Tab
-              className={clsx('text-inherit', tab !== 'operationSet' && 'opacity-75')}
+              className={clsx(
+                'text-inherit',
+                tab !== 'operationSet' && 'opacity-75',
+              )}
               id="operationSet"
               title={t.components.Operations.operation_sets}
             />
@@ -105,10 +130,21 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                   defaultGame={selectedGame}
                 />
                 {/* 快捷筛选：如鸢 / 代号鸢 */}
-                <ButtonGroup minimal className="flex flex-wrap items-center gap-1">
+                <ButtonGroup
+                  minimal
+                  className="flex flex-wrap items-center gap-1"
+                >
                   {[
-                    { label: '只看如鸢', value: '如鸢', icon: IconNames.MANUAL },
-                    { label: '只看代号鸢', value: '代号鸢', icon: IconNames.GLOBE },
+                    {
+                      label: '只看如鸢',
+                      value: '如鸢',
+                      icon: IconNames.MANUAL,
+                    },
+                    {
+                      label: '只看代号鸢',
+                      value: '代号鸢',
+                      icon: IconNames.GLOBE,
+                    },
                   ].map(({ label, value, icon }) => (
                     <Button
                       key={label}
@@ -116,7 +152,8 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                       icon={icon}
                       active={(queryParams.levelKeyword || '') === value}
                       onClick={() => {
-                        const isActive = (queryParams.levelKeyword || '') === value
+                        const isActive =
+                          (queryParams.levelKeyword || '') === value
                         // 清空已选具体关卡，仅按游戏关键字筛选
                         setSelectedStageId('')
                         // 记录当前快捷筛选的 game，打开关卡选择时作为默认 game
@@ -137,7 +174,10 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                   ))}
                 </ButtonGroup>
                 {/* 快捷筛选：原创 / 搬运（基于 metadata.sourceType 的客户端过滤）*/}
-                <ButtonGroup minimal className="flex flex-wrap items-center gap-1">
+                <ButtonGroup
+                  minimal
+                  className="flex flex-wrap items-center gap-1"
+                >
                   {[
                     { label: '只看原创', value: 'original' as const },
                     { label: '只看搬运', value: 'repost' as const },
@@ -147,7 +187,9 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                       className="bp4-button bp4-minimal !px-3"
                       active={sourceTypeFilter === value}
                       onClick={() => {
-                        setSourceTypeFilter((old) => (old === value ? undefined : value))
+                        setSourceTypeFilter((old) =>
+                          old === value ? undefined : value,
+                        )
                       }}
                     >
                       {label}
@@ -168,13 +210,27 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                 }
               />
               <div className="flex flex-wrap items-center ml-auto">
-                <H6 className="mb-0 mr-1 opacity-75">{t.components.Operations.sort_by}</H6>
+                <H6 className="mb-0 mr-1 opacity-75">
+                  {t.components.Operations.sort_by}
+                </H6>
                 <div className="flex items-center">
                   {(
                     [
-                      { icon: 'time', text: t.components.Operations.newest, orderBy: 'id' },
-                      { icon: 'flame', text: t.components.Operations.popularity, orderBy: 'hot' },
-                      { icon: 'eye-open', text: t.components.Operations.views, orderBy: 'views' },
+                      {
+                        icon: 'time',
+                        text: t.components.Operations.newest,
+                        orderBy: 'id',
+                      },
+                      {
+                        icon: 'flame',
+                        text: t.components.Operations.popularity,
+                        orderBy: 'hot',
+                      },
+                      {
+                        icon: 'eye-open',
+                        text: t.components.Operations.views,
+                        orderBy: 'views',
+                      },
                     ] as const
                   ).map(({ icon, text, orderBy }) => (
                     <Tooltip2 key={orderBy} placement="top" content={text}>
@@ -182,8 +238,12 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                         minimal
                         className="!px-2 !py-1 !border-none [&>.bp4-icon]:!mr-1"
                         icon={icon}
-                        intent={queryParams.orderBy === orderBy ? 'primary' : 'none'}
-                        onClick={() => setQueryParams((old) => ({ ...old, orderBy }))}
+                        intent={
+                          queryParams.orderBy === orderBy ? 'primary' : 'none'
+                        }
+                        onClick={() =>
+                          setQueryParams((old) => ({ ...old, orderBy }))
+                        }
                       />
                     </Tooltip2>
                   ))}
@@ -192,7 +252,10 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
             </div>
 
             <div className="flex flex-wrap items-center gap-4 mt-2">
-              <OperatorFilter filter={operatorFilter} onChange={setOperatorFilter} />
+              <OperatorFilter
+                filter={operatorFilter}
+                onChange={setOperatorFilter}
+              />
             </div>
           </>
         )}
@@ -205,7 +268,10 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
             multiselect
             operator={operatorFilter.enabled ? operatorFilter : undefined}
             sourceTypeFilter={sourceTypeFilter}
-            renderMultiSelectActions={({ selectedOperations, clearSelection }) => (
+            renderMultiSelectActions={({
+              selectedOperations,
+              clearSelection,
+            }) => (
               <Confirm
                 intent="danger"
                 confirmButtonText={t.common.delete}
@@ -225,7 +291,9 @@ export const AdminPage: ComponentType = withGlobalErrorBoundary(() => {
                 )}
                 onConfirm={async () => {
                   const ids = selectedOperations.map((op) => op.id)
-                  await Promise.allSettled(ids.map((id) => deleteOperation({ id })))
+                  await Promise.allSettled(
+                    ids.map((id) => deleteOperation({ id })),
+                  )
                   clearSelection()
                   refreshOperations()
                 }}

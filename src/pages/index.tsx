@@ -9,6 +9,7 @@ import { Operations } from 'components/Operations'
 import { OperationDrawer } from 'components/drawer/OperationDrawer'
 import { OperationEditorLauncher } from 'components/editor/OperationEditorLauncher'
 import { OperationSetEditorLauncher } from 'components/operation-set/OperationSetEditor'
+
 import AdBannerCarousel from '../components/AdBannerCarousel'
 import { defaultAdBanners } from '../data/ad-banners'
 import { useTranslation } from '../i18n/i18n'
@@ -62,7 +63,6 @@ export const IndexPage: ComponentType = withGlobalErrorBoundary(() => {
                 </>
               ))}
             </div>
-
           </div>
         </div>
       )}

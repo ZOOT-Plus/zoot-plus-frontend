@@ -40,7 +40,7 @@ import {
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { copyShortCode,handleDownloadJSON } from 'services/operation'
+import { copyShortCode, handleDownloadJSON } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
 import { Paragraphs } from 'components/Paragraphs'
@@ -736,17 +736,19 @@ function OperationViewerInner({
                 </div>
                 {operation.metadata?.repostAuthor && (
                   <div className="text-sm">
-                    {t.components.editor2.InfoEditor.repost_author}: {operation.metadata.repostAuthor}
+                    {t.components.editor2.InfoEditor.repost_author}:{' '}
+                    {operation.metadata.repostAuthor}
                   </div>
                 )}
                 {operation.metadata?.repostPlatform && (
                   <div className="text-sm">
-                    {t.components.editor2.InfoEditor.repost_platform}: {operation.metadata.repostPlatform}
+                    {t.components.editor2.InfoEditor.repost_platform}:{' '}
+                    {operation.metadata.repostPlatform}
                   </div>
                 )}
                 {operation.metadata?.repostUrl && (
                   <div className="text-sm break-all">
-                    {t.components.editor2.InfoEditor.repost_link}: 
+                    {t.components.editor2.InfoEditor.repost_link}:
                     <a
                       className="underline hover:no-underline"
                       href={operation.metadata.repostUrl}

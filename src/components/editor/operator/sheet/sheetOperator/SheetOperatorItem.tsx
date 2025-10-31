@@ -121,7 +121,11 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({
           size="verylarge"
           sourceSize={96}
         />
-        <p className={clsx('font-semibold leading-tight text-center text-xs sm:text-sm break-words')}>
+        <p
+          className={clsx(
+            'font-semibold leading-tight text-center text-xs sm:text-sm break-words',
+          )}
+        >
           {useLocalizedOperatorName(name)}
         </p>
 
