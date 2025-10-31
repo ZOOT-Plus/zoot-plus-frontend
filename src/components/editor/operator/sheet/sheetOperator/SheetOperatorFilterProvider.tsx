@@ -233,6 +233,14 @@ const rarityFilterHandle = (
 ) =>
   originData
     .filter(({ rarity }) => selectedRarity.includes(rarity))
-    .sort(({ rarity: rarityA }, { rarity: rarityB }) =>
-      reverse ? rarityA - rarityB : rarityB - rarityA,
-    )
+    .sort((operatorA, operatorB) => {
+      const { rarity: rarityA, id: idA } = operatorA
+      const { rarity: rarityB, id: idB } = operatorB
+
+      const rarityDiff = reverse ? rarityA - rarityB : rarityB - rarityA
+      if (rarityDiff !== 0) {
+        return rarityDiff
+      }
+
+      return reverse ? idA.localeCompare(idB) : idB.localeCompare(idA)
+    })
