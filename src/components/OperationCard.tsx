@@ -36,6 +36,24 @@ export const NeoOperationCard = ({
 }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
+  const sourceType =
+    operation.metadata?.sourceType ??
+    // 兼容后端 snake_case 字段
+    (operation.metadata as any)?.source_type
+  const sourceLabel =
+    sourceType === 'original' ? '【原创】' : sourceType === 'repost' ? '【搬运】' : ''
+
+  try {
+    // 诊断：输出元数据形态与映射结果
+    // 注意：临时日志，确认首页列表数据结构
+    // eslint-disable-next-line no-console
+    console.debug('[NeoOperationCard]', {
+      id: operation.id,
+      metadata: operation.metadata,
+      sourceType,
+      sourceLabel,
+    })
+  } catch {}
 
   return (
     <li className="relative">
@@ -55,6 +73,9 @@ export const NeoOperationCard = ({
               className="whitespace-nowrap overflow-hidden text-ellipsis"
             >
               <H4 className="p-0 m-0 mr-20 flex items-center overflow-hidden">
+                {sourceLabel && (
+                  <span className="mr-1 shrink-0">{sourceLabel}</span>
+                )}
                 <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                   {operation.parsedContent.doc.title}
                 </span>
@@ -151,6 +172,23 @@ export const NeoOperationCard = ({
 export const OperationCard = ({ operation }: { operation: Operation }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
+  const sourceType =
+    operation.metadata?.sourceType ??
+    // 兼容后端 snake_case 字段
+    (operation.metadata as any)?.source_type
+  const sourceLabel =
+    sourceType === 'original' ? '【原创】' : sourceType === 'repost' ? '【搬运】' : ''
+
+  try {
+    // 诊断：输出元数据形态与映射结果
+    // eslint-disable-next-line no-console
+    console.debug('[OperationCard]', {
+      id: operation.id,
+      metadata: operation.metadata,
+      sourceType,
+      sourceLabel,
+    })
+  } catch {}
 
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">
@@ -169,6 +207,9 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
+                    {sourceLabel && (
+                      <span className="mr-1">{sourceLabel}</span>
+                    )}
                     {operation.parsedContent.doc.title}
                     {operation.status === CopilotInfoStatusEnum.Private && (
                       <Tag minimal className="ml-2 font-normal opacity-75">

@@ -61,7 +61,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
 
   return (
     <Dialog
-      usePortal={false}
+      usePortal={true}
       title={t.components.account.ResetPasswordDialog.reset_password}
       icon="key"
       isOpen={isOpen}

@@ -1,6 +1,8 @@
 import { uniqBy } from 'lodash-es'
 import {
   BanCommentsStatusEnum,
+  CopilotCUDRequest,
+  CopilotInfoFromJSON,
   CopilotInfoStatusEnum,
   QueriesCopilotRequest,
 } from 'maa-copilot-client'
@@ -8,7 +10,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
 import { toCopilotOperation } from 'models/converter'
-import { OpRatingType, Operation } from 'models/operation'
+import { OpRatingType, Operation, OperationMetadata } from 'models/operation'
 import { ShortCodeContent, parseShortCode } from 'models/shortCode'
 import { OperationApi } from 'utils/maa-copilot-client'
 import { useSWRRefresh } from 'utils/swr'
@@ -109,21 +111,30 @@ export function useOperations({
         return { data: [], hasNext: false, total: 0 }
       }
 
-      const res = await new OperationApi({
-        sendToken: 'optional',
-        requireData: true,
-      }).queriesCopilot(req)
+      // 使用 Raw 接口拿到未加工 JSON，确保 metadata 不丢失
+      const api = new OperationApi({ sendToken: 'optional', requireData: true })
+      const rawResponse = await api.queriesCopilotRaw(req)
+      const rawJson = (await rawResponse.raw.json()) as {
+        data?: { data?: any[]; has_next?: boolean; page?: number; total?: number }
+      }
+      const payload = rawJson?.data ?? { data: [], has_next: false, total: 0 }
 
-      let parsedOperations: Operation[] = res.data.data.map((operation) => ({
-        ...operation,
-        parsedContent: toCopilotOperation(operation),
-      }))
+      let parsedOperations: Operation[] = (payload.data ?? []).map((item) => {
+        const baseInfo = CopilotInfoFromJSON(item)
+        return {
+          ...baseInfo,
+          metadata: mapResponseMetadata(item?.metadata),
+          parsedContent: toCopilotOperation(baseInfo),
+        }
+      })
 
       // 如果 revalidateFirstPage=false，从第二页开始可能会有重复数据，需要去重
       parsedOperations = uniqBy(parsedOperations, (o) => o.id)
 
       return {
-        ...res.data,
+        hasNext: !!payload.has_next,
+        page: payload.page ?? req.page,
+        total: payload.total ?? 0,
         data: parsedOperations,
       }
     },
@@ -180,12 +191,17 @@ export function useRefreshOperation() {
 }
 
 export async function getOperation(req: { id: number }): Promise<Operation> {
-  const res = await new OperationApi({
-    sendToken: 'optional', // 如果有 token 会用来获取用户是否点赞
+  const api = new OperationApi({
+    sendToken: 'optional',
     requireData: true,
-  }).getCopilotById(req)
+  })
+  const rawResponse = await api.getCopilotByIdRaw(req)
+  const rawJson = (await rawResponse.raw.json()) as { data?: any }
+  const payload = rawJson?.data ?? {}
+  const baseInfo = CopilotInfoFromJSON(payload)
+  const metadata = mapResponseMetadata(payload.metadata)
 
-  const d: any = res.data as any
+  const d: any = payload
   const preLevel = (() => {
     const stageId = d.stageId ?? d.stage_id
     const levelId = d.levelId ?? d.level_id ?? stageId ?? ''
@@ -211,26 +227,129 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   })()
 
   return {
-    ...res.data,
-    parsedContent: toCopilotOperation(res.data),
+    ...baseInfo,
+    metadata,
+    parsedContent: toCopilotOperation(baseInfo),
     preLevel,
+  }
+}
+
+export interface OperationMetadataPayload {
+  sourceType: 'original' | 'repost'
+  repostAuthor?: string
+  repostPlatform?: string
+  repostUrl?: string
+}
+
+type CopilotCUDRequestWithMetadata = CopilotCUDRequest & {
+  metadata?: OperationMetadataPayload
+}
+
+function buildCopilotCUDRequest({
+  metadata,
+  ...rest
+}: {
+  id?: number
+  content: string
+  status: CopilotInfoStatusEnum
+  metadata?: OperationMetadataPayload
+}): CopilotCUDRequestWithMetadata {
+  if (!metadata) {
+    return rest as CopilotCUDRequestWithMetadata
+  }
+  return { ...rest, metadata }
+}
+
+function prepareRequestBody(payload: CopilotCUDRequestWithMetadata) {
+  const metadata = payload.metadata
+  if (!metadata) {
+    const { metadata: _removed, ...rest } = payload
+    return rest
+  }
+  const sanitized = {
+    sourceType: metadata.sourceType ?? 'original',
+    repostAuthor: metadata.repostAuthor?.trim() || undefined,
+    repostPlatform: metadata.repostPlatform?.trim() || undefined,
+    repostUrl: metadata.repostUrl?.trim() || undefined,
+  }
+  if (
+    sanitized.sourceType === 'original' &&
+    !sanitized.repostAuthor &&
+    !sanitized.repostPlatform &&
+    !sanitized.repostUrl
+  ) {
+    const { metadata: _removed, ...rest } = payload
+    return rest
+  }
+  return {
+    ...payload,
+    metadata: sanitized,
+  }
+}
+
+function mapResponseMetadata(raw: any | undefined): OperationMetadata {
+  const clean = (value: unknown) => {
+    if (typeof value !== 'string') return undefined
+    const trimmed = value.trim()
+    return trimmed.length > 0 ? trimmed : undefined
+  }
+  const source =
+    (typeof raw?.sourceType === 'string' ? raw.sourceType : undefined) ??
+    (typeof raw?.source_type === 'string' ? raw.source_type : undefined)
+
+  return {
+    sourceType: source?.toLowerCase() === 'repost' ? 'repost' : 'original',
+    repostAuthor:
+      clean(raw?.repostAuthor) ?? clean(raw?.repost_author) ?? undefined,
+    repostPlatform:
+      clean(raw?.repostPlatform) ?? clean(raw?.repost_platform) ?? undefined,
+    repostUrl: clean(raw?.repostUrl) ?? clean(raw?.repost_url) ?? undefined,
   }
 }
 
 export async function createOperation(req: {
   content: string
   status: CopilotInfoStatusEnum
+  metadata?: OperationMetadataPayload
 }) {
-  return (await new OperationApi().uploadCopilot({ copilotCUDRequest: req }))
-    .data
+  const payload = buildCopilotCUDRequest(req)
+  const api = new OperationApi()
+  const response = await api.uploadCopilotRaw(
+    {
+      copilotCUDRequest: payload,
+    },
+    async ({ init }) => {
+      const bodyObject = prepareRequestBody(payload)
+      return {
+        ...init,
+        body: bodyObject as unknown as BodyInit,
+      }
+    },
+  )
+  return (await response.value()).data
 }
 
 export async function updateOperation(req: {
   id: number
   content: string
   status: CopilotInfoStatusEnum
+  metadata?: OperationMetadataPayload
 }) {
-  await new OperationApi().updateCopilot({ copilotCUDRequest: req })
+  const payload = buildCopilotCUDRequest(req)
+  const api = new OperationApi()
+  const response = await api.updateCopilotRaw(
+    {
+      copilotCUDRequest: payload,
+    },
+    async ({ init }) => {
+      const bodyObject = prepareRequestBody(payload)
+      return {
+        ...init,
+        body: bodyObject as unknown as BodyInit,
+      }
+    },
+  )
+  await response.value()
 }
 
 export async function deleteOperation(req: { id: number }) {

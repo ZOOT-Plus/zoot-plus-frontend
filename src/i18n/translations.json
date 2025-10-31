@@ -97,6 +97,22 @@
         "cn": "修改可见范围",
         "zh_tw": "修改可見範圍"
       },
+      "set_source_type": {
+        "cn": "修改作业来源",
+        "zh_tw": "修改作業來源"
+      },
+      "set_repost_author": {
+        "cn": "修改原作者名",
+        "zh_tw": "修改原作者名"
+      },
+      "set_repost_platform": {
+        "cn": "修改原发布平台",
+        "zh_tw": "修改原發布平台"
+      },
+      "set_repost_url": {
+        "cn": "修改原链接",
+        "zh_tw": "修改原連結"
+      },
       "set_siming_delay": {
         "cn": "修改司命延迟",
         "zh_tw": "修改司命延遲"
@@ -543,6 +559,42 @@
         "private_note": {
           "cn": "其他人无法在列表中看见，但可以通过神秘代码访问",
           "zh_tw": "其他人無法在列表中看見，但可以通過神秘代碼訪問"
+        },
+        "source": {
+          "cn": "作业来源",
+          "zh_tw": "作業來源"
+        },
+        "source_original": {
+          "cn": "原创",
+          "zh_tw": "原創"
+        },
+        "source_repost": {
+          "cn": "搬运",
+          "zh_tw": "搬運"
+        },
+        "repost_author": {
+          "cn": "原作者名",
+          "zh_tw": "原作者名"
+        },
+        "repost_author_placeholder": {
+          "cn": "请填写原作者昵称",
+          "zh_tw": "請填寫原作者暱稱"
+        },
+        "repost_platform": {
+          "cn": "原发布平台",
+          "zh_tw": "原發布平台"
+        },
+        "repost_platform_placeholder": {
+          "cn": "如：B站、微博、NGA",
+          "zh_tw": "如：B站、微博、NGA"
+        },
+        "repost_link": {
+          "cn": "原链接",
+          "zh_tw": "原連結"
+        },
+        "repost_link_placeholder": {
+          "cn": "请粘贴原帖链接",
+          "zh_tw": "請貼上原帖連結"
         }
       },
       "LevelSelect": {
@@ -3029,8 +3081,8 @@
           "zh_tw": "管理"
         },
         "download_json": {
-          "cn": "下载原 JSON",
-          "zh_tw": "下載原 JSON"
+          "cn": "下载 JSON",
+          "zh_tw": "下載 JSON"
         },
         "copy_secret_code": {
           "cn": "复制神秘代码",
@@ -4127,6 +4179,16 @@
       "validation_error": {
         "cn": "作业内容存在错误，请检查",
         "zh_tw": "作業內容存在錯誤，請檢查"
+      },
+      "validation": {
+        "metadata_missing": {
+          "cn": "请完整填写搬运来源信息：{{fields}}",
+          "zh_tw": "請完整填寫搬運來源資訊：{{fields}}"
+        },
+        "metadata_invalid_url": {
+          "cn": "原链接格式不正确，请确认后再试",
+          "zh_tw": "原連結格式不正確，請確認後再試"
+        }
       }
     },
     "about": {
@@ -4222,6 +4284,10 @@
     "home": {
       "cn": "首页",
       "zh_tw": "首頁"
+    },
+    "admin": {
+      "cn": "管理员",
+      "zh_tw": "管理員"
     },
     "create_job": {
       "cn": "创建作业",

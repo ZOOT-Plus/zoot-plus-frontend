@@ -30,7 +30,7 @@ import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { OperationSetEditorDialog } from 'components/operation-set/OperationSetEditor'
 import { OperationSet } from 'models/operation-set'
-import { authAtom } from 'store/auth'
+import { authAtom, isAdmin } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
 import { i18nDefer, useTranslation } from '../../i18n/i18n'
@@ -167,7 +167,7 @@ export const OperationSetViewer: ComponentType<{
 
             <div className="flex-1" />
 
-            {operationSet.creatorId === auth.userId && (
+            {(operationSet.creatorId === auth.userId || isAdmin(auth)) && (
               // 与 OperationViewer 保持一致：使用 Portal 并提升层级，避免在 Drawer 标题区域被裁剪/遮挡
               <Popover2
                 content={

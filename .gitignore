@@ -33,3 +33,7 @@ src/i18n/generated
 operations-log.md
 .direnv/
 /result*
+
+# Git worktrees (Crystal)
+/worktrees/
+/worktree-*/

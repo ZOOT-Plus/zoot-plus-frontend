@@ -2,6 +2,7 @@ import { Button, Dialog, InputGroup, MenuItem } from '@blueprintjs/core'
 
 import { getOperation } from 'apis/operation'
 import { FC, useState } from 'react'
+import { useSetAtom } from 'jotai'
 import { useController, useForm } from 'react-hook-form'
 
 import { useTranslation } from '../../../i18n/i18n'
@@ -9,6 +10,7 @@ import { parseShortCode } from '../../../models/shortCode'
 import { stripOperationExportFields } from '../../../services/operation'
 import { formatError } from '../../../utils/error'
 import { FormField2 } from '../../FormField'
+import { editorAtoms } from '../editor-state'
 
 interface ShortCodeForm {
   code: string
@@ -20,6 +22,8 @@ export const ShortCodeImporter: FC<{
   const t = useTranslation()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [pending, setPending] = useState(false)
+  const setMetadata = useSetAtom(editorAtoms.metadata)
+  const setMetadataLocked = useSetAtom(editorAtoms.metadataLocked)
 
   const {
     handleSubmit,
@@ -51,7 +55,8 @@ export const ShortCodeImporter: FC<{
       }
 
       const { id } = shortCodeContent
-      const operationContent = (await getOperation({ id })).parsedContent
+      const operationData = await getOperation({ id })
+      const operationContent = operationData.parsedContent
 
       if (
         operationContent.doc.title ===
@@ -73,6 +78,28 @@ export const ShortCodeImporter: FC<{
       const prettifiedJson = JSON.stringify(sanitizedContent, null, 2)
 
       onImport(prettifiedJson)
+
+      // 神秘代码导入：默认私密 + 来源元数据
+      setMetadata((prev) => {
+        const isRepost = operationData.metadata?.sourceType === 'repost'
+        return {
+          ...prev,
+          visibility: 'private',
+          // 修正：导入后本次编辑视为“搬运”；若原作业为搬运则沿用原作业元数据
+          sourceType: 'repost',
+          repostAuthor: isRepost
+            ? operationData.metadata?.repostAuthor ?? ''
+            : operationData.uploader ?? '',
+          repostPlatform: isRepost
+            ? operationData.metadata?.repostPlatform ?? ''
+            : '作业站',
+          repostUrl: isRepost
+            ? operationData.metadata?.repostUrl ?? ''
+            : `https://share.maayuan.top/?op=${id}`,
+        }
+      })
+      // 锁定作业来源，保护原作者
+      setMetadataLocked(true)
       setDialogOpen(false)
     } catch (e) {
       console.warn(e)

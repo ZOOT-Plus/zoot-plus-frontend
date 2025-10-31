@@ -39,7 +39,7 @@ export const handleDownloadJSON = (operationDoc: CopilotDocV1.Operation) => {
   const sanitizedDoc = stripOperationExportFields(snakeCaseDoc)
   const json = JSON.stringify(sanitizedDoc, null, 2)
 
-  doTriggerDownloadJSON(json, `MAACopilot_${operationDoc.doc.title}.json`)
+  doTriggerDownloadJSON(json, `MaaYuanCopilot_${operationDoc.doc.title}.json`)
 
   AppToaster.show({
     message: i18n.services.operation.json_downloaded,
@@ -81,7 +81,7 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
 
   const sanitizedDoc = stripOperationExportFields(snakeCaseDoc)
   const json = JSON.stringify(sanitizedDoc, null, 2)
-  doTriggerDownloadJSON(json, `MAACopilot_${title}.json`)
+  doTriggerDownloadJSON(json, `MaaYuanCopilot_${title}.json`)
   AppToaster.show({
     message: i18n.services.operation.json_downloaded,
     intent: 'success',
@@ -116,7 +116,7 @@ export const handleLazyDownloadSimingJSON = async (
   const simingActions = simingActionsCandidate as CopilotDocV1.SimingActionMap
 
   const json = JSON.stringify(simingActions, null, 2)
-  doTriggerDownloadJSON(json, `MAACopilot_Siming_${title}.json`)
+  doTriggerDownloadJSON(json, `MaaYuanCopilot_Siming_${title}.json`)
   AppToaster.show({
     message: i18n.services.operation.json_downloaded,
     intent: 'success',

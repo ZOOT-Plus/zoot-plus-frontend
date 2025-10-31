@@ -65,6 +65,9 @@ const ProfilePageLazy = withSuspensable(
     import('./pages/profile').then((m) => ({ default: m.ProfilePage })),
   ),
 )
+const AdminPageLazy = withSuspensable(
+  lazy(() => import('./pages/admin').then((m) => ({ default: m.AdminPage }))),
+)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -79,6 +82,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/operation/:id" element={<ViewPage />} />
           <Route path="/editor" element={<EditorPageLazy />} />
           <Route path="/editor/:id" element={<EditorPageLazy />} />
+          <Route path="/admin" element={<AdminPageLazy />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AppLayout>

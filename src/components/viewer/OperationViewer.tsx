@@ -40,7 +40,7 @@ import {
   useState,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { copyShortCode } from 'services/operation'
+import { copyShortCode,handleDownloadJSON } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
 import { Paragraphs } from 'components/Paragraphs'
@@ -52,7 +52,7 @@ import { EDifficultyLevel } from 'components/entity/ELevel'
 import { OperationRating } from 'components/viewer/OperationRating'
 import { OpRatingType, Operation } from 'models/operation'
 import { toShortCode } from 'models/shortCode'
-import { authAtom } from 'store/auth'
+import { authAtom, isAdmin } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
 import { useLevels } from '../../apis/level'
@@ -295,7 +295,7 @@ export const OperationViewer: ComponentType<{
             <div className="flex-1" />
 
             <div className="flex flex-wrap items-center gap-2 md:gap-4">
-              {operation.uploaderId === auth.userId && (
+              {(operation.uploaderId === auth.userId || isAdmin(auth)) && (
                 // 使用 Portal 渲染，避免被头部容器裁剪/遮挡；提升层级与全局样式一致
                 <Popover2
                   content={
@@ -317,11 +317,11 @@ export const OperationViewer: ComponentType<{
                 </Popover2>
               )}
 
-              {/* <Button
+              <Button
                 icon="download"
                 text={t.components.viewer.OperationViewer.download_json}
                 onClick={() => handleDownloadJSON(operation.parsedContent)}
-              /> */}
+              />
 
               <Button
                 icon="clipboard"
@@ -719,6 +719,47 @@ function OperationViewerInner({
               {operation.uploader}
             </UserName>
           </FactItem>
+
+          {/* 作业来源（仅当为“搬运”时显示） */}
+          {operation.metadata?.sourceType === 'repost' && (
+            <FactItem
+              relaxed
+              className="items-start"
+              title={t.components.editor2.InfoEditor.source}
+              icon="share"
+            >
+              <div className="flex flex-col gap-1 text-gray-800 dark:text-slate-100">
+                <div className="flex items-center gap-2">
+                  <Tag minimal intent="warning">
+                    {t.components.editor2.InfoEditor.source_repost}
+                  </Tag>
+                </div>
+                {operation.metadata?.repostAuthor && (
+                  <div className="text-sm">
+                    {t.components.editor2.InfoEditor.repost_author}: {operation.metadata.repostAuthor}
+                  </div>
+                )}
+                {operation.metadata?.repostPlatform && (
+                  <div className="text-sm">
+                    {t.components.editor2.InfoEditor.repost_platform}: {operation.metadata.repostPlatform}
+                  </div>
+                )}
+                {operation.metadata?.repostUrl && (
+                  <div className="text-sm break-all">
+                    {t.components.editor2.InfoEditor.repost_link}: 
+                    <a
+                      className="underline hover:no-underline"
+                      href={operation.metadata.repostUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      {operation.metadata.repostUrl}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </FactItem>
+          )}
         </div>
       </div>
 

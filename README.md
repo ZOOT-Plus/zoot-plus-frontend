@@ -60,3 +60,13 @@ yarn lint:fix
 ## Join us!
 
 QQ Group: 724540644
+
+## 首页滚动广告栏（公告区改造）
+
+- 广告配置文件：`src/data/ad-banners.ts`
+- 每个广告项包含：
+  - `image`: 图片路径（建议放在 `public/`，尺寸 560x320，或更大按 `object-fit: cover` 裁切）
+  - `link`: 点击跳转链接（将在新窗口打开）
+  - `alt` : 可选，图片替代文本
+- 组件：`src/components/AdBannerCarousel.tsx`
+- 首页引用：`src/pages/index.tsx`（移动端与桌面端均显示）

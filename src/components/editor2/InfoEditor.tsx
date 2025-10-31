@@ -22,6 +22,7 @@ import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
 import { OperatorSidebarInInfo } from './operator/OperatorSidebarInInfo'
 import { DEFAULT_SIMING_ACTION_DELAYS } from './siming/constants'
+import { EditorSourceType } from './types'
 import { CopilotOperation, getLabeledPath } from './validation/schema'
 
 interface InfoEditorProps {
@@ -35,6 +36,7 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
   const edit = useEdit()
   const t = useTranslation()
   const selectedOperators = useAtomValue(editorAtoms.operators)
+  const metadataLocked = useAtomValue(editorAtoms.metadataLocked)
 
   useEffect(() => {
     if (info.difficulty === undefined) {
@@ -196,6 +198,9 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
     })
   }, [assignLevelMeta, edit, fallbackLevel, info.stageName, setInfo])
 
+  const currentSourceType = metadata.sourceType ?? 'original'
+  const isRepost = currentSourceType === 'repost'
+
   return (
     <div
       className={clsx(
@@ -341,6 +346,142 @@ export const InfoEditor = memo(({ className, preLevel }: InfoEditorProps) => {
           onBlur={() => edit()}
         />
         <FieldError path="doc.details" />
+      </FormGroup>
+      <FormGroup
+        contentClassName="grow"
+        label={t.components.editor2.InfoEditor.source}
+        labelInfo="*"
+      >
+        <RadioGroup
+          inline
+          selectedValue={currentSourceType}
+          onChange={(e) => {
+            if (metadataLocked) return
+            const nextSourceType = e.currentTarget.value as EditorSourceType
+            edit(() => {
+              setMetadata((prev) => {
+                prev.sourceType = nextSourceType
+                if (nextSourceType === 'original') {
+                  prev.repostAuthor = ''
+                  prev.repostPlatform = ''
+                  prev.repostUrl = ''
+                }
+              })
+              return {
+                action: 'set-source-type',
+                desc: i18n.actions.editor2.set_source_type,
+                squashBy: '',
+              }
+            })
+          }}
+        >
+          <Radio className="!mt-0" value="original" disabled={metadataLocked}>
+            {t.components.editor2.InfoEditor.source_original}
+          </Radio>
+          <Radio className="!mt-0" value="repost" disabled={metadataLocked}>
+            {t.components.editor2.InfoEditor.source_repost}
+          </Radio>
+        </RadioGroup>
+
+        {isRepost && (
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            <FormGroup
+              contentClassName="grow"
+              label={t.components.editor2.InfoEditor.repost_author}
+              labelInfo="*"
+            >
+              <InputGroup
+                large
+                fill
+                placeholder={
+                  t.components.editor2.InfoEditor.repost_author_placeholder
+                }
+                value={metadata.repostAuthor ?? ''}
+                disabled={metadataLocked}
+                onChange={(e) => {
+                  const value = e.target.value
+                  edit(() => {
+                    setMetadata((prev) => {
+                      prev.repostAuthor = value
+                    })
+                    return {
+                      action: 'set-repost-author',
+                      desc: i18n.actions.editor2.set_repost_author,
+                      squashBy: '',
+                    }
+                  })
+                }}
+                onBlur={() => edit()}
+              />
+              
+            </FormGroup>
+            <FormGroup
+              contentClassName="grow"
+              label={t.components.editor2.InfoEditor.repost_platform}
+              labelInfo="*"
+            >
+              <div className="bp4-html-select bp4-fill bp4-large">
+                <select
+                  value={metadata.repostPlatform ?? ''}
+                  disabled={metadataLocked}
+                  onChange={(e) => {
+                    const value = e.currentTarget.value
+                    edit(() => {
+                      setMetadata((prev) => {
+                        prev.repostPlatform = value
+                      })
+                      return {
+                        action: 'set-repost-platform',
+                        desc: i18n.actions.editor2.set_repost_platform,
+                        squashBy: '',
+                      }
+                    })
+                  }}
+                  onBlur={() => edit()}
+                >
+                  <option value="" disabled>
+                    {t.components.editor2.InfoEditor.repost_platform_placeholder}
+                  </option>
+                  <option value="小红书">小红书</option>
+                  <option value="作业站">作业站</option>
+                  <option value="微博">微博</option>
+                  <option value="B站">B站</option>
+                  <option value="抖音">抖音</option>
+                </select>
+              </div>
+            </FormGroup>
+            <FormGroup
+              contentClassName="grow"
+              label={t.components.editor2.InfoEditor.repost_link}
+              labelInfo="*"
+            >
+              <InputGroup
+                large
+                fill
+                type="url"
+                placeholder={
+                  t.components.editor2.InfoEditor.repost_link_placeholder
+                }
+                value={metadata.repostUrl ?? ''}
+                disabled={metadataLocked}
+                onChange={(e) => {
+                  const value = e.target.value
+                  edit(() => {
+                    setMetadata((prev) => {
+                      prev.repostUrl = value
+                    })
+                    return {
+                      action: 'set-repost-url',
+                      desc: i18n.actions.editor2.set_repost_url,
+                      squashBy: '',
+                    }
+                  })
+                }}
+                onBlur={() => edit()}
+              />
+            </FormGroup>
+          </div>
+        )}
       </FormGroup>
       <FormGroup
         contentClassName="grow"

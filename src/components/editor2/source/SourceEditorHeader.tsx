@@ -70,7 +70,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `MAACopilot_${title || t.components.editor.source.SourceEditorHeader.untitled}.json`
+    link.download = `MaaYuanCopilot_${title || t.components.editor.source.SourceEditorHeader.untitled}.json`
     link.click()
     URL.revokeObjectURL(url)
 

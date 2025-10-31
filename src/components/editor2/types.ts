@@ -104,8 +104,14 @@ export interface EditorOperation extends EditorOperationBase {
   actions: EditorAction[]
 }
 
+export type EditorSourceType = 'original' | 'repost'
+
 export interface EditorMetadata {
   visibility: 'public' | 'private'
+  sourceType: EditorSourceType
+  repostAuthor?: string
+  repostPlatform?: string
+  repostUrl?: string
 }
 
 export interface EditorState {

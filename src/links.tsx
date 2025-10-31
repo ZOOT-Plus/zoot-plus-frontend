@@ -21,6 +21,12 @@ export const NAV_CONFIG = [
     labelKey: i18nDefer.links.about,
     icon: <Icon icon="info-sign" />,
   },
+  {
+    to: '/admin',
+    labelKey: i18nDefer.links.admin,
+    icon: <Icon icon="applications" />,
+    requiresAdmin: true as const,
+  },
 ]
 
 export const SOCIAL_CONFIG = [
