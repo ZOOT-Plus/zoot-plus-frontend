@@ -73,7 +73,6 @@ export const AdBannerCarousel: FC<AdBannerCarouselProps> = ({
             className="inline-block align-top w-full h-full"
             aria-label={item.alt || 'ad-banner'}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.image}
               alt={item.alt || 'ad'}

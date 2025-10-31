@@ -57,7 +57,9 @@ export const NeoOperationCard = ({
       sourceType,
       sourceLabel,
     })
-  } catch {}
+  } catch (error) {
+    void error
+  }
 
   return (
     <li className="relative">
@@ -196,7 +198,9 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
       sourceType,
       sourceLabel,
     })
-  } catch {}
+  } catch (error) {
+    void error
+  }
 
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">

@@ -304,7 +304,14 @@ export const EditorPage = withSuspensable(() => {
     return () => {
       cancelled = true
     }
-  }, [importShortcode, resetEditor, setSearchParams, setEditorPreLevel, t])
+  }, [
+    importShortcode,
+    resetEditor,
+    setSearchParams,
+    setEditorPreLevel,
+    setMetadataLocked,
+    t,
+  ])
 
   const handleSubmit = useAtomCallback(
     useCallback(
