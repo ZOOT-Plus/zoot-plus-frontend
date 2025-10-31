@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
 
 import { useTranslation } from '../i18n/i18n'
+import { useAtomValue } from 'jotai'
+import { authAtom, isAdmin } from '../store/auth'
 import { NAV_CONFIG, SOCIAL_CONFIG } from '../links'
 import { authAtom, isAdmin } from '../store/auth'
 

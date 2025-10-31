@@ -21,14 +21,14 @@ export async function register(req: {
 
   const body: Record<string, any> = {
     email: req.email,
-    userName: req.username,
+    user_name: req.username,
     password: req.password,
   }
   if (req.registrationCode !== undefined) {
-    body.registrationCode = req.registrationCode
+    body.registration_code = req.registrationCode
   }
   if (req.registrationToken !== undefined) {
-    body.registrationToken = req.registrationToken
+    body.registration_token = req.registrationToken
   }
 
   const res = await fetch(`${api}/user/register`, {
@@ -55,13 +55,17 @@ export async function register(req: {
     throw new ApiError(message)
   }
 
-  // 业务层错误：后端统一返回 MaaResult(statusCode, message, data)
+  // 业务层错误：后端统一返回 MaaResult(statusCode/status_code, message, data)
   try {
     const ct = res.headers.get('content-type')
     if (ct?.includes('application/json')) {
       const data: any = await res.json()
       if (data && typeof data === 'object') {
-        if ('statusCode' in data && data.statusCode !== 200) {
+        // 兼容驼峰与下划线两种命名：statusCode / status_code
+        if (
+          ('statusCode' in data && data.statusCode !== 200) ||
+          ('status_code' in data && data.status_code !== 200)
+        ) {
           throw new ApiError(data?.message)
         }
         // 兼容历史/其他接口的常见约定

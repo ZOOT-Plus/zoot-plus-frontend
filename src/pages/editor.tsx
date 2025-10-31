@@ -28,6 +28,7 @@ import {
   editorAtoms,
   historyAtom,
 } from '../components/editor2/editor-state'
+import type { EditorMetadata } from '../components/editor2/types'
 import { toEditorOperation } from '../components/editor2/reconciliation'
 import { toSimingOperationRemote } from '../components/editor2/siming-export'
 import type { EditorMetadata } from '../components/editor2/types'
