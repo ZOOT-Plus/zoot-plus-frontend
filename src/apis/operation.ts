@@ -131,9 +131,11 @@ export function useOperations({
       // 如果 revalidateFirstPage=false，从第二页开始可能会有重复数据，需要去重
       parsedOperations = uniqBy(parsedOperations, (o) => o.id)
 
+      const requestPage = 'page' in req ? req.page : undefined
+
       return {
         hasNext: !!payload.has_next,
-        page: payload.page ?? req.page,
+        page: payload.page ?? requestPage,
         total: payload.total ?? 0,
         data: parsedOperations,
       }
