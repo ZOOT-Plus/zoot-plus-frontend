@@ -37,7 +37,7 @@ export const SOCIAL_CONFIG = [
   },
   {
     icon: <BlueprintIcon icon="edit" className="mr-2" size={12} />,
-    href: 'https://qm.qq.com/q/2bFOe5CwsA',
+    href: 'https://td3nqr3477.feishu.cn/share/base/form/shrcnwfJlxSiQbwuR3qfiPwzfed',
     labelKey: i18nDefer.links.feedback,
   },
   {
