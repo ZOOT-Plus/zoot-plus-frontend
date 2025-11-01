@@ -428,6 +428,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "token_10058_sbell2_icetgt",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Protection Objective – Frozen",
+      "name": "保护目标（冻结状态）",
+      "alias": "baohumubiao（dongjiezhuangtai） bhmb（djzt） 保護目標（凍結狀態）",
+      "rarity": 0,
+      "alt_name": "Protection Objective – Frozen"
+    },
+    {
       "id": "char_388_mint",
       "prof": "CASTER",
       "subProf": "phalanx",
@@ -597,7 +607,8 @@
       "name": "车尔尼",
       "alias": "cheerni juerni cen jen 車爾尼",
       "rarity": 5,
-      "alt_name": "Czerny"
+      "alt_name": "Czerny",
+      "modules": ["", "X"]
     },
     {
       "id": "char_010_chen",
@@ -1063,6 +1074,36 @@
       "modules": ["", "X"]
     },
     {
+      "id": "token_10057_svash2_eagle1",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Eye of the Snowstorm",
+      "name": "风雪之眼",
+      "alias": "fengxuezhiyan fxzy 風雪之眼",
+      "rarity": 0,
+      "alt_name": "Eye of the Snowstorm"
+    },
+    {
+      "id": "token_10057_svash2_eagle2",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Eye of the Snowstorm",
+      "name": "风雪之眼",
+      "alias": "fengxuezhiyan fxzy 風雪之眼",
+      "rarity": 0,
+      "alt_name": "Eye of the Snowstorm"
+    },
+    {
+      "id": "token_10057_svash2_eagle3",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Eye of the Snowstorm",
+      "name": "风雪之眼",
+      "alias": "fengxuezhiyan fxzy 風雪之眼",
+      "rarity": 0,
+      "alt_name": "Eye of the Snowstorm"
+    },
+    {
       "id": "char_4093_frston",
       "prof": "TANK",
       "subProf": "protector",
@@ -1189,6 +1230,16 @@
       "rarity": 5,
       "alt_name": "Rose Salt",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_394_hadiya",
+      "prof": "WARRIOR",
+      "subProf": "mercenary",
+      "name_en": "Hadiya",
+      "name": "哈蒂娅",
+      "alias": "hadiya hdy 哈蒂婭",
+      "rarity": 5,
+      "alt_name": "Hadiya"
     },
     {
       "id": "char_4114_harold",
@@ -1558,7 +1609,7 @@
       "alias": "huoerhaiya hehy 霍爾海雅",
       "rarity": 6,
       "alt_name": "Ho'olheyak",
-      "modules": ["", "X", "Y"]
+      "modules": ["", "X", "Y", "A"]
     },
     {
       "id": "char_1030_noirc2",
@@ -1720,7 +1771,8 @@
       "name": "坚雷",
       "alias": "jianlei jl 堅雷",
       "rarity": 4,
-      "alt_name": "Dur-nar"
+      "alt_name": "Dur-nar",
+      "modules": ["", "X"]
     },
     {
       "id": "char_1028_texas2",
@@ -2262,6 +2314,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1045_svash2",
+      "prof": "PIONEER",
+      "subProf": "counsellor",
+      "name_en": "SilverAsh the Reignfrost",
+      "name": "凛御银灰",
+      "alias": "linyuyinhui lyyh 凜禦銀灰",
+      "rarity": 6,
+      "alt_name": "SilverAsh the Reignfrost"
+    },
+    {
       "id": "char_2023_ling",
       "prof": "SUPPORT",
       "subProf": "summoner",
@@ -2312,7 +2374,7 @@
       "alias": "lingzhi lz 靈知",
       "rarity": 6,
       "alt_name": "Gnosis",
-      "modules": ["", "X", "Y"]
+      "modules": ["", "X", "Y", "A"]
     },
     {
       "id": "char_4042_lumen",
@@ -2751,7 +2813,8 @@
       "name": "暮落",
       "alias": "muluo mula mulao ml 暮落",
       "rarity": 5,
-      "alt_name": "Shalem"
+      "alt_name": "Shalem",
+      "modules": ["", "X"]
     },
     {
       "id": "token_10042_tecno_puppet",
@@ -3314,6 +3377,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1046_sbell2",
+      "prof": "CASTER",
+      "subProf": "phalanx",
+      "name_en": "Pramanix the Prerita",
+      "name": "圣聆初雪",
+      "alias": "shenglingchuxue slcx 聖聆初雪",
+      "rarity": 6,
+      "alt_name": "Pramanix the Prerita",
+      "modules": ["", "Y"]
+    },
+    {
       "id": "char_1032_excu2",
       "prof": "WARRIOR",
       "subProf": "reaper",
@@ -3375,7 +3449,8 @@
       "name": "石棉",
       "alias": "shimian danmian sm dm 石棉",
       "rarity": 5,
-      "alt_name": "Asbestos"
+      "alt_name": "Asbestos",
+      "modules": ["", "X"]
     },
     {
       "id": "char_489_serum",
@@ -3615,6 +3690,17 @@
       "rarity": 6,
       "alt_name": "Stormeye",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_1047_halo2",
+      "prof": "SUPPORT",
+      "subProf": "slower",
+      "name_en": "Astgenne the Lightchaser",
+      "name": "溯光星源",
+      "alias": "suguangxingyuan sgxy 溯光星源",
+      "rarity": 6,
+      "alt_name": "Astgenne the Lightchaser",
+      "modules": ["", "Y"]
     },
     {
       "id": "char_298_susuro",
@@ -3893,7 +3979,7 @@
       "alias": "weina·weiduoliya weinuo·weiduoliya wn·wdly 維娜·維多利亞",
       "rarity": 6,
       "alt_name": "Vina Victoria",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_1035_wisdel",
@@ -4091,6 +4177,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_4051_akkord",
+      "prof": "CASTER",
+      "subProf": "blastcaster",
+      "name_en": "Akkord",
+      "name": "协律",
+      "alias": "xielv xl 協律",
+      "rarity": 4,
+      "alt_name": "Akkord",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_4194_rmixer",
       "prof": "TANK",
       "subProf": "shotprotector",
@@ -4176,6 +4273,17 @@
       "alias": "xuyu xy 絮雨",
       "rarity": 5,
       "alt_name": "Whisperain",
+      "modules": ["", "X"]
+    },
+    {
+      "id": "char_4211_snhunt",
+      "prof": "SNIPER",
+      "subProf": "hunter",
+      "name_en": "Snow Hunter",
+      "name": "雪猎",
+      "alias": "xuelie xl 雪獵",
+      "rarity": 5,
+      "alt_name": "Snow Hunter",
       "modules": ["", "X"]
     },
     {
@@ -4887,7 +4995,8 @@
       "name": "斩业星熊",
       "alias": "zhanyexingxiong zyxx 斬業星熊",
       "rarity": 6,
-      "alt_name": "Hoshiguma the Breacher"
+      "alt_name": "Hoshiguma the Breacher",
+      "modules": ["", "X"]
     },
     {
       "id": "char_499_kaitou",
@@ -5114,7 +5223,8 @@
         { "id": "librator", "name": "解放者", "name_en": "Liberator" },
         { "id": "crusher", "name": "重剑手", "name_en": "Crusher" },
         { "id": "hammer", "name": "撼地者", "name_en": "Earthshaker" },
-        { "id": "primguard", "name": "本源近卫", "name_en": "Primal Guard" }
+        { "id": "primguard", "name": "本源近卫", "name_en": "Primal Guard" },
+        { "id": "mercenary", "name": "佣兵", "name_en": "Mercenary" }
       ]
     },
     {
