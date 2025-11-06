@@ -49,9 +49,8 @@ jobs:
           labels: |
             scripts/update
           assignees: |
-            GalvinGao
-          reviewers: |
-            GalvinGao
+            MistEO
+            Constrat
 
       - name: Print Pull Request URL
         run: echo "Created Pull Request at ${{ steps.cpr.outputs.pull-request-url }}"
