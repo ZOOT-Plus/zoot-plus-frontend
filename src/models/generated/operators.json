@@ -2377,6 +2377,17 @@
       "modules": ["", "X", "Y", "A"]
     },
     {
+      "id": "char_617_sharp2",
+      "prof": "WARRIOR",
+      "subProf": "lord",
+      "name_en": "Lord/Sharp",
+      "name": "领主·Sharp",
+      "alias": "lingzhu·Sharp lz·Sharp 領主·Sharp",
+      "rarity": 6,
+      "alt_name": "Lord/Sharp",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_4042_lumen",
       "prof": "MEDIC",
       "subProf": "healer",
@@ -2623,6 +2634,17 @@
       "alias": "meilansuo meilansha mls 玫蘭莎",
       "rarity": 3,
       "alt_name": "Melantha"
+    },
+    {
+      "id": "char_616_pithst",
+      "prof": "SUPPORT",
+      "subProf": "ritualist",
+      "name_en": "Alliance/Supportive Opertator",
+      "name": "盟约·辅助干员",
+      "alias": "mengyue·fuzhuganyuan mengyue·fuzhuganyun mengyue·fuchuganyuan mengyue·fuchuganyun mengyao·fuzhuganyuan mengyao·fuzhuganyun mengyao·fuchuganyuan mengyao·fuchuganyun my·fzgy my·fcgy 盟約·輔助幹員",
+      "rarity": 4,
+      "alt_name": "Alliance/Supportive Opertator",
+      "modules": ["", "X"]
     },
     {
       "id": "char_391_rosmon",
