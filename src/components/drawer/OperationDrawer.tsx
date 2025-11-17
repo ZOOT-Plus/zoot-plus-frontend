@@ -35,12 +35,24 @@ export function OperationDrawer() {
     })
   }
 
+  const handleOuterBackdropClick = (e?: SyntheticEvent) => {
+    if (e?.nativeEvent instanceof MouseEvent && e.nativeEvent.button !== 0) {
+      return
+    }
+
+    if (operationId) {
+      closeOperation(e)
+    } else {
+      closeOperationSet(e)
+    }
+  }
+
   if (operationSetId) {
     return (
       <Drawer
         size={DrawerSize.LARGE}
         isOpen={!!operationSetId}
-        onClose={closeOperationSet}
+        onClose={handleOuterBackdropClick}
       >
         {operationSetId && (
           <OperationSetViewer
