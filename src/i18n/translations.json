@@ -4113,13 +4113,25 @@
       "cn": "MAA 官网",
       "en": "MAA Official Site"
     },
+    "map_site": {
+      "cn": "明日方舟地图站",
+      "en": "Arknights PRTS.Map"
+    },
+    "theresa_site": {
+      "cn": "特蕾西娅",
+      "en": "Theresa"
+    },
+    "maafw_site": {
+      "cn": "MaaFramework",
+      "en": "MaaFramework"
+    },
     "feedback": {
       "cn": "意见与反馈",
       "en": "Feedback"
     },
     "maa_repo": {
-      "cn": "MAA GitHub Repo",
-      "en": "MAA GitHub Repo"
+      "cn": "MAA Repo",
+      "en": "MAA Repo"
     },
     "frontend_repo": {
       "cn": "前端 GitHub Repo",
@@ -4136,6 +4148,10 @@
     "sharing_group": {
       "cn": "作业分享群",
       "en": "Job Sharing Group"
+    },
+    "friendly_links": {
+      "cn": "友情链接",
+      "en": "Friendly Links"
     }
   }
 }

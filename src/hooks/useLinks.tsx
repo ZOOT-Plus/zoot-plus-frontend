@@ -1,5 +1,5 @@
 import { useTranslation } from '../i18n/i18n'
-import { NAV_CONFIG, SOCIAL_CONFIG } from '../links'
+import { FRIENDLY_LINKS_CONFIG, NAV_CONFIG, SOCIAL_CONFIG } from '../links'
 
 export const useLinks = () => {
   useTranslation()
@@ -16,5 +16,13 @@ export const useLinks = () => {
     label: labelKey(),
   }))
 
-  return { NAV_LINKS, SOCIAL_LINKS }
+  const FRIENDLY_LINKS = FRIENDLY_LINKS_CONFIG.map(
+    ({ icon, href, labelKey }) => ({
+      icon,
+      href,
+      label: labelKey(),
+    }),
+  )
+
+  return { NAV_LINKS, SOCIAL_LINKS, FRIENDLY_LINKS }
 }

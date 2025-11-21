@@ -20,7 +20,7 @@ import { useCurrentSize } from '../utils/useCurrenSize'
 export const IndexPage: ComponentType = withGlobalErrorBoundary(() => {
   const { isMD } = useCurrentSize()
   const t = useTranslation()
-  const { SOCIAL_LINKS } = useLinks()
+  const { SOCIAL_LINKS, FRIENDLY_LINKS } = useLinks()
   return (
     <div className="flex flex-col md:flex-row px-4 pb-16 mt-4 md:px-8 md:mt-8 max-w-[96rem] mx-auto">
       {isMD && <Ad />}
@@ -61,6 +61,32 @@ export const IndexPage: ComponentType = withGlobalErrorBoundary(() => {
                   {curr}
                 </>
               ))}
+            </div>
+
+            <div className="mb-4">
+              <div className="text-sm font-medium text-zinc-600 dark:text-slate-100 mb-2">
+                {t.links.friendly_links}
+              </div>
+              <div className="flex flex-wrap leading-relaxed mb-2 section-social-links">
+                {FRIENDLY_LINKS.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-zinc-600 dark:text-slate-100 no-underline"
+                  >
+                    {link.icon}
+                    <span>{link.label}</span>
+                  </a>
+                )).reduce((prev, curr) => (
+                  <>
+                    {prev}
+                    <div className="mx-2 opacity-50">·</div>
+                    {curr}
+                  </>
+                ))}
+              </div>
             </div>
 
             <Ad />
