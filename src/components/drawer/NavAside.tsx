@@ -21,7 +21,7 @@ export const NavAside = () => {
 
   const [showOperationSetDialog, setShowOperationSetDialog] = useState(false)
 
-  const { NAV_LINKS, SOCIAL_LINKS } = useLinks()
+  const { NAV_LINKS, SOCIAL_LINKS, FRIENDLY_LINKS } = useLinks()
 
   if (!isMD) return null
 
@@ -92,6 +92,30 @@ export const NavAside = () => {
               {curr}
             </>
           ))}
+        </div>
+        <div className="mt-2 p-2">
+          <div className="text-sm font-medium text-zinc-600 dark:text-slate-100 mb-2">
+            {t.links.friendly_links}
+          </div>
+          <div className="flex flex-wrap leading-relaxed mb-2 section-social-links">
+            {FRIENDLY_LINKS.map((link) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center text-zinc-600 dark:text-slate-100 no-underline"
+              >
+                {link.icon}
+                <span>{link.label}</span>
+              </a>
+            )).reduce((prev, curr) => (
+              <>
+                {prev}
+                <div className="mx-2 opacity-50">·</div>
+                {curr}
+              </>
+            ))}
+          </div>
         </div>
       </Drawer>
 

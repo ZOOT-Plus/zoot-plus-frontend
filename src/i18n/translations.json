@@ -4136,6 +4136,10 @@
     "sharing_group": {
       "cn": "作业分享群",
       "en": "Job Sharing Group"
+    },
+    "friendly_links": {
+      "cn": "友情链接",
+      "en": "Friendly Links"
     }
   }
 }
