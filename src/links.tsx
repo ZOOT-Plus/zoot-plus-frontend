@@ -73,4 +73,19 @@ export const FRIENDLY_LINKS_CONFIG = [
     href: 'https://github.com/MaaAssistantArknights/MaaAssistantArknights',
     labelKey: i18nDefer.links.maa_repo,
   },
+  {
+    icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
+    href: 'https://map.ark-nights.com/',
+    labelKey: i18nDefer.links.map_site,
+  },
+  {
+    icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
+    href: 'https://theresa.wiki/',
+    labelKey: i18nDefer.links.theresa_site,
+  },
+  {
+    icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
+    href: 'https://maafw.xyz/',
+    labelKey: i18nDefer.links.maafw_site,
+  },
 ]
