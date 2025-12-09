@@ -338,7 +338,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     'relative',
                     selected
                       ? available
-                        ? '!bg-purple-100 dark:!bg-purple-900 dark:text-purple-200 text-purple-800'
+                        ? '!bg-violet-100 dark:!bg-violet-900 dark:text-violet-200 text-violet-800'
                         : '!bg-red-100 dark:!bg-red-900 dark:text-red-200 text-red-800'
                       : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
                   )}

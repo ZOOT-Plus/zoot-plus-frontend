@@ -15,10 +15,10 @@ body {
   .bp4-input {
     @apply block w-full py-2 pl-3 pr-3;
     @apply bg-white shadow-sm border border-slate-400 rounded-md border-solid;
-    @apply focus:border-violet-500;
+    @apply focus:border-violet-500 focus:outline-none;
 
     &:focus {
-      box-shadow: 0 0 5px @primary-color;
+      box-shadow: 0 0 3px @primary-color;
     }
 
     &[type='search' i]::-webkit-search-cancel-button {
@@ -43,7 +43,11 @@ body {
     @apply placeholder:italic placeholder:text-slate-400;
     @apply block w-full;
     @apply bg-white shadow-sm border border-slate-400 rounded-md border-solid;
-    @apply focus:border-violet-500;
+    @apply focus:border-violet-500 focus:outline-none;
+
+    &:focus {
+      box-shadow: 0 0 0 3px @primary-color;
+    }
   }
 
   .bp4-large .bp4-file-upload-input::after {
@@ -296,6 +300,21 @@ body {
     }
   }
 
+  .bp4-popover2 .bp4-popover2-content,
+  .bp4-popover2.bp4-dark .bp4-popover2-content {
+    background-color: #232326 !important;
+    border: 1px solid #38383b !important;
+    color: #e0e0e0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .bp4-popover2 .bp4-popover2-arrow-fill {
+    fill: #232326 !important;
+  }
+  .bp4-popover2 .bp4-popover2-arrow-border {
+    fill: #38383b !important;
+  }
+
   .bp4-popover2-content {
     // 1. 让内部的 Menu 背景透明 (复用 Popover 的背景)，并去除多余边框
     .bp4-menu {
@@ -350,7 +369,7 @@ body {
   }
 
   .markdown-body a {
-    color: #5c8ae6;
+    color: #a78bfa; // violet-400
   }
 
   .markdown-body pre,
@@ -396,10 +415,10 @@ body {
     }
 
     &.bp4-intent-primary,
-    &.bg-blue-400 {
-      background-color: #1e3a8a !important;
-      border-color: #1e40af !important;
-      color: #e0e7ff !important;
+    &.bg-violet-400 {
+      background-color: #4c1d95 !important; // violet-900
+      border-color: #6d28d9 !important;     // violet-700
+      color: #ddd6fe !important;            // violet-200
     }
 
     // 交互状态微调
@@ -451,7 +470,7 @@ body {
     .bp4-menu-item.bp4-active,
     .bp4-menu-item.bp4-selected {
       @apply text-slate-100;
-      background-color: rgba(255, 255, 255, 0.15);
+      background-color: rgba(139, 92, 246, 0.15) !important;
     }
   }
 
@@ -475,10 +494,8 @@ body {
 
   .bg-slate-100.ring-slate-200 {
     background-color: #2d2d30 !important;
-
     --tw-ring-color: #38383b !important;
     box-shadow: inset 0 0 0 2px #38383b !important;
-
     color: #52525b !important; // Zinc-600
   }
 
@@ -487,6 +504,77 @@ body {
 
     &.text-slate-900 {
       color: #e0e0e0 !important;
+    }
+  }
+
+  .dark\:bg-\[\#383e47\] {
+    background-color: #232326 !important;
+    border-bottom: 1px solid #38383b !important;
+    color: #e0e0e0 !important;
+  }
+
+  // 创建作业悬浮地图的标题栏
+  .floating-map-header {
+    background-color: #2d2d30 !important;
+    color: #e0e0e0 !important;
+    border-bottom: 1px solid #38383b !important;
+  }
+
+  .bp4-file-upload-input {
+    box-shadow: inset 0 0 0 1px #38383b !important;
+    background-color: #2d2d30 !important;
+    color: #e0e0e0 !important;
+  }
+
+  // 上传本地作业按钮
+  .bp4-file-upload-input::after {
+    background-color: #2d2d30 !important;
+    border-left: 1px solid #38383b !important;
+    color: #e0e0e0 !important;
+    box-shadow: none !important;
+  }
+  .bp4-file-input:hover .bp4-file-upload-input::after {
+    background-color: #3e3e42 !important;
+  }
+
+  .bp4-input,
+  textarea.bp4-input,
+  input.bp4-input {
+    background-color: #2d2d30 !important;
+    box-shadow: inset 0 0 0 1px #38383b !important;
+    color: #ffffff !important;
+    &::placeholder {
+      color: #6b7280 !important;
+    }
+    &:disabled,
+    &.bp4-disabled {
+      background-color: #202023 !important;
+      box-shadow: none !important;
+      color: #71717a !important;
+    }
+  }
+
+  .bp4-input:focus,
+  .bp4-input.bp4-active,
+  textarea.bp4-input:focus,
+  textarea.bp4-input.bp4-active {
+    border-color: #8b5cf6 !important;
+    box-shadow: inset 0 0 0 1px #8b5cf6, 0 0 0 2px rgba(139, 92, 246, 0.3) !important;
+    background-color: #2d2d30 !important;
+    outline: none !important;
+  }
+
+  .bp4-dialog-header {
+    background-color: #232326 !important;
+    border-bottom: 1px solid #38383b !important;
+    color: #e0e0e0 !important;
+    box-shadow: none !important;
+  }
+
+  .bp4-dialog-close-button .bp4-icon {
+    color: #9ca3af !important;
+    &:hover {
+      color: #ffffff !important;
     }
   }
 }
