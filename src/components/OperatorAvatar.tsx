@@ -46,12 +46,12 @@ export function OperatorAvatar({
 
   const colorClassName =
     rarity === 6
-      ? 'bg-orange-200 ring-orange-300'
+      ? 'bg-orange-200 ring-orange-300 dark:bg-orange-600/20 dark:ring-orange-500/60'
       : rarity === 5
-        ? 'bg-yellow-100 ring-yellow-200'
+        ? 'bg-yellow-100 ring-yellow-200 dark:bg-yellow-500/20 dark:ring-yellow-500/60'
         : rarity === 4
-          ? 'bg-purple-100 ring-purple-200'
-          : 'bg-slate-100 ring-slate-200'
+          ? 'bg-purple-100 ring-purple-200 dark:bg-purple-600/20 dark:ring-purple-500/60'
+          : 'bg-slate-100 ring-slate-200 dark:bg-[#2d2d30] dark:ring-[#3f3f46]'
 
   const commonClassName =
     'ring-inset ring-2 border-solid rounded-md object-cover'
@@ -77,7 +77,7 @@ export function OperatorAvatar({
         sizingClassName,
         colorClassName,
         commonClassName,
-        'flex items-center justify-center font-bold text-2xl text-slate-300 truncate select-none',
+        'flex items-center justify-center font-bold text-2xl text-slate-300 dark:text-zinc-600 truncate select-none',
         className,
       )}
     >
