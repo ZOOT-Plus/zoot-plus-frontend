@@ -438,7 +438,7 @@ body {
     .bp4-menu-item.bp4-active,
     .bp4-menu-item.bp4-selected {
       @apply text-slate-100;
-      background-color: @primary-color;
+      background-color: rgba(255, 255, 255, 0.15);
     }
   }
 
@@ -458,5 +458,14 @@ body {
     p {
       @apply text-slate-100;
     }
+  }
+
+  .bg-slate-100.ring-slate-200 {
+    background-color: #2d2d30 !important;
+
+    --tw-ring-color: #38383b !important;
+    box-shadow: inset 0 0 0 2px #38383b !important;
+
+    color: #52525b !important; // Zinc-600
   }
 }
