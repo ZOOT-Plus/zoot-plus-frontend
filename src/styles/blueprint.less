@@ -283,6 +283,19 @@ body {
     color: #e0e0e0;
   }
 
+  .bp4-drawer {
+    .bg-slate-100,
+    .dark\:bg-slate-900 {
+      background-color: #232326 !important;
+
+      border-bottom: 1px solid #38383b !important;
+
+      color: #e0e0e0 !important;
+
+      box-shadow: none !important;
+    }
+  }
+
   .bp4-popover2-content {
     // 1. 让内部的 Menu 背景透明 (复用 Popover 的背景)，并去除多余边框
     .bp4-menu {
@@ -467,5 +480,13 @@ body {
     box-shadow: inset 0 0 0 2px #38383b !important;
 
     color: #52525b !important; // Zinc-600
+  }
+
+  h4.bg-gray-100 {
+    background-color: #2d2d30 !important;
+
+    &.text-slate-900 {
+      color: #e0e0e0 !important;
+    }
   }
 }
