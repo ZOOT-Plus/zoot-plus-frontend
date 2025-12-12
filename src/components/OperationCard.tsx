@@ -21,6 +21,42 @@ import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
 import { EDifficultyLevel, NeoELevel } from './entity/ELevel'
 
+// --- [工具] 标题清洗函数 ---
+const formatTitle = (title: string, code?: string, rawId?: string) => {
+  let newTitle = title
+
+  const removeStr = (target?: string) => {
+    if (!target) return
+    const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const regex = new RegExp(
+      `^\\s*(\\[|【)?\\s*${escaped}\\s*(\\]|】)?\\s*([-|:：\\s]+)?`,
+      'i',
+    )
+    newTitle = newTitle.replace(regex, '')
+  }
+
+  removeStr(code)
+  if (code !== rawId) removeStr(rawId)
+
+  return newTitle.trim()
+}
+
+// --- [组件] 关卡徽章 ---
+const LevelBadge = ({ code }: { code?: string }) => {
+  if (!code) return null
+
+  const isInternalId =
+    code.includes('_') || (code.length > 6 && /^[a-z]/.test(code))
+
+  if (isInternalId) return null
+
+  return (
+    <span className="prts-level-badge">
+      {code}
+    </span>
+  )
+}
+
 export const NeoOperationCard = ({
   operation,
   selected,
@@ -34,6 +70,11 @@ export const NeoOperationCard = ({
 }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
+
+  const rawStageName = operation.parsedContent.stageName
+  const levelObj = findLevelByStageName(levels, rawStageName)
+  const displayCode = levelObj?.catThree || levelObj?.name || rawStageName
+  const displayTitle = formatTitle(operation.parsedContent.doc.title, displayCode, rawStageName)
 
   return (
     <li className="relative">
@@ -53,8 +94,10 @@ export const NeoOperationCard = ({
               className="whitespace-nowrap overflow-hidden text-ellipsis"
             >
               <H4 className="p-0 m-0 mr-20 flex items-center overflow-hidden">
+                <LevelBadge code={displayCode} />
+
                 <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                  {operation.parsedContent.doc.title}
+                  {displayTitle || operation.parsedContent.doc.title}
                 </span>
                 {operation.status === CopilotInfoStatusEnum.Private && (
                   <Tag minimal className="ml-2 shrink-0 font-normal opacity-75">
@@ -67,10 +110,7 @@ export const NeoOperationCard = ({
             <div className="flex items-center text-slate-900">
               <NeoELevel
                 level={
-                  findLevelByStageName(
-                    levels,
-                    operation.parsedContent.stageName,
-                  ) || createCustomLevel(operation.parsedContent.stageName)
+                  levelObj || createCustomLevel(rawStageName)
                 }
               />
               <EDifficulty
@@ -151,6 +191,13 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
 
+  const rawStageName = operation.parsedContent.stageName
+  const levelObj = findLevelByStageName(levels, rawStageName)
+
+  // [关键修复] 使用 catThree
+  const displayCode = levelObj?.catThree || levelObj?.name || rawStageName
+  const displayTitle = formatTitle(operation.parsedContent.doc.title, displayCode, rawStageName)
+
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">
       <ReLinkRenderer
@@ -164,11 +211,13 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
             onKeyDown={onKeyDown}
           >
             <div className="flex flex-wrap mb-4 sm:mb-2">
-              {/* title */}
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
-                  <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
-                    {operation.parsedContent.doc.title}
+                  <H4 className="flex items-center pb-1 border-b-2 border-zinc-200 border-solid mb-2">
+                    <LevelBadge code={displayCode} />
+
+                    <span>{displayTitle || operation.parsedContent.doc.title}</span>
+
                     {operation.status === CopilotInfoStatusEnum.Private && (
                       <Tag minimal className="ml-2 font-normal opacity-75">
                         {t.components.OperationCard.private}
@@ -179,10 +228,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                 <H5 className="flex items-center text-slate-900 -mt-3">
                   <EDifficultyLevel
                     level={
-                      findLevelByStageName(
-                        levels,
-                        operation.parsedContent.stageName,
-                      ) || createCustomLevel(operation.parsedContent.stageName)
+                      levelObj || createCustomLevel(rawStageName)
                     }
                     difficulty={operation.parsedContent.difficulty}
                   />

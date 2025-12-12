@@ -241,6 +241,25 @@ body {
   label.bp4-checkbox {
     @apply select-none;
   }
+
+  .prts-level-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    background-color: #3b82f6;
+    color: #ffffff !important;
+    border: 1px solid #2563eb;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 700;
+    font-size: 0.95em;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
 }
 
 .bp4-dark {
@@ -345,5 +364,12 @@ body {
     p {
       @apply text-slate-100;
     }
+  }
+
+  .prts-level-badge {
+    background-color: #1e3a8a;
+    border-color: #1e40af;
+    color: #e0e7ff !important;
+    box-shadow: none;
   }
 }
