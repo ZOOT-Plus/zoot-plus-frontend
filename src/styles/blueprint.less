@@ -349,20 +349,20 @@ body {
 }
 
 body.bp4-dark.high-contrast-theme {
-  @pr-dark-bg: #232326;
-  @pr-dark-border: #38383b;
-  @pr-input-bg: #2d2d30;
-  @pr-text-color: #e0e0e0;
-  @pr-content-bg: #18181c;
+  @hc-dark-bg: #232326;
+  @hc-dark-border: #38383b;
+  @hc-input-bg: #2d2d30;
+  @hc-text-color: #e0e0e0;
+  @hc-content-bg: #18181c;
 
   .docs-content-wrapper {
-    background-color: @pr-content-bg;
+    background-color: @hc-content-bg;
   }
 
   // navbar
   .bp4-navbar {
-    background-color: @pr-dark-bg;
-    border-bottom: 1px solid @pr-dark-border;
+    background-color: @hc-dark-bg;
+    border-bottom: 1px solid @hc-dark-border;
 
     a,
     .bp4-tag span {
@@ -373,39 +373,39 @@ body.bp4-dark.high-contrast-theme {
   .bp4-dialog,
   .bp4-drawer,
   .bp4-menu {
-    background-color: @pr-dark-bg;
-    border: 1px solid @pr-dark-border;
-    color: @pr-text-color;
+    background-color: @hc-dark-bg;
+    border: 1px solid @hc-dark-border;
+    color: @hc-text-color;
   }
 
   .bp4-card {
-    background-color: @pr-dark-bg;
-    color: @pr-text-color;
+    background-color: @hc-dark-bg;
+    color: @hc-text-color;
   }
 
   .bp4-drawer {
     .bg-slate-100,
     .dark\:bg-slate-900 {
-      background-color: @pr-dark-bg !important;
-      border-bottom: 1px solid @pr-dark-border !important;
-      color: @pr-text-color !important;
+      background-color: @hc-dark-bg !important;
+      border-bottom: 1px solid @hc-dark-border !important;
+      color: @hc-text-color !important;
       box-shadow: none !important;
     }
   }
 
   .bp4-popover2 .bp4-popover2-content,
   .bp4-popover2.bp4-dark .bp4-popover2-content {
-    background-color: @pr-dark-bg !important;
-    border: 1px solid @pr-dark-border !important;
-    color: @pr-text-color !important;
+    background-color: @hc-dark-bg !important;
+    border: 1px solid @hc-dark-border !important;
+    color: @hc-text-color !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
   }
 
   .bp4-popover2 .bp4-popover2-arrow-fill {
-    fill: @pr-dark-bg !important;
+    fill: @hc-dark-bg !important;
   }
   .bp4-popover2 .bp4-popover2-arrow-border {
-    fill: @pr-dark-border !important;
+    fill: @hc-dark-border !important;
   }
 
   .bp4-popover2-content {
@@ -416,8 +416,8 @@ body.bp4-dark.high-contrast-theme {
 
     .bp4-input-group {
       .bp4-input {
-        background-color: @pr-input-bg;
-        border: 1px solid @pr-dark-border;
+        background-color: @hc-input-bg;
+        border: 1px solid @hc-dark-border;
         color: #ffffff;
         box-shadow: none;
 
@@ -440,8 +440,8 @@ body.bp4-dark.high-contrast-theme {
   .bp4-input,
   textarea,
   .bp4-file-upload-input {
-    background-color: @pr-input-bg;
-    border-color: @pr-dark-border;
+    background-color: @hc-input-bg;
+    border-color: @hc-dark-border;
     color: #fff;
   }
 
@@ -460,15 +460,15 @@ body.bp4-dark.high-contrast-theme {
 
   .markdown-body pre,
   .markdown-body code {
-    background-color: @pr-input-bg;
-    color: @pr-text-color;
+    background-color: @hc-input-bg;
+    color: @hc-text-color;
   }
 
   // 按钮
   .bp4-button {
     &:not([class*='bp4-intent-']):not(.bp4-minimal) {
-      background-color: @pr-input-bg;
-      border-color: @pr-dark-border;
+      background-color: @hc-input-bg;
+      border-color: @hc-dark-border;
 
       &:hover {
         background-color: #3e3e42;
@@ -484,7 +484,7 @@ body.bp4-dark.high-contrast-theme {
   .bp4-tag {
     background-color: #333 !important;
     border: 1px solid #444 !important;
-    color: @pr-text-color !important;
+    color: @hc-text-color !important;
 
     &.bp4-intent-danger,
     &.bg-red-400 {
@@ -507,21 +507,21 @@ body.bp4-dark.high-contrast-theme {
 
   .bp4-tooltip2 {
     .bp4-popover2-content {
-      background-color: @pr-dark-bg !important;
-      border: 1px solid @pr-dark-border !important;
-      color: @pr-text-color !important;
+      background-color: @hc-dark-bg !important;
+      border: 1px solid @hc-dark-border !important;
+      color: @hc-text-color !important;
 
       > div,
       > span {
-        color: @pr-text-color !important;
+        color: @hc-text-color !important;
       }
     }
 
     .bp4-popover2-arrow-fill {
-      fill: @pr-dark-bg !important;
+      fill: @hc-dark-bg !important;
     }
     .bp4-popover2-arrow-border {
-      fill: @pr-dark-border !important;
+      fill: @hc-dark-border !important;
     }
   }
 
@@ -533,42 +533,42 @@ body.bp4-dark.high-contrast-theme {
   }
 
   .bg-slate-100.ring-slate-200 {
-    background-color: @pr-input-bg !important;
-    --tw-ring-color: @pr-dark-border !important;
-    box-shadow: inset 0 0 0 2px @pr-dark-border !important;
+    background-color: @hc-input-bg !important;
+    --tw-ring-color: @hc-dark-border !important;
+    box-shadow: inset 0 0 0 2px @hc-dark-border !important;
     color: #52525b !important;
   }
 
   h4.bg-gray-100 {
-    background-color: @pr-input-bg !important;
+    background-color: @hc-input-bg !important;
 
     &.text-slate-900 {
-      color: @pr-text-color !important;
+      color: @hc-text-color !important;
     }
   }
 
   .dark\:bg-\[\#383e47\] {
-    background-color: @pr-dark-bg !important;
-    border-bottom: 1px solid @pr-dark-border !important;
-    color: @pr-text-color !important;
+    background-color: @hc-dark-bg !important;
+    border-bottom: 1px solid @hc-dark-border !important;
+    color: @hc-text-color !important;
   }
 
   .floating-map-header {
-    background-color: @pr-input-bg !important;
-    color: @pr-text-color !important;
-    border-bottom: 1px solid @pr-dark-border !important;
+    background-color: @hc-input-bg !important;
+    color: @hc-text-color !important;
+    border-bottom: 1px solid @hc-dark-border !important;
   }
 
   .bp4-file-upload-input {
-    box-shadow: inset 0 0 0 1px @pr-dark-border !important;
-    background-color: @pr-input-bg !important;
-    color: @pr-text-color !important;
+    box-shadow: inset 0 0 0 1px @hc-dark-border !important;
+    background-color: @hc-input-bg !important;
+    color: @hc-text-color !important;
   }
 
   .bp4-file-upload-input::after {
-    background-color: @pr-input-bg !important;
-    border-left: 1px solid @pr-dark-border !important;
-    color: @pr-text-color !important;
+    background-color: @hc-input-bg !important;
+    border-left: 1px solid @hc-dark-border !important;
+    color: @hc-text-color !important;
     box-shadow: none !important;
   }
   .bp4-file-input:hover .bp4-file-upload-input::after {
@@ -578,8 +578,8 @@ body.bp4-dark.high-contrast-theme {
   .bp4-input,
   textarea.bp4-input,
   input.bp4-input {
-    background-color: @pr-input-bg !important;
-    box-shadow: inset 0 0 0 1px @pr-dark-border !important;
+    background-color: @hc-input-bg !important;
+    box-shadow: inset 0 0 0 1px @hc-dark-border !important;
     color: #ffffff !important;
     &::placeholder {
       color: #6b7280 !important;
@@ -598,14 +598,14 @@ body.bp4-dark.high-contrast-theme {
   textarea.bp4-input.bp4-active {
     border-color: #8b5cf6 !important;
     box-shadow: inset 0 0 0 1px #8b5cf6, 0 0 0 2px rgba(139, 92, 246, 0.3) !important;
-    background-color: @pr-input-bg !important;
+    background-color: @hc-input-bg !important;
     outline: none !important;
   }
 
   .bp4-dialog-header {
-    background-color: @pr-dark-bg !important;
-    border-bottom: 1px solid @pr-dark-border !important;
-    color: @pr-text-color !important;
+    background-color: @hc-dark-bg !important;
+    border-bottom: 1px solid @hc-dark-border !important;
+    color: @hc-text-color !important;
     box-shadow: none !important;
   }
 
