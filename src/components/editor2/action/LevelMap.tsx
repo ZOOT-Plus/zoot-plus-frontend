@@ -146,7 +146,7 @@ export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
         <iframe
           title="Theresa Map"
           className="w-full h-full"
-          src={getMapUrl(level)}
+          src={getMapUrl(level).replace('#f#', '')}
           onLoad={(e) => {
             setIframeWindow(e.currentTarget.contentWindow)
             setMapStatus('contentLoading')
