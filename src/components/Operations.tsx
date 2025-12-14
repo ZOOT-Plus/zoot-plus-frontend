@@ -27,6 +27,13 @@ import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
 
+import {
+  ownedOperatorsAtom,
+  filterModeAtom,
+  displayModeAtom
+} from 'store/ownedOperators'
+
+
 export const Operations: ComponentType = withSuspensable(() => {
   const t = useTranslation()
   const [queryParams, setQueryParams] = useState<
@@ -45,6 +52,71 @@ export const Operations: ComponentType = withSuspensable(() => {
   const [neoLayout, setNeoLayout] = useAtom(neoLayoutAtom)
   const [tab, setTab] = useState<'operation' | 'operationSet'>('operation')
   const [multiselect, setMultiselect] = useState(false)
+
+  const [ownedOps, setOwnedOps] = useAtom(ownedOperatorsAtom)
+  const [filterMode, setFilterMode] = useAtom(filterModeAtom)
+  const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
+
+  const primaryBtnClass = "hover:!bg-blue-600 active:!bg-blue-700"
+  const normalBtnClass = "hover:!bg-slate-200 dark:hover:!bg-slate-700"
+
+  const handleImportOperators = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // 1. 简单的文件大小限制 (例如限制 2MB)，防止浏览器卡死
+    if (file.size > 2 * 1024 * 1024) {
+      alert('文件过大，请上传标准格式的干员数据文件')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const jsonStr = event.target?.result as string
+        let json
+
+        // 2. 防止 JSON.parse 报错导致页面崩溃
+        try {
+          json = JSON.parse(jsonStr)
+        } catch (e) {
+          alert('文件格式错误：不是有效的 JSON 文件')
+          return
+        }
+
+        let names: string[] = []
+
+        if (Array.isArray(json)) {
+          if (typeof json[0] === 'string') {
+            // 格式 ["阿米娅", "陈"]
+            names = json
+          } else if (typeof json[0] === 'object' && json[0] !== null && 'name' in json[0]) {
+            // 格式 [{"name": "阿米娅", "own": true}, ...]
+            // 3. 严格校验：只提取 name 且强制转换为 string，防止对象注入
+            names = json
+              .filter((op: any) => op?.own !== false && typeof op?.name === 'string')
+              .map((op: any) => String(op.name).trim()) // 再次防御：去除首尾空格
+              .filter((name: string) => /^[a-zA-Z0-9\u4e00-\u9fa5\-\(\)\uff08\uff09]+$/.test(name)) // 4. 可选：正则白名单校验（只允许中英文、数字、括号）
+          }
+        }
+
+        if (names.length > 0) {
+          // 5. 去重，防止大量重复数据
+          const uniqueNames = Array.from(new Set(names))
+          setOwnedOps(uniqueNames)
+          alert(`成功导入 ${uniqueNames.length} 名干员`)
+        } else {
+          alert('未能识别有效的干员数据，请检查文件格式')
+        }
+      } catch (err) {
+        console.error(err)
+        alert('导入过程中发生未知错误')
+      }
+      // 6. 清空 input value，允许重复上传同一个文件
+      e.target.value = ''
+    }
+    reader.readAsText(file)
+  }
 
   return (
     <>
@@ -139,6 +211,53 @@ export const Operations: ComponentType = withSuspensable(() => {
                   }}
                 />
               </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 mt-4 p-2 bg-slate-50 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".json,.txt"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  onChange={handleImportOperators}
+                  title="导入干员数据"
+                />
+                <Button icon="import" text={`导入干员 (${ownedOps.length})`} />
+              </div>
+
+              <Divider />
+
+              <ButtonGroup>
+                <Button
+                  icon={displayMode === 'GRAY' ? 'eye-open' : 'eye-off'}
+                  text={displayMode === 'GRAY' ? '置灰模式' : '隐藏模式'}
+                  onClick={() => setDisplayMode(v => v === 'GRAY' ? 'HIDE' : 'GRAY')}
+                />
+              </ButtonGroup>
+
+              <Divider />
+
+              <ButtonGroup>
+                <Button
+                  icon="confirm"
+                  // 如果选中，给蓝色 intent；否则给 none
+                  intent={filterMode === 'PERFECT' ? 'primary' : 'none'}
+                  active={filterMode === 'PERFECT'}
+                  text="完美阵容"
+                  onClick={() => setFilterMode(v => v === 'PERFECT' ? 'NONE' : 'PERFECT')}
+                  disabled={ownedOps.length === 0}
+                  // 添加 className 修复 Hover 颜色
+                  className={filterMode === 'PERFECT' ? primaryBtnClass : normalBtnClass}
+                />
+                <Button
+                  icon="people"
+                  intent={filterMode === 'SUPPORT' ? 'primary' : 'none'}
+                  active={filterMode === 'SUPPORT'}
+                  text="允许助战"
+                  onClick={() => setFilterMode(v => v === 'SUPPORT' ? 'NONE' : 'SUPPORT')}
+                  disabled={ownedOps.length === 0}
+                  className={filterMode === 'SUPPORT' ? primaryBtnClass : normalBtnClass}
+                />
+              </ButtonGroup>
             </div>
             <div className="flex flex-wrap items-center gap-4 mt-2">
               <OperatorFilter
