@@ -6,6 +6,7 @@ import { useAtomValue } from 'jotai'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
 import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
 
+import { OperatorAvatar } from 'components/OperatorAvatar'
 import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
 import { OperationRating } from 'components/viewer/OperationRating'
@@ -260,17 +261,48 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
   const language = useAtomValue(languageAtom)
   const { opers, groups } = operation.parsedContent
 
-  return opers?.length || groups?.length ? (
-    <div>
-      {opers?.map(({ name, skill }, index) => (
-        <Tag key={index} className="mr-2 last:mr-0 mb-1 last:mb-0">
-          {`${getLocalizedOperatorName(name, language)} ${skill ?? 1}`}
-        </Tag>
-      ))}
+  const hasContent = opers?.length || groups?.length
+
+  if (!hasContent) {
+    return (
+      <div className="text-gray-500">
+        {t.components.OperationCard.no_records}
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {/* 渲染干员头像 */}
+      {opers?.map(({ name, skill }, index) => {
+        const displayName = getLocalizedOperatorName(name, language)
+        return (
+          <Tooltip2
+            key={`op-${index}`}
+            content={`${displayName} ${skill ? skill : ''}`}
+            placement="top"
+          >
+            <div className="relative group cursor-pointer transition-transform hover:-translate-y-0.5">
+              <OperatorAvatar
+                name={name}
+                sourceSize={96} // 使用高清图以适应稍大的尺寸
+                className="w-10 h-10 shadow-sm" // 40px 大小
+              />
+              {/* 技能角标 */}
+              {skill && (
+                <div className="absolute bottom-0 right-0 bg-slate-800/90 text-white text-[10px] px-1 leading-tight rounded-tl-sm font-mono border-t border-l border-white/20 pointer-events-none">
+                  {skill}
+                </div>
+              )}
+            </div>
+          </Tooltip2>
+        )
+      })}
+
+      {/* 渲染干员组 (保留 Tag 样式，但调整大小以对齐) */}
       {groups?.map(({ name, opers }, index) => (
         <Tooltip2
-          key={index}
-          className="mr-2 last:mr-0 mb-1 last:mb-0"
+          key={`group-${index}`}
           placement="top"
           content={
             opers
@@ -281,12 +313,12 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
               .join(', ') || t.components.OperationCard.no_operators
           }
         >
-          <Tag>[{name}]</Tag>
+          <div className="h-10 px-3 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300 shadow-sm cursor-help hover:-translate-y-0.5 transition-transform">
+            [{name}]
+          </div>
         </Tooltip2>
       ))}
     </div>
-  ) : (
-    <div className="text-gray-500">{t.components.OperationCard.no_records}</div>
   )
 }
 
