@@ -21,6 +21,16 @@
       "alt_name": "\"Clip\" Charge"
     },
     {
+      "id": "token_10060_nasti_nstchr",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Site Supervisor",
+      "name": "“监工专员”",
+      "alias": "jiangongzhuanyuan jiangongzhuanyun jgzy “監工專員” 監工專員",
+      "rarity": 0,
+      "alt_name": "Site Supervisor"
+    },
+    {
       "id": "token_10020_ling_soul1",
       "prof": "TOKEN",
       "subProf": "notchar1",
@@ -69,6 +79,26 @@
       "alias": "yaoyang yy “耀陽” 耀陽",
       "rarity": 0,
       "alt_name": "Blazing Sun"
+    },
+    {
+      "id": "token_10061_nasti_nstbld",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Emergency Support Team",
+      "name": "“应急承重小组”",
+      "alias": "yingjichengzhongxiaozu yingjichengchongxiaozu yjczxz yjccxz “應急承重小組” 應急承重小組",
+      "rarity": 0,
+      "alt_name": "Emergency Support Team"
+    },
+    {
+      "id": "token_10059_nasti_nstdef",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Quality Inspector",
+      "name": "“质检专员”",
+      "alias": "zhijianzhuanyuan zhijianzhuanyun zjzy “質檢專員” 質檢專員",
+      "rarity": 0,
+      "alt_name": "Quality Inspector"
     },
     {
       "id": "char_009_12fce",
@@ -2128,7 +2158,7 @@
       "alias": "laiyi ly 萊伊",
       "rarity": 6,
       "alt_name": "Ray",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_129_bluep",
@@ -2728,7 +2758,8 @@
       "name": "明椒",
       "alias": "mingjiao mj 明椒",
       "rarity": 5,
-      "alt_name": "Paprika"
+      "alt_name": "Paprika",
+      "modules": ["", "X"]
     },
     {
       "id": "char_615_acspec",
@@ -2804,7 +2835,8 @@
       "name": "Mon3tr",
       "alias": "Mon3tr",
       "rarity": 6,
-      "alt_name": "Mon3tr"
+      "alt_name": "Mon3tr",
+      "modules": ["", "X"]
     },
     {
       "id": "token_10002_kalts_mon3tr",
@@ -2879,6 +2911,17 @@
       "alias": "narentuya nuorentuya nrty 娜仁圖亞",
       "rarity": 6,
       "alt_name": "Narantuya",
+      "modules": ["", "X"]
+    },
+    {
+      "id": "char_4212_nasti",
+      "prof": "SUPPORT",
+      "subProf": "craftsman",
+      "name_en": "Nasti",
+      "name": "娜斯提",
+      "alias": "nasiti nasidi nuositi nuosidi nst nsd 娜斯提",
+      "rarity": 6,
+      "alt_name": "Nasti",
       "modules": ["", "X"]
     },
     {
@@ -3776,7 +3819,8 @@
       "name": "莎草",
       "alias": "suocao shacao sc 莎草",
       "rarity": 5,
-      "alt_name": "Papyrus"
+      "alt_name": "Papyrus",
+      "modules": ["", "X"]
     },
     {
       "id": "char_4077_palico",
@@ -3852,6 +3896,16 @@
       "rarity": 5,
       "alt_name": "Skyfire",
       "modules": ["", "Y"]
+    },
+    {
+      "id": "char_4213_skybx",
+      "prof": "SNIPER",
+      "subProf": "skybreaker",
+      "name_en": "Skybox",
+      "name": "天空盒",
+      "alias": "tiankonghe tkh 天空盒",
+      "rarity": 5,
+      "alt_name": "Skybox"
     },
     {
       "id": "char_181_flower",
@@ -4165,6 +4219,16 @@
       "alias": "xiangcao xc 香草",
       "rarity": 3,
       "alt_name": "Vanilla"
+    },
+    {
+      "id": "char_4214_cairn",
+      "prof": "TANK",
+      "subProf": "primprotector",
+      "name_en": "Cairn",
+      "name": "响石",
+      "alias": "xiangshi xiangdan xs xd 響石",
+      "rarity": 5,
+      "alt_name": "Cairn"
     },
     {
       "id": "char_497_ctable",
@@ -5289,7 +5353,8 @@
         { "id": "siegesniper", "name": "攻城手", "name_en": "Besieger" },
         { "id": "bombarder", "name": "投掷手", "name_en": "Flinger" },
         { "id": "hunter", "name": "猎手", "name_en": "Hunter" },
-        { "id": "loopshooter", "name": "回环射手", "name_en": "Loopshooter" }
+        { "id": "loopshooter", "name": "回环射手", "name_en": "Loopshooter" },
+        { "id": "skybreaker", "name": "裂空炮手", "name_en": "Skybreaker" }
       ]
     },
     {

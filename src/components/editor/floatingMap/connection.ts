@@ -10,8 +10,9 @@ if (!MAP_SERVER) {
 // in the future we may need some conversion on this
 export const MAP_ORIGIN = MAP_SERVER
 
+// 适配 API 格式：服务端路径要求使用 __f__，将 stageId 中的 #f# 进行转换
 export const getMapUrl = (level: Level) =>
-  `${MAP_SERVER}/widget/map/${level.stageId}/scene`
+  `${MAP_SERVER}/widget/map/${level.stageId.replace('#f#', '__f__')}/scene`
 
 /** Tells that the map is ready. */
 export type MapReadyMessage = Message<'mapReady'>
