@@ -212,7 +212,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 mt-4 p-2 bg-slate-50 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap items-center gap-4 mt-4 px-4 py-3 bg-slate-50 dark:bg-slate-800/20 rounded-lg border border-slate-200 dark:border-slate-700">
               <div className="relative">
                 <input
                   type="file"
@@ -224,7 +224,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 <Button icon="import" text={`导入干员 (${ownedOps.length})`} />
               </div>
 
-              <Divider />
+              <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-700" />
 
               <ButtonGroup>
                 <Button
@@ -234,7 +234,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
               </ButtonGroup>
 
-              <Divider />
+              <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-700" />
 
               <ButtonGroup>
                 <Button
