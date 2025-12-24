@@ -279,7 +279,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
         return (
           <Tooltip2
             key={`op-${index}`}
-            content={`${displayName} ${skill ? skill : ''}`}
+            content={`${displayName} ${skill ?? ''}`}
             placement="top"
           >
             <div className="relative group cursor-pointer transition-transform hover:-translate-y-0.5">
