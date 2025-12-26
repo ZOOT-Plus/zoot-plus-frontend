@@ -10,6 +10,11 @@ import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
 import { OperationRating } from 'components/viewer/OperationRating'
 import { OpDifficulty, Operation } from 'models/operation'
+import {
+  displayModeAtom,
+  filterModeAtom,
+  ownedOperatorsAtom,
+} from 'store/ownedOperators'
 
 import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
@@ -20,6 +25,42 @@ import { ReLinkRenderer } from './ReLink'
 import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
 import { EDifficultyLevel, NeoELevel } from './entity/ELevel'
+
+// --- 检查作业可用性的 Hook ---
+const useOperationAvailability = (operation: Operation) => {
+  const ownedOps = useAtomValue(ownedOperatorsAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  // 如果没有导入干员或未开启筛选，默认可用
+  if (ownedOps.length === 0 || filterMode === 'NONE') {
+    return { isAvailable: true, missingCount: 0, missingOps: [] }
+  }
+
+  const { opers } = operation.parsedContent
+  if (!opers || opers.length === 0) {
+    return { isAvailable: true, missingCount: 0, missingOps: [] }
+  }
+
+  // 找出缺少的干员
+  const missingOps = opers
+    .map((o) => o.name)
+    .filter((name) => !ownedOps.includes(name))
+
+  const missingCount = missingOps.length
+  let isAvailable = true
+
+  // 完美模式：缺任何一个都不行
+  if (filterMode === 'PERFECT' && missingCount > 0) {
+    isAvailable = false
+  }
+  // 助战模式：允许缺1个，但缺2个以上不可用
+  else if (filterMode === 'SUPPORT' && missingCount > 1) {
+    isAvailable = false
+  }
+
+  return { isAvailable, missingCount, missingOps }
+}
+// ------------------------------------
 
 export const NeoOperationCard = ({
   operation,
@@ -35,6 +76,26 @@ export const NeoOperationCard = ({
   const t = useTranslation()
   const { data: levels } = useLevels()
 
+  // --- 筛选逻辑 ---
+  const { isAvailable, missingCount, missingOps } =
+    useOperationAvailability(operation)
+  const displayMode = useAtomValue(displayModeAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  // 隐藏模式：只有真正不可用时才隐藏
+  // (如果是助战模式缺1人，isAvailable是true，所以不会被隐藏，符合预期)
+  if (!isAvailable && displayMode === 'HIDE') {
+    return null
+  }
+
+  // 置灰模式：不可用时置灰
+  const isGrayed = !isAvailable && displayMode === 'GRAY'
+
+  // 是否显示提示信息：不可用 OR (助战模式且缺1人)
+  const showMissingInfo =
+    !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
+  // ----------------
+
   return (
     <li className="relative">
       <ReLinkRenderer
@@ -42,7 +103,12 @@ export const NeoOperationCard = ({
         render={({ onClick, onKeyDown }) => (
           <Card
             interactive
-            className="h-full flex flex-col gap-2"
+            className={clsx(
+              'h-full flex flex-col gap-2 transition-all duration-200',
+              // 应用置灰样式
+              isGrayed &&
+              'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+            )}
             elevation={Elevation.TWO}
             tabIndex={0}
             onClick={onClick}
@@ -79,6 +145,23 @@ export const NeoOperationCard = ({
                 }
               />
             </div>
+
+            {/* --- 缺人状态提示 --- */}
+            {showMissingInfo && (
+              <div className="flex items-center gap-2 text-sm font-bold">
+                {filterMode === 'SUPPORT' && missingCount === 1 ? (
+                  <span className="text-amber-600 dark:text-amber-500 flex items-center">
+                    <Icon icon="people" className="mr-1" /> 需助战:{' '}
+                    {missingOps[0]}
+                  </span>
+                ) : (
+                  <span className="text-red-600 dark:text-red-500 flex items-center">
+                    <Icon icon="cross" className="mr-1" /> 缺 {missingCount} 人
+                  </span>
+                )}
+              </div>
+            )}
+            {/* ------------------- */}
 
             <div className="grow text-gray-700 leading-normal">
               <Paragraphs
@@ -151,6 +234,21 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
 
+  // --- 筛选逻辑 ---
+  const { isAvailable, missingCount, missingOps } =
+    useOperationAvailability(operation)
+  const displayMode = useAtomValue(displayModeAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (!isAvailable && displayMode === 'HIDE') {
+    return null
+  }
+
+  const isGrayed = !isAvailable && displayMode === 'GRAY'
+  const showMissingInfo =
+    !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
+  // ----------------
+
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">
       <ReLinkRenderer
@@ -162,6 +260,11 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
             tabIndex={0}
             onClick={onClick}
             onKeyDown={onKeyDown}
+            className={clsx(
+              // 应用置灰样式
+              isGrayed &&
+              'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+            )}
           >
             <div className="flex flex-wrap mb-4 sm:mb-2">
               {/* title */}
@@ -187,6 +290,25 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                     difficulty={operation.parsedContent.difficulty}
                   />
                 </H5>
+
+                {/* --- 缺人状态提示 --- */}
+                {showMissingInfo && (
+                  <div className="text-sm font-bold">
+                    {filterMode === 'SUPPORT' && missingCount === 1 ? (
+                      <span className="text-amber-600 dark:text-amber-500 flex items-center">
+                        <Icon icon="people" className="mr-1" /> 需助战:{' '}
+                        {missingOps[0]}
+                      </span>
+                    ) : (
+                      <span className="text-red-600 dark:text-red-500 flex items-center">
+                        <Icon icon="cross" className="mr-1" /> 缺 {missingCount}{' '}
+                        人: {missingOps.slice(0, 3).join(', ')}
+                        {missingCount > 3 ? '...' : ''}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {/* ------------------- */}
               </div>
 
               <div className="grow basis-full xl:basis-0" />
