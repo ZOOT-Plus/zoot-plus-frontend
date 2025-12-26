@@ -3384,6 +3384,20 @@
         "en": "Retry"
       }
     },
+    "ThemeSwitchButton": {
+      "light": {
+        "cn": "浅色模式",
+        "en": "Light Mode"
+      },
+      "dark": {
+        "cn": "深色模式",
+        "en": "Dark Mode"
+      },
+      "highContrast": {
+        "cn": "深色模式 (高对比)",
+        "en": "Dark Mode (High Contrast)"
+      }
+    },
     "UserFilter": {
       "searching": {
         "cn": "正在搜索...",
