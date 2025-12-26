@@ -4,6 +4,8 @@ import {
   Card,
   Divider,
   H6,
+  Icon,
+  IconName,
   InputGroup,
   Tab,
   Tabs,
@@ -19,6 +21,12 @@ import { ComponentType, useMemo, useState } from 'react'
 import { CardTitle } from 'components/CardTitle'
 import { OperationList } from 'components/OperationList'
 import { OperationSetList } from 'components/OperationSetList'
+// 确保这里的引用指向了使用 atomWithStorage 的文件
+import {
+  displayModeAtom,
+  filterModeAtom,
+  ownedOperatorsAtom,
+} from 'store/ownedOperators'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
@@ -27,12 +35,58 @@ import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
 
-import {
-  ownedOperatorsAtom,
-  filterModeAtom,
-  displayModeAtom
-} from 'store/ownedOperators'
+// --- [样式复刻] 自定义按钮组件 ---
+const PrtsBtn = ({
+  icon,
+  text,
+  active,
+  onClick,
+  disabled,
+}: {
+  icon: IconName
+  text: string
+  active?: boolean
+  onClick?: () => void
+  disabled?: boolean
+}) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={clsx(
+        'inline-flex items-center justify-center px-3 py-1.5 min-h-[30px] mr-1',
+        'text-sm font-normal leading-none rounded-[3px]',
+        'transition-colors duration-100 ease-[cubic-bezier(0.4,1,0.75,0.9)] select-none',
 
+        // 1. 默认状态 (未激活 & 未禁用)
+        !active &&
+        !disabled &&
+        clsx(
+          'bg-transparent text-[#5c7080] dark:text-[#a7b6c2]',
+          // 自身 Hover
+          'hover:bg-[#a7b6c2]/30 dark:hover:bg-[#8a9ba8]/15 hover:text-[#1c2127] dark:hover:text-[#f5f8fa]',
+          // 父级 Group Hover (用于文件上传)
+          'group-hover:bg-[#a7b6c2]/30 dark:group-hover:bg-[#8a9ba8]/15 group-hover:text-[#1c2127] dark:group-hover:text-[#f5f8fa]',
+        ),
+
+        // 2. 激活状态
+        active &&
+        'bg-[#a7b6c2]/30 dark:bg-[#8a9ba8]/15 text-[#2563eb] dark:text-[#60a5fa] font-semibold',
+
+        // 3. 禁用状态
+        disabled && 'opacity-50 cursor-not-allowed',
+      )}
+    >
+      <Icon icon={icon} size={16} className="mr-[7px] opacity-90" />
+      <span>{text}</span>
+    </button>
+  )
+}
+
+const PrtsDivider = () => (
+  <div className="mx-2 inline-block h-4 w-[1px] bg-[#10161a]/15 dark:bg-white/15" />
+)
 
 export const Operations: ComponentType = withSuspensable(() => {
   const t = useTranslation()
@@ -57,16 +111,13 @@ export const Operations: ComponentType = withSuspensable(() => {
   const [filterMode, setFilterMode] = useAtom(filterModeAtom)
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
 
-  const primaryBtnClass = "hover:!bg-blue-600 active:!bg-blue-700"
-  const normalBtnClass = "hover:!bg-slate-200 dark:hover:!bg-slate-700"
-
   const handleImportOperators = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // 1. 简单的文件大小限制 (例如限制 2MB)，防止浏览器卡死
+    // 1. 简单的文件大小限制 (例如限制 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('文件过大，请上传标准格式的干员数据文件')
+      alert(t.components.Operations.import_too_large)
       return
     }
 
@@ -76,11 +127,11 @@ export const Operations: ComponentType = withSuspensable(() => {
         const jsonStr = event.target?.result as string
         let json
 
-        // 2. 防止 JSON.parse 报错导致页面崩溃
+        // 2. 防止 JSON.parse 报错
         try {
           json = JSON.parse(jsonStr)
         } catch (e) {
-          alert('文件格式错误：不是有效的 JSON 文件')
+          alert(t.components.Operations.import_invalid_json)
           return
         }
 
@@ -88,31 +139,42 @@ export const Operations: ComponentType = withSuspensable(() => {
 
         if (Array.isArray(json)) {
           if (typeof json[0] === 'string') {
-            // 格式 ["阿米娅", "陈"]
             names = json
-          } else if (typeof json[0] === 'object' && json[0] !== null && 'name' in json[0]) {
-            // 格式 [{"name": "阿米娅", "own": true}, ...]
-            // 3. 严格校验：只提取 name 且强制转换为 string，防止对象注入
+          } else if (
+            typeof json[0] === 'object' &&
+            json[0] !== null &&
+            'name' in json[0]
+          ) {
+            // 3. 严格校验
             names = json
-              .filter((op: any) => op?.own !== false && typeof op?.name === 'string')
-              .map((op: any) => String(op.name).trim()) // 再次防御：去除首尾空格
-              .filter((name: string) => /^[a-zA-Z0-9\u4e00-\u9fa5\-\(\)\uff08\uff09]+$/.test(name)) // 4. 可选：正则白名单校验（只允许中英文、数字、括号）
+              .filter(
+                (op: any) => op?.own !== false && typeof op?.name === 'string',
+              )
+              .map((op: any) => String(op.name).trim())
+              .filter((name: string) =>
+                /^[a-zA-Z0-9\u4e00-\u9fa5\-\(\)\uff08\uff09]+$/.test(name),
+              )
           }
         }
 
         if (names.length > 0) {
-          // 5. 去重，防止大量重复数据
+          // 5. 去重
           const uniqueNames = Array.from(new Set(names))
           setOwnedOps(uniqueNames)
-          alert(`成功导入 ${uniqueNames.length} 名干员`)
+          // 注意：t 函数支持插值，需要在 translations.json 中配置 {{count}}
+          alert(
+            t.components.Operations.import_success({
+              count: uniqueNames.length,
+            }),
+          )
         } else {
-          alert('未能识别有效的干员数据，请检查文件格式')
+          alert(t.components.Operations.import_no_valid_data)
         }
       } catch (err) {
         console.error(err)
-        alert('导入过程中发生未知错误')
+        alert(t.components.Operations.import_unknown_error)
       }
-      // 6. 清空 input value，允许重复上传同一个文件
+      // 6. 清空 input value
       e.target.value = ''
     }
     reader.readAsText(file)
@@ -120,7 +182,7 @@ export const Operations: ComponentType = withSuspensable(() => {
 
   return (
     <>
-      <Card className="flex flex-col mb-4">
+      <Card className="mb-4 flex flex-col">
         <CardTitle className="mb-6 flex" icon="properties">
           <Tabs
             className="pl-2 [&>div]:space-x-2 [&>div]:space-x-reverse"
@@ -139,7 +201,7 @@ export const Operations: ComponentType = withSuspensable(() => {
               id="operation"
               title={t.components.Operations.operations}
             />
-            <Divider className="self-center h-[1em]" />
+            <Divider className="h-[1em] self-center" />
             <Tab
               className={clsx(
                 'text-inherit',
@@ -212,60 +274,72 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-4 mt-4 px-4 py-3 bg-slate-50 dark:bg-slate-800/20 rounded-lg border border-slate-200 dark:border-slate-700">
-              <div className="relative">
+
+            {/* --- 筛选控制栏 --- */}
+            <div className="mt-3 mb-2 flex w-full flex-wrap items-center pl-[2px]">
+              {/* 导入按钮区域 */}
+              <div className="group relative mr-1 inline-flex">
                 <input
                   type="file"
                   accept=".json,.txt"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
                   onChange={handleImportOperators}
-                  title="导入干员数据"
+                  title={t.components.Operations.import_btn}
                 />
-                <Button icon="import" text={`导入干员 (${ownedOps.length})`} />
+                <PrtsBtn
+                  icon="import"
+                  text={
+                    ownedOps.length > 0
+                      ? t.components.Operations.import_btn_count({
+                        count: ownedOps.length,
+                      })
+                      : t.components.Operations.import_btn
+                  }
+                />
               </div>
 
-              <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-700" />
+              <PrtsBtn
+                icon={displayMode === 'GRAY' ? 'eye-open' : 'eye-off'}
+                text={
+                  displayMode === 'GRAY'
+                    ? t.components.Operations.mode_gray
+                    : t.components.Operations.mode_hide
+                }
+                onClick={() =>
+                  setDisplayMode((v) => (v === 'GRAY' ? 'HIDE' : 'GRAY'))
+                }
+              />
 
-              <ButtonGroup>
-                <Button
-                  icon={displayMode === 'GRAY' ? 'eye-open' : 'eye-off'}
-                  text={displayMode === 'GRAY' ? '置灰模式' : '隐藏模式'}
-                  onClick={() => setDisplayMode(v => v === 'GRAY' ? 'HIDE' : 'GRAY')}
-                />
-              </ButtonGroup>
+              <PrtsDivider />
 
-              <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-700" />
+              <PrtsBtn
+                icon="confirm"
+                text={t.components.Operations.perfect_team}
+                active={filterMode === 'PERFECT'}
+                onClick={() =>
+                  setFilterMode((v) => (v === 'PERFECT' ? 'NONE' : 'PERFECT'))
+                }
+                disabled={ownedOps.length === 0}
+              />
 
-              <ButtonGroup>
-                <Button
-                  icon="confirm"
-                  // 如果选中，给蓝色 intent；否则给 none
-                  intent={filterMode === 'PERFECT' ? 'primary' : 'none'}
-                  active={filterMode === 'PERFECT'}
-                  text="完美阵容"
-                  onClick={() => setFilterMode(v => v === 'PERFECT' ? 'NONE' : 'PERFECT')}
-                  disabled={ownedOps.length === 0}
-                  // 添加 className 修复 Hover 颜色
-                  className={filterMode === 'PERFECT' ? primaryBtnClass : normalBtnClass}
-                />
-                <Button
-                  icon="people"
-                  intent={filterMode === 'SUPPORT' ? 'primary' : 'none'}
-                  active={filterMode === 'SUPPORT'}
-                  text="允许助战"
-                  onClick={() => setFilterMode(v => v === 'SUPPORT' ? 'NONE' : 'SUPPORT')}
-                  disabled={ownedOps.length === 0}
-                  className={filterMode === 'SUPPORT' ? primaryBtnClass : normalBtnClass}
-                />
-              </ButtonGroup>
+              <PrtsBtn
+                icon="people"
+                text={t.components.Operations.allow_support}
+                active={filterMode === 'SUPPORT'}
+                onClick={() =>
+                  setFilterMode((v) => (v === 'SUPPORT' ? 'NONE' : 'SUPPORT'))
+                }
+                disabled={ownedOps.length === 0}
+              />
             </div>
-            <div className="flex flex-wrap items-center gap-4 mt-2">
+
+            <div className="mt-2 flex flex-wrap items-center gap-4">
               <OperatorFilter
                 className=""
                 filter={operatorFilter}
                 onChange={setOperatorFilter}
               />
-              <div className="flex flex-wrap items-center ml-auto">
+              <div className="ml-auto flex flex-wrap items-center">
                 <H6 className="mb-0 mr-1 opacity-75">
                   {t.components.Operations.sort_by}
                 </H6>
