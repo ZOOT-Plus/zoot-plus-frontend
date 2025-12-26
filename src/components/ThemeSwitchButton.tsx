@@ -1,30 +1,24 @@
-import { Button, Menu, MenuItem, Position, IconName } from '@blueprintjs/core'
+import { Button, Menu, MenuItem, Position } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { useCurrentSize } from 'utils/useCurrenSize'
 import { useTranslation } from '../i18n/i18n'
-import { useTheme, ThemeMode } from '../hooks/useTheme'
+import { useTheme, THEME_CONFIG } from '../hooks/useTheme'
 
 export const ThemeSwitchButton = () => {
   const t = useTranslation()
   const { theme, setTheme } = useTheme()
   const { isSM } = useCurrentSize()
 
-  const themeConfig: Record<ThemeMode, { icon: IconName; label: string }> = {
-    light: {
-      icon: 'flash',
-      label: t.components.ThemeSwitchButton.light,
-    },
-    dark: {
-      icon: 'moon',
-      label: t.components.ThemeSwitchButton.dark,
-    },
-    'high-contrast': {
-      icon: 'contrast',
-      label: t.components.ThemeSwitchButton.highContrast,
-    },
-  }
+  // 获取翻译对象根节点
+  const labels = t.components.ThemeSwitchButton
 
-  const currentConfig = themeConfig[theme]
+  // 查找当前主题的配置用于显示按钮图标
+  const currentConfig =
+    THEME_CONFIG.find((item) => item.id === theme) || THEME_CONFIG[0]
+
+  // 获取当前主题的翻译标签
+  // 使用类型断言确保 i18nKey 是 labels 的合法属性
+  const currentLabel = labels[currentConfig.i18nKey as keyof typeof labels]
 
   const renderOptionText = (text: string) => (
     <div className="flex items-start">
@@ -36,27 +30,19 @@ export const ThemeSwitchButton = () => {
 
   const themeMenu = (
     <Menu>
-      <MenuItem
-        active={theme === 'light'}
-        icon="flash"
-        text={renderOptionText(themeConfig.light.label)}
-        onClick={() => setTheme('light')}
-        shouldDismissPopover={true}
-      />
-      <MenuItem
-        active={theme === 'dark'}
-        icon="moon"
-        text={renderOptionText(themeConfig.dark.label)}
-        onClick={() => setTheme('dark')}
-        shouldDismissPopover={true}
-      />
-      <MenuItem
-        active={theme === 'high-contrast'}
-        icon="contrast"
-        text={renderOptionText(themeConfig['high-contrast'].label)}
-        onClick={() => setTheme('high-contrast')}
-        shouldDismissPopover={true}
-      />
+      {THEME_CONFIG.map((item) => (
+        <MenuItem
+          key={item.id}
+          active={theme === item.id}
+          icon={item.icon}
+          // 动态获取翻译：labels[key]
+          text={renderOptionText(
+            labels[item.i18nKey as keyof typeof labels] || item.id,
+          )}
+          onClick={() => setTheme(item.id)}
+          shouldDismissPopover={true}
+        />
+      ))}
     </Menu>
   )
 
@@ -75,7 +61,7 @@ export const ThemeSwitchButton = () => {
               {...targetProps}
               active={isOpen}
               icon={currentConfig.icon}
-              text={!isSM ? currentConfig.label : undefined}
+              text={!isSM ? currentLabel : undefined}
               rightIcon={!isSM ? 'caret-down' : undefined}
               className="!m-0"
             />
