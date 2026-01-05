@@ -26,41 +26,91 @@ import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
 import { EDifficultyLevel, NeoELevel } from './entity/ELevel'
 
-// --- 检查作业可用性的 Hook ---
-const useOperationAvailability = (operation: Operation) => {
-  const ownedOps = useAtomValue(ownedOperatorsAtom)
-  const filterMode = useAtomValue(filterModeAtom)
+/**
+ * 检查算法逻辑：
+ * 1. 优先满足干员需求
+ * 2. 剩余的持有干员，用于满足 groups
+ * 3. 组的分配策略采用“最少候选优先”(Least Restricted First)：
+ *    如果组A只能由【干员X】满足，而组B能由【干员X, Y, Z】满足，
+ *    必须先把 X 分给 A，否则 A 就没人了。
+ */
+export const useOperationAvailability = (operation: Operation) => {
+  const ownedOps = useAtomValue(ownedOperatorsAtom) // string[] 用户拥有的干员名列表
+  const filterMode = useAtomValue(filterModeAtom) // 'NONE' | 'PERFECT' | 'SUPPORT'
 
-  // 如果没有导入干员或未开启筛选，默认可用
-  if (ownedOps.length === 0 || filterMode === 'NONE') {
+  // 0. 基础检查：无数据或不筛选
+  if (!ownedOps || ownedOps.length === 0 || filterMode === 'NONE') {
     return { isAvailable: true, missingCount: 0, missingOps: [] }
   }
 
-  const { opers } = operation.parsedContent
-  if (!opers || opers.length === 0) {
+  const { opers: requiredOps = [], groups: requiredGroups = [] } = operation.parsedContent
+
+  if (requiredOps.length === 0 && requiredGroups.length === 0) {
     return { isAvailable: true, missingCount: 0, missingOps: [] }
   }
 
-  // 找出缺少的干员
-  const missingOps = opers
-    .map((o) => o.name)
-    .filter((name) => !ownedOps.includes(name))
+  const usedOwnedOps = new Set<string>()
+  const missingDetails: string[] = []
 
-  const missingCount = missingOps.length
+  // 处理干员
+  requiredOps.forEach((op) => {
+    const opName = op.name
+    if (ownedOps.includes(opName) && !usedOwnedOps.has(opName)) {
+      usedOwnedOps.add(opName)
+    } else {
+      missingDetails.push(opName)
+    }
+  })
+
+  // 处理干员组
+  if (requiredGroups.length > 0) {
+    // 找出每个组在“当前剩余可用干员”中的所有候选人
+    const availablePool = new Set(
+      ownedOps.filter((name) => !usedOwnedOps.has(name))
+    )
+
+    let groupProcessList = requiredGroups.map((group) => {
+      const allowedNames = (group.opers || []).map((o) => o.name)
+      const candidates = allowedNames.filter((name) => availablePool.has(name))
+      return {
+        name: group.name || '未命名干员组',
+        candidates: candidates, // string[]
+      }
+    })
+
+    // 排序：优先处理“候选人最少”的组 (贪心策略)
+    groupProcessList.sort((a, b) => a.candidates.length - b.candidates.length)
+
+    groupProcessList.forEach((groupItem) => {
+      const validCandidate = groupItem.candidates.find((name) => availablePool.has(name))
+
+      if (validCandidate) {
+        availablePool.delete(validCandidate)
+        usedOwnedOps.add(validCandidate)
+      } else {
+        missingDetails.push(`[${groupItem.name}]`)
+      }
+    })
+  }
+
+  const missingCount = missingDetails.length
   let isAvailable = true
 
-  // 完美模式：缺任何一个都不行
+  // 完美模式
   if (filterMode === 'PERFECT' && missingCount > 0) {
     isAvailable = false
   }
-  // 助战模式：允许缺1个，但缺2个以上不可用
+  // 助战模式
   else if (filterMode === 'SUPPORT' && missingCount > 1) {
     isAvailable = false
   }
 
-  return { isAvailable, missingCount, missingOps }
+  return {
+    isAvailable,
+    missingCount,
+    missingOps: missingDetails,
+  }
 }
-// ------------------------------------
 
 export const NeoOperationCard = ({
   operation,
@@ -82,19 +132,14 @@ export const NeoOperationCard = ({
   const displayMode = useAtomValue(displayModeAtom)
   const filterMode = useAtomValue(filterModeAtom)
 
-  // 隐藏模式：只有真正不可用时才隐藏
-  // (如果是助战模式缺1人，isAvailable是true，所以不会被隐藏，符合预期)
   if (!isAvailable && displayMode === 'HIDE') {
     return null
   }
 
-  // 置灰模式：不可用时置灰
   const isGrayed = !isAvailable && displayMode === 'GRAY'
 
-  // 是否显示提示信息：不可用 OR (助战模式且缺1人)
   const showMissingInfo =
     !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
-  // ----------------
 
   return (
     <li className="relative">
@@ -146,7 +191,6 @@ export const NeoOperationCard = ({
               />
             </div>
 
-            {/* --- 缺人状态提示 --- */}
             {showMissingInfo && (
               <div className="flex items-center gap-2 text-sm font-bold">
                 {filterMode === 'SUPPORT' && missingCount === 1 ? (
@@ -161,7 +205,6 @@ export const NeoOperationCard = ({
                 )}
               </div>
             )}
-            {/* ------------------- */}
 
             <div className="grow text-gray-700 leading-normal">
               <Paragraphs
@@ -247,7 +290,6 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
   const isGrayed = !isAvailable && displayMode === 'GRAY'
   const showMissingInfo =
     !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
-  // ----------------
 
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">
@@ -267,7 +309,6 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
             )}
           >
             <div className="flex flex-wrap mb-4 sm:mb-2">
-              {/* title */}
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
@@ -291,7 +332,6 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                   />
                 </H5>
 
-                {/* --- 缺人状态提示 --- */}
                 {showMissingInfo && (
                   <div className="text-sm font-bold">
                     {filterMode === 'SUPPORT' && missingCount === 1 ? (
@@ -308,7 +348,6 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                     )}
                   </div>
                 )}
-                {/* ------------------- */}
               </div>
 
               <div className="grow basis-full xl:basis-0" />
