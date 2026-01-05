@@ -21,7 +21,6 @@ import { ComponentType, useMemo, useState } from 'react'
 import { CardTitle } from 'components/CardTitle'
 import { OperationList } from 'components/OperationList'
 import { OperationSetList } from 'components/OperationSetList'
-// 确保这里的引用指向了使用 atomWithStorage 的文件
 import {
   displayModeAtom,
   filterModeAtom,
@@ -35,8 +34,7 @@ import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
 
-// --- [样式复刻] 自定义按钮组件 ---
-const PrtsBtn = ({
+const FilterBtn = ({
   icon,
   text,
   active,
@@ -84,7 +82,7 @@ const PrtsBtn = ({
   )
 }
 
-const PrtsDivider = () => (
+const FilterDivider = () => (
   <div className="mx-2 inline-block h-4 w-[1px] bg-[#10161a]/15 dark:bg-white/15" />
 )
 
@@ -286,7 +284,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                   onChange={handleImportOperators}
                   title={t.components.Operations.import_btn}
                 />
-                <PrtsBtn
+                <FilterBtn
                   icon="import"
                   text={
                     ownedOps.length > 0
@@ -298,7 +296,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
               </div>
 
-              <PrtsBtn
+              <FilterBtn
                 icon={displayMode === 'GRAY' ? 'eye-open' : 'eye-off'}
                 text={
                   displayMode === 'GRAY'
@@ -310,9 +308,9 @@ export const Operations: ComponentType = withSuspensable(() => {
                 }
               />
 
-              <PrtsDivider />
+              <FilterDivider />
 
-              <PrtsBtn
+              <FilterBtn
                 icon="confirm"
                 text={t.components.Operations.perfect_team}
                 active={filterMode === 'PERFECT'}
@@ -322,7 +320,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                 disabled={ownedOps.length === 0}
               />
 
-              <PrtsBtn
+              <FilterBtn
                 icon="people"
                 text={t.components.Operations.allow_support}
                 active={filterMode === 'SUPPORT'}
