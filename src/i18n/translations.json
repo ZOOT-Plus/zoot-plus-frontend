@@ -3216,6 +3216,18 @@
       "add_to_job_set": {
         "cn": "添加到作业集",
         "en": "Add to Job Set"
+      },
+      "need_support": {
+        "cn": "需助战: {{name}}",
+        "en": "Need Support: {{name}}"
+      },
+      "missing_operators": {
+        "cn": "缺 {{count}} 人",
+        "en": "Missing {{count}} ops"
+      },
+      "missing_operators_list": {
+        "cn": "缺 {{count}} 人: {{list}}",
+        "en": "Missing {{count}} ops: {{list}}"
       }
     },
     "OperationList": {

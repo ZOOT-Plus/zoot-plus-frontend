@@ -26,6 +26,13 @@ import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
 import { EDifficultyLevel, NeoELevel } from './entity/ELevel'
 
+const formatMissingName = (name: string, lang: string) => {
+  if (name.startsWith('[') && name.endsWith(']')) {
+    return name
+  }
+  return getLocalizedOperatorName(name, lang)
+}
+
 /**
  * 检查算法逻辑：
  * 1. 优先满足干员需求
@@ -124,6 +131,7 @@ export const NeoOperationCard = ({
   onSelect?: (operation: Operation, selected: boolean) => void
 }) => {
   const t = useTranslation()
+  const language = useAtomValue(languageAtom)
   const { data: levels } = useLevels()
 
   // --- 筛选逻辑 ---
@@ -152,7 +160,7 @@ export const NeoOperationCard = ({
               'h-full flex flex-col gap-2 transition-all duration-200',
               // 应用置灰样式
               isGrayed &&
-              'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+                'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
             )}
             elevation={Elevation.TWO}
             tabIndex={0}
@@ -195,12 +203,15 @@ export const NeoOperationCard = ({
               <div className="flex items-center gap-2 text-sm font-bold">
                 {filterMode === 'SUPPORT' && missingCount === 1 ? (
                   <span className="text-amber-600 dark:text-amber-500 flex items-center">
-                    <Icon icon="people" className="mr-1" /> 需助战:{' '}
-                    {missingOps[0]}
+                    <Icon icon="people" className="mr-1" />
+                    {t.components.OperationCard.need_support({ name: formatMissingName(missingOps[0], language) })}
                   </span>
                 ) : (
                   <span className="text-red-600 dark:text-red-500 flex items-center">
-                    <Icon icon="cross" className="mr-1" /> 缺 {missingCount} 人
+                    <Icon icon="cross" className="mr-1" />
+                    {t.components.OperationCard.missing_operators({
+                      count: missingCount,
+                    })}
                   </span>
                 )}
               </div>
@@ -275,6 +286,7 @@ export const NeoOperationCard = ({
 
 export const OperationCard = ({ operation }: { operation: Operation }) => {
   const t = useTranslation()
+  const language = useAtomValue(languageAtom)
   const { data: levels } = useLevels()
 
   // --- 筛选逻辑 ---
@@ -305,7 +317,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
             className={clsx(
               // 应用置灰样式
               isGrayed &&
-              'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+                'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
             )}
           >
             <div className="flex flex-wrap mb-4 sm:mb-2">
@@ -336,14 +348,25 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                   <div className="text-sm font-bold">
                     {filterMode === 'SUPPORT' && missingCount === 1 ? (
                       <span className="text-amber-600 dark:text-amber-500 flex items-center">
-                        <Icon icon="people" className="mr-1" /> 需助战:{' '}
-                        {missingOps[0]}
+                        <Icon icon="people" className="mr-1" />
+                        {t.components.OperationCard.need_support({ name: formatMissingName(missingOps[0], language) })}
                       </span>
                     ) : (
                       <span className="text-red-600 dark:text-red-500 flex items-center">
-                        <Icon icon="cross" className="mr-1" /> 缺 {missingCount}{' '}
-                        人: {missingOps.slice(0, 3).join(', ')}
-                        {missingCount > 3 ? '...' : ''}
+                        <Icon icon="cross" className="mr-1" />
+                        {(() => {
+                          const listStr =
+                            missingOps
+                              .slice(0, 3)
+                              .map((name) => formatMissingName(name, language))
+                              .join(', ') + (missingCount > 3 ? '...' : '')
+                          return t.components.OperationCard.missing_operators_list(
+                            {
+                              count: missingCount,
+                              list: listStr,
+                            },
+                          )
+                        })()}
                       </span>
                     )}
                   </div>
