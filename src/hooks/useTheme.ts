@@ -1,7 +1,8 @@
+import { IconName } from '@blueprintjs/core'
+
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useEffect } from 'react'
-import { IconName } from '@blueprintjs/core'
 
 // 1. 定义主题的 ID 类型 (如果想完全动态，可以改为 string，但为了类型安全建议保留联合类型)
 export type ThemeMode = 'light' | 'dark' | 'high-contrast'

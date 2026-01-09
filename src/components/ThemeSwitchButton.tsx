@@ -1,13 +1,15 @@
 import { Button, Menu, MenuItem, Position } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
+
 import { useCurrentSize } from 'utils/useCurrenSize'
+
+import { THEME_CONFIG, useTheme } from '../hooks/useTheme'
 import { useTranslation } from '../i18n/i18n'
-import { useTheme, THEME_CONFIG } from '../hooks/useTheme'
 
 export const ThemeSwitchButton = () => {
   const t = useTranslation()
   const { theme, setTheme } = useTheme()
-  const { isSM } = useCurrentSize()
+  const shrinked = useCurrentSize().isLG
 
   // 获取翻译对象根节点
   const labels = t.components.ThemeSwitchButton
@@ -47,27 +49,21 @@ export const ThemeSwitchButton = () => {
   )
 
   return (
-    <label className="bp4-label !mb-0 inline-flex items-center">
-      <Popover2
-        content={themeMenu}
-        placement="bottom"
-        position={Position.BOTTOM}
-        renderTarget={({ isOpen, ref, ...targetProps }) => (
-          <div
-            className="bp4-popover2-target !mt-0 flex items-center"
-            ref={ref}
-          >
-            <Button
-              {...targetProps}
-              active={isOpen}
-              icon={currentConfig.icon}
-              text={!isSM ? currentLabel : undefined}
-              rightIcon={!isSM ? 'caret-down' : undefined}
-              className="!m-0"
-            />
-          </div>
-        )}
-      />
-    </label>
+    <Popover2
+      content={themeMenu}
+      position={Position.BOTTOM}
+      renderTarget={({ isOpen, ref, ...targetProps }) => (
+        <div className="bp4-popover2-target !mt-0 flex items-center" ref={ref}>
+          <Button
+            {...targetProps}
+            active={isOpen}
+            icon={currentConfig.icon}
+            text={!shrinked ? currentLabel : undefined}
+            rightIcon={!shrinked ? 'caret-down' : undefined}
+            className="!m-0"
+          />
+        </div>
+      )}
+    />
   )
 }
