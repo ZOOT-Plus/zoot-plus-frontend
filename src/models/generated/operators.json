@@ -340,6 +340,17 @@
       "modules": ["", "Y"]
     },
     {
+      "id": "char_4166_varkis",
+      "prof": "WARRIOR",
+      "subProf": "centurion",
+      "name_en": "Varkáris",
+      "name": "摆渡人",
+      "alias": "baiduren bdr 擺渡人",
+      "rarity": 5,
+      "alt_name": "Varkáris",
+      "modules": ["", "Y"]
+    },
+    {
       "id": "char_252_bibeak",
       "prof": "WARRIOR",
       "subProf": "sword",
@@ -1368,7 +1379,7 @@
       "alias": "hedelei hdl 赫德雷",
       "rarity": 6,
       "alt_name": "Hoederer",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_4041_chnut",
@@ -3887,6 +3898,17 @@
       "modules": ["", "X", "Y"]
     },
     {
+      "id": "char_4056_titi",
+      "prof": "MEDIC",
+      "subProf": "incantationmedic",
+      "name_en": "Titi",
+      "name": "缇缇",
+      "alias": "titi tt 緹緹",
+      "rarity": 6,
+      "alt_name": "Titi",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_166_skfire",
       "prof": "CASTER",
       "subProf": "splashcaster",
@@ -4077,7 +4099,7 @@
       "alias": "weiweianna weiweiannuo wwan 薇薇安娜",
       "rarity": 6,
       "alt_name": "Viviana",
-      "modules": ["", "D"]
+      "modules": ["", "Y", "D"]
     },
     {
       "id": "char_400_weedy",
@@ -4272,6 +4294,17 @@
       "rarity": 4,
       "alt_name": "Akkord",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_1022_flwr2",
+      "prof": "SUPPORT",
+      "subProf": "blessing",
+      "name_en": "Perfumer the Distilled",
+      "name": "撷英调香师",
+      "alias": "xieyingtiaoxiangshi xieyingdiaoxiangshi xieyingzhouxiangshi xytxs xydxs xyzxs 擷英調香師",
+      "rarity": 5,
+      "alt_name": "Perfumer the Distilled",
+      "modules": ["", "Y"]
     },
     {
       "id": "char_4194_rmixer",
@@ -4716,7 +4749,7 @@
       "alias": "yindelaixi ydlx 隱德來希",
       "rarity": 6,
       "alt_name": "Entelechia",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_172_svrash",
@@ -5060,7 +5093,7 @@
       "alias": "zaolou zaolu zl 早露",
       "rarity": 6,
       "alt_name": "Роса",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_459_tachak",

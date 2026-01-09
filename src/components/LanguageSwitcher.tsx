@@ -18,7 +18,7 @@ const options = languages
   .sort((a, b) => a.title.localeCompare(b.title))
 
 export const LanguageSwitcher: ComponentType = withGlobalErrorBoundary(() => {
-  const { isSM } = useCurrentSize()
+  const shrinked = useCurrentSize().isLG
   const [language, setLanguage] = useAtom(languageAtom)
 
   return (
@@ -28,13 +28,13 @@ export const LanguageSwitcher: ComponentType = withGlobalErrorBoundary(() => {
         setLanguage(item.value as (typeof options)[number]['value'])
       }
       popoverProps={{
-        matchTargetWidth: !isSM,
+        matchTargetWidth: !shrinked,
       }}
     >
       <Button
         icon="translate"
-        text={!isSM && allEssentials[language].language}
-        rightIcon={isSM ? undefined : 'caret-down'}
+        text={!shrinked && allEssentials[language].language}
+        rightIcon={shrinked ? undefined : 'caret-down'}
       />
     </DetailedSelect>
   )
