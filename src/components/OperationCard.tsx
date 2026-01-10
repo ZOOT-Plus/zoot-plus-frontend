@@ -10,6 +10,11 @@ import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
 import { OperationRating } from 'components/viewer/OperationRating'
 import { OpDifficulty, Operation } from 'models/operation'
+import {
+  displayModeAtom,
+  filterModeAtom,
+  ownedOperatorsAtom,
+} from 'store/ownedOperators'
 
 import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
@@ -20,6 +25,99 @@ import { ReLinkRenderer } from './ReLink'
 import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
 import { EDifficultyLevel, NeoELevel } from './entity/ELevel'
+
+const formatMissingName = (name: string, lang: string) => {
+  if (name.startsWith('[') && name.endsWith(']')) {
+    return name
+  }
+  return getLocalizedOperatorName(name, lang)
+}
+
+/**
+ * 检查算法逻辑：
+ * 1. 优先满足干员需求
+ * 2. 剩余的持有干员，用于满足 groups
+ * 3. 组的分配策略采用“最少候选优先”(Least Restricted First)：
+ *    如果组A只能由【干员X】满足，而组B能由【干员X, Y, Z】满足，
+ *    必须先把 X 分给 A，否则 A 就没人了。
+ */
+export const useOperationAvailability = (operation: Operation) => {
+  const ownedOps = useAtomValue(ownedOperatorsAtom) // string[] 用户拥有的干员名列表
+  const filterMode = useAtomValue(filterModeAtom) // 'NONE' | 'PERFECT' | 'SUPPORT'
+
+  // 0. 基础检查：无数据或不筛选
+  if (!ownedOps || ownedOps.length === 0 || filterMode === 'NONE') {
+    return { isAvailable: true, missingCount: 0, missingOps: [] }
+  }
+
+  const { opers: requiredOps = [], groups: requiredGroups = [] } = operation.parsedContent
+
+  if (requiredOps.length === 0 && requiredGroups.length === 0) {
+    return { isAvailable: true, missingCount: 0, missingOps: [] }
+  }
+
+  const usedOwnedOps = new Set<string>()
+  const missingDetails: string[] = []
+
+  // 处理干员
+  requiredOps.forEach((op) => {
+    const opName = op.name
+    if (ownedOps.includes(opName) && !usedOwnedOps.has(opName)) {
+      usedOwnedOps.add(opName)
+    } else {
+      missingDetails.push(opName)
+    }
+  })
+
+  // 处理干员组
+  if (requiredGroups.length > 0) {
+    // 找出每个组在“当前剩余可用干员”中的所有候选人
+    const availablePool = new Set(
+      ownedOps.filter((name) => !usedOwnedOps.has(name))
+    )
+
+    let groupProcessList = requiredGroups.map((group) => {
+      const allowedNames = (group.opers || []).map((o) => o.name)
+      const candidates = allowedNames.filter((name) => availablePool.has(name))
+      return {
+        name: group.name || '未命名干员组',
+        candidates: candidates, // string[]
+      }
+    })
+
+    // 排序：优先处理“候选人最少”的组 (贪心策略)
+    groupProcessList.sort((a, b) => a.candidates.length - b.candidates.length)
+
+    groupProcessList.forEach((groupItem) => {
+      const validCandidate = groupItem.candidates.find((name) => availablePool.has(name))
+
+      if (validCandidate) {
+        availablePool.delete(validCandidate)
+        usedOwnedOps.add(validCandidate)
+      } else {
+        missingDetails.push(`[${groupItem.name}]`)
+      }
+    })
+  }
+
+  const missingCount = missingDetails.length
+  let isAvailable = true
+
+  // 完美模式
+  if (filterMode === 'PERFECT' && missingCount > 0) {
+    isAvailable = false
+  }
+  // 助战模式
+  else if (filterMode === 'SUPPORT' && missingCount > 1) {
+    isAvailable = false
+  }
+
+  return {
+    isAvailable,
+    missingCount,
+    missingOps: missingDetails,
+  }
+}
 
 export const NeoOperationCard = ({
   operation,
@@ -33,7 +131,23 @@ export const NeoOperationCard = ({
   onSelect?: (operation: Operation, selected: boolean) => void
 }) => {
   const t = useTranslation()
+  const language = useAtomValue(languageAtom)
   const { data: levels } = useLevels()
+
+  // --- 筛选逻辑 ---
+  const { isAvailable, missingCount, missingOps } =
+    useOperationAvailability(operation)
+  const displayMode = useAtomValue(displayModeAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (!isAvailable && displayMode === 'HIDE') {
+    return null
+  }
+
+  const isGrayed = !isAvailable && displayMode === 'GRAY'
+
+  const showMissingInfo =
+    !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
 
   return (
     <li className="relative">
@@ -42,7 +156,12 @@ export const NeoOperationCard = ({
         render={({ onClick, onKeyDown }) => (
           <Card
             interactive
-            className="h-full flex flex-col gap-2"
+            className={clsx(
+              'h-full flex flex-col gap-2 transition-all duration-200',
+              // 应用置灰样式
+              isGrayed &&
+                'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+            )}
             elevation={Elevation.TWO}
             tabIndex={0}
             onClick={onClick}
@@ -79,6 +198,24 @@ export const NeoOperationCard = ({
                 }
               />
             </div>
+
+            {showMissingInfo && (
+              <div className="flex items-center gap-2 text-sm font-bold">
+                {filterMode === 'SUPPORT' && missingCount === 1 ? (
+                  <span className="text-amber-600 dark:text-amber-500 flex items-center">
+                    <Icon icon="people" className="mr-1" />
+                    {t.components.OperationCard.need_support({ name: formatMissingName(missingOps[0], language) })}
+                  </span>
+                ) : (
+                  <span className="text-red-600 dark:text-red-500 flex items-center">
+                    <Icon icon="cross" className="mr-1" />
+                    {t.components.OperationCard.missing_operators({
+                      count: missingCount,
+                    })}
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className="grow text-gray-700 leading-normal">
               <Paragraphs
@@ -149,7 +286,22 @@ export const NeoOperationCard = ({
 
 export const OperationCard = ({ operation }: { operation: Operation }) => {
   const t = useTranslation()
+  const language = useAtomValue(languageAtom)
   const { data: levels } = useLevels()
+
+  // --- 筛选逻辑 ---
+  const { isAvailable, missingCount, missingOps } =
+    useOperationAvailability(operation)
+  const displayMode = useAtomValue(displayModeAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (!isAvailable && displayMode === 'HIDE') {
+    return null
+  }
+
+  const isGrayed = !isAvailable && displayMode === 'GRAY'
+  const showMissingInfo =
+    !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
 
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">
@@ -162,9 +314,13 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
             tabIndex={0}
             onClick={onClick}
             onKeyDown={onKeyDown}
+            className={clsx(
+              // 应用置灰样式
+              isGrayed &&
+                'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+            )}
           >
             <div className="flex flex-wrap mb-4 sm:mb-2">
-              {/* title */}
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
@@ -187,6 +343,34 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                     difficulty={operation.parsedContent.difficulty}
                   />
                 </H5>
+
+                {showMissingInfo && (
+                  <div className="text-sm font-bold">
+                    {filterMode === 'SUPPORT' && missingCount === 1 ? (
+                      <span className="text-amber-600 dark:text-amber-500 flex items-center">
+                        <Icon icon="people" className="mr-1" />
+                        {t.components.OperationCard.need_support({ name: formatMissingName(missingOps[0], language) })}
+                      </span>
+                    ) : (
+                      <span className="text-red-600 dark:text-red-500 flex items-center">
+                        <Icon icon="cross" className="mr-1" />
+                        {(() => {
+                          const listStr =
+                            missingOps
+                              .slice(0, 3)
+                              .map((name) => formatMissingName(name, language))
+                              .join(', ') + (missingCount > 3 ? '...' : '')
+                          return t.components.OperationCard.missing_operators_list(
+                            {
+                              count: missingCount,
+                              list: listStr,
+                            },
+                          )
+                        })()}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="grow basis-full xl:basis-0" />
