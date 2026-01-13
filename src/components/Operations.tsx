@@ -7,8 +7,11 @@ import {
   Icon,
   IconName,
   InputGroup,
+  Intent,
+  Position,
   Tab,
   Tabs,
+  Toaster,
 } from '@blueprintjs/core'
 
 import { UseOperationsParams } from 'apis/operation'
@@ -33,6 +36,11 @@ import { LevelSelect } from './LevelSelect'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
+
+// 初始化全局 Toaster
+const AppToaster = Toaster.create({
+  position: Position.TOP,
+})
 
 const FilterBtn = ({
   icon,
@@ -115,7 +123,11 @@ export const Operations: ComponentType = withSuspensable(() => {
 
     // 1. 简单的文件大小限制 (例如限制 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert(t.components.Operations.import_too_large)
+      AppToaster.show({
+        message: t.components.Operations.import_too_large,
+        intent: Intent.DANGER,
+      })
+      e.target.value = '' // 清理 value
       return
     }
 
@@ -129,7 +141,10 @@ export const Operations: ComponentType = withSuspensable(() => {
         try {
           json = JSON.parse(jsonStr)
         } catch (e) {
-          alert(t.components.Operations.import_invalid_json)
+          AppToaster.show({
+            message: t.components.Operations.import_invalid_json,
+            intent: Intent.DANGER,
+          })
           return
         }
 
@@ -143,7 +158,7 @@ export const Operations: ComponentType = withSuspensable(() => {
             json[0] !== null &&
             'name' in json[0]
           ) {
-            // 3. 严格校验
+            // 3. 校验逻辑
             names = json
               .filter(
                 (op: any) => op?.own !== false && typeof op?.name === 'string',
@@ -159,21 +174,28 @@ export const Operations: ComponentType = withSuspensable(() => {
           // 5. 去重
           const uniqueNames = Array.from(new Set(names))
           setOwnedOps(uniqueNames)
-          // 注意：t 函数支持插值，需要在 translations.json 中配置 {{count}}
-          alert(
-            t.components.Operations.import_success({
+          AppToaster.show({
+            message: t.components.Operations.import_success({
               count: uniqueNames.length,
             }),
-          )
+            intent: Intent.SUCCESS,
+          })
         } else {
-          alert(t.components.Operations.import_no_valid_data)
+          AppToaster.show({
+            message: t.components.Operations.import_no_valid_data,
+            intent: Intent.WARNING,
+          })
         }
       } catch (err) {
         console.error(err)
-        alert(t.components.Operations.import_unknown_error)
+        AppToaster.show({
+          message: t.components.Operations.import_unknown_error,
+          intent: Intent.DANGER,
+        })
+      } finally {
+        // 6. 清空 input value 以允许重复上传同一文件
+        e.target.value = ''
       }
-      // 6. 清空 input value
-      e.target.value = ''
     }
     reader.readAsText(file)
   }
