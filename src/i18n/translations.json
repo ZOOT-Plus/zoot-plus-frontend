@@ -3216,6 +3216,18 @@
       "add_to_job_set": {
         "cn": "添加到作业集",
         "en": "Add to Job Set"
+      },
+      "need_support": {
+        "cn": "需助战: {{name}}",
+        "en": "Need Support: {{name}}"
+      },
+      "missing_operators": {
+        "cn": "缺 {{count}} 人",
+        "en": "Missing {{count}} ops"
+      },
+      "missing_operators_list": {
+        "cn": "缺 {{count}} 人: {{list}}",
+        "en": "Missing {{count}} ops: {{list}}"
       }
     },
     "OperationList": {
@@ -3288,6 +3300,50 @@
       "views": {
         "cn": "访问量",
         "en": "Views"
+      },
+      "import_too_large": {
+        "cn": "文件过大，请上传标准格式的干员数据文件",
+        "en": "File too large, please upload a standard operator data file"
+      },
+      "import_invalid_json": {
+        "cn": "文件格式错误：不是有效的 JSON 文件",
+        "en": "Invalid format: Not a valid JSON file"
+      },
+      "import_success": {
+        "cn": "成功导入 {{count}} 名干员",
+        "en": "Successfully imported {{count}} operators"
+      },
+      "import_no_valid_data": {
+        "cn": "未能识别有效的干员数据，请检查文件格式",
+        "en": "No valid operator data found, please check the file format"
+      },
+      "import_unknown_error": {
+        "cn": "导入过程中发生未知错误",
+        "en": "Unknown error occurred during import"
+      },
+      "import_btn": {
+        "cn": "导入干员",
+        "en": "Import Operators"
+      },
+      "import_btn_count": {
+        "cn": "导入干员 ({{count}})",
+        "en": "Import Ops ({{count}})"
+      },
+      "mode_gray": {
+        "cn": "置灰模式",
+        "en": "Gray Mode"
+      },
+      "mode_hide": {
+        "cn": "隐藏模式",
+        "en": "Hide Mode"
+      },
+      "perfect_team": {
+        "cn": "完美阵容",
+        "en": "Perfect Team"
+      },
+      "allow_support": {
+        "cn": "允许助战",
+        "en": "Allow Support"
       }
     },
     "OperationSetCard": {

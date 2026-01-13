@@ -4,12 +4,18 @@ import { Tooltip2 } from '@blueprintjs/popover2'
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { CopilotInfoStatusEnum } from 'maa-copilot-client'
+import { useMemo } from 'react'
 import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
 import { OperationRating } from 'components/viewer/OperationRating'
 import { OpDifficulty, Operation } from 'models/operation'
+import {
+  displayModeAtom,
+  filterModeAtom,
+  ownedOperatorsAtom,
+} from 'store/ownedOperators'
 
 import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
@@ -20,6 +26,187 @@ import { ReLinkRenderer } from './ReLink'
 import { UserName } from './UserName'
 import { EDifficulty } from './entity/EDifficulty'
 import { EDifficultyLevel, NeoELevel } from './entity/ELevel'
+
+const formatMissingName = (name: string, lang: string) => {
+  if (name.startsWith('[') && name.endsWith(']')) {
+    return name
+  }
+  return getLocalizedOperatorName(name, lang)
+}
+
+/**
+ * 检查算法逻辑：
+ * 1. 优先满足干员需求
+ * 2. 剩余的持有干员，用于满足 groups
+ * 3. 组的分配策略采用“最少候选优先”(Least Restricted First)
+ */
+export const useOperationAvailability = (operation: Operation) => {
+  const ownedOpsList = useAtomValue(ownedOperatorsAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  return useMemo(() => {
+    // 0. 基础检查：无数据或不筛选
+    if (!ownedOpsList || ownedOpsList.length === 0 || filterMode === 'NONE') {
+      return { isAvailable: true, missingCount: 0, missingOps: [] }
+    }
+
+    const { opers: requiredOps = [], groups: requiredGroups = [] } =
+      operation.parsedContent
+
+    if (requiredOps.length === 0 && requiredGroups.length === 0) {
+      return { isAvailable: true, missingCount: 0, missingOps: [] }
+    }
+
+    // 优化：转换为 Set 提高查找效率 O(1)
+    const ownedOpsSet = new Set(ownedOpsList)
+    const usedOwnedOps = new Set<string>()
+    const missingDetails: string[] = []
+
+    // 1. 处理固定干员需求
+    requiredOps.forEach((op) => {
+      const opName = op.name
+      if (ownedOpsSet.has(opName)) {
+        usedOwnedOps.add(opName)
+      } else {
+        missingDetails.push(opName)
+      }
+    })
+
+    // 2. 处理干员组需求
+    if (requiredGroups.length > 0) {
+      // 预处理：计算每个组在当前剩余可用干员中的候选人
+      // 注意：这里先不扣除 usedOwnedOps，而是在分配时动态检查
+      const groupProcessList = requiredGroups.map((group) => {
+        const allowedNames = (group.opers || []).map((o) => o.name)
+        // 找出该组所有 "持有" 的干员 (暂不考虑是否被占用)
+        const candidates = allowedNames.filter((name) => ownedOpsSet.has(name))
+        return {
+          name: group.name || '未命名干员组',
+          candidates,
+        }
+      })
+
+      // 贪心策略：优先处理“候选人最少”的组
+      groupProcessList.sort((a, b) => a.candidates.length - b.candidates.length)
+
+      groupProcessList.forEach((groupItem) => {
+        // 在这一步，才真正检查候选人是否被占用
+        const validCandidate = groupItem.candidates.find(
+          (name) => !usedOwnedOps.has(name),
+        )
+
+        if (validCandidate) {
+          usedOwnedOps.add(validCandidate)
+        } else {
+          missingDetails.push(`[${groupItem.name}]`)
+        }
+      })
+    }
+
+    const missingCount = missingDetails.length
+    let isAvailable = true
+
+    // 完美模式
+    if (filterMode === 'PERFECT' && missingCount > 0) {
+      isAvailable = false
+    }
+    // 助战模式
+    else if (filterMode === 'SUPPORT' && missingCount > 1) {
+      isAvailable = false
+    }
+
+    return {
+      isAvailable,
+      missingCount,
+      missingOps: missingDetails,
+    }
+  }, [operation, ownedOpsList, filterMode])
+}
+
+// 提取公共的缺失信息显示组件
+const MissingInfo = ({
+  missingCount,
+  missingOps,
+}: {
+  missingCount: number
+  missingOps: string[]
+}) => {
+  const t = useTranslation()
+  const language = useAtomValue(languageAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (missingCount === 0) return null
+
+  // 助战模式且缺1人 -> 黄色提示
+  if (filterMode === 'SUPPORT' && missingCount === 1) {
+    return (
+      <span className="text-amber-600 dark:text-amber-500 flex items-center">
+        <Icon icon="people" className="mr-1" />
+        {t.components.OperationCard.need_support({
+          name: formatMissingName(missingOps[0], language),
+        })}
+      </span>
+    )
+  }
+
+  // 其他缺人情况 -> 红色提示
+  return (
+    <span className="text-red-600 dark:text-red-500 flex items-center">
+      <Icon icon="cross" className="mr-1" />
+      {(() => {
+        // 如果缺人太多，Neo卡片一般只显示总数，但为了复用，这里做个判断
+        // 或者统一逻辑：只显示前3个
+        const listStr =
+          missingOps
+            .slice(0, 3)
+            .map((name) => formatMissingName(name, language))
+            .join(', ') + (missingCount > 3 ? '...' : '')
+
+        // 如果是在 OperationCard (列表模式) 中，通常显示列表
+        // 如果是在 NeoOperationCard (卡片模式) 中，通常只显示数量
+        // 这里为了兼容两者的设计，我们可以根据 props 区分，或者统一显示带列表的
+        // 鉴于复用性，这里返回带列表的文本，外层通过 className 控制截断或样式
+        return t.components.OperationCard.missing_operators_list({
+          count: missingCount,
+          list: listStr,
+        })
+      })()}
+    </span>
+  )
+}
+
+// 专门为 Neo 卡片定制的简版提示（只显示数量，不列出名字，除非只有1个且是助战）
+const NeoMissingInfo = ({
+  missingCount,
+  missingOps,
+}: {
+  missingCount: number
+  missingOps: string[]
+}) => {
+  const t = useTranslation()
+  const language = useAtomValue(languageAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (filterMode === 'SUPPORT' && missingCount === 1) {
+    return (
+      <span className="text-amber-600 dark:text-amber-500 flex items-center">
+        <Icon icon="people" className="mr-1" />
+        {t.components.OperationCard.need_support({
+          name: formatMissingName(missingOps[0], language),
+        })}
+      </span>
+    )
+  }
+
+  return (
+    <span className="text-red-600 dark:text-red-500 flex items-center">
+      <Icon icon="cross" className="mr-1" />
+      {t.components.OperationCard.missing_operators({
+        count: missingCount,
+      })}
+    </span>
+  )
+}
 
 export const NeoOperationCard = ({
   operation,
@@ -35,6 +222,19 @@ export const NeoOperationCard = ({
   const t = useTranslation()
   const { data: levels } = useLevels()
 
+  const { isAvailable, missingCount, missingOps } =
+    useOperationAvailability(operation)
+  const displayMode = useAtomValue(displayModeAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (!isAvailable && displayMode === 'HIDE') {
+    return null
+  }
+
+  const isGrayed = !isAvailable && displayMode === 'GRAY'
+  const showMissingInfo =
+    !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
+
   return (
     <li className="relative">
       <ReLinkRenderer
@@ -42,7 +242,11 @@ export const NeoOperationCard = ({
         render={({ onClick, onKeyDown }) => (
           <Card
             interactive
-            className="h-full flex flex-col gap-2"
+            className={clsx(
+              'h-full flex flex-col gap-2 transition-all duration-200',
+              isGrayed &&
+              'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+            )}
             elevation={Elevation.TWO}
             tabIndex={0}
             onClick={onClick}
@@ -80,10 +284,19 @@ export const NeoOperationCard = ({
               />
             </div>
 
+            {showMissingInfo && (
+              <div className="flex items-center gap-2 text-sm font-bold">
+                <NeoMissingInfo
+                  missingCount={missingCount}
+                  missingOps={missingOps}
+                />
+              </div>
+            )}
+
             <div className="grow text-gray-700 leading-normal">
               <Paragraphs
                 content={operation.parsedContent.doc.details}
-                limitHeight={21 * 13.5} // 13 lines, 21px per line; the extra 0.5 line is intentional so the `mask` effect is obvious
+                limitHeight={21 * 13.5}
               />
             </div>
 
@@ -151,6 +364,19 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
 
+  const { isAvailable, missingCount, missingOps } =
+    useOperationAvailability(operation)
+  const displayMode = useAtomValue(displayModeAtom)
+  const filterMode = useAtomValue(filterModeAtom)
+
+  if (!isAvailable && displayMode === 'HIDE') {
+    return null
+  }
+
+  const isGrayed = !isAvailable && displayMode === 'GRAY'
+  const showMissingInfo =
+    !isAvailable || (filterMode === 'SUPPORT' && missingCount === 1)
+
   return (
     <li className="mb-4 sm:mb-2 last:mb-0 relative">
       <ReLinkRenderer
@@ -162,9 +388,12 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
             tabIndex={0}
             onClick={onClick}
             onKeyDown={onKeyDown}
+            className={clsx(
+              isGrayed &&
+              'opacity-40 grayscale hover:opacity-90 hover:grayscale-0',
+            )}
           >
             <div className="flex flex-wrap mb-4 sm:mb-2">
-              {/* title */}
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
@@ -187,6 +416,15 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                     difficulty={operation.parsedContent.difficulty}
                   />
                 </H5>
+
+                {showMissingInfo && (
+                  <div className="text-sm font-bold">
+                    <MissingInfo
+                      missingCount={missingCount}
+                      missingOps={missingOps}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="grow basis-full xl:basis-0" />
@@ -234,7 +472,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
               <div className="text-gray-700 leading-normal md:w-1/2">
                 <Paragraphs
                   content={operation.parsedContent.doc.details}
-                  limitHeight={21 * 13.5} // 13 lines, 21px per line; the extra 0.5 line is intentional so the `mask` effect is obvious
+                  limitHeight={21 * 13.5}
                 />
               </div>
               <div className="md:w-1/2">
