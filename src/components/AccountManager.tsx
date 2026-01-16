@@ -168,7 +168,7 @@ export const AccountManager: ComponentType = withGlobalErrorBoundary(() => {
   const t = useTranslation()
   const [open, setOpen] = useState(false)
   const [authState] = useAtom(authAtom)
-  const { isSM } = useCurrentSize()
+  const shrinked = useCurrentSize().isLG
 
   return (
     <>
@@ -178,13 +178,13 @@ export const AccountManager: ComponentType = withGlobalErrorBoundary(() => {
         <Popover2 content={<AccountMenu />} position={Position.BOTTOM_RIGHT}>
           <Button
             icon="user"
-            text={!isSM && authState.username}
+            text={!shrinked && authState.username}
             rightIcon="caret-down"
           />
         </Popover2>
       ) : (
         <Button className="ml-auto" icon="user" onClick={() => setOpen(true)}>
-          {!isSM && t.components.AccountManager.login_register}
+          {!shrinked && t.components.AccountManager.login_register}
         </Button>
       )}
     </>
