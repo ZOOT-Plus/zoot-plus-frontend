@@ -207,7 +207,7 @@
       "alias": "ailini yilini aln yln 艾麗妮",
       "rarity": 6,
       "alt_name": "Irene",
-      "modules": ["", "X", "Y"]
+      "modules": ["", "X", "Y", "A"]
     },
     {
       "id": "char_338_iris",
@@ -707,6 +707,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_1050_chen3",
+      "prof": "WARRIOR",
+      "subProf": "artsfghter",
+      "name_en": "Ch'en the Dawnstreak",
+      "name": "赤刃明霄陈",
+      "alias": "chirenmingxiaochen crmxc 赤刃明霄陳",
+      "rarity": 6,
+      "alt_name": "Ch'en the Dawnstreak",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_4065_judge",
       "prof": "TANK",
       "subProf": "unyield",
@@ -1058,7 +1069,8 @@
       "name": "菲莱",
       "alias": "feilai fl 菲萊",
       "rarity": 5,
-      "alt_name": "Philae"
+      "alt_name": "Philae",
+      "modules": ["", "X"]
     },
     {
       "id": "char_300_phenxi",
@@ -1113,6 +1125,16 @@
       "rarity": 5,
       "alt_name": "Kazemaru",
       "modules": ["", "X"]
+    },
+    {
+      "id": "char_4222_taraxa",
+      "prof": "MEDIC",
+      "subProf": "watchman",
+      "name_en": "Taraxacum",
+      "name": "风絮",
+      "alias": "fengxu fx 風絮",
+      "rarity": 5,
+      "alt_name": "Taraxacum"
     },
     {
       "id": "token_10057_svash2_eagle1",
@@ -1932,6 +1954,17 @@
       "alias": "jiushen js 酒神",
       "rarity": 6,
       "alt_name": "Tragodia",
+      "modules": ["", "X"]
+    },
+    {
+      "id": "char_4221_ju",
+      "prof": "SNIPER",
+      "subProf": "siegesniper",
+      "name_en": "Ju",
+      "name": "矩",
+      "alias": "ju j 矩",
+      "rarity": 5,
+      "alt_name": "Ju",
       "modules": ["", "X"]
     },
     {
@@ -3129,6 +3162,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "token_10064_wang_stone1",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "stones",
+      "name": "棋子",
+      "alias": "qizi qz 棋子",
+      "rarity": 0,
+      "alt_name": "stones"
+    },
+    {
       "id": "char_4062_totter",
       "prof": "SNIPER",
       "subProf": "siegesniper",
@@ -4036,6 +4079,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_2027_wang",
+      "prof": "SPECIAL",
+      "subProf": "traper",
+      "name_en": "Wang",
+      "name": "望",
+      "alias": "wang w 望",
+      "rarity": 6,
+      "alt_name": "Wang",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_261_sddrag",
       "prof": "PIONEER",
       "subProf": "charger",
@@ -4250,7 +4304,8 @@
       "name": "响石",
       "alias": "xiangshi xiangdan xs xd 響石",
       "rarity": 5,
-      "alt_name": "Cairn"
+      "alt_name": "Cairn",
+      "modules": ["", "X"]
     },
     {
       "id": "char_497_ctable",
@@ -4695,7 +4750,7 @@
       "alias": "yike yk 異客",
       "rarity": 6,
       "alt_name": "Passenger",
-      "modules": ["", "X", "Y"]
+      "modules": ["", "X", "Y", "A"]
     },
     {
       "id": "token_10000_silent_healrb",
@@ -4845,7 +4900,8 @@
       "name": "余",
       "alias": "yu y 餘",
       "rarity": 6,
-      "alt_name": "Yu"
+      "alt_name": "Yu",
+      "modules": ["", "X"]
     },
     {
       "id": "char_606_csuppo",
@@ -5428,7 +5484,8 @@
           "name": "咒愈师",
           "name_en": "Incantation Medic"
         },
-        { "id": "chainhealer", "name": "链愈师", "name_en": "Chain Medic" }
+        { "id": "chainhealer", "name": "链愈师", "name_en": "Chain Medic" },
+        { "id": "watchman", "name": "守望者", "name_en": "Watchman" }
       ]
     },
     {
