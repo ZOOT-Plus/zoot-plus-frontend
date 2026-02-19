@@ -1,0 +1,23 @@
+src/components/editor2/reconciliation.ts
+  f9106e0d2be0c629 239
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "49c2cbc6f2a1e73d0b821710249f81cd48721589",
+  "prompts": {
+    "f9106e0d2be0c629": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_38c7d633cffeyMvi24xK356pvk",
+        "model": "opencode/glm-5-free"
+      },
+      "human_author": "dragove <dragove@qq.com>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
