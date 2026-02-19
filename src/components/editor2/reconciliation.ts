@@ -236,7 +236,7 @@ export function toEditorOperation(
       if (preDelay !== undefined) {
         newAction.intermediatePostDelay = preDelay
       }
-      if (index > 0 && action.type === 'SpeedUp') {
+      if (index > 0) {
         // intermediatePreDelay 等于前一个动作的 postDelay
         const prevAction = operation.actions![index - 1]
         if (prevAction.rearDelay !== undefined) {
