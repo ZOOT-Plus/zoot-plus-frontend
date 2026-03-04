@@ -1683,8 +1683,8 @@
               "en": "Confirm"
             },
             "default_settings_tooltip": {
-              "cn": "若不进行任何设置, 将使用默认值 (一技能 · 不自动使用 · 技能使用次数: 1次)",
-              "en": "If no settings are applied, default values will be used (Skill 1 · Don't use automatically · Usage count: 1)"
+              "cn": "若不进行任何设置, 将使用默认值 (不指定技能 · 不自动使用 · 技能使用次数: 1次)",
+              "en": "If no settings are applied, default values will be used (Unspecified Skill · Don't use automatically · Usage count: 1)"
             },
             "not_set": {
               "cn": "未设置技能",
@@ -1741,12 +1741,14 @@
         "EditorOperatorItem": {
           "skill_number": {
             "cn": {
+              "0": "未指定技能",
               "1": "一技能",
               "2": "二技能",
               "3": "三技能",
               "other": "未知技能"
             },
             "en": {
+              "0": "Unspecified Skill",
               "1": "S1",
               "2": "S2",
               "3": "S3",
@@ -1847,12 +1849,14 @@
         "EditorOperatorSkill": {
           "skill_number": {
             "cn": {
+              "0": "不指定技能",
               "1": "一技能",
               "2": "二技能",
               "3": "三技能",
               "other": "未知技能"
             },
             "en": {
+              "0": "Unspecified Skill",
               "1": "Skill 1",
               "2": "Skill 2",
               "3": "Skill 3",
@@ -3467,12 +3471,14 @@
       },
       "skill_number": {
         "cn": {
+          "0": "不指定技能",
           "1": "一技能",
           "2": "二技能",
           "3": "三技能",
           "other": "未知技能"
         },
         "en": {
+          "0": "Unspecified Skill",
           "1": "S1",
           "2": "S2",
           "3": "S3",
