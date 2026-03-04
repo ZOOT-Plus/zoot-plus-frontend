@@ -264,7 +264,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
     <div>
       {opers?.map(({ name, skill }, index) => (
         <Tag key={index} className="mr-2 last:mr-0 mb-1 last:mb-0">
-          {`${getLocalizedOperatorName(name, language)} ${skill ?? 1}`}
+          {`${getLocalizedOperatorName(name, language)}${skill ? ' ' + skill : ''}`}
         </Tag>
       ))}
       {groups?.map(({ name, opers }, index) => (
