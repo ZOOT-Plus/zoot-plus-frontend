@@ -56,7 +56,7 @@ export const EditorIntegerInput = <T extends FieldValues>({
       inputRef={ref}
       onValueChange={(value) => onChange(value)}
       onBlur={onBlur}
-      value={value ?? ''}
+      value={isNil(value) || Number.isNaN(value) ? '' : value}
       rightElement={
         <FieldResetButton
           disabled={!isDirty}
