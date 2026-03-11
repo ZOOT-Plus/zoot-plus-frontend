@@ -119,7 +119,7 @@
       "alias": "ae 阿",
       "rarity": 6,
       "alt_name": "Aak",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_4178_alanna",
@@ -501,6 +501,17 @@
       "modules": ["", "Y"]
     },
     {
+      "id": "char_4037_demetr",
+      "prof": "WARRIOR",
+      "subProf": "fighter",
+      "name_en": "Bellone",
+      "name": "贝洛内",
+      "alias": "beiluonei beiluona bln 貝洛內",
+      "rarity": 6,
+      "alt_name": "Bellone",
+      "modules": ["", "Y"]
+    },
+    {
       "id": "char_369_bena",
       "prof": "SPECIAL",
       "subProf": "dollkeeper",
@@ -769,7 +780,7 @@
       "alias": "chunjinaiyafala chunjinyiyafala cjayfl cjyyfl 純燼艾雅法拉",
       "rarity": 6,
       "alt_name": "Eyjafjalla the Hvít Aska",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_494_vendla",
@@ -918,7 +929,7 @@
       "alias": "dihuojiexika dihuojiexiqia dhjxk dhjxq 滌火傑西卡",
       "rarity": 6,
       "alt_name": "Jessica the Liberated",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_183_skgoat",
@@ -1196,6 +1207,17 @@
       "alias": "furong fr 芙蓉",
       "rarity": 3,
       "alt_name": "Hibiscus"
+    },
+    {
+      "id": "char_4031_liesel",
+      "prof": "CASTER",
+      "subProf": "splashcaster",
+      "name_en": "Ripresa",
+      "name": "复奏",
+      "alias": "fuzou fz 複奏",
+      "rarity": 5,
+      "alt_name": "Ripresa",
+      "modules": ["", "Y"]
     },
     {
       "id": "char_220_grani",
@@ -3170,6 +3192,16 @@
       "alias": "qizi qz 棋子",
       "rarity": 0,
       "alt_name": "stones"
+    },
+    {
+      "id": "token_10065_demetr_dmtpos",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Bond",
+      "name": "牵绊",
+      "alias": "qianban qb 牽絆",
+      "rarity": 0,
+      "alt_name": "Bond"
     },
     {
       "id": "char_4062_totter",
