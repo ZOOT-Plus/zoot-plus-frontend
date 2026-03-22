@@ -60,8 +60,8 @@ import {
   useLocalizedOperatorName,
   withDefaultRequirements,
 } from '../../models/operator'
-import { formatError } from '../../utils/error'
 import { snakeModeAtom } from '../../store/pref'
+import { formatError } from '../../utils/error'
 import { ActionCard } from '../ActionCard'
 import { ActionTimelineItem } from '../ActionTimelineItem'
 import { Confirm } from '../Confirm'
@@ -203,7 +203,10 @@ const ManageMenu: FC<{
 
 const SNAKE_COLS = 3
 
-const SnakeTimeline: FC<{ actions: CopilotDocV1.Action[]; groups?: CopilotDocV1.Group[] }> = ({ actions, groups }) => {
+const SnakeTimeline: FC<{
+  actions: CopilotDocV1.Action[]
+  groups?: CopilotDocV1.Group[]
+}> = ({ actions, groups }) => {
   const rows: CopilotDocV1.Action[][] = []
   for (let i = 0; i < actions.length; i += SNAKE_COLS) {
     rows.push(actions.slice(i, i + SNAKE_COLS))
@@ -230,9 +233,10 @@ const SnakeTimeline: FC<{ actions: CopilotDocV1.Action[]; groups?: CopilotDocV1.
                   : globalOffset + colIdx
                 const isLastInRow = colIdx === displayRow.length - 1
                 // Only use gridColumnStart for ltr incomplete last row
-                const colStart = isLastRow && !rtl && row.length < SNAKE_COLS
-                  ? SNAKE_COLS - row.length + 1 + colIdx
-                  : undefined
+                const colStart =
+                  isLastRow && !rtl && row.length < SNAKE_COLS
+                    ? SNAKE_COLS - row.length + 1 + colIdx
+                    : undefined
                 return (
                   <div
                     key={actualIdx}
@@ -244,7 +248,14 @@ const SnakeTimeline: FC<{ actions: CopilotDocV1.Action[]; groups?: CopilotDocV1.
                       action={action}
                       isLast={actualIdx === actions.length - 1}
                       groups={groups}
-                      snake={{ col: colIdx, cols: SNAKE_COLS, row: rowIdx, isRowLast: isLastRow, isRowFirst: rowIdx === 0, rtl }}
+                      snake={{
+                        col: colIdx,
+                        cols: SNAKE_COLS,
+                        row: rowIdx,
+                        isRowLast: isLastRow,
+                        isRowFirst: rowIdx === 0,
+                        rtl,
+                      }}
                       showArrow={
                         actualIdx !== actions.length - 1 && !isLastInRow
                       }
@@ -260,13 +271,27 @@ const SnakeTimeline: FC<{ actions: CopilotDocV1.Action[]; groups?: CopilotDocV1.
                 <div
                   className={clsx(
                     'absolute top-0 bottom-0 flex flex-col items-center justify-center gap-0.5',
-                    rtl ? 'left-[calc(100%/6-8px)]' : 'right-[calc(100%/6-8px)]',
+                    rtl
+                      ? 'left-[calc(100%/6-8px)]'
+                      : 'right-[calc(100%/6-8px)]',
                   )}
                 >
                   <div className="w-px h-3 bg-white/10" />
                   <div className="w-5 h-5 rounded-full bg-[#1a1f2e] border border-white/10 flex items-center justify-center shadow-md">
-                    <svg width="10" height="10" viewBox="0 0 10 10" className="text-white/40">
-                      <path d="M5 1 L5 7 M2 5 L5 9 L8 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 10 10"
+                      className="text-white/40"
+                    >
+                      <path
+                        d="M5 1 L5 7 M2 5 L5 9 L8 5"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                   <div className="w-px h-3 bg-white/10" />
@@ -793,7 +818,10 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         {operation.parsedContent.actions?.length ? (
           <>
             {snakeMode ? (
-              <SnakeTimeline actions={operation.parsedContent.actions} groups={operation.parsedContent.groups} />
+              <SnakeTimeline
+                actions={operation.parsedContent.actions}
+                groups={operation.parsedContent.groups}
+              />
             ) : (
               <div className="mt-2 flex flex-col pb-8">
                 {operation.parsedContent.actions.map((action, i) => (
