@@ -13,6 +13,7 @@ import {
   MenuDivider,
   MenuItem,
   NonIdealState,
+  Switch,
   Tag,
 } from '@blueprintjs/core'
 import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
@@ -60,7 +61,9 @@ import {
   withDefaultRequirements,
 } from '../../models/operator'
 import { formatError } from '../../utils/error'
+import { snakeModeAtom } from '../../store/pref'
 import { ActionCard } from '../ActionCard'
+import { ActionTimelineItem } from '../ActionTimelineItem'
 import { Confirm } from '../Confirm'
 import { MasteryIcon } from '../MasteryIcon'
 import { OperatorAvatar } from '../OperatorAvatar'
@@ -195,6 +198,85 @@ const ManageMenu: FC<{
         </Confirm>
       </Menu>
     </>
+  )
+}
+
+const SNAKE_COLS = 3
+
+const SnakeTimeline: FC<{ actions: CopilotDocV1.Action[]; groups?: CopilotDocV1.Group[] }> = ({ actions, groups }) => {
+  const rows: CopilotDocV1.Action[][] = []
+  for (let i = 0; i < actions.length; i += SNAKE_COLS) {
+    rows.push(actions.slice(i, i + SNAKE_COLS))
+  }
+
+  return (
+    <div className="mt-4 pb-8">
+      {rows.map((row, rowIdx) => {
+        const rtl = rowIdx % 2 === 1
+        const displayRow = rtl ? [...row].reverse() : row
+        const isLastRow = rowIdx === rows.length - 1
+        const globalOffset = rowIdx * SNAKE_COLS
+
+        return (
+          <div key={rowIdx}>
+            {/* Cards row */}
+            <div
+              className="grid gap-6"
+              style={{ gridTemplateColumns: `repeat(${SNAKE_COLS}, 1fr)` }}
+            >
+              {displayRow.map((action, colIdx) => {
+                const actualIdx = rtl
+                  ? globalOffset + (row.length - 1 - colIdx)
+                  : globalOffset + colIdx
+                const isLastInRow = colIdx === displayRow.length - 1
+                // Only use gridColumnStart for ltr incomplete last row
+                const colStart = isLastRow && !rtl && row.length < SNAKE_COLS
+                  ? SNAKE_COLS - row.length + 1 + colIdx
+                  : undefined
+                return (
+                  <div
+                    key={actualIdx}
+                    className="relative w-full"
+                    style={colStart ? { gridColumnStart: colStart } : undefined}
+                  >
+                    <ActionTimelineItem
+                      index={actualIdx}
+                      action={action}
+                      isLast={actualIdx === actions.length - 1}
+                      groups={groups}
+                      snake={{ col: colIdx, cols: SNAKE_COLS, row: rowIdx, isRowLast: isLastRow, isRowFirst: rowIdx === 0, rtl }}
+                      showArrow={
+                        actualIdx !== actions.length - 1 && !isLastInRow
+                      }
+                    />
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Turn connector between rows */}
+            {!isLastRow && (
+              <div className="relative h-10">
+                <div
+                  className={clsx(
+                    'absolute top-0 bottom-0 flex flex-col items-center justify-center gap-0.5',
+                    rtl ? 'left-[calc(100%/6-8px)]' : 'right-[calc(100%/6-8px)]',
+                  )}
+                >
+                  <div className="w-px h-3 bg-white/10" />
+                  <div className="w-5 h-5 rounded-full bg-[#1a1f2e] border border-white/10 flex items-center justify-center shadow-md">
+                    <svg width="10" height="10" viewBox="0 0 10 10" className="text-white/40">
+                      <path d="M5 1 L5 7 M2 5 L5 9 L8 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <div className="w-px h-3 bg-white/10" />
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
@@ -600,6 +682,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const t = useTranslation()
   const [showOperators, setShowOperators] = useState(true)
   const [showActions, setShowActions] = useState(false)
+  const [snakeMode, setSnakeMode] = useAtom(snakeModeAtom)
 
   return (
     <div>
@@ -681,26 +764,44 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         </div>
       </Collapse>
 
-      <H4
-        className="mt-6 inline-flex items-center cursor-pointer hover:opacity-80"
-        onClick={() => setShowActions((v) => !v)}
-      >
-        {t.components.viewer.OperationViewer.action_sequence}
-        <Icon
-          icon="chevron-down"
-          className={clsx(
-            'ml-1 transition-transform',
-            showActions && 'rotate-180',
-          )}
-        />
-      </H4>
+      <div className="mt-6 flex items-center gap-4">
+        <H4
+          className="inline-flex items-center cursor-pointer hover:opacity-80 mb-0"
+          onClick={() => setShowActions((v) => !v)}
+        >
+          {t.components.viewer.OperationViewer.action_sequence}
+          <Icon
+            icon="chevron-down"
+            className={clsx(
+              'ml-1 transition-transform',
+              showActions && 'rotate-180',
+            )}
+          />
+        </H4>
+        {showActions && (
+          <Switch
+            checked={snakeMode}
+            onChange={(e) => setSnakeMode(e.currentTarget.checked)}
+            label={t.components.viewer.OperationViewer.snake_mode}
+            className="mb-0"
+            innerLabel={t.components.viewer.OperationViewer.snake_off}
+            innerLabelChecked={t.components.viewer.OperationViewer.snake_on}
+          />
+        )}
+      </div>
       <Collapse isOpen={showActions}>
         {operation.parsedContent.actions?.length ? (
-          <div className="mt-2 flex flex-col pb-8">
-            {operation.parsedContent.actions.map((action, i) => (
-              <ActionCard action={action} key={i} />
-            ))}
-          </div>
+          <>
+            {snakeMode ? (
+              <SnakeTimeline actions={operation.parsedContent.actions} groups={operation.parsedContent.groups} />
+            ) : (
+              <div className="mt-2 flex flex-col pb-8">
+                {operation.parsedContent.actions.map((action, i) => (
+                  <ActionCard action={action} key={i} />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <NonIdealState
             className="my-2"
