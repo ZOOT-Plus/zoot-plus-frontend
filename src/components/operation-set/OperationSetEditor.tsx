@@ -200,14 +200,13 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
 
   const localOnSubmit = handleSubmit(async (values) => {
     try {
-
       // 方便以后拓展关键字
       const titleHasPersonal = values.name.includes('自用')
 
       // 标题含“自用”，但未勾选“自用”(status !== PRIVATE) → 提示
       if (titleHasPersonal && values.status !== 'PRIVATE') {
         setGlobalError(
-          t.components.operationSet.OperationSetEditor.personal_use_warning
+          t.components.operationSet.OperationSetEditor.personal_use_warning,
         )
         return
       }
@@ -305,10 +304,12 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
                   field.onChange(
                     (e.target as HTMLInputElement).checked
                       ? 'PRIVATE'
-                      : 'PUBLIC'
+                      : 'PUBLIC',
                   )
                 }
-                label={t.components.operationSet.OperationSetEditor.for_personal_use}
+                label={
+                  t.components.operationSet.OperationSetEditor.for_personal_use
+                }
               />
             )}
           />
