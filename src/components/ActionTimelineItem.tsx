@@ -270,7 +270,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
             className={clsx(
               'absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none',
               'flex items-center justify-center',
-              '-right-[13px]',
+              snake.rtl ? '-left-[13px]' : '-right-[13px]',
             )}
           >
             <div className="w-6 h-6 rounded-full bg-[#1a1f2e] border border-white/10 flex items-center justify-center shadow-md">
