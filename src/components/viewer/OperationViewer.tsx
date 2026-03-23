@@ -231,12 +231,17 @@ const SnakeTimeline: FC<{
                 const actualIdx = rtl
                   ? globalOffset + (row.length - 1 - colIdx)
                   : globalOffset + colIdx
-                const isLastInRow = colIdx === displayRow.length - 1
-                // Only use gridColumnStart for ltr incomplete last row
-                const colStart =
-                  isLastRow && !rtl && row.length < SNAKE_COLS
-                    ? SNAKE_COLS - row.length + 1 + colIdx
-                    : undefined
+                const hasNextInRow = rtl ? colIdx > 0 : colIdx < row.length - 1
+                // For RTL last row, if incomplete, we must right-align it by shifting the first rendered item
+                let colStart: number | undefined = undefined
+                if (
+                  isLastRow &&
+                  rtl &&
+                  row.length < SNAKE_COLS &&
+                  colIdx === 0
+                ) {
+                  colStart = SNAKE_COLS - row.length + 1
+                }
                 return (
                   <div
                     key={actualIdx}
@@ -257,7 +262,7 @@ const SnakeTimeline: FC<{
                         rtl,
                       }}
                       showArrow={
-                        actualIdx !== actions.length - 1 && !isLastInRow
+                        actualIdx !== actions.length - 1 && hasNextInRow
                       }
                     />
                   </div>
