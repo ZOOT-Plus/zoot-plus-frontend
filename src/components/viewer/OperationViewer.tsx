@@ -60,7 +60,7 @@ import {
   useLocalizedOperatorName,
   withDefaultRequirements,
 } from '../../models/operator'
-import { snakeModeAtom } from '../../store/pref'
+import { gridModeAtom } from '../../store/pref'
 import { formatError } from '../../utils/error'
 import { ActionCard } from '../ActionCard'
 import { ActionTimelineItem } from '../ActionTimelineItem'
@@ -201,111 +201,46 @@ const ManageMenu: FC<{
   )
 }
 
-const SNAKE_COLS = 3
-
-const SnakeTimeline: FC<{
+const GridTimeline: FC<{
   actions: CopilotDocV1.Action[]
   groups?: CopilotDocV1.Group[]
 }> = ({ actions, groups }) => {
-  const rows: CopilotDocV1.Action[][] = []
-  for (let i = 0; i < actions.length; i += SNAKE_COLS) {
-    rows.push(actions.slice(i, i + SNAKE_COLS))
-  }
-
   return (
     <div className="mt-4 pb-8">
-      {rows.map((row, rowIdx) => {
-        const rtl = rowIdx % 2 === 1
-        const displayRow = rtl ? [...row].reverse() : row
-        const isLastRow = rowIdx === rows.length - 1
-        const globalOffset = rowIdx * SNAKE_COLS
+      <div
+        className={clsx(
+          // 响应式网格布局, 根据屏幕宽度自动切换列数(1列 -> 2列 -> 3列 -> 4列)
+          'grid gap-x-6 gap-y-7 sm:gap-y-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
 
-        return (
-          <div key={rowIdx}>
-            {/* Cards row */}
-            <div
-              className="grid gap-6"
-              style={{ gridTemplateColumns: `repeat(${SNAKE_COLS}, 1fr)` }}
-            >
-              {displayRow.map((action, colIdx) => {
-                const actualIdx = rtl
-                  ? globalOffset + (row.length - 1 - colIdx)
-                  : globalOffset + colIdx
-                const hasNextInRow = rtl ? colIdx > 0 : colIdx < row.length - 1
-                // For RTL last row, if incomplete, we must right-align it by shifting the first rendered item
-                let colStart: number | undefined = undefined
-                if (
-                  isLastRow &&
-                  rtl &&
-                  row.length < SNAKE_COLS &&
-                  colIdx === 0
-                ) {
-                  colStart = SNAKE_COLS - row.length + 1
-                }
-                return (
-                  <div
-                    key={actualIdx}
-                    className="relative w-full"
-                    style={colStart ? { gridColumnStart: colStart } : undefined}
-                  >
-                    <ActionTimelineItem
-                      index={actualIdx}
-                      action={action}
-                      isLast={actualIdx === actions.length - 1}
-                      groups={groups}
-                      snake={{
-                        col: colIdx,
-                        cols: SNAKE_COLS,
-                        row: rowIdx,
-                        isRowLast: isLastRow,
-                        isRowFirst: rowIdx === 0,
-                        rtl,
-                      }}
-                      showArrow={
-                        actualIdx !== actions.length - 1 && hasNextInRow
-                      }
-                    />
-                  </div>
-                )
-              })}
-            </div>
+          // 移动端单列模式: 将连接箭头旋转90度朝下, 并移动到卡片底部中心
+          'max-md:[&_.timeline-arrow]:!rotate-90 max-md:[&_.timeline-arrow]:!-bottom-5 max-md:[&_.timeline-arrow]:!left-1/2 max-md:[&_.timeline-arrow]:!-translate-x-1/2 max-md:[&_.timeline-arrow]:!top-auto max-md:[&_.timeline-arrow]:!right-auto max-md:[&_.timeline-arrow]:!translate-y-0',
 
-            {/* Turn connector between rows */}
-            {!isLastRow && (
-              <div className="relative h-10">
-                <div
-                  className={clsx(
-                    'absolute top-0 bottom-0 flex flex-col items-center justify-center gap-0.5',
-                    rtl
-                      ? 'left-[calc(100%/6-8px)]'
-                      : 'right-[calc(100%/6-8px)]',
-                  )}
-                >
-                  <div className="w-px h-3 bg-white/10" />
-                  <div className="w-5 h-5 rounded-full bg-[#1a1f2e] border border-white/10 flex items-center justify-center shadow-md">
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 10 10"
-                      className="text-white/40"
-                    >
-                      <path
-                        d="M5 1 L5 7 M2 5 L5 9 L8 5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <div className="w-px h-3 bg-white/10" />
-                </div>
-              </div>
-            )}
+          // md断点: 双列模式, 隐藏每行末尾(偶数项)的右侧箭头
+          'md:[&>div:nth-child(2n)_.timeline-arrow]:!hidden',
+
+          // lg断点: 三列模式, 先恢复上一个断点隐藏的箭头, 再隐藏每行末尾(3的倍数项)的右侧箭头
+          'lg:[&>div:nth-child(2n)_.timeline-arrow]:!flex lg:[&>div:nth-child(3n)_.timeline-arrow]:!hidden',
+
+          // xl断点: 四列模式, 先恢复上一个断点隐藏的箭头, 再隐藏每行末尾(4的倍数项)的右侧箭头
+          'xl:[&>div:nth-child(3n)_.timeline-arrow]:!flex xl:[&>div:nth-child(4n)_.timeline-arrow]:!hidden',
+
+          // 无论在什么断点下, 永远隐藏最后一个卡片的箭头
+          '[&>div:last-child_.timeline-arrow]:!hidden',
+        )}
+      >
+        {actions.map((action, idx) => (
+          <div key={idx} className="relative w-full z-10 transition-transform">
+            <ActionTimelineItem
+              index={idx}
+              action={action}
+              isLast={idx === actions.length - 1}
+              groups={groups}
+              grid={true} // use true just to activate card style
+              showArrow={idx !== actions.length - 1}
+            />
           </div>
-        )
-      })}
+        ))}
+      </div>
     </div>
   )
 }
@@ -712,7 +647,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const t = useTranslation()
   const [showOperators, setShowOperators] = useState(true)
   const [showActions, setShowActions] = useState(false)
-  const [snakeMode, setSnakeMode] = useAtom(snakeModeAtom)
+  const [gridMode, setGridMode] = useAtom(gridModeAtom)
 
   return (
     <div>
@@ -810,20 +745,20 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         </H4>
         {showActions && (
           <Switch
-            checked={snakeMode}
-            onChange={(e) => setSnakeMode(e.currentTarget.checked)}
-            label={t.components.viewer.OperationViewer.snake_mode}
+            checked={gridMode}
+            onChange={(e) => setGridMode(e.currentTarget.checked)}
+            label={t.components.viewer.OperationViewer.grid_mode}
             className="mb-0"
-            innerLabel={t.components.viewer.OperationViewer.snake_off}
-            innerLabelChecked={t.components.viewer.OperationViewer.snake_on}
+            innerLabel={t.components.viewer.OperationViewer.grid_off}
+            innerLabelChecked={t.components.viewer.OperationViewer.grid_on}
           />
         )}
       </div>
       <Collapse isOpen={showActions}>
         {operation.parsedContent.actions?.length ? (
           <>
-            {snakeMode ? (
-              <SnakeTimeline
+            {gridMode ? (
+              <GridTimeline
                 actions={operation.parsedContent.actions}
                 groups={operation.parsedContent.groups}
               />

@@ -3066,15 +3066,15 @@
           "cn": "作业并未定义任何动作",
           "en": "No actions have been defined for this Job"
         },
-        "snake_mode": {
-          "cn": "蛇形",
-          "en": "Snake"
+        "grid_mode": {
+          "cn": "链式视图",
+          "en": "Chain"
         },
-        "snake_on": {
+        "grid_on": {
           "cn": "开",
           "en": "On"
         },
-        "snake_off": {
+        "grid_off": {
           "cn": "关",
           "en": "Off"
         }

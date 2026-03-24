@@ -21,14 +21,7 @@ interface ActionTimelineItemProps {
   isLast: boolean
   index: number
   groups?: CopilotDocV1.Group[]
-  snake?: {
-    col: number
-    cols: number
-    row: number
-    isRowLast: boolean
-    isRowFirst: boolean
-    rtl: boolean
-  }
+  grid?: boolean
   style?: CSSProperties
   showArrow?: boolean
 }
@@ -38,7 +31,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
   isLast,
   index,
   groups,
-  snake,
+  grid,
   style,
   showArrow,
 }) => {
@@ -89,16 +82,18 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
 
   const hasConditions = conditions.length > 0
 
-  if (snake) {
+  if (grid) {
     return (
       <div className="relative flex flex-col h-full" style={style}>
         {/* Card */}
         <div
           className={clsx(
             'relative flex-1 h-full overflow-hidden',
-            'rounded-xl border border-white/[0.06] bg-[#2F343C]',
-            'shadow-[0_2px_12px_rgba(0,0,0,0.4)]',
-            'transition-all duration-200 hover:border-white/[0.12] hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)]',
+            'rounded-xl border border-zinc-200 dark:border-white/[0.06]',
+            'bg-white dark:bg-[#2F343C]',
+            'shadow-sm dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)]',
+            'transition-all duration-200 hover:border-zinc-300 dark:hover:border-white/[0.12]',
+            'hover:shadow-md dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)]',
           )}
         >
           {/* Colored top accent bar */}
@@ -113,9 +108,9 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
           <div
             className={clsx(
               'absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center',
-              'text-[10px] font-bold text-white/90 tabular-nums',
+              'text-[10px] font-bold text-white tabular-nums',
               type.accentBg,
-              'opacity-80',
+              'opacity-90',
             )}
           >
             {index + 1}
@@ -147,16 +142,16 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                         name={name}
                         size="large"
                         sourceSize={32}
-                        className="ring-[1.5px] ring-[#2F343C] w-8 h-8"
+                        className="ring-[1.5px] ring-white dark:ring-[#2F343C] w-8 h-8"
                       />
                     ))}
                     {avatarNames.length > 3 && (
-                      <div className="w-8 h-8 rounded-md bg-white/10 ring-[1.5px] ring-[#2F343C] flex items-center justify-center text-[10px] text-white/60 font-bold">
+                      <div className="w-8 h-8 rounded-md bg-zinc-100 dark:bg-white/10 ring-[1.5px] ring-white dark:ring-[#2F343C] flex items-center justify-center text-[10px] text-zinc-600 dark:text-white/60 font-bold">
                         +{avatarNames.length - 3}
                       </div>
                     )}
                   </div>
-                  <span className="text-sm font-semibold text-white/90 leading-tight">
+                  <span className="text-sm font-semibold text-zinc-900 dark:text-white/90 leading-tight">
                     {getLocalizedOperatorName(action.name, language)}
                   </span>
                 </div>
@@ -164,7 +159,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
 
               {/* Skill usage */}
               {'skillUsage' in action && (
-                <div className="text-[11px] text-white/40 mb-1">
+                <div className="text-[11px] text-zinc-500 dark:text-white/40 mb-1">
                   {getSkillUsageTitle(action.skillUsage, action.skillTimes)}
                 </div>
               )}
@@ -179,12 +174,12 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                       <Icon
                         icon="map-marker"
                         size={10}
-                        className="text-white/30"
+                        className="text-zinc-400 dark:text-white/30"
                       />
-                      <span className="text-white/30">
+                      <span className="text-zinc-400 dark:text-white/30">
                         {t.components.ActionCard.coordinates}
                       </span>
-                      <span className="font-mono text-white/60 bg-white/[0.06] px-1 rounded">
+                      <span className="font-mono text-zinc-600 dark:text-white/60 bg-zinc-100 dark:bg-white/[0.06] px-1 rounded">
                         {action.location.join(', ')}
                       </span>
                     </span>
@@ -194,23 +189,27 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                       <Icon
                         icon="compass"
                         size={10}
-                        className="text-white/30"
+                        className="text-zinc-400 dark:text-white/30"
                       />
-                      <span className="text-white/30">
+                      <span className="text-zinc-400 dark:text-white/30">
                         {t.components.ActionCard.direction}
                       </span>
-                      <span className="font-mono text-white/60">
+                      <span className="font-mono text-zinc-600 dark:text-white/60">
                         {findOperatorDirection(action.direction).title()}
                       </span>
                     </span>
                   )}
                   {'distance' in action && action.distance && (
                     <span className="flex items-center gap-1 text-[11px]">
-                      <Icon icon="camera" size={10} className="text-white/30" />
-                      <span className="text-white/30">
+                      <Icon
+                        icon="camera"
+                        size={10}
+                        className="text-zinc-400 dark:text-white/30"
+                      />
+                      <span className="text-zinc-400 dark:text-white/30">
                         {t.components.ActionCard.distance}
                       </span>
-                      <span className="font-mono text-white/60">
+                      <span className="font-mono text-zinc-600 dark:text-white/60">
                         {action.distance.join(', ')}
                       </span>
                     </span>
@@ -220,7 +219,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
             </div>
 
             {/* Right: condition grid */}
-            <div className="flex-shrink-0 border-l border-white/[0.06] pl-3 grid grid-cols-2 gap-x-3 gap-y-1 content-start">
+            <div className="flex-shrink-0 border-l border-zinc-200 dark:border-white/[0.06] pl-3 grid grid-cols-2 gap-x-3 gap-y-1 content-start">
               {[
                 { label: t.components.ActionCard.kills, value: action.kills },
                 {
@@ -250,12 +249,14 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                   <span
                     className={clsx(
                       'font-mono text-[12px] font-bold tabular-nums leading-tight',
-                      value ? 'text-white/80' : 'text-white/20',
+                      value
+                        ? 'text-zinc-800 dark:text-white/80'
+                        : 'text-zinc-300 dark:text-white/20',
                     )}
                   >
                     {value ?? '-'}
                   </span>
-                  <span className="text-[9px] text-white/25 leading-tight">
+                  <span className="text-[9px] text-zinc-500 dark:text-white/25 leading-tight">
                     {label}
                   </span>
                 </div>
@@ -268,18 +269,18 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
         {showArrow && (
           <div
             className={clsx(
+              'timeline-arrow', // 添加该类名以便于父级组件在响应式布局中通过 CSS 进行精细控制隐藏或旋转
               'absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none',
               'flex items-center justify-center',
-              snake.rtl ? '-left-[13px]' : '-right-[13px]',
+              '-right-[13px]',
             )}
           >
-            <div className="w-6 h-6 rounded-full bg-[#1a1f2e] border border-white/10 flex items-center justify-center shadow-md">
+            <div className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-[#1a1f2e] border border-zinc-300 dark:border-white/10 flex items-center justify-center shadow-md">
               <svg
                 width="10"
                 height="10"
                 viewBox="0 0 10 10"
-                className="text-white/40"
-                style={snake.rtl ? { transform: 'scaleX(-1)' } : undefined}
+                className="text-zinc-500 dark:text-white/40"
               >
                 <path
                   d="M1 5 L7 5 M5 2 L9 5 L5 8"
