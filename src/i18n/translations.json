@@ -3065,6 +3065,18 @@
         "no_actions_defined": {
           "cn": "作业并未定义任何动作",
           "en": "No actions have been defined for this Job"
+        },
+        "grid_mode": {
+          "cn": "链式视图",
+          "en": "Chain"
+        },
+        "grid_on": {
+          "cn": "开",
+          "en": "On"
+        },
+        "grid_off": {
+          "cn": "关",
+          "en": "Off"
         }
       }
     },
