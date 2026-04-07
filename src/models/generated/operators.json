@@ -587,6 +587,17 @@
       "modules": ["", "X"]
     },
     {
+      "id": "char_4223_botany",
+      "prof": "SUPPORT",
+      "subProf": "ritualist",
+      "name_en": "Ботани",
+      "name": "伯塔尼",
+      "alias": "botani baitani batani btn 伯塔尼",
+      "rarity": 5,
+      "alt_name": "Ботани",
+      "modules": ["", "X"]
+    },
+    {
       "id": "char_4004_pudd",
       "prof": "CASTER",
       "subProf": "chain",
@@ -3010,7 +3021,7 @@
       "alias": "nifu nf 妮芙",
       "rarity": 6,
       "alt_name": "Nymph",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_311_mudrok",
@@ -3033,6 +3044,17 @@
       "rarity": 6,
       "alt_name": "Nian",
       "modules": ["", "X", "Y"]
+    },
+    {
+      "id": "char_1051_headb2",
+      "prof": "WARRIOR",
+      "subProf": "hammer",
+      "name_en": "Zima the Raging Tide",
+      "name": "怒潮凛冬",
+      "alias": "nuchaolindong ncld 怒潮凜冬",
+      "rarity": 6,
+      "alt_name": "Zima the Raging Tide",
+      "modules": ["", "X"]
     },
     {
       "id": "char_4173_nowell",
@@ -3568,7 +3590,7 @@
       "alias": "shierteer sete 史爾特爾",
       "rarity": 6,
       "alt_name": "Surtr",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_308_swire",
@@ -4218,6 +4240,17 @@
       "alias": "wuerbian weba 烏爾比安",
       "rarity": 6,
       "alt_name": "Ulpianus",
+      "modules": ["", "X"]
+    },
+    {
+      "id": "char_4224_turdus",
+      "prof": "MEDIC",
+      "subProf": "chainhealer",
+      "name_en": "Укусик",
+      "name": "乌啾",
+      "alias": "wujiu wj 烏啾",
+      "rarity": 5,
+      "alt_name": "Укусик",
       "modules": ["", "X"]
     },
     {
@@ -5354,7 +5387,7 @@
       "alias": "zhuoxinsikadi zhuoxinsiqiadi zxskd zxsqd 濁心斯卡蒂",
       "rarity": 6,
       "alt_name": "Skadi the Corrupting Heart",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_278_orchid",
