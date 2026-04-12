@@ -42,7 +42,7 @@
     "minimum_required": {
       "type": "string",
       "description": "Minimum required MAA version, need to match semantic version schema, required, reserved field, not implemented.",
-      "default": "v4.0.0",
+      "default": "v6.0.0",
       "pattern": "^v((0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?)$"
     },
     "doc": {
