@@ -47,6 +47,9 @@ jobs:
       - name: Add .nojekyll file
         run: touch ./dist/.nojekyll
 
+      - name: Add 404.html for SPA routing
+        run: cp ./dist/index.html ./dist/404.html
+
       - name: Upload artifact
         if: github.event_name == 'push' || inputs.deploy-to-prod == true
         uses: actions/upload-pages-artifact@v3
