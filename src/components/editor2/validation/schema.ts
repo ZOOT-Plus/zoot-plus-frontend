@@ -19,7 +19,7 @@ const minimum_required = z
   .regex(
     /^v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/,
   )
-  .default('v4.0.0')
+  .default('v6.0.0')
 
 const doc = z.looseObject({
   title: z.string().optional(),
