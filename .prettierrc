@@ -19,5 +19,6 @@
     "decorators-legacy"
   ],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderSortSpecifiers": true,
+  "endOfLine": "lf"
 }
