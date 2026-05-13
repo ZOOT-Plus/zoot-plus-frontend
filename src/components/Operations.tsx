@@ -4,9 +4,14 @@ import {
   Card,
   Divider,
   H6,
+  Icon,
+  IconName,
   InputGroup,
+  Intent,
+  Position,
   Tab,
   Tabs,
+  Toaster,
 } from '@blueprintjs/core'
 
 import { UseOperationsParams } from 'apis/operation'
@@ -19,6 +24,11 @@ import { ComponentType, useMemo, useState } from 'react'
 import { CardTitle } from 'components/CardTitle'
 import { OperationList } from 'components/OperationList'
 import { OperationSetList } from 'components/OperationSetList'
+import {
+  displayModeAtom,
+  filterModeAtom,
+  ownedOperatorsAtom,
+} from 'store/ownedOperators'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
@@ -26,6 +36,63 @@ import { LevelSelect } from './LevelSelect'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
+
+// 初始化全局 Toaster
+const AppToaster = Toaster.create({
+  position: Position.TOP,
+})
+
+const FilterBtn = ({
+  icon,
+  text,
+  active,
+  onClick,
+  disabled,
+}: {
+  icon: IconName
+  text: string
+  active?: boolean
+  onClick?: () => void
+  disabled?: boolean
+}) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={clsx(
+        'inline-flex items-center justify-center px-3 py-1.5 min-h-[30px] mr-1',
+        'text-sm font-normal leading-none rounded-[3px]',
+        'transition-colors duration-100 ease-[cubic-bezier(0.4,1,0.75,0.9)] select-none',
+
+        // 1. 默认状态 (未激活 & 未禁用)
+        !active &&
+        !disabled &&
+        clsx(
+          'bg-transparent text-[#5c7080] dark:text-[#a7b6c2]',
+          // 自身 Hover
+          'hover:bg-[#a7b6c2]/30 dark:hover:bg-[#8a9ba8]/15 hover:text-[#1c2127] dark:hover:text-[#f5f8fa]',
+          // 父级 Group Hover (用于文件上传)
+          'group-hover:bg-[#a7b6c2]/30 dark:group-hover:bg-[#8a9ba8]/15 group-hover:text-[#1c2127] dark:group-hover:text-[#f5f8fa]',
+        ),
+
+        // 2. 激活状态
+        active &&
+        'bg-[#a7b6c2]/30 dark:bg-[#8a9ba8]/15 text-[#2563eb] dark:text-[#60a5fa] font-semibold',
+
+        // 3. 禁用状态
+        disabled && 'opacity-50 cursor-not-allowed',
+      )}
+    >
+      <Icon icon={icon} size={16} className="mr-[7px] opacity-90" />
+      <span>{text}</span>
+    </button>
+  )
+}
+
+const FilterDivider = () => (
+  <div className="mx-2 inline-block h-4 w-[1px] bg-[#10161a]/15 dark:bg-white/15" />
+)
 
 export const Operations: ComponentType = withSuspensable(() => {
   const t = useTranslation()
@@ -46,9 +113,96 @@ export const Operations: ComponentType = withSuspensable(() => {
   const [tab, setTab] = useState<'operation' | 'operationSet'>('operation')
   const [multiselect, setMultiselect] = useState(false)
 
+  const [ownedOps, setOwnedOps] = useAtom(ownedOperatorsAtom)
+  const [filterMode, setFilterMode] = useAtom(filterModeAtom)
+  const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
+
+  const handleImportOperators = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // 1. 简单的文件大小限制 (例如限制 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      AppToaster.show({
+        message: t.components.Operations.import_too_large,
+        intent: Intent.DANGER,
+      })
+      e.target.value = '' // 清理 value
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const jsonStr = event.target?.result as string
+        let json
+
+        // 2. 防止 JSON.parse 报错
+        try {
+          json = JSON.parse(jsonStr)
+        } catch (e) {
+          AppToaster.show({
+            message: t.components.Operations.import_invalid_json,
+            intent: Intent.DANGER,
+          })
+          return
+        }
+
+        let names: string[] = []
+
+        if (Array.isArray(json)) {
+          if (typeof json[0] === 'string') {
+            names = json
+          } else if (
+            typeof json[0] === 'object' &&
+            json[0] !== null &&
+            'name' in json[0]
+          ) {
+            // 3. 校验逻辑
+            names = json
+              .filter(
+                (op: any) => op?.own !== false && typeof op?.name === 'string',
+              )
+              .map((op: any) => String(op.name).trim())
+              .filter((name: string) =>
+                /^[a-zA-Z0-9\u4e00-\u9fa5\-\(\)\uff08\uff09]+$/.test(name),
+              )
+          }
+        }
+
+        if (names.length > 0) {
+          // 5. 去重
+          const uniqueNames = Array.from(new Set(names))
+          setOwnedOps(uniqueNames)
+          AppToaster.show({
+            message: t.components.Operations.import_success({
+              count: uniqueNames.length,
+            }),
+            intent: Intent.SUCCESS,
+          })
+        } else {
+          AppToaster.show({
+            message: t.components.Operations.import_no_valid_data,
+            intent: Intent.WARNING,
+          })
+        }
+      } catch (err) {
+        console.error(err)
+        AppToaster.show({
+          message: t.components.Operations.import_unknown_error,
+          intent: Intent.DANGER,
+        })
+      } finally {
+        // 6. 清空 input value 以允许重复上传同一文件
+        e.target.value = ''
+      }
+    }
+    reader.readAsText(file)
+  }
+
   return (
     <>
-      <Card className="flex flex-col mb-4">
+      <Card className="mb-4 flex flex-col">
         <CardTitle className="mb-6 flex" icon="properties">
           <Tabs
             className="pl-2 [&>div]:space-x-2 [&>div]:space-x-reverse"
@@ -67,7 +221,7 @@ export const Operations: ComponentType = withSuspensable(() => {
               id="operation"
               title={t.components.Operations.operations}
             />
-            <Divider className="self-center h-[1em]" />
+            <Divider className="h-[1em] self-center" />
             <Tab
               className={clsx(
                 'text-inherit',
@@ -140,13 +294,72 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-4 mt-2">
+
+            {/* --- 筛选控制栏 --- */}
+            <div className="mt-3 mb-2 flex w-full flex-wrap items-center pl-[2px]">
+              {/* 导入按钮区域 */}
+              <div className="group relative mr-1 inline-flex">
+                <input
+                  type="file"
+                  accept=".json,.txt"
+                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                  onChange={handleImportOperators}
+                  title={t.components.Operations.import_btn}
+                />
+                <FilterBtn
+                  icon="import"
+                  text={
+                    ownedOps.length > 0
+                      ? t.components.Operations.import_btn_count({
+                        count: ownedOps.length,
+                      })
+                      : t.components.Operations.import_btn
+                  }
+                />
+              </div>
+
+              <FilterBtn
+                icon={displayMode === 'GRAY' ? 'eye-open' : 'eye-off'}
+                text={
+                  displayMode === 'GRAY'
+                    ? t.components.Operations.mode_gray
+                    : t.components.Operations.mode_hide
+                }
+                onClick={() =>
+                  setDisplayMode((v) => (v === 'GRAY' ? 'HIDE' : 'GRAY'))
+                }
+              />
+
+              <FilterDivider />
+
+              <FilterBtn
+                icon="confirm"
+                text={t.components.Operations.perfect_team}
+                active={filterMode === 'PERFECT'}
+                onClick={() =>
+                  setFilterMode((v) => (v === 'PERFECT' ? 'NONE' : 'PERFECT'))
+                }
+                disabled={ownedOps.length === 0}
+              />
+
+              <FilterBtn
+                icon="people"
+                text={t.components.Operations.allow_support}
+                active={filterMode === 'SUPPORT'}
+                onClick={() =>
+                  setFilterMode((v) => (v === 'SUPPORT' ? 'NONE' : 'SUPPORT'))
+                }
+                disabled={ownedOps.length === 0}
+              />
+            </div>
+
+            <div className="mt-2 flex flex-wrap items-center gap-4">
               <OperatorFilter
                 className=""
                 filter={operatorFilter}
                 onChange={setOperatorFilter}
               />
-              <div className="flex flex-wrap items-center ml-auto">
+              <div className="ml-auto flex flex-wrap items-center">
                 <H6 className="mb-0 mr-1 opacity-75">
                   {t.components.Operations.sort_by}
                 </H6>
