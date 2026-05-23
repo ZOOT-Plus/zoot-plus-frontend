@@ -34,28 +34,32 @@ export const RegisterPanel: FC<{
     handleSubmit,
     formState: { errors, isValid, isDirty, isSubmitting },
     getValues,
-  } = useForm<RegisterFormValues>()
+  } = useForm<RegisterFormValues>({ mode: 'onChange' })
   const [isSendEmailButtonDisabled, setSendEmailButtonDisabled] =
     useState(false)
   const [countdown, setCountdown] = useState(60)
   const onSubmit = async (val: RegisterFormValues) => {
-    await wrapErrorMessage(
-      (e) =>
-        t.components.account.RegisterPanel.registration_failed({
-          error: formatError(e),
+    try {
+      await wrapErrorMessage(
+        (e) =>
+          t.components.account.RegisterPanel.registration_failed({
+            error: formatError(e),
+          }),
+        register({
+          email: val.email,
+          registrationToken: val.registrationToken,
+          username: val.username,
+          password: val.password,
         }),
-      register({
-        email: val.email,
-        registrationToken: val.registrationToken,
-        username: val.username,
-        password: val.password,
-      }),
-    )
-    AppToaster.show({
-      intent: 'success',
-      message: t.components.account.RegisterPanel.registration_success,
-    })
-    onComplete()
+      )
+      AppToaster.show({
+        intent: 'success',
+        message: t.components.account.RegisterPanel.registration_success,
+      })
+      onComplete()
+    } catch {
+      // Error handled by wrapErrorMessage (toast shown), prevent isSubmitting from getting stuck
+    }
   }
   const handleCountdownTick = () => {
     setCountdown((prevCountdown) => prevCountdown - 1)
@@ -108,7 +112,7 @@ export const RegisterPanel: FC<{
       <div className="mt-6 flex justify-end">
         <Button
           disabled={
-            (!isValid && !isDirty) || isSubmitting || isSendEmailButtonDisabled
+            !!errors.email || isSubmitting || isSendEmailButtonDisabled
           }
           intent="primary"
           type="button"
@@ -144,7 +148,7 @@ export const RegisterPanel: FC<{
 
       <div className="mt-6 flex justify-end">
         <Button
-          disabled={(!isValid && !isDirty) || isSubmitting}
+          disabled={!isValid || isSubmitting}
           intent="primary"
           loading={isSubmitting}
           type="submit"
