@@ -75,7 +75,7 @@
     "@hookform/devtools": "^4.1.1",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^20.0.0",
+    "@types/node": "^24.0.0",
     "@types/pinyin": "^2.10.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
