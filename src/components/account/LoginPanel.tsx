@@ -29,7 +29,7 @@ export const LoginPanel: FC<{
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid, isDirty, isSubmitting },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<LoginFormValues>({ mode: 'onChange' })
   const setAuthState = useSetAtom(authAtom)
 

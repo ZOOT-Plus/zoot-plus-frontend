@@ -32,7 +32,7 @@ export const RegisterPanel: FC<{
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid, isDirty, isSubmitting },
+    formState: { errors, isValid, isSubmitting },
     getValues,
   } = useForm<RegisterFormValues>({ mode: 'onChange' })
   const [isSendEmailButtonDisabled, setSendEmailButtonDisabled] =
