@@ -27,7 +27,7 @@ export function useOperatorFilter() {
   const [operatorFilter, setOperatorFilter] = useState<OperatorFilterData>(
     () => {
       // 用本地保存的干员过滤器来初始化
-      const savedOperatorFilter = getDefaultStore().get(operatorFilterAtom)
+      const savedOperatorFilter = getDefaultStore().get(operatorFilterAtom) as OperatorFilterData
       if (savedOperatorFilter.save) {
         return savedOperatorFilter
       }

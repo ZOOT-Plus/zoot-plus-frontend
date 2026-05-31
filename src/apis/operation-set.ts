@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { noop } from 'lodash-es'
 import {
+  PagedDTOCopilotSetListRes as CopilotSetPageRes,
   CopilotSetQuery,
   CopilotSetStatus,
   CopilotSetUpdateReq,
-  PagedDTOCopilotSetListRes,
 } from 'maa-copilot-client'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
@@ -20,7 +20,6 @@ export type OrderBy = 'views' | 'hot' | 'id'
 export interface UseOperationSetsParams {
   keyword?: string
   creatorId?: string
-  onlyFollowing?: boolean
 
   disabled?: boolean
   suspense?: boolean
@@ -29,7 +28,6 @@ export interface UseOperationSetsParams {
 export function useOperationSets({
   keyword,
   creatorId,
-  onlyFollowing,
   disabled,
   suspense,
 }: UseOperationSetsParams) {
@@ -40,7 +38,7 @@ export function useOperationSets({
     setSize,
     isValidating,
   } = useSWRInfinite(
-    (pageIndex, previousPage: PagedDTOCopilotSetListRes) => {
+    (pageIndex, previousPage: CopilotSetPageRes) => {
       if (disabled) {
         return null
       }
@@ -55,7 +53,6 @@ export function useOperationSets({
           page: pageIndex + 1,
           keyword,
           creatorId: creatorId === 'me' ? auth.userId : creatorId,
-          onlyFollowing,
         } satisfies CopilotSetQuery,
       ]
     },

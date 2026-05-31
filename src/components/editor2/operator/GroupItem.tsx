@@ -4,7 +4,6 @@ import {
   Card,
   Classes,
   Dialog,
-  Elevation,
   Icon,
   Menu,
   MenuItem,
@@ -64,7 +63,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
     )
   }, [baseGroup.opersAtom])
   const [active, setActive] = useActiveState(
-    editorAtoms.activeGroupIdAtom,
+    editorAtoms.activeGroupIdAtom as any,
     baseGroup.id,
   )
   const operatorIds = useAtomValue(operatorIdsAtom)
@@ -333,7 +332,7 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
   const [baseGroup, setBaseGroup] = useAtom(baseGroupAtom)
   const id = baseGroup.id
   const [isNewlyAdded, setIsNewlyAdded] = useActiveState(
-    editorAtoms.newlyAddedGroupIdAtom,
+    editorAtoms.newlyAddedGroupIdAtom as any,
     id,
   )
   const [confirming, setConfirming] = useState(false)

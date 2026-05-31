@@ -3,7 +3,7 @@ import { Tooltip2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { QueriesCopilotStatusEnum as CopilotInfoStatusEnum } from 'maa-copilot-client'
 import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'
@@ -56,7 +56,7 @@ export const NeoOperationCard = ({
                 <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                   {operation.parsedContent.doc.title}
                 </span>
-                {operation.status === CopilotSetStatus.Private && (
+                {operation.status === CopilotInfoStatusEnum.Private && (
                   <Tag minimal className="ml-2 shrink-0 font-normal opacity-75">
                     {t.components.OperationCard.private}
                   </Tag>
@@ -169,7 +169,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
                     {operation.parsedContent.doc.title}
-                    {operation.status === CopilotSetStatus.Private && (
+                    {operation.status === CopilotInfoStatusEnum.Private && (
                       <Tag minimal className="ml-2 font-normal opacity-75">
                         {t.components.OperationCard.private}
                       </Tag>

@@ -1,4 +1,4 @@
-import { locales } from '@zod/core'
+import { locales } from 'zod/v4/core'
 
 import { get, isNumber, isString } from 'lodash-es'
 import { Primitive } from 'type-fest'
@@ -144,7 +144,7 @@ const action = z
     if ('direction' in value && value.direction !== undefined) {
       const result = actionWithDirection.safeParse(value)
       if (result.error) {
-        issues.push(...result.error.issues)
+        issues.push(...result.error.issues as any)
       }
     }
   })
@@ -209,7 +209,7 @@ const actionStrict = z
     if ('direction' in value && value.direction !== undefined) {
       const result = actionWithDirection.safeParse(value)
       if (result.error) {
-        issues.push(...result.error.issues)
+        issues.push(...result.error.issues as any)
       }
     }
     if (

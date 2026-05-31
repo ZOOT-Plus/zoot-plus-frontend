@@ -30,7 +30,7 @@ import clsx from 'clsx'
 import { useAtom } from 'jotai'
 import {
   BanCommentsStatusEnum,
-  CopilotSetStatus,
+  QueriesCopilotStatusEnum as CopilotInfoStatusEnum,
 } from 'maa-copilot-client'
 import { ComponentType, FC, useEffect, useState } from 'react'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
@@ -503,7 +503,7 @@ function OperationViewerInner({
     <div className="h-full overflow-auto p-4 md:p-8">
       <H3>
         {operation.parsedContent.doc.title}
-        {operation.status === CopilotSetStatus.Private && (
+        {operation.status === CopilotInfoStatusEnum.Private && (
           <Tag minimal className="ml-2 font-normal opacity-75">
             {t.components.viewer.OperationViewer.private}
           </Tag>

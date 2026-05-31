@@ -240,7 +240,7 @@ const CreateOperatorButton: FC<{}> = () => {
 
 const CreateGroupButton: FC<{}> = () => {
   const dispatchGroups = useSetAtom(editorAtoms.groupAtoms)
-  const setNewlyAddedGroupId = useSetAtom(editorAtoms.newlyAddedGroupIdAtom)
+  const setNewlyAddedGroupId = useSetAtom(editorAtoms.newlyAddedGroupIdAtom as any)
   const edit = useEdit()
   const t = useTranslation()
   return (

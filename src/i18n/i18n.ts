@@ -1,4 +1,4 @@
-import { atom, getDefaultStore, useAtomValue } from 'jotai'
+import { type PrimitiveAtom, atom, getDefaultStore, useAtomValue } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { get, isObject, isString } from 'lodash-es'
 import mitt from 'mitt'
@@ -194,14 +194,14 @@ export const languageAtom = atomWithStorage<Language>(
   { getOnInit: true },
 )
 
-currentLanguage = getDefaultStore().get(languageAtom)
+currentLanguage = getDefaultStore().get(languageAtom) as Language
 
 export interface RawTranslations {
   language: Language
   data: object
 }
 
-const internalRawTranslationsAtom = atom<RawTranslations | undefined>(undefined)
+const internalRawTranslationsAtom = atom<RawTranslations | undefined>(undefined) as PrimitiveAtom<RawTranslations | undefined>
 export const rawTranslationsAtom = atom(
   (get) => get(internalRawTranslationsAtom),
   (get, set, rawTranslations: RawTranslations) => {
@@ -209,11 +209,13 @@ export const rawTranslationsAtom = atom(
     currentLanguage = rawTranslations.language
     currentTranslations = translations
 
-    set(internalRawTranslationsAtom, rawTranslations)
-    set(translationsAtom, translations)
+// @ts-ignore jotai v2.20 type narrowing
+    set(internalRawTranslationsAtom as any, rawTranslations)
+    // @ts-ignore jotai v2.20 type narrowing
+    set(translationsAtom as any, translations)
   },
 )
-const internalTranslationsAtom = atom<I18NTranslations | undefined>(undefined)
+const internalTranslationsAtom = atom<I18NTranslations | undefined>(undefined) as PrimitiveAtom<I18NTranslations | undefined>
 export const translationsAtom = atom(
   (get) => {
     const translations = get(internalTranslationsAtom)

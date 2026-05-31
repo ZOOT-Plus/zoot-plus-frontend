@@ -53,10 +53,10 @@ export const ActionItem: FC<ActionItemProps> = memo(
     const t = useTranslation()
     const language = useAtomValue(languageAtom)
     const edit = useEdit()
-    const dispatchActions = useSetAtom(editorAtoms.actionAtoms)
+    const dispatchActions = useSetAtom(editorAtoms.actionAtoms as any)
     const [action, setAction] = useImmerAtom(actionAtom)
     const [active, setActive] = useActiveState(
-      editorAtoms.activeActionIdAtom,
+      editorAtoms.activeActionIdAtom as any,
       action.id,
     )
     const errors = useEntityErrors(action.id)

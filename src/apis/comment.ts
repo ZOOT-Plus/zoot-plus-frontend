@@ -79,7 +79,7 @@ export function useComments({
 export async function sendComment(req: {
   message: string
   operationId: number
-  fromCommentId?: string
+  fromCommentId?: number
 }) {
   await new CommentApi().sendComments({
     commentsAddDTO: {
@@ -92,17 +92,17 @@ export async function sendComment(req: {
   })
 }
 
-export async function deleteComment(req: { commentId: string }) {
+export async function deleteComment(req: { commentId: number }) {
   await new CommentApi().deleteComments({ commentsDeleteDTO: req })
 }
 
 export async function rateComment(req: {
-  commentId: string
+  commentId: number
   rating: CommentRating
 }) {
   await new CommentApi().ratesComments({ commentsRatingDTO: req })
 }
 
-export async function topComment(req: { commentId: string; topping: boolean }) {
+export async function topComment(req: { commentId: number; topping: boolean }) {
   await new CommentApi().toppingComments({ commentsToppingDTO: req })
 }

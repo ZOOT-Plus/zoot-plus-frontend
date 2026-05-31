@@ -29,7 +29,6 @@ export const EditorIntegerInput = <T extends FieldValues>({
 
   const {
     field: { onChange, onBlur, value, ref },
-    fieldState: { isDirty },
   } = useController({
     name,
     control,

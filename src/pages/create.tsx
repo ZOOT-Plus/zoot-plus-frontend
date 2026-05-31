@@ -2,7 +2,7 @@ import { Button, Checkbox } from '@blueprintjs/core'
 import { Tooltip2 } from '@blueprintjs/popover2'
 
 import { isEqual } from 'lodash-es'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { QueriesCopilotStatusEnum as CopilotInfoStatusEnum } from 'maa-copilot-client'
 import { ComponentType, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
@@ -29,7 +29,7 @@ import {
 import { validateOperation } from '../components/editor/validation'
 import { useTranslation } from '../i18n/i18n'
 import { toCopilotOperation } from '../models/converter'
-import { MinimumRequired, Operation } from '../models/operation'
+import { MinimumRequired } from '../models/operation'
 import { NetworkError, formatError } from '../utils/error'
 
 const defaultOperation: CopilotDocV1.Operation = {
@@ -84,8 +84,8 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
       autosaveOptions,
     )
 
-    const [operationStatus, setOperationStatus] = useState<Operation['status']>(
-      apiOperation ? apiOperation.status : CopilotSetStatus.Public,
+    const [operationStatus, setOperationStatus] = useState<CopilotInfoStatusEnum>(
+      (apiOperation ? apiOperation.status : CopilotInfoStatusEnum.Public) as CopilotInfoStatusEnum,
     )
     const [uploading, setUploading] = useState(false)
 
@@ -215,12 +215,12 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
               >
                 <Checkbox
                   className="text-sm"
-                  checked={operationStatus === CopilotSetStatus.Public}
+                  checked={operationStatus === CopilotInfoStatusEnum.Public}
                   onChange={(e) =>
                     setOperationStatus(
                       e.currentTarget.checked
-                        ? CopilotSetStatus.Public
-                        : CopilotSetStatus.Private,
+                        ? CopilotInfoStatusEnum.Public
+                        : CopilotInfoStatusEnum.Private,
                     )
                   }
                 >

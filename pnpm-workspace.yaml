@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  maa-copilot-client: true
+  nodejieba: true
+  sharp: true
+  unrs-resolver: true
+
+overrides:
+  react-rating>@types/react: ^18.0.0

@@ -23,13 +23,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: yarn build:azure
+        run: pnpm build:azure
 
       - name: Deploy
         id: deploy

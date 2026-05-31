@@ -224,7 +224,7 @@ export function toEditorOperation(
   ) as typeof camelCased
   const converted = {
     ...operation,
-    actions: operation.actions.map((action, index) => {
+    actions: operation.actions.map((action: any, index: number) => {
       const {
         preDelay,
         postDelay,

@@ -12,10 +12,10 @@ function updateDayjsLocale(language: Language) {
   dayjs.locale(language === 'cn' ? 'zh-cn' : 'en')
 }
 
-updateDayjsLocale(getDefaultStore().get(languageAtom))
+updateDayjsLocale(getDefaultStore().get(languageAtom) as Language)
 
 getDefaultStore().sub(languageAtom, () => {
-  updateDayjsLocale(getDefaultStore().get(languageAtom))
+  updateDayjsLocale(getDefaultStore().get(languageAtom) as Language)
 })
 
 export type DayjsInput = string | number | dayjs.Dayjs | Date | null | undefined
