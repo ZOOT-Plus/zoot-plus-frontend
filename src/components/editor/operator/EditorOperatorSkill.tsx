@@ -36,6 +36,13 @@ export const EditorOperatorSkill = ({
       {
         icon: 'cog',
         title: t.components.editor.operator.EditorOperatorSkill.skill_number({
+          count: 0,
+        }),
+        value: 0,
+      },
+      {
+        icon: 'cog',
+        title: t.components.editor.operator.EditorOperatorSkill.skill_number({
           count: 1,
         }),
         value: 1,
@@ -58,7 +65,7 @@ export const EditorOperatorSkill = ({
     [t],
   )
 
-  const selected = items.find((item) => item.value === (value ?? 1))
+  const selected = items.find((item) => item.value === (value ?? 0))
 
   return (
     <Select2<EditorOperatorSkillChoice>

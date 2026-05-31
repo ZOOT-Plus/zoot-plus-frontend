@@ -47,6 +47,8 @@ export const EditorIntegerInput = <T extends FieldValues>({
     },
   })
 
+  const hasValue = !isNil(value) && value !== ''
+
   return (
     <NumericInput2
       intOnly
@@ -56,12 +58,9 @@ export const EditorIntegerInput = <T extends FieldValues>({
       inputRef={ref}
       onValueChange={(value) => onChange(value)}
       onBlur={onBlur}
-      value={value ?? ''}
+      value={isNil(value) || Number.isNaN(value) ? '' : value}
       rightElement={
-        <FieldResetButton
-          disabled={!isDirty}
-          onReset={() => onChange(undefined)}
-        />
+        <FieldResetButton disabled={!hasValue} onReset={() => onChange('')} />
       }
       {...NumericInputProps}
     />

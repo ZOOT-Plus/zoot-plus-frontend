@@ -126,6 +126,11 @@ export const NumericInput2 = ({
 
         setEndsWithDot(str.endsWith('.'))
 
+        if (str === '') {
+          onValueChange?.(NaN, str, inputEl)
+          return
+        }
+
         num = parseFloat(str)
 
         if (Number.isNaN(num) || !Number.isFinite(num)) {

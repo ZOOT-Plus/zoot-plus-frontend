@@ -13,6 +13,7 @@ import {
   MenuDivider,
   MenuItem,
   NonIdealState,
+  Switch,
   Tag,
 } from '@blueprintjs/core'
 import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
@@ -59,8 +60,10 @@ import {
   useLocalizedOperatorName,
   withDefaultRequirements,
 } from '../../models/operator'
+import { gridModeAtom } from '../../store/pref'
 import { formatError } from '../../utils/error'
 import { ActionCard } from '../ActionCard'
+import { ActionTimelineItem } from '../ActionTimelineItem'
 import { Confirm } from '../Confirm'
 import { MasteryIcon } from '../MasteryIcon'
 import { OperatorAvatar } from '../OperatorAvatar'
@@ -195,6 +198,50 @@ const ManageMenu: FC<{
         </Confirm>
       </Menu>
     </>
+  )
+}
+
+const GridTimeline: FC<{
+  actions: CopilotDocV1.Action[]
+  groups?: CopilotDocV1.Group[]
+}> = ({ actions, groups }) => {
+  return (
+    <div className="mt-4 pb-8">
+      <div
+        className={clsx(
+          // 响应式网格布局, 根据屏幕宽度自动切换列数(1列 -> 2列 -> 3列 -> 4列)
+          'grid gap-x-6 gap-y-7 sm:gap-y-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+
+          // 移动端单列模式: 将连接箭头旋转90度朝下, 并移动到卡片底部中心
+          'max-md:[&_.timeline-arrow]:!rotate-90 max-md:[&_.timeline-arrow]:!-bottom-5 max-md:[&_.timeline-arrow]:!left-1/2 max-md:[&_.timeline-arrow]:!-translate-x-1/2 max-md:[&_.timeline-arrow]:!top-auto max-md:[&_.timeline-arrow]:!right-auto max-md:[&_.timeline-arrow]:!translate-y-0',
+
+          // md断点: 双列模式, 隐藏每行末尾(偶数项)的右侧箭头
+          'md:[&>div:nth-child(2n)_.timeline-arrow]:!hidden',
+
+          // lg断点: 三列模式, 先恢复上一个断点隐藏的箭头, 再隐藏每行末尾(3的倍数项)的右侧箭头
+          'lg:[&>div:nth-child(2n)_.timeline-arrow]:!flex lg:[&>div:nth-child(3n)_.timeline-arrow]:!hidden',
+
+          // xl断点: 四列模式, 先恢复上一个断点隐藏的箭头, 再隐藏每行末尾(4的倍数项)的右侧箭头
+          'xl:[&>div:nth-child(3n)_.timeline-arrow]:!flex xl:[&>div:nth-child(4n)_.timeline-arrow]:!hidden',
+
+          // 无论在什么断点下, 永远隐藏最后一个卡片的箭头
+          '[&>div:last-child_.timeline-arrow]:!hidden',
+        )}
+      >
+        {actions.map((action, idx) => (
+          <div key={idx} className="relative w-full z-10 transition-transform">
+            <ActionTimelineItem
+              index={idx}
+              action={action}
+              isLast={idx === actions.length - 1}
+              groups={groups}
+              grid={true} // use true just to activate card style
+              showArrow={idx !== actions.length - 1}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -600,6 +647,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const t = useTranslation()
   const [showOperators, setShowOperators] = useState(true)
   const [showActions, setShowActions] = useState(false)
+  const [gridMode, setGridMode] = useAtom(gridModeAtom)
 
   return (
     <div>
@@ -681,26 +729,47 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         </div>
       </Collapse>
 
-      <H4
-        className="mt-6 inline-flex items-center cursor-pointer hover:opacity-80"
-        onClick={() => setShowActions((v) => !v)}
-      >
-        {t.components.viewer.OperationViewer.action_sequence}
-        <Icon
-          icon="chevron-down"
-          className={clsx(
-            'ml-1 transition-transform',
-            showActions && 'rotate-180',
-          )}
-        />
-      </H4>
+      <div className="mt-6 flex items-center gap-4">
+        <H4
+          className="inline-flex items-center cursor-pointer hover:opacity-80 mb-0"
+          onClick={() => setShowActions((v) => !v)}
+        >
+          {t.components.viewer.OperationViewer.action_sequence}
+          <Icon
+            icon="chevron-down"
+            className={clsx(
+              'ml-1 transition-transform',
+              showActions && 'rotate-180',
+            )}
+          />
+        </H4>
+        {showActions && (
+          <Switch
+            checked={gridMode}
+            onChange={(e) => setGridMode(e.currentTarget.checked)}
+            label={t.components.viewer.OperationViewer.grid_mode}
+            className="mb-0"
+            innerLabel={t.components.viewer.OperationViewer.grid_off}
+            innerLabelChecked={t.components.viewer.OperationViewer.grid_on}
+          />
+        )}
+      </div>
       <Collapse isOpen={showActions}>
         {operation.parsedContent.actions?.length ? (
-          <div className="mt-2 flex flex-col pb-8">
-            {operation.parsedContent.actions.map((action, i) => (
-              <ActionCard action={action} key={i} />
-            ))}
-          </div>
+          <>
+            {gridMode ? (
+              <GridTimeline
+                actions={operation.parsedContent.actions}
+                groups={operation.parsedContent.groups}
+              />
+            ) : (
+              <div className="mt-2 flex flex-col pb-8">
+                {operation.parsedContent.actions.map((action, i) => (
+                  <ActionCard action={action} key={i} />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <NonIdealState
             className="my-2"

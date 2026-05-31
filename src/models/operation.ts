@@ -27,5 +27,5 @@ export enum OpDifficultyBitFlag {
 }
 
 export enum MinimumRequired {
-  V4_0_0 = 'v4.0.0',
+  V4_0_0 = 'v6.0.0',
 }

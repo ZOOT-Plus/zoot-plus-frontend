@@ -1683,8 +1683,8 @@
               "en": "Confirm"
             },
             "default_settings_tooltip": {
-              "cn": "若不进行任何设置, 将使用默认值 (一技能 · 不自动使用 · 技能使用次数: 1次)",
-              "en": "If no settings are applied, default values will be used (Skill 1 · Don't use automatically · Usage count: 1)"
+              "cn": "若不进行任何设置, 将使用默认值 (不指定技能 · 不自动使用 · 技能使用次数: 1次)",
+              "en": "If no settings are applied, default values will be used (Unspecified Skill · Don't use automatically · Usage count: 1)"
             },
             "not_set": {
               "cn": "未设置技能",
@@ -1741,12 +1741,14 @@
         "EditorOperatorItem": {
           "skill_number": {
             "cn": {
+              "0": "不指定技能",
               "1": "一技能",
               "2": "二技能",
               "3": "三技能",
               "other": "未知技能"
             },
             "en": {
+              "0": "Unspecified Skill",
               "1": "S1",
               "2": "S2",
               "3": "S3",
@@ -1847,12 +1849,14 @@
         "EditorOperatorSkill": {
           "skill_number": {
             "cn": {
+              "0": "不指定技能",
               "1": "一技能",
               "2": "二技能",
               "3": "三技能",
               "other": "未知技能"
             },
             "en": {
+              "0": "Unspecified Skill",
               "1": "Skill 1",
               "2": "Skill 2",
               "3": "Skill 3",
@@ -3061,6 +3065,18 @@
         "no_actions_defined": {
           "cn": "作业并未定义任何动作",
           "en": "No actions have been defined for this Job"
+        },
+        "grid_mode": {
+          "cn": "链式视图",
+          "en": "Chain"
+        },
+        "grid_on": {
+          "cn": "开",
+          "en": "On"
+        },
+        "grid_off": {
+          "cn": "关",
+          "en": "Off"
         }
       }
     },
@@ -3440,6 +3456,20 @@
         "en": "Retry"
       }
     },
+    "ThemeSwitchButton": {
+      "light": {
+        "cn": "浅色模式",
+        "en": "Light Mode"
+      },
+      "dark": {
+        "cn": "深色模式",
+        "en": "Dark Mode"
+      },
+      "highContrast": {
+        "cn": "深色模式 (高对比)",
+        "en": "Dark Mode (High Contrast)"
+      }
+    },
     "UserFilter": {
       "searching": {
         "cn": "正在搜索...",
@@ -3509,12 +3539,14 @@
       },
       "skill_number": {
         "cn": {
+          "0": "不指定技能",
           "1": "一技能",
           "2": "二技能",
           "3": "三技能",
           "other": "未知技能"
         },
         "en": {
+          "0": "Unspecified Skill",
           "1": "S1",
           "2": "S2",
           "3": "S3",

@@ -52,9 +52,9 @@ const CHARACTER_TABLE_JSON_URL_CN =
 const UNIEQUIP_TABLE_JSON_URL_CN =
   'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/uniequip_table.json'
 const CHARACTER_TABLE_JSON_URL_EN =
-  'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData_YoStar/main/en_US/gamedata/excel/character_table.json'
+  'https://raw.githubusercontent.com/ArknightsAssets/ArknightsGamedata/refs/heads/master/en/gamedata/excel/character_table.json'
 const UNIEQUIP_TABLE_JSON_URL_EN =
-  'https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData_YoStar/main/en_US/gamedata/excel/uniequip_table.json'
+  'https://raw.githubusercontent.com/ArknightsAssets/ArknightsGamedata/refs/heads/master/en/gamedata/excel/uniequip_table.json'
 
 const CHARACTER_BLOCKLIST = [
   'char_512_aprot', // 暮落(集成战略)：It's just not gonna be there.
