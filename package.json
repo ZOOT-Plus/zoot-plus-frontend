@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsgo --noEmit && vite build",
     "build:fast": "vite build",
     "typecheck": "tsgo --noEmit",
     "build:azure": "pnpm build:fast && node post-build.mjs",
