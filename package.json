@@ -72,7 +72,7 @@
     "tslib": "^2.8.1",
     "type-fest": "^4.40.1",
     "unfetch": "^4.2.0",
-    "zod": "^4.0.0-beta.20250424T163858"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@hookform/devtools": "^4.1.1",
