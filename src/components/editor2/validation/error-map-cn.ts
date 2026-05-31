@@ -1,4 +1,4 @@
-import type * as errors from 'zod/v4/core/errors'
+import type * as errors from 'zod/v4/core'
 
 import { Primitive } from 'type-fest'
 
