@@ -1,4 +1,4 @@
-{
+﻿{
   "essentials": {
     "language": {
       "cn": "简体中文",
@@ -3446,6 +3446,54 @@
       "view_mine": {
         "cn": "看看我的",
         "en": "View personal"
+      }
+    },
+    "UserProfile": {
+      "follow": {
+        "cn": "关注",
+        "en": "Follow"
+      },
+      "following": {
+        "cn": "已关注",
+        "en": "Following"
+      },
+      "unfollowSuccess": {
+        "cn": "已取消关注",
+        "en": "Unfollowed"
+      },
+      "followSuccess": {
+        "cn": "关注成功",
+        "en": "Followed successfully"
+      },
+      "notActivated": {
+        "cn": "未激活",
+        "en": "Not activated"
+      },
+      "loginToFollow": {
+        "cn": "登录后可关注用户",
+        "en": "Login to follow users"
+      },
+      "loading": {
+        "cn": "加载中...",
+        "en": "Loading..."
+      },
+      "loadFailed": {
+        "cn": "加载失败",
+        "en": "Failed to load profile"
+      }
+    },
+    "UserStats": {
+      "following": {
+        "cn": "关注",
+        "en": "Following"
+      },
+      "fans": {
+        "cn": "粉丝",
+        "en": "Fans"
+      },
+      "operations": {
+        "cn": "作业",
+        "en": "Jobs"
       }
     }
   },
