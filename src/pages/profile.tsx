@@ -40,13 +40,13 @@ const _ProfilePage: ComponentType = () => {
         {
           ...userInfo,
           relation: newRelation,
-          followingCount:
+          fansCount:
             newRelation === MaaUserInfoRelationEnum.Following ||
             newRelation === MaaUserInfoRelationEnum.Mutual
-              ? (userInfo.followingCount ?? 0) + 1
-              : Math.max((userInfo.followingCount ?? 0) - 1, 0),
+              ? (userInfo.fansCount ?? 0) + 1
+              : Math.max((userInfo.fansCount ?? 0) - 1, 0),
         },
-        { revalidate: false },
+        { revalidate: true },
       )
     }
   }
