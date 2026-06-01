@@ -1,3 +1,4 @@
+import camelcaseKeys from 'camelcase-keys'
 import { cloneDeep, isObject } from 'lodash-es'
 import {
   ArkLevelControllerApi,
@@ -7,6 +8,7 @@ import {
   CopilotSetApi,
   CopilotUserApi,
   JSONApiResponse,
+  UserFollowApi,
   querystring,
 } from 'maa-copilot-client'
 import { SetRequired } from 'type-fest'
@@ -108,6 +110,13 @@ export class LevelApi<
     super(createConfiguration(options as T))
   }
 }
+export class FollowApi<
+  T extends ApiOptions,
+> extends (UserFollowApi as WithOptions<UserFollowApi>)<T> {
+  constructor(options?: ValidateOptions<T>) {
+    super(createConfiguration(options as T))
+  }
+}
 
 function createConfiguration(options?: ApiOptions) {
   options = {
@@ -161,6 +170,25 @@ function createConfiguration(options?: ApiOptions) {
             }
 
             throw new ApiError(message)
+          }
+
+          // 后端将 camelCase 改为 snake_case，递归转换字段名以兼容 maa-copilot-client 的 FromJSON
+          const contentType = response.headers.get('content-type')
+          if (contentType?.includes('application/json')) {
+            const cloned = response.clone()
+            try {
+              const json = await cloned.json()
+              if (json != null) {
+                const converted = camelcaseKeys(json, { deep: true })
+                response = new Response(JSON.stringify(converted), {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers,
+                })
+              }
+            } catch {
+              // not JSON, ignore
+            }
           }
 
           ;(response as ExtendedResponse).config = config
