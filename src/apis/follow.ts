@@ -1,4 +1,4 @@
-import useSWRInfinite from 'swr/infinite'
+﻿import useSWRInfinite from 'swr/infinite'
 
 import {
   MaaUserInfo,
@@ -6,10 +6,10 @@ import {
   PagedDTOMaaUserInfo,
 } from 'maa-copilot-client'
 
-import { FollowApi } from '../../utils/maa-copilot-client'
-import { useSWRRefresh } from '../../utils/swr'
+import { FollowApi } from '../utils/maa-copilot-client'
+import { useSWRRefresh } from '../utils/swr'
 
-// ── Follow API Service ──────────────────────────────────────────────────────
+// ── Follow API Service ───────────────────────────────────────
 
 /**
  * 关注用户
@@ -67,7 +67,7 @@ export async function getFansList(
   return res.data!
 }
 
-// ── SWR Hooks ───────────────────────────────────────────────────────────────
+// ── SWR Hooks ────────────────────────────────────────────────
 
 const DEFAULT_PAGE_SIZE = 20
 
@@ -132,7 +132,7 @@ export function useRefreshFollowList() {
   return () => refresh((key) => key.includes('followList'))
 }
 
-// ── Relation Helpers ────────────────────────────────────────────────────────
+// ── Relation Helpers ────────────────────────────────────────
 
 /**
  * 判断当前用户是否已关注目标用户
