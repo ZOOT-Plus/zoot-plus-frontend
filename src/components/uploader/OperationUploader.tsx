@@ -13,7 +13,7 @@ import { Tooltip2 } from '@blueprintjs/popover2'
 
 import { useLevels } from 'apis/level'
 import { createOperation } from 'apis/operation'
-import { CopilotInfoStatusEnum } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'maa-copilot-client'
 import { ComponentType, useState } from 'react'
 import { useList } from 'react-use'
 
@@ -41,8 +41,8 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
   const [globalErrors, setGlobalErrors] = useState(null as string[] | null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [operationStatus] = useState<CopilotInfoStatusEnum>(
-    CopilotInfoStatusEnum.Private,
+  const [operationStatus] = useState<CopilotSetStatus>(
+    CopilotSetStatus.Private,
   )
 
   // reasons are in the order of keys
