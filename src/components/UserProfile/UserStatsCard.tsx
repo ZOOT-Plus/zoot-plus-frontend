@@ -1,4 +1,4 @@
-﻿import { Card, Divider, H4 } from '@blueprintjs/core'
+﻿import { Card, H4 } from '@blueprintjs/core'
 
 import { MaaUserInfo } from 'maa-copilot-client'
 import { FC } from 'react'
@@ -32,14 +32,16 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
   ]
 
   return (
-    <Card className="flex items-center justify-around mb-4 py-3">
+    <Card className="flex items-stretch mb-4 py-3 px-0">
       {stats.map((stat, index) => (
-        <div key={stat.label} className="flex items-center">
-          {index > 0 && <Divider className="mx-3 h-8" />}
-          <div className="text-center">
-            <H4 className="mb-0">{stat.value}</H4>
-            <div className="text-xs text-gray-500">{stat.label}</div>
-          </div>
+        <div
+          key={stat.label}
+          className={`flex-1 flex flex-col items-center justify-center ${
+            index > 0 ? 'border-l border-gray-200' : ''
+          }`}
+        >
+          <H4 className="mb-0">{stat.value}</H4>
+          <div className="text-xs text-gray-500">{stat.label}</div>
         </div>
       ))}
     </Card>
