@@ -29,6 +29,7 @@ export interface UseOperationsParams {
   operator?: OperatorFilterParams
   operationIds?: number[]
   uploaderId?: string
+  onlyFollowing?: boolean
 
   disabled?: boolean
   suspense?: boolean
@@ -44,6 +45,7 @@ export function useOperations({
   operator,
   operationIds,
   uploaderId,
+  onlyFollowing,
   disabled,
   suspense,
   revalidateFirstPage,
@@ -99,6 +101,7 @@ export function useOperations({
           desc: descending,
           copilotIds: operationIds,
           uploaderId,
+          onlyFollowing,
         } satisfies QueriesCopilotRequest,
       ]
     },
