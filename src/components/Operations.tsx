@@ -1,7 +1,8 @@
-import {
+﻿import {
   Button,
   ButtonGroup,
   Card,
+  Checkbox,
   Divider,
   H6,
   InputGroup,
@@ -11,7 +12,7 @@ import {
 
 import { UseOperationsParams } from 'apis/operation'
 import clsx from 'clsx'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { debounce } from 'lodash-es'
 import { MaaUserInfo } from 'maa-copilot-client'
 import { ComponentType, useMemo, useState } from 'react'
@@ -19,9 +20,11 @@ import { ComponentType, useMemo, useState } from 'react'
 import { CardTitle } from 'components/CardTitle'
 import { OperationList } from 'components/OperationList'
 import { OperationSetList } from 'components/OperationSetList'
+import { authAtom } from 'store/auth'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
+import { Tooltip2 } from '@blueprintjs/popover2'
 import { LevelSelect } from './LevelSelect'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
@@ -42,6 +45,7 @@ export const Operations: ComponentType = withSuspensable(() => {
 
   const { operatorFilter, setOperatorFilter } = useOperatorFilter()
   const [selectedUser, setSelectedUser] = useState<MaaUserInfo>()
+  const auth = useAtomValue(authAtom)
   const [neoLayout, setNeoLayout] = useAtom(neoLayoutAtom)
   const [tab, setTab] = useState<'operation' | 'operationSet'>('operation')
   const [multiselect, setMultiselect] = useState(false)
@@ -146,6 +150,26 @@ export const Operations: ComponentType = withSuspensable(() => {
                 filter={operatorFilter}
                 onChange={setOperatorFilter}
               />
+              <Tooltip2
+                content={
+                  !auth.token ? t.components.UserProfile.loginToFollow : undefined
+                }
+                placement="top"
+              >
+                <Checkbox
+                  className="mb-0"
+                  disabled={!auth.token}
+                  checked={queryParams.onlyFollowing}
+                  onChange={(e) =>
+                    setQueryParams((old) => ({
+                      ...old,
+                      onlyFollowing: e.currentTarget.checked,
+                    }))
+                  }
+                >
+                  {t.components.Operations.only_following}
+                </Checkbox>
+              </Tooltip2>
               <div className="flex flex-wrap items-center ml-auto">
                 <H6 className="mb-0 mr-1 opacity-75">
                   {t.components.Operations.sort_by}
@@ -223,6 +247,26 @@ export const Operations: ComponentType = withSuspensable(() => {
                 }))
               }}
             />
+            <Tooltip2
+              content={
+                !auth.token ? t.components.UserProfile.loginToFollow : undefined
+              }
+              placement="top"
+            >
+              <Checkbox
+                className="mb-0"
+                disabled={!auth.token}
+                checked={queryParams.onlyFollowing}
+                onChange={(e) =>
+                  setQueryParams((old) => ({
+                    ...old,
+                    onlyFollowing: e.currentTarget.checked,
+                  }))
+                }
+              >
+                {t.components.Operations.only_following}
+              </Checkbox>
+            </Tooltip2>
           </div>
         )}
       </Card>

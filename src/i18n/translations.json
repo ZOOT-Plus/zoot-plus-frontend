@@ -3304,6 +3304,10 @@
       "views": {
         "cn": "访问量",
         "en": "Views"
+      },
+      "only_following": {
+        "cn": "只看关注",
+        "en": "Following Only"
       }
     },
     "OperationSetCard": {
