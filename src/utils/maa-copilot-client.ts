@@ -1,4 +1,3 @@
-import camelcaseKeys from 'camelcase-keys'
 import { cloneDeep, isObject } from 'lodash-es'
 import {
   ArkLevelControllerApi,
@@ -182,25 +181,6 @@ function createConfiguration(options?: ApiOptions) {
             }
 
             throw new ApiError(message)
-          }
-
-          // 后端将 camelCase 改为 snake_case，递归转换字段名以兼容 maa-copilot-client 的 FromJSON
-          const contentType = response.headers.get('content-type')
-          if (contentType?.includes('application/json')) {
-            const cloned = response.clone()
-            try {
-              const json = await cloned.json()
-              if (json != null) {
-                const converted = camelcaseKeys(json, { deep: true })
-                response = new Response(JSON.stringify(converted), {
-                  status: response.status,
-                  statusText: response.statusText,
-                  headers: response.headers,
-                })
-              }
-            } catch {
-              // not JSON, ignore
-            }
           }
 
           ;(response as ExtendedResponse).config = config
