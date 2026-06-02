@@ -1,4 +1,4 @@
-﻿{
+{
   "essentials": {
     "language": {
       "cn": "简体中文",
@@ -4099,7 +4099,45 @@
       "changelog": {
         "cn": "更新日志",
         "en": "Changelog"
+    },
+    "following": {
+      "title": {
+        "cn": "关注列表",
+        "en": "Following"
+      },
+      "empty_title": {
+        "cn": "暂无关注",
+        "en": "No Following"
+      },
+      "empty_description": {
+        "cn": "还没有关注任何用户",
+        "en": "No users followed yet"
       }
+    },
+    "fans": {
+      "title": {
+        "cn": "粉丝列表",
+        "en": "Fans"
+      },
+      "empty_title": {
+        "cn": "暂无粉丝",
+        "en": "No Fans"
+      },
+      "empty_description": {
+        "cn": "还没有粉丝",
+        "en": "No fans yet"
+      }
+    },
+    "followCommon": {
+      "no_more": {
+        "cn": "没有更多了",
+        "en": "No more"
+      },
+      "load_more": {
+        "cn": "加载更多",
+        "en": "Load more"
+      }
+    }
     }
   },
   "services": {

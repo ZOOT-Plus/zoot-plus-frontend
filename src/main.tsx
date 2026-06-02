@@ -61,9 +61,13 @@ const AboutPageLazy = withSuspensable(
   lazy(() => import('./pages/about').then((m) => ({ default: m.AboutPage }))),
 )
 const ProfilePageLazy = withSuspensable(
-  lazy(() =>
-    import('./pages/profile').then((m) => ({ default: m.ProfilePage })),
-  ),
+  lazy(() => import('./pages/profile').then((m) => ({ default: m.ProfilePage }))),
+)
+const FollowingPageLazy = withSuspensable(
+  lazy(() => import('./pages/following').then((m) => ({ default: m.FollowingPage }))),
+)
+const FansPageLazy = withSuspensable(
+  lazy(() => import('./pages/fans').then((m) => ({ default: m.FansPage }))),
 )
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -76,6 +80,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/create" element={<CreatePageLazy />} />
           <Route path="/about" element={<AboutPageLazy />} />
           <Route path="/profile/:id" element={<ProfilePageLazy />} />
+          <Route path="/user/:id/following" element={<FollowingPageLazy />} />
+          <Route path="/user/:id/fans" element={<FansPageLazy />} />
           <Route path="/operation/:id" element={<ViewPage />} />
           <Route path="/editor" element={<EditorPageLazy />} />
           <Route path="/editor/:id" element={<EditorPageLazy />} />
