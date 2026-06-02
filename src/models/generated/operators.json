@@ -2311,6 +2311,17 @@
       "modules": ["", "X", "Y"]
     },
     {
+      "id": "char_1049_catap2",
+      "prof": "WARRIOR",
+      "subProf": "mercenary",
+      "name_en": "Zinogre S Catapult",
+      "name": "雷狼龙S空爆",
+      "alias": "leilanglongSkongbao lllSkb 雷狼龍S空爆",
+      "rarity": 5,
+      "alt_name": "Zinogre S Catapult",
+      "modules": ["", "X"]
+    },
+    {
       "id": "token_10033_ela_grzmot",
       "prof": "TOKEN",
       "subProf": "notchar1",
@@ -2663,6 +2674,16 @@
       "rarity": 5,
       "alt_name": "Robin",
       "modules": ["", "Y"]
+    },
+    {
+      "id": "char_4215_buddy",
+      "prof": "PIONEER",
+      "subProf": "tactician",
+      "name_en": "Rhodes Island Recon",
+      "name": "罗德岛隐秘队",
+      "alias": "luodedaoyinmidui luodedaoyinbidui lddymd lddybd 羅德島隱秘隊 luodedaoyinmizhui luodedaoyinbizhui lddymz lddybz",
+      "rarity": 1,
+      "alt_name": "Rhodes Island Recon"
     },
     {
       "id": "char_4133_logos",
@@ -3030,7 +3051,7 @@
       "alias": "narentuya nuorentuya nrty 娜仁圖亞",
       "rarity": 6,
       "alt_name": "Narantuya",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_4212_nasti",
@@ -3245,7 +3266,7 @@
       "alias": "qilinRyedao qlRyd 麒麟R夜刀",
       "rarity": 6,
       "alt_name": "Kirin R Yato",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "token_10064_wang_stone1",
@@ -3352,7 +3373,7 @@
       "alias": "rendong rd 忍冬",
       "rarity": 6,
       "alt_name": "Vulpisfoglia",
-      "modules": ["", "X"]
+      "modules": ["", "X", "Y"]
     },
     {
       "id": "char_363_toddi",
@@ -4633,6 +4654,16 @@
       "modules": ["", "X"]
     },
     {
+      "id": "token_10063_buddy_bddg",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": " Palamute",
+      "name": "牙猎犬",
+      "alias": "yaliequan ylq 牙獵犬",
+      "rarity": 0,
+      "alt_name": " Palamute"
+    },
+    {
       "id": "char_173_slchan",
       "prof": "SPECIAL",
       "subProf": "hookmaster",
@@ -4663,6 +4694,17 @@
       "alias": "yan y 宴",
       "rarity": 4,
       "alt_name": "Utage",
+      "modules": ["", "X"]
+    },
+    {
+      "id": "char_1048_orchd2",
+      "prof": "SNIPER",
+      "subProf": "closerange",
+      "name_en": "Violet Mizutsune Orchid",
+      "name": "焰狐龙梓兰",
+      "alias": "yanhulongzilan yhlzl 焰狐龍梓蘭",
+      "rarity": 6,
+      "alt_name": "Violet Mizutsune Orchid",
       "modules": ["", "X"]
     },
     {
