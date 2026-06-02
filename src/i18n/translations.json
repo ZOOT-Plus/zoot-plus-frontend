@@ -3304,10 +3304,6 @@
       "views": {
         "cn": "访问量",
         "en": "Views"
-      },
-      "only_following": {
-        "cn": "只看关注",
-        "en": "Following Only"
       }
     },
     "OperationSetCard": {
@@ -3446,6 +3442,10 @@
       "view_my_jobs": {
         "cn": "查看我自己的作业",
         "en": "View my own Jobs"
+      },
+      "only_following": {
+        "cn": "只看关注",
+        "en": "Only following"
       },
       "view_mine": {
         "cn": "看看我的",

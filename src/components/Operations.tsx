@@ -134,11 +134,20 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
                 <UserFilter
                   user={selectedUser}
+                  onlyFollowing={queryParams.onlyFollowing}
                   onChange={(user) => {
                     setSelectedUser(user)
                     setQueryParams((old) => ({
                       ...old,
                       uploaderId: user?.id,
+                      onlyFollowing: undefined,
+                    }))
+                  }}
+                  onOnlyFollowingChange={(following) => {
+                    setQueryParams((old) => ({
+                      ...old,
+                      onlyFollowing: following || undefined,
+                      uploaderId: undefined,
                     }))
                   }}
                 />
@@ -150,26 +159,6 @@ export const Operations: ComponentType = withSuspensable(() => {
                 filter={operatorFilter}
                 onChange={setOperatorFilter}
               />
-              <Tooltip2
-                content={
-                  !auth.token ? t.components.UserProfile.loginToFollow : undefined
-                }
-                placement="top"
-              >
-                <Checkbox
-                  className="mb-0"
-                  disabled={!auth.token}
-                  checked={queryParams.onlyFollowing}
-                  onChange={(e) =>
-                    setQueryParams((old) => ({
-                      ...old,
-                      onlyFollowing: e.currentTarget.checked,
-                    }))
-                  }
-                >
-                  {t.components.Operations.only_following}
-                </Checkbox>
-              </Tooltip2>
               <div className="flex flex-wrap items-center ml-auto">
                 <H6 className="mb-0 mr-1 opacity-75">
                   {t.components.Operations.sort_by}
@@ -239,34 +228,23 @@ export const Operations: ComponentType = withSuspensable(() => {
             />
             <UserFilter
               user={selectedUser}
+              onlyFollowing={queryParams.onlyFollowing}
               onChange={(user) => {
                 setSelectedUser(user)
                 setQueryParams((old) => ({
                   ...old,
                   uploaderId: user?.id,
+                  onlyFollowing: undefined,
+                }))
+              }}
+              onOnlyFollowingChange={(following) => {
+                setQueryParams((old) => ({
+                  ...old,
+                  onlyFollowing: following || undefined,
+                  uploaderId: undefined,
                 }))
               }}
             />
-            <Tooltip2
-              content={
-                !auth.token ? t.components.UserProfile.loginToFollow : undefined
-              }
-              placement="top"
-            >
-              <Checkbox
-                className="mb-0"
-                disabled={!auth.token}
-                checked={queryParams.onlyFollowing}
-                onChange={(e) =>
-                  setQueryParams((old) => ({
-                    ...old,
-                    onlyFollowing: e.currentTarget.checked,
-                  }))
-                }
-              >
-                {t.components.Operations.only_following}
-              </Checkbox>
-            </Tooltip2>
           </div>
         )}
       </Card>
