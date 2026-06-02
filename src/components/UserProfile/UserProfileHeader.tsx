@@ -87,7 +87,7 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
           icon={following ? 'tick' : 'plus'}
           loading={loading}
           onClick={handleFollowToggle}
-          outlined={!following}
+          minimal={following}
           fill
         >
           {following
