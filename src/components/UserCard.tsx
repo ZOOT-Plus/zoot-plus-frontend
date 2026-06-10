@@ -1,11 +1,18 @@
 ﻿import { Button, Card } from '@blueprintjs/core'
 
 import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
-import { FC } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSWRConfig } from 'swr'
 
+import {
+  isFollowing as checkIsFollowing,
+  follow,
+  unfollow,
+} from '../apis/follow'
 import { useTranslation } from '../i18n/i18n'
-import { isFollowing, useToggleFollow } from '../store/user'
+import { formatError } from '../utils/error'
+import { AppToaster } from './Toaster'
 
 interface UserCardProps {
   user: MaaUserInfo
@@ -18,12 +25,72 @@ export const UserCard: FC<UserCardProps> = ({
 }) => {
   const t = useTranslation()
   const navigate = useNavigate()
-  const { toggle, loading } = useToggleFollow()
+  const { mutate } = useSWRConfig()
+  const [relation, setRelation] = useState(user.relation)
+  const [fansCount, setFansCount] = useState(user.fansCount ?? 0)
+  const [loading, setLoading] = useState(false)
 
-  const following = isFollowing(user.relation)
-  const isMutual = user.relation === MaaUserInfoRelationEnum.Mutual
-  const isFollowBy = user.relation === MaaUserInfoRelationEnum.FollowBy
-  const isSelf = user.relation === MaaUserInfoRelationEnum.Self
+  useEffect(() => {
+    setRelation(user.relation)
+    setFansCount(user.fansCount ?? 0)
+  }, [user.fansCount, user.relation])
+
+  const following = checkIsFollowing(relation)
+  const isMutual = relation === MaaUserInfoRelationEnum.Mutual
+  const isFollowBy = relation === MaaUserInfoRelationEnum.FollowedBy
+  const isSelf = relation === MaaUserInfoRelationEnum.Self
+  const followButtonText = isMutual
+    ? t.components.UserProfile.mutual
+    : following
+      ? t.components.UserProfile.following
+      : isFollowBy
+        ? t.components.UserProfile.followBack
+        : t.components.UserProfile.follow
+  const followButtonIcon = isMutual
+    ? 'swap-horizontal'
+    : following
+      ? 'tick'
+      : 'plus'
+  const followButtonIntent = isMutual
+    ? 'success'
+    : following
+      ? 'none'
+      : 'primary'
+
+  const handleFollowToggle = useCallback(async () => {
+    if (!user.id || loading) return
+
+    setLoading(true)
+    try {
+      if (following) {
+        await unfollow(Number(user.id))
+        setRelation(
+          isMutual
+            ? MaaUserInfoRelationEnum.FollowedBy
+            : MaaUserInfoRelationEnum.None,
+        )
+        setFansCount((count) => Math.max(count - 1, 0))
+      } else {
+        await follow(Number(user.id))
+        setRelation(
+          isFollowBy
+            ? MaaUserInfoRelationEnum.Mutual
+            : MaaUserInfoRelationEnum.Following,
+        )
+        setFansCount((count) => count + 1)
+      }
+
+      await mutate(['user', user.id])
+      await mutate(['currentUser'])
+    } catch (err) {
+      AppToaster.show({
+        intent: 'danger',
+        message: formatError(err),
+      })
+    } finally {
+      setLoading(false)
+    }
+  }, [following, isFollowBy, isMutual, loading, mutate, user.id])
 
   return (
     <Card
@@ -40,9 +107,8 @@ export const UserCard: FC<UserCardProps> = ({
         <div>
           <div className="font-medium">{user.userName}</div>
           <div className="text-sm text-gray-500">
-            {user.followingCount ?? 0}{' '}
-            {t.components.UserStats.following} · {user.fansCount ?? 0}{' '}
-            {t.components.UserStats.fans}
+            {user.followingCount ?? 0} {t.components.UserStats.following} ·{' '}
+            {fansCount} {t.components.UserStats.fans}
           </div>
         </div>
       </div>
@@ -50,23 +116,18 @@ export const UserCard: FC<UserCardProps> = ({
       {/* Follow button */}
       {showFollowButton && !isSelf && (
         <Button
-          intent={following ? 'none' : 'primary'}
-          icon={isMutual ? 'swap-horizontal' : following ? 'tick' : 'plus'}
+          className="min-w-[5.25rem] shrink-0 justify-center"
+          intent={followButtonIntent}
+          icon={followButtonIcon}
           loading={loading}
           onClick={(e) => {
             e.stopPropagation()
-            toggle(user)
+            handleFollowToggle()
           }}
+          outlined={following || isFollowBy}
           small
-          minimal={following}
         >
-          {isMutual
-            ? t.components.UserProfile.mutual
-            : following
-              ? t.components.UserProfile.following
-              : isFollowBy
-                ? t.components.UserProfile.followBack
-                : t.components.UserProfile.follow}
+          {followButtonText}
         </Button>
       )}
     </Card>
