@@ -46,16 +46,12 @@ export const UserCard: FC<UserCardProps> = ({
       : isFollowBy
         ? t.components.UserProfile.followBack
         : t.components.UserProfile.follow
-  const followButtonIcon = isMutual
-    ? 'swap-horizontal'
-    : following
-      ? 'tick'
-      : 'plus'
-  const followButtonIntent = isMutual
-    ? 'success'
-    : following
-      ? 'none'
-      : 'primary'
+  const followButtonClassName = [
+    'w-24 h-8 shrink-0 rounded !inline-flex !items-center !justify-center !px-3 !text-center !font-medium !shadow-none [&_.bp4-button-text]:w-full [&_.bp4-button-text]:text-center',
+    !following
+      ? '!border !border-blue-600 !bg-blue-600 !text-white hover:!border-blue-700 hover:!bg-blue-700 dark:!border-blue-500 dark:!bg-blue-500 dark:hover:!border-blue-400 dark:hover:!bg-blue-400'
+      : '!border !border-slate-200 !bg-slate-200 !text-slate-700 hover:!border-slate-300 hover:!bg-slate-300 dark:!border-slate-600 dark:!bg-slate-700 dark:!text-slate-100 dark:hover:!border-slate-500 dark:hover:!bg-slate-600',
+  ].join(' ')
 
   const handleFollowToggle = useCallback(async () => {
     if (!user.id || loading) return
@@ -116,16 +112,13 @@ export const UserCard: FC<UserCardProps> = ({
       {/* Follow button */}
       {showFollowButton && !isSelf && (
         <Button
-          className="min-w-[5.25rem] shrink-0 justify-center"
-          intent={followButtonIntent}
-          icon={followButtonIcon}
+          className={followButtonClassName}
+          intent="none"
           loading={loading}
           onClick={(e) => {
             e.stopPropagation()
             handleFollowToggle()
           }}
-          outlined={following || isFollowBy}
-          small
         >
           {followButtonText}
         </Button>
