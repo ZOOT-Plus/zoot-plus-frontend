@@ -25,13 +25,12 @@ export const UserCard: FC<UserCardProps> = ({
 
   return (
     <Card
-      interactive
       onClick={() => navigate(`/profile/${user.id}`)}
-      className="flex items-center justify-between"
+      className="flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
     >
       <div className="flex items-center space-x-3">
         {/* Avatar placeholder */}
-        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-100 text-blue-600 font-medium">
+        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">
           {user.userName?.[0]?.toUpperCase() ?? '?'}
         </div>
 
