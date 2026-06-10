@@ -2,11 +2,11 @@
 
 import { useAtomValue } from 'jotai'
 import { MaaUserInfo } from 'maa-copilot-client'
-import { FC } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { FC, useState } from 'react'
 
 import { useTranslation } from '../../i18n/i18n'
 import { authAtom } from '../../store/auth'
+import { FollowListDialog } from '../FollowListDialog'
 
 interface UserStatsCardProps {
   user: MaaUserInfo
@@ -18,20 +18,20 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
   operationCount,
 }) => {
   const t = useTranslation()
-  const navigate = useNavigate()
   const auth = useAtomValue(authAtom)
   const isSelf = auth.userId === user.id
+  const [dialogType, setDialogType] = useState<'following' | 'fans' | null>(null)
 
   const stats = [
     {
       label: t.components.UserStats.following,
       value: user.followingCount ?? 0,
-      path: isSelf && user.id ? `/user/${user.id}/following` : undefined,
+      onClick: isSelf ? () => setDialogType('following') : undefined,
     },
     {
       label: t.components.UserStats.fans,
       value: user.fansCount ?? 0,
-      path: isSelf && user.id ? `/user/${user.id}/fans` : undefined,
+      onClick: isSelf ? () => setDialogType('fans') : undefined,
     },
     {
       label: t.components.UserStats.operations,
@@ -40,25 +40,34 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
   ]
 
   return (
-    <Card className="flex items-stretch mb-4 py-3 px-0">
-      {stats.map((stat, index) => (
-        <button
-          key={stat.label}
-          type="button"
-          disabled={!stat.path}
-          onClick={() => {
-            if (stat.path) {
-              navigate(stat.path)
-            }
-          }}
-          className={`flex-1 flex flex-col items-center justify-center bg-transparent border-0 ${
-            index > 0 ? 'border-l border-gray-200 dark:border-gray-700' : ''
-          } ${stat.path ? 'cursor-pointer' : 'cursor-default'}`}
-        >
-          <H4 className="mb-0">{stat.value}</H4>
-          <div className="text-xs text-gray-500">{stat.label}</div>
-        </button>
-      ))}
-    </Card>
+    <>
+      <Card className="flex items-stretch mb-4 py-3 px-0">
+        {stats.map((stat, index) => (
+          <button
+            key={stat.label}
+            type="button"
+            disabled={!stat.onClick}
+            onClick={stat.onClick}
+            className={`flex-1 flex flex-col items-center justify-center bg-transparent border-0 ${
+              index > 0 ? 'border-l border-gray-200 dark:border-gray-700' : ''
+            } ${stat.onClick ? 'cursor-pointer' : 'cursor-default'}`}
+          >
+            <H4 className="mb-0">{stat.value}</H4>
+            <div className="text-xs text-gray-500">{stat.label}</div>
+          </button>
+        ))}
+      </Card>
+
+      <FollowListDialog
+        isOpen={dialogType === 'following'}
+        onClose={() => setDialogType(null)}
+        type="following"
+      />
+      <FollowListDialog
+        isOpen={dialogType === 'fans'}
+        onClose={() => setDialogType(null)}
+        type="fans"
+      />
+    </>
   )
 }

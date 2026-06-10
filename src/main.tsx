@@ -1,4 +1,4 @@
-import '@blueprintjs/core/lib/css/blueprint.css'
+﻿import '@blueprintjs/core/lib/css/blueprint.css'
 import '@blueprintjs/icons/lib/css/blueprint-icons.css'
 import '@blueprintjs/popover2/lib/css/blueprint-popover2.css'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
@@ -63,12 +63,6 @@ const AboutPageLazy = withSuspensable(
 const ProfilePageLazy = withSuspensable(
   lazy(() => import('./pages/profile').then((m) => ({ default: m.ProfilePage }))),
 )
-const FollowingPageLazy = withSuspensable(
-  lazy(() => import('./pages/following').then((m) => ({ default: m.FollowingPage }))),
-)
-const FansPageLazy = withSuspensable(
-  lazy(() => import('./pages/fans').then((m) => ({ default: m.FansPage }))),
-)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -80,8 +74,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/create" element={<CreatePageLazy />} />
           <Route path="/about" element={<AboutPageLazy />} />
           <Route path="/profile/:id" element={<ProfilePageLazy />} />
-          <Route path="/user/:id/following" element={<FollowingPageLazy />} />
-          <Route path="/user/:id/fans" element={<FansPageLazy />} />
           <Route path="/operation/:id" element={<ViewPage />} />
           <Route path="/editor" element={<EditorPageLazy />} />
           <Route path="/editor/:id" element={<EditorPageLazy />} />
