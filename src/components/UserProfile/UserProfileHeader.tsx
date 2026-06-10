@@ -30,10 +30,12 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
   const isSelf = auth.userId === user.id
   const isLoggedIn = !!auth.token
 
-  const [following, setFollowing] = useState(() =>
-    checkIsFollowing(user.relation),
-  )
+  const [relation, setRelation] = useState(user.relation)
   const [loading, setLoading] = useState(false)
+
+  const following = checkIsFollowing(relation)
+  const isMutual = relation === MaaUserInfoRelationEnum.Mutual
+  const isFollowBy = relation === MaaUserInfoRelationEnum.FollowedBy
 
   const handleFollowToggle = useCallback(async () => {
     if (!user.id || loading) return
@@ -42,16 +44,18 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
     try {
       if (following) {
         await unfollow(Number(user.id))
-        setFollowing(false)
-        onFollowChange?.(MaaUserInfoRelationEnum.None)
+        const newRelation = isMutual ? MaaUserInfoRelationEnum.FollowedBy : MaaUserInfoRelationEnum.None
+        setRelation(newRelation)
+        onFollowChange?.(newRelation)
         AppToaster.show({
           intent: 'success',
           message: t.components.UserProfile.unfollowSuccess,
         })
       } else {
         await follow(Number(user.id))
-        setFollowing(true)
-        onFollowChange?.(MaaUserInfoRelationEnum.Following)
+        const newRelation = isFollowBy ? MaaUserInfoRelationEnum.Mutual : MaaUserInfoRelationEnum.Following
+        setRelation(newRelation)
+        onFollowChange?.(newRelation)
         AppToaster.show({
           intent: 'success',
           message: t.components.UserProfile.followSuccess,
@@ -65,7 +69,7 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
     } finally {
       setLoading(false)
     }
-  }, [following, loading, onFollowChange, t, user.id])
+  }, [following, isMutual, isFollowBy, loading, onFollowChange, t, user.id])
 
   return (
     <Card className="flex flex-col mb-4 space-y-3">
@@ -84,15 +88,19 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
       {!isSelf && isLoggedIn && (
         <Button
           intent={following ? 'none' : 'primary'}
-          icon={following ? 'tick' : 'plus'}
+          icon={isMutual ? 'swap-horizontal' : following ? 'tick' : 'plus'}
           loading={loading}
           onClick={handleFollowToggle}
           minimal={following}
           fill
         >
-          {following
-            ? t.components.UserProfile.following
-            : t.components.UserProfile.follow}
+          {isMutual
+            ? t.components.UserProfile.mutual
+            : following
+              ? t.components.UserProfile.following
+              : isFollowBy
+                ? t.components.UserProfile.followBack
+                : t.components.UserProfile.follow}
         </Button>
       )}
 

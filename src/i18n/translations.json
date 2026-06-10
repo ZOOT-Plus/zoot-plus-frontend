@@ -3461,6 +3461,14 @@
         "cn": "已关注",
         "en": "Following"
       },
+      "mutual": {
+        "cn": "互相关注",
+        "en": "Mutual"
+      },
+      "followBack": {
+        "cn": "回关",
+        "en": "Follow Back"
+      },
       "unfollowSuccess": {
         "cn": "已取消关注",
         "en": "Unfollowed"

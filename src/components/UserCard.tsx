@@ -21,6 +21,8 @@ export const UserCard: FC<UserCardProps> = ({
   const { toggle, loading } = useToggleFollow()
 
   const following = isFollowing(user.relation)
+  const isMutual = user.relation === MaaUserInfoRelationEnum.Mutual
+  const isFollowBy = user.relation === MaaUserInfoRelationEnum.FollowBy
   const isSelf = user.relation === MaaUserInfoRelationEnum.Self
 
   return (
@@ -49,7 +51,7 @@ export const UserCard: FC<UserCardProps> = ({
       {showFollowButton && !isSelf && (
         <Button
           intent={following ? 'none' : 'primary'}
-          icon={following ? 'tick' : 'plus'}
+          icon={isMutual ? 'swap-horizontal' : following ? 'tick' : 'plus'}
           loading={loading}
           onClick={(e) => {
             e.stopPropagation()
@@ -58,9 +60,13 @@ export const UserCard: FC<UserCardProps> = ({
           small
           minimal={following}
         >
-          {following
-            ? t.components.UserProfile.following
-            : t.components.UserProfile.follow}
+          {isMutual
+            ? t.components.UserProfile.mutual
+            : following
+              ? t.components.UserProfile.following
+              : isFollowBy
+                ? t.components.UserProfile.followBack
+                : t.components.UserProfile.follow}
         </Button>
       )}
     </Card>
