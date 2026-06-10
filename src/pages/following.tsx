@@ -1,6 +1,7 @@
-import { Button, NonIdealState } from '@blueprintjs/core'
+﻿import { Button, NonIdealState } from '@blueprintjs/core'
 
 import { ComponentType } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useFollowList } from '../apis/follow'
 import { UserCard } from '../components/UserCard'
@@ -8,6 +9,7 @@ import { useTranslation } from '../i18n/i18n'
 
 const _FollowingPage: ComponentType = () => {
   const t = useTranslation()
+  const navigate = useNavigate()
 
   const { users, total, setSize, isValidating, isReachingEnd } = useFollowList({
     type: 'following',
@@ -19,6 +21,12 @@ const _FollowingPage: ComponentType = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      <Button
+        icon="arrow-left"
+        minimal
+        className="mb-4"
+        onClick={() => navigate(-1)}
+      />
       <h2 className="text-xl font-semibold mb-6">
         {t.pages.following.title} ({total})
       </h2>
