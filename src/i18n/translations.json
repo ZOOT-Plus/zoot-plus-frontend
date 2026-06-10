@@ -4103,6 +4103,7 @@
       "changelog": {
         "cn": "更新日志",
         "en": "Changelog"
+      }
     },
     "following": {
       "title": {
@@ -4141,7 +4142,6 @@
         "cn": "加载更多",
         "en": "Load more"
       }
-    }
     }
   },
   "services": {
