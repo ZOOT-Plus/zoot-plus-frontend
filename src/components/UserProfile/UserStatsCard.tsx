@@ -64,11 +64,13 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
         isOpen={dialogType === 'following'}
         onClose={() => setDialogType(null)}
         type="following"
+        disabled={!isSelf}
       />
       <FollowListDialog
         isOpen={dialogType === 'fans'}
         onClose={() => setDialogType(null)}
         type="fans"
+        disabled={!isSelf}
       />
     </>
   )

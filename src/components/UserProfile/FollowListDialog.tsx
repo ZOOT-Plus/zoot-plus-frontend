@@ -22,7 +22,8 @@ export const FollowListDialog: ComponentType<{
   isOpen: boolean
   onClose: () => void
   type: 'following' | 'fans'
-}> = ({ isOpen, onClose, type }) => {
+  disabled?: boolean
+}> = ({ isOpen, onClose, type, disabled }) => {
   const t = useTranslation()
   const parentRef = useRef<HTMLDivElement>(null)
   const [scrollTop, setScrollTop] = useState(0)
@@ -32,6 +33,7 @@ export const FollowListDialog: ComponentType<{
     useFollowList({
       type,
       size: 20,
+      disabled: disabled || !isOpen,
     })
 
   const title =

@@ -53,7 +53,10 @@ export const UserFilter: FC<UserFilterProps> = ({
     if (isMyself(user) && !auth.token) {
       onChange(undefined)
     }
-  }, [auth.token, user, onChange])
+    if (onlyFollowing && !auth.token) {
+      onOnlyFollowingChange?.(false)
+    }
+  }, [auth.token, onlyFollowing, user, onChange, onOnlyFollowingChange])
 
   return (
     <>
