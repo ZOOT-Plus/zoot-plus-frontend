@@ -1,10 +1,9 @@
-﻿import useSWRInfinite from 'swr/infinite'
-
-import {
+﻿import {
   MaaUserInfo,
   MaaUserInfoRelationEnum,
   PagedDTOMaaUserInfo,
 } from 'maa-copilot-client'
+import useSWRInfinite from 'swr/infinite'
 
 import { FollowApi } from '../utils/maa-copilot-client'
 import { useSWRRefresh } from '../utils/swr'
@@ -91,6 +90,7 @@ export function useFollowList({
     data: pages,
     error,
     setSize,
+    isLoading,
     isValidating,
   } = useSWRInfinite(
     (pageIndex, previousPage: PagedDTOMaaUserInfo) => {
@@ -100,8 +100,7 @@ export function useFollowList({
       return ['followList', type, pageIndex + 1, size]
     },
     async ([, listType, page, pageSize]) => {
-      const fetcher =
-        listType === 'following' ? getFollowingList : getFansList
+      const fetcher = listType === 'following' ? getFollowingList : getFansList
       return fetcher(page as number, pageSize as number)
     },
     {
@@ -119,6 +118,7 @@ export function useFollowList({
     total,
     error,
     setSize,
+    isLoading,
     isValidating,
     isReachingEnd,
   }
@@ -137,7 +137,9 @@ export function useRefreshFollowList() {
 /**
  * 判断当前用户是否已关注目标用户
  */
-export function isFollowing(relation?: MaaUserInfoRelationEnum | null): boolean {
+export function isFollowing(
+  relation?: MaaUserInfoRelationEnum | null,
+): boolean {
   return (
     relation === MaaUserInfoRelationEnum.Following ||
     relation === MaaUserInfoRelationEnum.Mutual
@@ -147,7 +149,9 @@ export function isFollowing(relation?: MaaUserInfoRelationEnum | null): boolean 
 /**
  * 判断目标用户是否关注了当前用户（是粉丝）
  */
-export function isFollowedBy(relation?: MaaUserInfoRelationEnum | null): boolean {
+export function isFollowedBy(
+  relation?: MaaUserInfoRelationEnum | null,
+): boolean {
   return (
     relation === MaaUserInfoRelationEnum.FollowedBy ||
     relation === MaaUserInfoRelationEnum.Mutual

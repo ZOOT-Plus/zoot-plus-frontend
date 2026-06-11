@@ -6,7 +6,7 @@ import { FC, useState } from 'react'
 
 import { useTranslation } from '../../i18n/i18n'
 import { authAtom } from '../../store/auth'
-import { FollowListDialog } from '../FollowListDialog'
+import { FollowListDialog } from './FollowListDialog'
 
 interface UserStatsCardProps {
   user: MaaUserInfo
@@ -20,7 +20,9 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
   const t = useTranslation()
   const auth = useAtomValue(authAtom)
   const isSelf = auth.userId === user.id
-  const [dialogType, setDialogType] = useState<'following' | 'fans' | null>(null)
+  const [dialogType, setDialogType] = useState<'following' | 'fans' | null>(
+    null,
+  )
 
   const stats = [
     {

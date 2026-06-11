@@ -3,14 +3,14 @@
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
-import { FC, useCallback, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 
-import { useTranslation } from '../../i18n/i18n'
 import {
-  follow,
   isFollowing as checkIsFollowing,
+  follow,
   unfollow,
 } from '../../apis/follow'
+import { useTranslation } from '../../i18n/i18n'
 import { authAtom } from '../../store/auth'
 import { formatError } from '../../utils/error'
 import { CardTitle } from '../CardTitle'
@@ -33,6 +33,10 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
   const [relation, setRelation] = useState(user.relation)
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    setRelation(user.relation)
+  }, [user.relation])
+
   const following = checkIsFollowing(relation)
   const isMutual = relation === MaaUserInfoRelationEnum.Mutual
   const isFollowBy = relation === MaaUserInfoRelationEnum.FollowedBy
@@ -44,7 +48,9 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
     try {
       if (following) {
         await unfollow(Number(user.id))
-        const newRelation = isMutual ? MaaUserInfoRelationEnum.FollowedBy : MaaUserInfoRelationEnum.None
+        const newRelation = isMutual
+          ? MaaUserInfoRelationEnum.FollowedBy
+          : MaaUserInfoRelationEnum.None
         setRelation(newRelation)
         onFollowChange?.(newRelation)
         AppToaster.show({
@@ -53,7 +59,9 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
         })
       } else {
         await follow(Number(user.id))
-        const newRelation = isFollowBy ? MaaUserInfoRelationEnum.Mutual : MaaUserInfoRelationEnum.Following
+        const newRelation = isFollowBy
+          ? MaaUserInfoRelationEnum.Mutual
+          : MaaUserInfoRelationEnum.Following
         setRelation(newRelation)
         onFollowChange?.(newRelation)
         AppToaster.show({
