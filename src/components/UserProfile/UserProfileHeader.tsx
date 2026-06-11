@@ -3,18 +3,12 @@
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
 import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC } from 'react'
 
-import {
-  isFollowing as checkIsFollowing,
-  follow,
-  unfollow,
-} from '../../apis/follow'
+import { useFollowToggle } from '../../hooks/useFollowToggle'
 import { useTranslation } from '../../i18n/i18n'
 import { authAtom } from '../../store/auth'
-import { formatError } from '../../utils/error'
 import { CardTitle } from '../CardTitle'
-import { AppToaster } from '../Toaster'
 
 interface UserProfileHeaderProps {
   user: MaaUserInfo
@@ -30,54 +24,11 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
   const isSelf = auth.userId === user.id
   const isLoggedIn = !!auth.token
 
-  const [relation, setRelation] = useState(user.relation)
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    setRelation(user.relation)
-  }, [user.relation])
-
-  const following = checkIsFollowing(relation)
-  const isMutual = relation === MaaUserInfoRelationEnum.Mutual
-  const isFollowBy = relation === MaaUserInfoRelationEnum.FollowedBy
-
-  const handleFollowToggle = useCallback(async () => {
-    if (!user.id || loading) return
-
-    setLoading(true)
-    try {
-      if (following) {
-        await unfollow(Number(user.id))
-        const newRelation = isMutual
-          ? MaaUserInfoRelationEnum.FollowedBy
-          : MaaUserInfoRelationEnum.None
-        setRelation(newRelation)
-        onFollowChange?.(newRelation)
-        AppToaster.show({
-          intent: 'success',
-          message: t.components.UserProfile.unfollowSuccess,
-        })
-      } else {
-        await follow(Number(user.id))
-        const newRelation = isFollowBy
-          ? MaaUserInfoRelationEnum.Mutual
-          : MaaUserInfoRelationEnum.Following
-        setRelation(newRelation)
-        onFollowChange?.(newRelation)
-        AppToaster.show({
-          intent: 'success',
-          message: t.components.UserProfile.followSuccess,
-        })
-      }
-    } catch (err) {
-      AppToaster.show({
-        intent: 'danger',
-        message: formatError(err),
-      })
-    } finally {
-      setLoading(false)
-    }
-  }, [following, isMutual, isFollowBy, loading, onFollowChange, t, user.id])
+  const { following, isMutual, isFollowBy, loading, toggleFollow } =
+    useFollowToggle({
+      user,
+      onRelationChange: onFollowChange,
+    })
 
   return (
     <Card className="flex flex-col mb-4 space-y-3">
@@ -98,7 +49,7 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
           intent={following ? 'none' : 'primary'}
           icon={isMutual ? 'swap-horizontal' : following ? 'tick' : 'plus'}
           loading={loading}
-          onClick={handleFollowToggle}
+          onClick={toggleFollow}
           minimal={following}
           fill
         >
