@@ -12,6 +12,13 @@ import {
 import { AppToaster } from '../components/Toaster'
 import { useTranslation } from '../i18n/i18n'
 import { formatError } from '../utils/error'
+import { useSWRClear } from '../utils/swr'
+
+function isOnlyFollowingListKey(key: string): boolean {
+  const isOps = key.includes('"operations"') && !key.includes('"operationSets"')
+  const isOpsSet = key.includes('"operationSets"')
+  return (isOps || isOpsSet) && key.includes('onlyFollowing:true')
+}
 
 interface UseFollowToggleOptions {
   user: MaaUserInfo
@@ -28,6 +35,7 @@ export function useFollowToggle({
 }: UseFollowToggleOptions) {
   const t = useTranslation()
   const { mutate } = useSWRConfig()
+  const clearFollowingLists = useSWRClear()
   const [relation, setRelation] = useState(user.relation)
   const [loading, setLoading] = useState(false)
 
@@ -74,6 +82,8 @@ export function useFollowToggle({
 
       await mutate(['user', user.id])
       await mutate(['me'])
+
+      clearFollowingLists(isOnlyFollowingListKey)
     } catch (err) {
       showToast('danger', formatError(err))
     } finally {
@@ -85,6 +95,7 @@ export function useFollowToggle({
     isMutual,
     loading,
     mutate,
+    clearFollowingLists,
     onFollowed,
     onRelationChange,
     onUnfollowed,
