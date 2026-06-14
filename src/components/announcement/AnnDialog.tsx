@@ -8,7 +8,7 @@ import {
 } from '@blueprintjs/core'
 
 import { FC } from 'react'
-import { Components } from 'react-markdown'
+import { type Components } from 'react-markdown'
 
 import { announcementBaseURL } from '../../apis/announcement'
 import { useTranslation } from '../../i18n/i18n'
@@ -47,12 +47,13 @@ export const AnnDialog: FC<AnnDialogProps> = ({ sections, ...dialogProps }) => {
     }
   }
 
-  const Heading: Components['h1'] = ({ level, node, children, ...props }) => {
-    const Tag = node.tagName as HTMLHeadingElement['tagName']
+  const Heading: Components['h1'] = ({ node, children, ...props }) => {
+    if (!node) return <h1 {...(props as any)}>{children}</h1>
+    const Tag = node.tagName as React.ElementType
     const meta = (node as any)._meta as AnnouncementSectionMeta | undefined
 
     return (
-      <Tag {...props}>
+      <Tag {...(props as any)}>
         {children}
         {meta?.time && (
           <span
@@ -85,8 +86,7 @@ export const AnnDialog: FC<AnnDialogProps> = ({ sections, ...dialogProps }) => {
               h5: Heading,
               h6: Heading,
             }}
-            transformLinkUri={transformUri}
-            transformImageUri={transformUri}
+            urlTransform={transformUri}
           >
             {content || ''}
           </Markdown>
@@ -110,11 +110,11 @@ export const AnnDialog: FC<AnnDialogProps> = ({ sections, ...dialogProps }) => {
   )
 }
 
-function transformUri(href: string) {
+function transformUri(url: string) {
   try {
-    return new URL(href, announcementBaseURL).href
+    return new URL(url, announcementBaseURL).href
   } catch (e) {
     console.warn(e)
-    return href
+    return url
   }
 }
