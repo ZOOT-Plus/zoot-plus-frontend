@@ -101,6 +101,7 @@ const _ProfilePage: ComponentType = () => {
                 onFollowChange={handleFollowChange}
               />
               <UserStatsCard
+                key={userInfo.id}
                 user={userInfo}
                 operationCount={operationCount >= 0 ? operationCount : undefined}
               />
