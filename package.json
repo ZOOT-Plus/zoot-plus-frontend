@@ -50,7 +50,7 @@
     "linkify-react": "^3.0.4",
     "linkifyjs": "^3.0.5",
     "lodash-es": "^4.17.21",
-    "maa-copilot-client": "https://github.com/ZOOT-Plus/zoot-plus-client-ts.git#0.1.0-SNAPSHOT.994.sha.77a04e8",
+    "maa-copilot-client": "https://github.com/ZOOT-Plus/zoot-plus-client-ts.git#0.1.0-SNAPSHOT.998.sha.9eb5642",
     "mitt": "^3.0.1",
     "normalize.css": "^8.0.1",
     "prettier": "^3.2.5",
