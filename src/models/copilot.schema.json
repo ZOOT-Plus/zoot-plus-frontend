@@ -217,18 +217,7 @@
         "direction": {
           "type": "string",
           "description": "Direction for deployment, required when `type` is \"Deploy (部署)\".",
-          "enum": [
-            "Left",
-            "Right",
-            "Up",
-            "Down",
-            "None",
-            "左",
-            "右",
-            "上",
-            "下",
-            "无"
-          ]
+          "enum": ["Left", "Right", "Up", "Down", "None", "左", "右", "上", "下", "无"]
         },
         "skill_usage": {
           "type": "integer",

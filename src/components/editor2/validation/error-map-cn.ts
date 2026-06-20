@@ -77,7 +77,7 @@ const error: errors.$ZodErrorMap = (issue) => {
       return `太小了：期望 ${issue.origin} ${adj}${issue.minimum.toString()}`
     }
     case 'invalid_format': {
-      const _issue = issue as errors.$ZodIssueStringStartsWith | errors.$ZodIssueStringEndsWith | errors.$ZodIssueStringIncludes | errors.$ZodIssueStringInvalidRegex
+      const _issue = issue as errors.$ZodStringFormatIssues
       if (_issue.format === 'starts_with') {
         return `无效的字符串：必须以 "${_issue.prefix}" 开头`
       }

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       deploy-to-prod:
-        description: "Deploy to GitHub Pages"
+        description: 'Deploy to GitHub Pages'
         default: false
         required: true
         type: boolean

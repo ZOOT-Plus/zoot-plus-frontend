@@ -71,7 +71,7 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
 /**
  * @param target - Either an operation or an operation set
  */
-export const copyShortCode = async (target: { id?: number }) => {
+export const copyShortCode = async (target: { id: number }) => {
   try {
     const content: ShortCodeContent = {
       id: target.id,
