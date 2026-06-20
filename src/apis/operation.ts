@@ -1,7 +1,7 @@
 import { uniqBy } from 'lodash-es'
 import {
   BanCommentsStatusEnum,
-  CopilotInfoStatusEnum,
+  CopilotSetStatus,
   QueriesCopilotRequest,
 } from 'maa-copilot-client'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -29,6 +29,7 @@ export interface UseOperationsParams {
   operator?: OperatorFilterParams
   operationIds?: number[]
   uploaderId?: string
+  onlyFollowing?: boolean
 
   disabled?: boolean
   suspense?: boolean
@@ -44,6 +45,7 @@ export function useOperations({
   operator,
   operationIds,
   uploaderId,
+  onlyFollowing,
   disabled,
   suspense,
   revalidateFirstPage,
@@ -99,6 +101,7 @@ export function useOperations({
           desc: descending,
           copilotIds: operationIds,
           uploaderId,
+          onlyFollowing,
         } satisfies QueriesCopilotRequest,
       ]
     },
@@ -193,7 +196,7 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
 
 export async function createOperation(req: {
   content: string
-  status: CopilotInfoStatusEnum
+  status: CopilotSetStatus
 }) {
   return (await new OperationApi().uploadCopilot({ copilotCUDRequest: req }))
     .data
@@ -202,7 +205,7 @@ export async function createOperation(req: {
 export async function updateOperation(req: {
   id: number
   content: string
-  status: CopilotInfoStatusEnum
+  status: CopilotSetStatus
 }) {
   await new OperationApi().updateCopilot({ copilotCUDRequest: req })
 }
@@ -211,7 +214,7 @@ export async function deleteOperation(req: { id: number }) {
   await new OperationApi().deleteCopilot({
     copilotCUDRequest: {
       content: '',
-      status: CopilotInfoStatusEnum.Public,
+      status: CopilotSetStatus.Public,
       ...req,
     },
   })

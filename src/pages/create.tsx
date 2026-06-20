@@ -2,7 +2,7 @@ import { Button, Checkbox } from '@blueprintjs/core'
 import { Tooltip2 } from '@blueprintjs/popover2'
 
 import { isEqual } from 'lodash-es'
-import { CopilotInfoStatusEnum } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'maa-copilot-client'
 import { ComponentType, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
@@ -85,7 +85,7 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
     )
 
     const [operationStatus, setOperationStatus] = useState<Operation['status']>(
-      apiOperation ? apiOperation.status : CopilotInfoStatusEnum.Public,
+      apiOperation ? apiOperation.status : CopilotSetStatus.Public,
     )
     const [uploading, setUploading] = useState(false)
 
@@ -215,12 +215,12 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
               >
                 <Checkbox
                   className="text-sm"
-                  checked={operationStatus === CopilotInfoStatusEnum.Public}
+                  checked={operationStatus === CopilotSetStatus.Public}
                   onChange={(e) =>
                     setOperationStatus(
                       e.currentTarget.checked
-                        ? CopilotInfoStatusEnum.Public
-                        : CopilotInfoStatusEnum.Private,
+                        ? CopilotSetStatus.Public
+                        : CopilotSetStatus.Private,
                     )
                   }
                 >

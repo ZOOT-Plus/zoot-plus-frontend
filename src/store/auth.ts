@@ -13,7 +13,14 @@ export interface AuthState {
   username?: string
 }
 
-export const authAtom = atomWithStorage<AuthState>('maa-copilot-auth', {})
+export const authAtom = atomWithStorage<AuthState>(
+  'maa-copilot-auth',
+  {},
+  undefined,
+  {
+    getOnInit: true,
+  },
+)
 
 export function fromCredentials(credentials: MaaLoginRsp): AuthState {
   return {

@@ -61,9 +61,7 @@ const AboutPageLazy = withSuspensable(
   lazy(() => import('./pages/about').then((m) => ({ default: m.AboutPage }))),
 )
 const ProfilePageLazy = withSuspensable(
-  lazy(() =>
-    import('./pages/profile').then((m) => ({ default: m.ProfilePage })),
-  ),
+  lazy(() => import('./pages/profile').then((m) => ({ default: m.ProfilePage }))),
 )
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

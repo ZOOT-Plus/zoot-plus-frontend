@@ -1,4 +1,4 @@
-import {
+﻿import {
   Button,
   ButtonGroup,
   Card,
@@ -130,11 +130,20 @@ export const Operations: ComponentType = withSuspensable(() => {
                 />
                 <UserFilter
                   user={selectedUser}
+                  onlyFollowing={queryParams.onlyFollowing}
                   onChange={(user) => {
                     setSelectedUser(user)
                     setQueryParams((old) => ({
                       ...old,
                       uploaderId: user?.id,
+                      onlyFollowing: undefined,
+                    }))
+                  }}
+                  onOnlyFollowingChange={(following) => {
+                    setQueryParams((old) => ({
+                      ...old,
+                      onlyFollowing: following || undefined,
+                      uploaderId: undefined,
                     }))
                   }}
                 />
@@ -215,11 +224,20 @@ export const Operations: ComponentType = withSuspensable(() => {
             />
             <UserFilter
               user={selectedUser}
+              onlyFollowing={queryParams.onlyFollowing}
               onChange={(user) => {
                 setSelectedUser(user)
                 setQueryParams((old) => ({
                   ...old,
                   uploaderId: user?.id,
+                  onlyFollowing: undefined,
+                }))
+              }}
+              onOnlyFollowingChange={(following) => {
+                setQueryParams((old) => ({
+                  ...old,
+                  onlyFollowing: following || undefined,
+                  uploaderId: undefined,
                 }))
               }}
             />

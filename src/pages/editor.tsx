@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
-import { CopilotInfoStatusEnum } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'maa-copilot-client'
 import { useCallback, useLayoutEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -54,7 +54,7 @@ export const EditorPage = withSuspensable(() => {
         ),
         metadata: {
           visibility:
-            apiOperation.status === CopilotInfoStatusEnum.Public
+            apiOperation.status === CopilotSetStatus.Public
               ? 'public'
               : 'private',
         },
@@ -79,8 +79,8 @@ export const EditorPage = withSuspensable(() => {
         const operation = result.data
         const status =
           get(editorAtoms.metadata).visibility === 'public'
-            ? CopilotInfoStatusEnum.Public
-            : CopilotInfoStatusEnum.Private
+            ? CopilotSetStatus.Public
+            : CopilotSetStatus.Private
 
         const upload = async () => {
           if (id) {

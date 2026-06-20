@@ -3443,9 +3443,69 @@
         "cn": "查看我自己的作业",
         "en": "View my own Jobs"
       },
+      "only_following": {
+        "cn": "只看关注",
+        "en": "Only following"
+      },
       "view_mine": {
         "cn": "看看我的",
         "en": "View personal"
+      }
+    },
+    "UserProfile": {
+      "follow": {
+        "cn": "关注",
+        "en": "Follow"
+      },
+      "following": {
+        "cn": "已关注",
+        "en": "Following"
+      },
+      "mutual": {
+        "cn": "互相关注",
+        "en": "Mutual"
+      },
+      "followBack": {
+        "cn": "回关",
+        "en": "Follow Back"
+      },
+      "unfollowSuccess": {
+        "cn": "已取消关注",
+        "en": "Unfollowed"
+      },
+      "followSuccess": {
+        "cn": "关注成功",
+        "en": "Followed successfully"
+      },
+      "notActivated": {
+        "cn": "未激活",
+        "en": "Not activated"
+      },
+      "loginToFollow": {
+        "cn": "登录后可关注用户",
+        "en": "Login to follow users"
+      },
+      "loading": {
+        "cn": "加载中...",
+        "en": "Loading..."
+      },
+      "loadFailed": {
+        "cn": "加载失败",
+        "en": "Failed to load profile"
+      }
+    },
+    "UserStats": {
+      "following": {
+        "cn": "关注",
+        "en": "Following"
+      },
+      "fans": {
+        "cn": "粉丝",
+        "en": "Fans"
+      },
+      "operations": {
+        "cn": "作业",
+        "en": "Jobs"
       }
     }
   },
@@ -4051,6 +4111,52 @@
       "changelog": {
         "cn": "更新日志",
         "en": "Changelog"
+      }
+    },
+    "following": {
+      "title": {
+        "cn": "关注列表",
+        "en": "Following"
+      },
+      "empty_title": {
+        "cn": "暂无关注",
+        "en": "No Following"
+      },
+      "empty_description": {
+        "cn": "还没有关注任何用户",
+        "en": "No users followed yet"
+      }
+    },
+    "fans": {
+      "title": {
+        "cn": "粉丝列表",
+        "en": "Fans"
+      },
+      "empty_title": {
+        "cn": "暂无粉丝",
+        "en": "No Fans"
+      },
+      "empty_description": {
+        "cn": "还没有粉丝",
+        "en": "No fans yet"
+      }
+    },
+    "followCommon": {
+      "no_more": {
+        "cn": "没有更多了",
+        "en": "No more"
+      },
+      "load_more": {
+        "cn": "加载更多",
+        "en": "Load more"
+      },
+      "error_title": {
+        "cn": "加载失败",
+        "en": "Failed to load"
+      },
+      "error_description": {
+        "cn": "无法获取列表，请稍后重试",
+        "en": "Could not fetch the list. Please try again later."
       }
     }
   },
