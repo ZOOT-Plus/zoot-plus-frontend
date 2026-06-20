@@ -13,7 +13,7 @@ export interface UseDebouncedQueryParams {
 
 /**
  * 适用于带有搜索功能的输入框，比如 Select、Suggest、MultiSelect，用于性能优化，
- * 以及修复使用输入法时的 bug：https://github.com/MaaAssistantArknights/maa-copilot-frontend/issues/72
+ * 以及修复使用输入法时的 bug：https://github.com/ZOOT-Plus/zoot-plus-frontend/issues/72
  * 传入 query 时为受控模式，否则为非受控模式
  */
 export function useDebouncedQuery({

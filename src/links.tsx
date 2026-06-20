@@ -31,7 +31,7 @@ export const NAV_CONFIG = [
 export const SOCIAL_CONFIG = [
   {
     icon: <BlueprintIcon icon="edit" className="mr-2" size={12} />,
-    href: 'https://github.com/MaaAssistantArknights/maa-copilot-frontend/issues/new/choose',
+    href: 'https://github.com/ZOOT-Plus/zoot-plus-frontend/issues/new/choose',
     labelKey: i18nDefer.links.feedback,
   },
   {
