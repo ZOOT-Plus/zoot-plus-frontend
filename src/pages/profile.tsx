@@ -46,7 +46,7 @@ const _ProfilePage: ComponentType = () => {
               ? (userInfo.fansCount ?? 0) + 1
               : Math.max((userInfo.fansCount ?? 0) - 1, 0),
         },
-        { revalidate: true },
+        { revalidate: false },
       )
     }
   }

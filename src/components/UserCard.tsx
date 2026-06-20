@@ -5,6 +5,7 @@ import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useFollowToggle } from '../hooks/useFollowToggle'
+import { resolveFollowButtonText } from '../apis/follow'
 import { useTranslation } from '../i18n/i18n'
 
 interface UserCardProps {
@@ -24,7 +25,7 @@ export const UserCard: FC<UserCardProps> = ({
     setFansCount(user.fansCount ?? 0)
   }, [user.fansCount])
 
-  const { relation, following, isMutual, isFollowBy, loading, toggleFollow } =
+  const { relation, following, loading, toggleFollow } =
     useFollowToggle({
       user,
       onFollowed: () => setFansCount((count) => count + 1),
@@ -32,13 +33,10 @@ export const UserCard: FC<UserCardProps> = ({
     })
 
   const isSelf = relation === MaaUserInfoRelationEnum.Self
-  const followButtonText = isMutual
-    ? t.components.UserProfile.mutual
-    : following
-      ? t.components.UserProfile.following
-      : isFollowBy
-        ? t.components.UserProfile.followBack
-        : t.components.UserProfile.follow
+  const followButtonText = resolveFollowButtonText(
+    t.components.UserProfile,
+    relation,
+  )
   const followButtonClassName = [
     'w-24 h-8 shrink-0 rounded !inline-flex !items-center !justify-center !px-3 !text-center !font-medium !shadow-none [&_.bp4-button-text]:w-full [&_.bp4-button-text]:text-center',
     !following

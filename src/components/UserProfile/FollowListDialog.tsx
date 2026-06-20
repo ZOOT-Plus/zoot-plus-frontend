@@ -9,8 +9,9 @@ import {
   useState,
 } from 'react'
 
-import { useFollowList } from '../../apis/follow'
+import { useFollowList, isFollowListTypeKey } from '../../apis/follow'
 import { useTranslation } from '../../i18n/i18n'
+import { useSWRClear } from '../../utils/swr'
 import { UserCard } from '../UserCard'
 import { UserListSkeleton } from './UserListSkeleton'
 
@@ -25,12 +26,20 @@ export const FollowListDialog: ComponentType<{
   disabled?: boolean
 }> = ({ isOpen, onClose, type, disabled }) => {
   const t = useTranslation()
+  const clearCache = useSWRClear()
   const parentRef = useRef<HTMLDivElement>(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewportHeight, setViewportHeight] = useState(MAX_LIST_HEIGHT)
 
-  const { users, total, setSize, isValidating, isReachingEnd, isLoading } =
-    useFollowList({
+  const {
+    users,
+    total,
+    error,
+    setSize,
+    isValidating,
+    isReachingEnd,
+    isLoading,
+  } = useFollowList({
       type,
       size: 20,
       disabled: disabled || !isOpen,
@@ -91,18 +100,29 @@ export const FollowListDialog: ComponentType<{
     setScrollTop(event.currentTarget.scrollTop)
   }
 
+  const handleClose = () => {
+    clearCache((key) => isFollowListTypeKey(key, type))
+    onClose()
+  }
+
   return (
     <Dialog
       title={`${title} (${total ?? 0})`}
       icon="people"
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       canOutsideClickClose
       className="w-[600px] max-w-[90vw]"
     >
       <div className="p-4">
         {isLoading ? (
           <UserListSkeleton />
+        ) : error && users.length === 0 ? (
+          <NonIdealState
+            icon="error"
+            title={t.pages.followCommon.error_title}
+            description={t.pages.followCommon.error_description}
+          />
         ) : users && users.length > 0 ? (
           <div
             ref={parentRef}
@@ -140,21 +160,19 @@ export const FollowListDialog: ComponentType<{
             </div>
           </div>
         ) : (
-          isReachingEnd && (
-            <NonIdealState
-              icon="slash"
-              title={
-                type === 'following'
-                  ? t.pages.following.empty_title
-                  : t.pages.fans.empty_title
-              }
-              description={
-                type === 'following'
-                  ? t.pages.following.empty_description
-                  : t.pages.fans.empty_description
-              }
-            />
-          )
+          <NonIdealState
+            icon="slash"
+            title={
+              type === 'following'
+                ? t.pages.following.empty_title
+                : t.pages.fans.empty_title
+            }
+            description={
+              type === 'following'
+                ? t.pages.following.empty_description
+                : t.pages.fans.empty_description
+            }
+          />
         )}
 
         {!isLoading && users && users.length > 0 && isReachingEnd && (

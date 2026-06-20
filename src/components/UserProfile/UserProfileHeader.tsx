@@ -6,6 +6,7 @@ import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
 import { FC } from 'react'
 
 import { useFollowToggle } from '../../hooks/useFollowToggle'
+import { resolveFollowButtonText } from '../../apis/follow'
 import { useTranslation } from '../../i18n/i18n'
 import { authAtom } from '../../store/auth'
 import { CardTitle } from '../CardTitle'
@@ -24,11 +25,16 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
   const isSelf = auth.userId === user.id
   const isLoggedIn = !!auth.token
 
-  const { following, isMutual, isFollowBy, loading, toggleFollow } =
+  const { relation, following, isMutual, loading, toggleFollow } =
     useFollowToggle({
       user,
       onRelationChange: onFollowChange,
     })
+
+  const followButtonText = resolveFollowButtonText(
+    t.components.UserProfile,
+    relation,
+  )
 
   return (
     <Card className="flex flex-col mb-4 space-y-3">
@@ -53,13 +59,7 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
           minimal={following}
           fill
         >
-          {isMutual
-            ? t.components.UserProfile.mutual
-            : following
-              ? t.components.UserProfile.following
-              : isFollowBy
-                ? t.components.UserProfile.followBack
-                : t.components.UserProfile.follow}
+          {followButtonText}
         </Button>
       )}
 

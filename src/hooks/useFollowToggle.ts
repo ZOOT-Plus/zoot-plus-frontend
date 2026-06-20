@@ -1,5 +1,6 @@
 import { Intent } from '@blueprintjs/core'
 
+import { useAtomValue } from 'jotai'
 import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
 import { useCallback, useEffect, useState } from 'react'
 import { useSWRConfig } from 'swr'
@@ -8,9 +9,11 @@ import {
   isFollowing as checkIsFollowing,
   follow,
   unfollow,
+  patchFollowListUserRelation,
 } from '../apis/follow'
 import { AppToaster } from '../components/Toaster'
 import { useTranslation } from '../i18n/i18n'
+import { authAtom } from '../store/auth'
 import { formatError } from '../utils/error'
 import { useSWRClear } from '../utils/swr'
 
@@ -34,8 +37,9 @@ export function useFollowToggle({
   onUnfollowed,
 }: UseFollowToggleOptions) {
   const t = useTranslation()
-  const { mutate } = useSWRConfig()
-  const clearFollowingLists = useSWRClear()
+  const auth = useAtomValue(authAtom)
+  const swr = useSWRConfig()
+  const clearCache = useSWRClear()
   const [relation, setRelation] = useState(user.relation)
   const [loading, setLoading] = useState(false)
 
@@ -80,10 +84,27 @@ export function useFollowToggle({
       setRelation(newRelation)
       onRelationChange?.(newRelation)
 
-      await mutate(['user', user.id])
-      await mutate(['me'])
+      const followingDelta = following ? -1 : 1
+      const bumpFollowingCount = (current?: MaaUserInfo) =>
+        current && {
+          ...current,
+          followingCount: Math.max(
+            0,
+            (current.followingCount ?? 0) + followingDelta,
+          ),
+        }
 
-      clearFollowingLists(isOnlyFollowingListKey)
+      const userId = String(user.id)
+      await swr.mutate(['user', userId])
+      await swr.mutate(['me'], bumpFollowingCount, { revalidate: true })
+      if (auth.userId) {
+        await swr.mutate(['user', auth.userId], bumpFollowingCount, {
+          revalidate: true,
+        })
+      }
+
+      patchFollowListUserRelation(swr, userId, newRelation)
+      clearCache(isOnlyFollowingListKey)
     } catch (err) {
       showToast('danger', formatError(err))
     } finally {
@@ -94,8 +115,9 @@ export function useFollowToggle({
     isFollowBy,
     isMutual,
     loading,
-    mutate,
-    clearFollowingLists,
+    swr,
+    clearCache,
+    auth.userId,
     onFollowed,
     onRelationChange,
     onUnfollowed,

@@ -6,7 +6,6 @@
 import useSWRInfinite from 'swr/infinite'
 
 import { FollowApi } from '../utils/maa-copilot-client'
-import { useSWRRefresh } from '../utils/swr'
 
 // ── Follow API Service ───────────────────────────────────────
 
@@ -124,14 +123,6 @@ export function useFollowList({
   }
 }
 
-/**
- * 刷新关注/粉丝列表缓存
- */
-export function useRefreshFollowList() {
-  const refresh = useSWRRefresh()
-  return () => refresh((key) => key.includes('followList'))
-}
-
 // ── Relation Helpers ────────────────────────────────────────
 
 /**
@@ -146,14 +137,67 @@ export function isFollowing(
   )
 }
 
-/**
- * 判断目标用户是否关注了当前用户（是粉丝）
- */
-export function isFollowedBy(
+export function resolveFollowButtonText(
+  labels: {
+    mutual: string
+    following: string
+    followBack: string
+    follow: string
+  },
   relation?: MaaUserInfoRelationEnum | null,
-): boolean {
-  return (
-    relation === MaaUserInfoRelationEnum.FollowedBy ||
-    relation === MaaUserInfoRelationEnum.Mutual
-  )
+) {
+  switch (relation) {
+    case MaaUserInfoRelationEnum.Mutual:
+      return labels.mutual
+    case MaaUserInfoRelationEnum.Following:
+      return labels.following
+    case MaaUserInfoRelationEnum.FollowedBy:
+      return labels.followBack
+    default:
+      return labels.follow
+  }
+}
+
+// ── Follow List Cache Helpers ───────────────────────────────
+
+const FOLLOW_LIST_KEY_MARKER = '"followList"'
+
+export function isFollowListTypeKey(key: string, type: FollowListType): boolean {
+  return key.includes(FOLLOW_LIST_KEY_MARKER) && key.includes(`"${type}"`)
+}
+
+export function patchFollowListUserRelation(
+  swr: {
+    cache: { keys: () => IterableIterator<string> }
+    mutate: (
+      key: string,
+      data?: (
+        page?: PagedDTOMaaUserInfo,
+      ) => PagedDTOMaaUserInfo | undefined,
+      options?: { revalidate?: boolean },
+    ) => unknown
+  },
+  userId: string,
+  newRelation: MaaUserInfoRelationEnum,
+) {
+  for (const key of swr.cache.keys()) {
+    if (!key.includes(FOLLOW_LIST_KEY_MARKER)) continue
+
+    swr.mutate(
+      key,
+      (page?: PagedDTOMaaUserInfo) => {
+        if (!page?.data?.some((user) => String(user.id) === userId)) return page
+
+        return {
+          ...page,
+          data: page.data.map((user) =>
+            String(user.id) === userId
+              ? { ...user, relation: newRelation }
+              : user,
+          ),
+        }
+      },
+      { revalidate: false },
+    )
+  }
 }

@@ -4149,6 +4149,14 @@
       "load_more": {
         "cn": "加载更多",
         "en": "Load more"
+      },
+      "error_title": {
+        "cn": "加载失败",
+        "en": "Failed to load"
+      },
+      "error_description": {
+        "cn": "无法获取列表，请稍后重试",
+        "en": "Could not fetch the list. Please try again later."
       }
     }
   },

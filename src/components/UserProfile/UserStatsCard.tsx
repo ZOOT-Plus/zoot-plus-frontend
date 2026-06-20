@@ -26,16 +26,19 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
 
   const stats = [
     {
+      id: 'following' as const,
       label: t.components.UserStats.following,
       value: user.followingCount ?? 0,
       onClick: isSelf ? () => setDialogType('following') : undefined,
     },
     {
+      id: 'fans' as const,
       label: t.components.UserStats.fans,
       value: user.fansCount ?? 0,
       onClick: isSelf ? () => setDialogType('fans') : undefined,
     },
     {
+      id: 'operations' as const,
       label: t.components.UserStats.operations,
       value: operationCount ?? 0,
     },
@@ -46,7 +49,7 @@ export const UserStatsCard: FC<UserStatsCardProps> = ({
       <Card className="flex items-stretch mb-4 py-3 px-0">
         {stats.map((stat, index) => (
           <button
-            key={stat.label}
+            key={stat.id}
             type="button"
             disabled={!stat.onClick}
             onClick={stat.onClick}

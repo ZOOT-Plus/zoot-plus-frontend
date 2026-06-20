@@ -32,18 +32,6 @@ export async function getUserInfo(userId: string): Promise<MaaUserInfo> {
   return res.data!
 }
 
-/**
- * 批量获取用户信息
- */
-export async function getBatchUserInfo(ids: number[]): Promise<MaaUserInfo[]> {
-  const res = await new UserApi({
-    sendToken: 'optional',
-    requireData: true,
-  }).getBatchUserInfo({ ids })
-
-  return res.data ?? []
-}
-
 // ── SWR Hooks ────────────────────────────────────────────────
 
 /**
@@ -74,26 +62,6 @@ export function useUserInfo({
     userId ? ['user', userId] : null,
     async ([, id]) => {
       return getUserInfo(id)
-    },
-    { suspense },
-  )
-}
-
-/**
- * 批量获取用户信息的 SWR hook
- * 当 ids 为空数组时不发起请求
- */
-export function useBatchUserInfo({
-  ids,
-  suspense,
-}: {
-  ids?: number[]
-  suspense?: boolean
-}) {
-  return useSWR(
-    ids?.length ? ['users', ids.join(',')] : null,
-    async () => {
-      return getBatchUserInfo(ids!)
     },
     { suspense },
   )

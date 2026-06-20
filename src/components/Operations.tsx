@@ -2,7 +2,6 @@
   Button,
   ButtonGroup,
   Card,
-  Checkbox,
   Divider,
   H6,
   InputGroup,
@@ -12,7 +11,7 @@
 
 import { UseOperationsParams } from 'apis/operation'
 import clsx from 'clsx'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { debounce } from 'lodash-es'
 import { MaaUserInfo } from 'maa-copilot-client'
 import { ComponentType, useMemo, useState } from 'react'
@@ -20,11 +19,9 @@ import { ComponentType, useMemo, useState } from 'react'
 import { CardTitle } from 'components/CardTitle'
 import { OperationList } from 'components/OperationList'
 import { OperationSetList } from 'components/OperationSetList'
-import { authAtom } from 'store/auth'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
-import { Tooltip2 } from '@blueprintjs/popover2'
 import { LevelSelect } from './LevelSelect'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
@@ -45,7 +42,6 @@ export const Operations: ComponentType = withSuspensable(() => {
 
   const { operatorFilter, setOperatorFilter } = useOperatorFilter()
   const [selectedUser, setSelectedUser] = useState<MaaUserInfo>()
-  const auth = useAtomValue(authAtom)
   const [neoLayout, setNeoLayout] = useAtom(neoLayoutAtom)
   const [tab, setTab] = useState<'operation' | 'operationSet'>('operation')
   const [multiselect, setMultiselect] = useState(false)
