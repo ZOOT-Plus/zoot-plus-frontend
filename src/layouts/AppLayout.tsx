@@ -18,9 +18,7 @@ export const AppLayout: FCC = ({ children }) => {
     <div className="flex flex-col h-full w-full bg-zinc-50 ">
       <Navbar className="flex w-full px-8 py-2 items-center bg-zinc-100 shadow fixed h-14 z-20 whitespace-nowrap overflow-x-none overflow-y-hidden">
         <Link to="/" className="flex items-center hover:no-underline ">
-          <div className="select-none text-lg font-bold leading-none">
-            PRTS Plus
-          </div>
+          <div className="select-none text-lg font-bold leading-none">PRTS Plus</div>
 
           <Tag minimal className="ml-1" intent="warning">
             Beta

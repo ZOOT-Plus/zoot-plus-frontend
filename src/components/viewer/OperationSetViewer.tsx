@@ -1,22 +1,8 @@
-import {
-  Alert,
-  Button,
-  H3,
-  H4,
-  H5,
-  Icon,
-  Menu,
-  MenuItem,
-  NonIdealState,
-} from '@blueprintjs/core'
+import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 import { ErrorBoundary } from '@sentry/react'
 
-import {
-  deleteOperationSet,
-  useOperationSet,
-  useRefreshOperationSets,
-} from 'apis/operation-set'
+import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
 import { useAtom } from 'jotai'
 import { ComponentType, FC, useEffect, useState } from 'react'
 import { copyShortCode } from 'services/operation'
@@ -91,11 +77,7 @@ const ManageMenu: FC<{
         <p>{t.components.viewer.OperationSetViewer.confirm_delete_task_set}</p>
       </Alert>
 
-      <OperationSetEditorDialog
-        operationSet={operationSet}
-        isOpen={editorOpen}
-        onClose={() => setEditorOpen(false)}
-      />
+      <OperationSetEditorDialog operationSet={operationSet} isOpen={editorOpen} onClose={() => setEditorOpen(false)} />
 
       <Menu>
         <MenuItem
@@ -161,21 +143,12 @@ export const OperationSetViewer: ComponentType<{
         title={
           <>
             <Icon icon="document" />
-            <span className="ml-2">
-              {t.components.viewer.OperationSetViewer.maa_copilot_task_set}
-            </span>
+            <span className="ml-2">{t.components.viewer.OperationSetViewer.maa_copilot_task_set}</span>
 
             <div className="flex-1" />
 
             {operationSet.creatorId === auth.userId && (
-              <Popover2
-                content={
-                  <ManageMenu
-                    operationSet={operationSet}
-                    onUpdate={() => onCloseDrawer()}
-                  />
-                }
-              >
+              <Popover2 content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
                 <Button
                   className="ml-4"
                   icon="wrench"
@@ -200,9 +173,7 @@ export const OperationSetViewer: ComponentType<{
             <NonIdealState
               icon="issue"
               title={t.components.viewer.OperationSetViewer.render_error}
-              description={
-                t.components.viewer.OperationSetViewer.render_problem
-              }
+              description={t.components.viewer.OperationSetViewer.render_problem}
             />
           }
         >
@@ -212,16 +183,11 @@ export const OperationSetViewer: ComponentType<{
     )
   },
   {
-    pendingTitle:
-      i18nDefer.components.viewer.OperationSetViewer.loading_task_set,
+    pendingTitle: i18nDefer.components.viewer.OperationSetViewer.loading_task_set,
   },
 )
 
-function OperationSetViewerInner({
-  operationSet,
-}: {
-  operationSet: OperationSet
-}) {
+function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet }) {
   const t = useTranslation()
 
   return (
@@ -234,23 +200,14 @@ function OperationSetViewerInner({
         </div>
 
         <div className="flex flex-col items-start select-none tabular-nums">
-          <FactItem
-            title={t.components.viewer.OperationSetViewer.published_at}
-            icon="time"
-          >
+          <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
             <span className="text-gray-800 dark:text-slate-100 font-bold">
               <RelativeTime moment={operationSet.createTime} />
             </span>
           </FactItem>
 
-          <FactItem
-            title={t.components.viewer.OperationSetViewer.author}
-            icon="user"
-          >
-            <UserName
-              className="text-gray-800 dark:text-slate-100 font-bold"
-              userId={operationSet.creatorId}
-            >
+          <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
+            <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
               {operationSet.creator}
             </UserName>
           </FactItem>
@@ -264,9 +221,7 @@ function OperationSetViewerInner({
           <NonIdealState
             icon="issue"
             title={t.components.viewer.OperationSetViewer.render_error}
-            description={
-              t.components.viewer.OperationSetViewer.render_preview_problem
-            }
+            description={t.components.viewer.OperationSetViewer.render_preview_problem}
             className="h-96 bg-stripe rounded"
           />
         }
@@ -277,18 +232,13 @@ function OperationSetViewerInner({
   )
 }
 
-function OperationSetViewerInnerDetails({
-  operationSet,
-}: {
-  operationSet: OperationSet
-}) {
+function OperationSetViewerInnerDetails({ operationSet }: { operationSet: OperationSet }) {
   const t = useTranslation()
 
   return (
     <div className="flex flex-col">
       <H5 className="mb-4 text-slate-600">
-        {t.components.viewer.OperationSetViewer.task_list}(
-        {operationSet.copilotIds.length})
+        {t.components.viewer.OperationSetViewer.task_list}({operationSet.copilotIds.length})
       </H5>
       <div className="flex flex-col mb-4 max-w-screen-2xl">
         <OperationList operationIds={operationSet.copilotIds} />

@@ -51,13 +51,7 @@ export function useMe({ suspense }: { suspense?: boolean } = {}) {
  * 获取指定用户信息的 SWR hook
  * 当 userId 为 undefined 时不会发起请求
  */
-export function useUserInfo({
-  userId,
-  suspense,
-}: {
-  userId?: string
-  suspense?: boolean
-}) {
+export function useUserInfo({ userId, suspense }: { userId?: string; suspense?: boolean }) {
   return useSWR(
     userId ? ['user', userId] : null,
     async ([, id]) => {

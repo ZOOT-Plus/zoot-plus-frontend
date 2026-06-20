@@ -3,15 +3,7 @@ import { Divider, H4, H5, Icon } from '@blueprintjs/core'
 import clsx from 'clsx'
 import { languageAtom, useTranslation } from 'i18n/i18n'
 import { useAtomValue } from 'jotai'
-import {
-  FC,
-  HTMLAttributes,
-  ImgHTMLAttributes,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { FC, HTMLAttributes, ImgHTMLAttributes, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   DEFAULTPROFID,
@@ -33,20 +25,14 @@ export const ProfClassification: FC<ProfClassification> = () => {
     () => [
       {
         id: DEFAULTPROFID.ALL,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.all,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.all,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
         sub: [],
       },
       {
         id: DEFAULTPROFID.FAV,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.favorites,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.favorites,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.favorites,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.favorites,
         sub: [],
       },
       ...PROFESSIONS.map((profession) => ({
@@ -55,11 +41,8 @@ export const ProfClassification: FC<ProfClassification> = () => {
       })),
       {
         id: DEFAULTPROFID.OTHERS,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.others,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.others,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.others,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.others,
         sub: [],
       },
     ],
@@ -69,22 +52,15 @@ export const ProfClassification: FC<ProfClassification> = () => {
     return [
       {
         id: DEFAULTSUBPROFID.ALL,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.all,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.all,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
       },
       {
         id: DEFAULTSUBPROFID.SELECTED,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.selected,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.selected,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.selected,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.selected,
       },
-      ...(formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub ||
-        []),
+      ...(formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub || []),
     ]
   }, [selectedProf, formattedProfessions, t])
 
@@ -105,9 +81,7 @@ export const ProfClassification: FC<ProfClassification> = () => {
                 }))
               }
             >
-              {language === 'en' && subProf.name_en
-                ? subProf.name_en
-                : subProf.name}
+              {language === 'en' && subProf.name_en ? subProf.name_en : subProf.name}
             </H4>
           </li>
         ))}
@@ -140,13 +114,7 @@ interface ProfIconProp extends ImgHTMLAttributes<HTMLImageElement> {
   onProfClick: () => void
 }
 
-const ProfIcon: FC<ProfIconProp> = ({
-  name,
-  profId,
-  selected,
-  onProfClick,
-  ...restImgProps
-}) => {
+const ProfIcon: FC<ProfIconProp> = ({ name, profId, selected, onProfClick, ...restImgProps }) => {
   return (
     <li
       className="grow cursor-pointer relative flex justify-center items-center p-2 min-w-[48px]"
@@ -154,9 +122,7 @@ const ProfIcon: FC<ProfIconProp> = ({
       role="presentation"
       onClick={onProfClick}
     >
-      {selected && (
-        <div className="w-full h-1 bg-black dark:bg-white absolute bottom-full left-0 rounded" />
-      )}
+      {selected && <div className="w-full h-1 bg-black dark:bg-white absolute bottom-full left-0 rounded" />}
       {(Object.values(DEFAULTPROFID) as string[]).includes(profId) ? (
         <H5 className="!text-xs sm:!text-base truncate m-0">{name}</H5>
       ) : (
@@ -211,27 +177,13 @@ const UlWithArrow: FC<UlWithArrowProp> = ({ className, ...ulProps }) => {
 
   return (
     <div className="flex items-center relative w-full">
-      {showLeft && (
-        <Icon
-          icon="chevron-left"
-          className="absolute left-0 top-1/2 -translate-y-1/2 invert z-10"
-        />
-      )}
+      {showLeft && <Icon icon="chevron-left" className="absolute left-0 top-1/2 -translate-y-1/2 invert z-10" />}
       <ul
         {...ulProps}
         ref={containerRef}
-        className={clsx(
-          'flex overflow-auto items-center w-full',
-          !isOverflow && 'justify-center',
-          className,
-        )}
+        className={clsx('flex overflow-auto items-center w-full', !isOverflow && 'justify-center', className)}
       />
-      {showRight && (
-        <Icon
-          icon="chevron-right"
-          className="absolute right-0 top-1/2 -translate-y-1/2 invert z-10"
-        />
-      )}
+      {showRight && <Icon icon="chevron-right" className="absolute right-0 top-1/2 -translate-y-1/2 invert z-10" />}
     </div>
   )
 }

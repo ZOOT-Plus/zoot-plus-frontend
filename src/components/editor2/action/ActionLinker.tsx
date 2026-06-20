@@ -22,27 +22,17 @@ interface ActionLinkerProps {
   isSorting?: boolean
 }
 
-export const ActionLinker: FC<ActionLinkerProps> = ({
-  actionAtom,
-  isDragging,
-  isSorting,
-}) => {
+export const ActionLinker: FC<ActionLinkerProps> = ({ actionAtom, isDragging, isSorting }) => {
   const t = useTranslation()
   const edit = useEdit()
   const { showLinkerButtons } = useAtomValue(editorAtoms.config)
   const actionAtoms = useAtomValue(editorAtoms.actionAtoms)
   const [action, setAction] = useImmerAtom(actionAtom)
   const index = actionAtoms.indexOf(actionAtom)
-  const visibilityClasses =
-    !showLinkerButtons && 'opacity-0 focus:opacity-100 group-hover:opacity-100'
+  const visibilityClasses = !showLinkerButtons && 'opacity-0 focus:opacity-100 group-hover:opacity-100'
   return (
     <div className="group flex items-center text-gray-400">
-      <div
-        className={clsx(
-          'flex items-center',
-          (isDragging || isSorting) && 'opacity-0',
-        )}
-      >
+      <div className={clsx('flex items-center', (isDragging || isSorting) && 'opacity-0')}>
         <CreateActionMenu actionAtom={actionAtom}>
           <Button
             small
@@ -68,9 +58,7 @@ export const ActionLinker: FC<ActionLinkerProps> = ({
                 .filter(([conditionType]) => {
                   switch (conditionType) {
                     case 'intermediatePreDelay':
-                      return (
-                        index !== 0 && action.intermediatePreDelay === undefined
-                      )
+                      return index !== 0 && action.intermediatePreDelay === undefined
                     case 'intermediatePostDelay':
                       return action.intermediatePostDelay === undefined
                     case 'costs':
@@ -90,17 +78,11 @@ export const ActionLinker: FC<ActionLinkerProps> = ({
                     text={title()}
                     labelElement={
                       <Tooltip2 content={description()}>
-                        <Icon
-                          className="!text-gray-300 dark:!text-gray-500"
-                          icon="info-sign"
-                        />
+                        <Icon className="!text-gray-300 dark:!text-gray-500" icon="info-sign" />
                       </Tooltip2>
                     }
                     onClick={() => {
-                      if (
-                        index === 0 &&
-                        conditionType === 'intermediatePreDelay'
-                      ) {
+                      if (index === 0 && conditionType === 'intermediatePreDelay') {
                         // 第一个动作无法添加前置延迟
                         return
                       }
@@ -179,40 +161,16 @@ const ConditionChain: FC<{
       />
     ),
     action.costs !== undefined && (
-      <ConditionNode
-        key="costs"
-        conditionKey="costs"
-        index={index}
-        action={action}
-        setAction={setAction}
-      />
+      <ConditionNode key="costs" conditionKey="costs" index={index} action={action} setAction={setAction} />
     ),
     action.costChanges !== undefined && (
-      <ConditionNode
-        key="costChanges"
-        conditionKey="costChanges"
-        index={index}
-        action={action}
-        setAction={setAction}
-      />
+      <ConditionNode key="costChanges" conditionKey="costChanges" index={index} action={action} setAction={setAction} />
     ),
     action.kills !== undefined && (
-      <ConditionNode
-        key="kills"
-        conditionKey="kills"
-        index={index}
-        action={action}
-        setAction={setAction}
-      />
+      <ConditionNode key="kills" conditionKey="kills" index={index} action={action} setAction={setAction} />
     ),
     action.cooling !== undefined && (
-      <ConditionNode
-        key="cooling"
-        conditionKey="cooling"
-        index={index}
-        action={action}
-        setAction={setAction}
-      />
+      <ConditionNode key="cooling" conditionKey="cooling" index={index} action={action} setAction={setAction} />
     ),
     action.intermediatePostDelay !== undefined && (
       <ConditionNode
@@ -234,13 +192,7 @@ const ConditionChain: FC<{
 
   return (
     <div className="ml-4 flex flex-wrap items-center gap-1">
-      <svg
-        className="h-8"
-        viewBox="0 0 40 50"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
+      <svg className="h-8" viewBox="0 0 40 50" fill="none" stroke="currentColor" strokeWidth="2">
         {index === 0 ? (
           <>
             <circle cx="6" cy="25" r="4" fill="currentColor" />
@@ -262,19 +214,9 @@ const ConditionChain: FC<{
           <path d="M0 25h100" />
         </svg>,
       )}
-      <svg
-        className="h-8"
-        viewBox="50 50 50 50"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
+      <svg className="h-8" viewBox="50 50 50 50" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M90 96v-21h-90" strokeLinejoin="round" />
-        <path
-          d="M97 90l-7 7-7-7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M97 90l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
   )
@@ -290,15 +232,7 @@ interface ConditionNodeProps {
   setAction: (fn: (v: Draft<EditorAction>) => void) => void
 }
 
-const ConditionNode: FC<ConditionNodeProps> = ({
-  title,
-  unit,
-  inputProps,
-  index,
-  conditionKey,
-  action,
-  setAction,
-}) => {
+const ConditionNode: FC<ConditionNodeProps> = ({ title, unit, inputProps, index, conditionKey, action, setAction }) => {
   const t = useTranslation()
   const edit = useEdit()
   const value = action[conditionKey]!
@@ -331,10 +265,7 @@ const ConditionNode: FC<ConditionNodeProps> = ({
           </Menu>
         }
       >
-        <Button
-          minimal
-          className="!px-0 !py-1 min-h-0 !font-normal !text-inherit"
-        >
+        <Button minimal className="!px-0 !py-1 min-h-0 !font-normal !text-inherit">
           {title}
         </Button>
       </Popover2>

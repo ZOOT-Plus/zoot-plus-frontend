@@ -7,18 +7,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { OperationEditor } from 'components/editor2/Editor'
 
-import {
-  createOperation,
-  updateOperation,
-  useOperation,
-} from '../apis/operation'
+import { createOperation, updateOperation, useOperation } from '../apis/operation'
 import { withSuspensable } from '../components/Suspensable'
 import { AppToaster } from '../components/Toaster'
-import {
-  defaultEditorState,
-  editorAtoms,
-  historyAtom,
-} from '../components/editor2/editor-state'
+import { defaultEditorState, editorAtoms, historyAtom } from '../components/editor2/editor-state'
 import { toEditorOperation } from '../components/editor2/reconciliation'
 import { operationLooseSchema } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
@@ -49,14 +41,9 @@ export const EditorPage = withSuspensable(() => {
   useLayoutEffect(() => {
     if (apiOperation) {
       resetEditor({
-        operation: toEditorOperation(
-          operationLooseSchema.parse(JSON.parse(apiOperation.content)),
-        ),
+        operation: toEditorOperation(operationLooseSchema.parse(JSON.parse(apiOperation.content))),
         metadata: {
-          visibility:
-            apiOperation.status === CopilotSetStatus.Public
-              ? 'public'
-              : 'private',
+          visibility: apiOperation.status === CopilotSetStatus.Public ? 'public' : 'private',
         },
       })
     } else {
@@ -78,9 +65,7 @@ export const EditorPage = withSuspensable(() => {
         }
         const operation = result.data
         const status =
-          get(editorAtoms.metadata).visibility === 'public'
-            ? CopilotSetStatus.Public
-            : CopilotSetStatus.Private
+          get(editorAtoms.metadata).visibility === 'public' ? CopilotSetStatus.Public : CopilotSetStatus.Private
 
         const upload = async () => {
           if (id) {
@@ -111,10 +96,7 @@ export const EditorPage = withSuspensable(() => {
           }
         }
 
-        await wrapErrorMessage(
-          (e) => i18n.pages.editor.upload_failed({ error: formatError(e) }),
-          upload(),
-        )
+        await wrapErrorMessage((e) => i18n.pages.editor.upload_failed({ error: formatError(e) }), upload())
         return true
       },
       [id, navigate],
@@ -123,12 +105,8 @@ export const EditorPage = withSuspensable(() => {
 
   return (
     <OperationEditor
-      subtitle={
-        isNew ? t.pages.editor.create.subtitle : t.pages.editor.edit.subtitle
-      }
-      submitAction={
-        isNew ? t.pages.editor.create.submit : t.pages.editor.edit.submit
-      }
+      subtitle={isNew ? t.pages.editor.create.subtitle : t.pages.editor.edit.subtitle}
+      submitAction={isNew ? t.pages.editor.create.submit : t.pages.editor.edit.submit}
       onSubmit={handleSubmit}
     />
   )

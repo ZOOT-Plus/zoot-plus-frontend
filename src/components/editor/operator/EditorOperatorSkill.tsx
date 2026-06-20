@@ -15,13 +15,9 @@ interface EditorOperatorSkillChoice {
   value: number | null
 }
 
-interface EditorOperatorSkillProps
-  extends EditorFieldProps<CopilotDocV1.Operator, number> {}
+interface EditorOperatorSkillProps extends EditorFieldProps<CopilotDocV1.Operator, number> {}
 
-export const EditorOperatorSkill = ({
-  name,
-  control,
-}: EditorOperatorSkillProps) => {
+export const EditorOperatorSkill = ({ name, control }: EditorOperatorSkillProps) => {
   const t = useTranslation()
 
   const {

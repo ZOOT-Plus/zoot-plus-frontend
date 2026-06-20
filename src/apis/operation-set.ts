@@ -1,11 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { noop } from 'lodash-es'
-import {
-  CopilotSetQuery,
-  CopilotSetStatus,
-  CopilotSetUpdateReq,
-  PagedDTOCopilotSetListRes,
-} from 'maa-copilot-client'
+import { CopilotSetQuery, CopilotSetStatus, CopilotSetUpdateReq, PagedDTOCopilotSetListRes } from 'maa-copilot-client'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
@@ -26,13 +21,7 @@ export interface UseOperationSetsParams {
   suspense?: boolean
 }
 
-export function useOperationSets({
-  keyword,
-  creatorId,
-  onlyFollowing,
-  disabled,
-  suspense,
-}: UseOperationSetsParams) {
+export function useOperationSets({ keyword, creatorId, onlyFollowing, disabled, suspense }: UseOperationSetsParams) {
   const auth = useAtomValue(authAtom)
   const {
     data: pages,
@@ -89,19 +78,10 @@ export function useOperationSets({
 export function useRefreshOperationSets() {
   const refresh = useSWRRefresh()
   return () =>
-    refresh(
-      (key) =>
-        key.includes('operationSets') ||
-        (key.includes('operationSet') && key.includes('fromList')),
-    )
+    refresh((key) => key.includes('operationSets') || (key.includes('operationSet') && key.includes('fromList')))
 }
 
-export function useOperationSetSearch({
-  keyword,
-  suspense,
-  disabled,
-  ...params
-}: UseOperationSetsParams) {
+export function useOperationSetSearch({ keyword, suspense, disabled, ...params }: UseOperationSetsParams) {
   if (!suspense) {
     throw new Error('useOperationSetSearch must be used with suspense')
   }
@@ -152,17 +132,12 @@ interface UseOperationSetParams {
 }
 
 export function useOperationSet({ id, suspense }: UseOperationSetParams) {
-  return useSWR(
-    id ? ['operationSet', id] : null,
-    () => getOperationSet({ id: id! }),
-    { suspense },
-  )
+  return useSWR(id ? ['operationSet', id] : null, () => getOperationSet({ id: id! }), { suspense })
 }
 
 export function useRefreshOperationSet() {
   const refresh = useSWRRefresh()
-  return (id: number) =>
-    refresh((key) => key.includes('operationSet') && key.includes(String(id)))
+  return (id: number) => refresh((key) => key.includes('operationSet') && key.includes(String(id)))
 }
 
 export async function getOperationSet(req: { id: number }) {
@@ -197,10 +172,7 @@ export async function deleteOperationSet(req: { id: number }) {
   await new OperationSetApi().deleteCopilotSet({ commonIdReqLong: req })
 }
 
-export async function addToOperationSet(req: {
-  operationSetId: number
-  operationIds: number[]
-}) {
+export async function addToOperationSet(req: { operationSetId: number; operationIds: number[] }) {
   await new OperationSetApi().addCopilotIds({
     copilotSetModCopilotsReq: {
       id: req.operationSetId,
@@ -209,10 +181,7 @@ export async function addToOperationSet(req: {
   })
 }
 
-export async function removeFromOperationSet(req: {
-  operationSetId: number
-  operationIds: number[]
-}) {
+export async function removeFromOperationSet(req: { operationSetId: number; operationIds: number[] }) {
   await new OperationSetApi().removeCopilotIds({
     copilotSetModCopilotsReq: {
       id: req.operationSetId,

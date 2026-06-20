@@ -9,12 +9,8 @@ import { useTranslation } from '../../i18n/i18n'
 import { FieldResetButton } from '../FieldResetButton'
 import { NumericInput2 } from './NumericInput2'
 
-export interface EditorIntegerInputProps<T extends FieldValues>
-  extends EditorFieldProps<T, number> {
-  NumericInputProps: Omit<
-    NumericInputProps,
-    'name' | 'inputRef' | 'onValueChange' | 'onBlur'
-  >
+export interface EditorIntegerInputProps<T extends FieldValues> extends EditorFieldProps<T, number> {
+  NumericInputProps: Omit<NumericInputProps, 'name' | 'inputRef' | 'onValueChange' | 'onBlur'>
 }
 
 export const EditorIntegerInput = <T extends FieldValues>({
@@ -58,9 +54,7 @@ export const EditorIntegerInput = <T extends FieldValues>({
       onValueChange={(value) => onChange(value)}
       onBlur={onBlur}
       value={isNil(value) || Number.isNaN(value) ? '' : value}
-      rightElement={
-        <FieldResetButton disabled={!hasValue} onReset={() => onChange('')} />
-      }
+      rightElement={<FieldResetButton disabled={!hasValue} onReset={() => onChange('')} />}
       {...NumericInputProps}
     />
   )

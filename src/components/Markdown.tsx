@@ -8,20 +8,9 @@ interface MarkdownProps extends Options {
   className?: string
 }
 
-export function Markdown({
-  className,
-  remarkPlugins,
-  components,
-  children,
-  ...props
-}: MarkdownProps) {
+export function Markdown({ className, remarkPlugins, components, children, ...props }: MarkdownProps) {
   return (
-    <div
-      className={clsx(
-        className,
-        'markdown-body !text-sm !bg-transparent [&_img]:!bg-transparent',
-      )}
-    >
+    <div className={clsx(className, 'markdown-body !text-sm !bg-transparent [&_img]:!bg-transparent')}>
       <ReactMarkdown
         remarkPlugins={uniq([remarkGfm, remarkBreaks, ...(remarkPlugins ?? [])])}
         components={{

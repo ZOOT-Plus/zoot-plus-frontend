@@ -34,7 +34,10 @@ export default defineConfig(({ command, mode }) => {
             groups: [
               { name: 'maacopilot', test: /maa-copilot-client/ },
               { name: 'react', test: /node_modules[\\/](react|react-dom|react-router-dom)[\\/]/ },
-              { name: 'reactplugins', test: /node_modules[\\/](react-use|react-rating|react-markdown|react-ga-neo|react-hook-form)[\\/]/ },
+              {
+                name: 'reactplugins',
+                test: /node_modules[\\/](react-use|react-rating|react-markdown|react-ga-neo|react-hook-form)[\\/]/,
+              },
               { name: 'blueprint', test: /node_modules[\\/]@blueprintjs[\\/]core[\\/]/ },
               { name: 'blueprintaddon', test: /node_modules[\\/]@blueprintjs[\\/](select|popover2)[\\/]/ },
               { name: 'sentry', test: /node_modules[\\/]@sentry[\\/](react|tracing)[\\/]/ },
@@ -44,7 +47,10 @@ export default defineConfig(({ command, mode }) => {
               { name: 'iconify', test: /node_modules[\\/]@iconify[\\/]react[\\/]/ },
               { name: 'ajv', test: /node_modules[\\/](ajv|ajv-i18n)[\\/]/ },
               { name: 'linkify', test: /node_modules[\\/](linkify-react|linkifyjs)[\\/]/ },
-              { name: 'utils', test: /node_modules[\\/](lodash-es|clsx|dayjs|fuse.js|mitt|swr|camelcase-keys|snakecase-keys|zod)[\\/]/ },
+              {
+                name: 'utils',
+                test: /node_modules[\\/](lodash-es|clsx|dayjs|fuse.js|mitt|swr|camelcase-keys|snakecase-keys|zod)[\\/]/,
+              },
             ],
           },
         },

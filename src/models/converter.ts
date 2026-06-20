@@ -6,9 +6,7 @@ import { CopilotDocV1 } from 'models/copilot.schema'
 import { i18n } from '../i18n/i18n'
 import { findOperatorByName } from './operator'
 
-export function toCopilotOperation(
-  apiOperation: CopilotInfo,
-): CopilotDocV1.Operation {
+export function toCopilotOperation(apiOperation: CopilotInfo): CopilotDocV1.Operation {
   try {
     const json = JSON.parse(apiOperation.content)
     const operation: CopilotDocV1.Operation = camelcaseKeys(json, {
@@ -29,9 +27,7 @@ export function toCopilotOperation(
   }
 }
 
-export function migrateOperation(
-  operation: CopilotDocV1.Operation,
-): CopilotDocV1.Operation {
+export function migrateOperation(operation: CopilotDocV1.Operation): CopilotDocV1.Operation {
   if (operation.version === 2) {
     // in version 2, the module property is set to the index of the module in the modules array,
     // we need to convert it using the correct CopilotDocV1.Module mapping

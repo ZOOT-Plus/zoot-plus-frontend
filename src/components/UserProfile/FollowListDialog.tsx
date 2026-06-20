@@ -1,13 +1,6 @@
 import { Button, Dialog, NonIdealState } from '@blueprintjs/core'
 
-import {
-  ComponentType,
-  UIEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { ComponentType, UIEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useFollowList, isFollowListTypeKey } from '../../apis/follow'
 import { useTranslation } from '../../i18n/i18n'
@@ -31,33 +24,17 @@ export const FollowListDialog: ComponentType<{
   const [scrollTop, setScrollTop] = useState(0)
   const [viewportHeight, setViewportHeight] = useState(MAX_LIST_HEIGHT)
 
-  const {
-    users,
-    total,
-    error,
-    setSize,
-    isValidating,
-    isReachingEnd,
-    isLoading,
-  } = useFollowList({
-      type,
-      size: 20,
-      disabled: disabled || !isOpen,
-    })
+  const { users, total, error, setSize, isValidating, isReachingEnd, isLoading } = useFollowList({
+    type,
+    size: 20,
+    disabled: disabled || !isOpen,
+  })
 
-  const title =
-    type === 'following' ? t.pages.following.title : t.pages.fans.title
+  const title = type === 'following' ? t.pages.following.title : t.pages.fans.title
   const totalListHeight = users.length * ESTIMATED_USER_CARD_HEIGHT
   const { startIndex, virtualUsers } = useMemo(() => {
-    const start = Math.max(
-      0,
-      Math.floor(scrollTop / ESTIMATED_USER_CARD_HEIGHT) - OVERSCAN,
-    )
-    const end = Math.min(
-      users.length,
-      Math.ceil((scrollTop + viewportHeight) / ESTIMATED_USER_CARD_HEIGHT) +
-        OVERSCAN,
-    )
+    const start = Math.max(0, Math.floor(scrollTop / ESTIMATED_USER_CARD_HEIGHT) - OVERSCAN)
+    const end = Math.min(users.length, Math.ceil((scrollTop + viewportHeight) / ESTIMATED_USER_CARD_HEIGHT) + OVERSCAN)
 
     return {
       startIndex: start,
@@ -124,11 +101,7 @@ export const FollowListDialog: ComponentType<{
             description={t.pages.followCommon.error_description}
           />
         ) : users && users.length > 0 ? (
-          <div
-            ref={parentRef}
-            className="max-h-[600px] overflow-auto pr-1"
-            onScroll={handleScroll}
-          >
+          <div ref={parentRef} className="max-h-[600px] overflow-auto pr-1" onScroll={handleScroll}>
             <div
               style={{
                 height: totalListHeight,
@@ -148,9 +121,7 @@ export const FollowListDialog: ComponentType<{
                       width: '100%',
                       height: ESTIMATED_USER_CARD_HEIGHT,
                       paddingBottom: 16,
-                      transform: `translateY(${
-                        index * ESTIMATED_USER_CARD_HEIGHT
-                      }px)`,
+                      transform: `translateY(${index * ESTIMATED_USER_CARD_HEIGHT}px)`,
                     }}
                   >
                     <UserCard user={user} />
@@ -162,16 +133,8 @@ export const FollowListDialog: ComponentType<{
         ) : (
           <NonIdealState
             icon="slash"
-            title={
-              type === 'following'
-                ? t.pages.following.empty_title
-                : t.pages.fans.empty_title
-            }
-            description={
-              type === 'following'
-                ? t.pages.following.empty_description
-                : t.pages.fans.empty_description
-            }
+            title={type === 'following' ? t.pages.following.empty_title : t.pages.fans.empty_title}
+            description={type === 'following' ? t.pages.following.empty_description : t.pages.fans.empty_description}
           />
         )}
 

@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Button,
-  ButtonProps,
-  Callout,
-  H4,
-  Menu,
-  MenuItem,
-} from '@blueprintjs/core'
+import { Alert, Button, ButtonProps, Callout, H4, Menu, MenuItem } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 
 import { first, isEqual } from 'lodash-es'
@@ -32,20 +24,11 @@ interface Record<T> {
 
 type Archive<T> = Record<T>[]
 
-export const isChangedSinceLastSave = (
-  value: unknown,
-  archive: Archive<unknown>,
-) => !isEqual(value, first(archive)?.v)
+export const isChangedSinceLastSave = (value: unknown, archive: Archive<unknown>) => !isEqual(value, first(archive)?.v)
 
 export function useAutosave<T>(
   getValue: () => T,
-  {
-    key,
-    interval,
-    limit,
-    shouldSave = isChangedSinceLastSave,
-    onSave,
-  }: AutosaveOptions<T>,
+  { key, interval, limit, shouldSave = isChangedSinceLastSave, onSave }: AutosaveOptions<T>,
 ) {
   const [archive, setArchive] = useState<Archive<T>>(() => {
     const initialArchive = localStorage.getItem(key)
@@ -81,10 +64,7 @@ export function useAutosave<T>(
         v: value,
         t: Date.now(),
       }
-      const newArchive = [record, ...(latestArchive.current || [])].slice(
-        0,
-        limit,
-      )
+      const newArchive = [record, ...(latestArchive.current || [])].slice(0, limit)
 
       while (newArchive.length > 0) {
         try {
@@ -181,9 +161,7 @@ export const AutosaveSheet = <T,>({
                   text={
                     <>
                       {itemTitle(record)}
-                      <div className="text-xs opacity-75">
-                        {formatTime(record.t)}
-                      </div>
+                      <div className="text-xs opacity-75">{formatTime(record.t)}</div>
                     </>
                   }
                   key={record.t}

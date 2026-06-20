@@ -8,11 +8,5 @@ export const NavExpandButton = () => {
   const expanded = useAtomValue(navAtom)
   const toggleExpand = useSetAtom(toggleExpandNavAtom)
 
-  return (
-    <Button
-      className="md:!hidden"
-      onClick={() => toggleExpand()}
-      icon={expanded.expanded ? 'cross' : 'menu'}
-    />
-  )
+  return <Button className="md:!hidden" onClick={() => toggleExpand()} icon={expanded.expanded ? 'cross' : 'menu'} />
 }

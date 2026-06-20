@@ -1,12 +1,5 @@
 import { NonIdealState } from '@blueprintjs/core'
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 import { uniqueId, unset } from 'lodash-es'
@@ -44,8 +37,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
 
   const [editingAction, setEditingAction] = useState<CopilotDocV1.Action>()
 
-  const isEditing = (action: CopilotDocV1.Action) =>
-    editingAction?._id === action._id
+  const isEditing = (action: CopilotDocV1.Action) => editingAction?._id === action._id
 
   const sensors = useSensors(useSensor(PointerSensor))
 
@@ -85,8 +77,7 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
         setEditingAction(undefined)
       } else {
         setError('global' as any, {
-          message:
-            t.components.editor.action.EditorActions.update_action_not_found,
+          message: t.components.editor.action.EditorActions.update_action_not_found,
         })
         return false
       }
@@ -118,26 +109,15 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
             onDragEnd={handleDragEnd}
             onDragCancel={handleDragEnd}
           >
-            <SortableContext
-              items={actions.map(getId)}
-              strategy={verticalListSortingStrategy}
-            >
+            <SortableContext items={actions.map(getId)} strategy={verticalListSortingStrategy}>
               <ul>
                 {actions.map((action, i) => (
-                  <Sortable
-                    id={getId(action)}
-                    key={getId(action)}
-                    className="mt-2"
-                  >
+                  <Sortable id={getId(action)} key={getId(action)} className="mt-2">
                     {(attrs) => (
                       <EditorActionItem
                         action={action}
                         editing={isEditing(action)}
-                        onEdit={() =>
-                          setEditingAction(
-                            isEditing(action) ? undefined : action,
-                          )
-                        }
+                        onEdit={() => setEditingAction(isEditing(action) ? undefined : action)}
                         onDuplicate={() => handleDuplicate(i)}
                         onRemove={() => remove(i)}
                         {...attrs}
@@ -149,21 +129,12 @@ export const EditorActions = ({ control }: EditorActionsProps) => {
             </SortableContext>
 
             <DragOverlay>
-              {draggingAction && (
-                <EditorActionItem
-                  editing={isEditing(draggingAction)}
-                  action={draggingAction}
-                />
-              )}
+              {draggingAction && <EditorActionItem editing={isEditing(draggingAction)} action={draggingAction} />}
             </DragOverlay>
           </DndContext>
 
           {actions.length === 0 && (
-            <NonIdealState
-              title={t.components.editor.action.EditorActions.no_actions}
-              className=""
-              icon="inbox"
-            />
+            <NonIdealState title={t.components.editor.action.EditorActions.no_actions} className="" icon="inbox" />
           )}
         </div>
       </div>

@@ -1,13 +1,4 @@
-import {
-  Button,
-  Callout,
-  Card,
-  Classes,
-  Divider,
-  Icon,
-  InputGroup,
-  MenuItem,
-} from '@blueprintjs/core'
+import { Button, Callout, Card, Classes, Divider, Icon, InputGroup, MenuItem } from '@blueprintjs/core'
 import { Tooltip2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
@@ -32,12 +23,7 @@ import { Select } from '../../Select'
 import { SortableItemProps } from '../../dnd'
 import { DetailedSelect } from '../../editor/DetailedSelect'
 import { NumericInput2 } from '../../editor/NumericInput2'
-import {
-  EditorAction,
-  editorAtoms,
-  useActiveState,
-  useEdit,
-} from '../editor-state'
+import { EditorAction, editorAtoms, useActiveState, useEdit } from '../editor-state'
 import { OperatorSelect } from '../operator/OperatorSelect'
 import { createAction } from '../reconciliation'
 import { useEntityErrors } from '../validation/validation'
@@ -55,10 +41,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
     const edit = useEdit()
     const dispatchActions = useSetAtom(editorAtoms.actionAtoms as any)
     const [action, setAction] = useImmerAtom(actionAtom)
-    const [active, setActive] = useActiveState(
-      editorAtoms.activeActionIdAtom as any,
-      action.id,
-    )
+    const [active, setActive] = useActiveState(editorAtoms.activeActionIdAtom as any, action.id)
     const errors = useEntityErrors(action.id)
     const [docDraft, setDocDraft] = useState<string | undefined>()
     const [docInput, setDocInput] = useState<HTMLInputElement | null>(null)
@@ -80,10 +63,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
       action: A
       setAction: (fn: (draft: Draft<A>) => void) => void
     }
-    const renderForTypes = <
-      T extends CopilotDocV1.Type,
-      A extends EditorAction = Extract<EditorAction, { type: T }>,
-    >(
+    const renderForTypes = <T extends CopilotDocV1.Type, A extends EditorAction = Extract<EditorAction, { type: T }>>(
       types: T[],
       render: (args: RenderArgs<A>) => ReactNode,
     ) => {
@@ -95,18 +75,8 @@ export const ActionItem: FC<ActionItemProps> = memo(
 
     return (
       <div onMouseDownCapture={() => setActive(true)}>
-        <ActionLinker
-          actionAtom={actionAtom}
-          isDragging={isDragging}
-          isSorting={isSorting}
-        />
-        <Card
-          className={clsx(
-            className,
-            'card-shadow-subtle !p-0 !rounded overflow-hidden',
-            typeInfo.accentText,
-          )}
-        >
+        <ActionLinker actionAtom={actionAtom} isDragging={isDragging} isSorting={isSorting} />
+        <Card className={clsx(className, 'card-shadow-subtle !p-0 !rounded overflow-hidden', typeInfo.accentText)}>
           <div className="flex flex-wrap items-center !text-inherit">
             <h4
               className={clsx(
@@ -169,12 +139,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                     action.type === CopilotDocV1.Type.BulletTime ? (
                       <>
                         <Divider className="grow rotate-12 ml-3" />
-                        <Tooltip2
-                          placement="top"
-                          content={
-                            t.components.editor2.ActionItem.target_or_location
-                          }
-                        >
+                        <Tooltip2 placement="top" content={t.components.editor2.ActionItem.target_or_location}>
                           {t.components.editor2.ActionItem.or}
                         </Tooltip2>
                         <Divider className="grow rotate-12 mr-3" />
@@ -185,16 +150,13 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   </div>
                   <div className="shrink-0">
                     <div className="flex items-center text-3xl">
-                      <span className="text-gray-300 dark:text-gray-600">
-                        {'('}
-                      </span>
+                      <span className="text-gray-300 dark:text-gray-600">{'('}</span>
                       <NumericInput2
                         intOnly
                         buttonPosition="none"
                         inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
                         style={{
-                          width:
-                            String(action.location?.[0] ?? 0).length + 'ch',
+                          width: String(action.location?.[0] ?? 0).length + 'ch',
                         }}
                         value={action.location?.[0] ?? ''}
                         wheelStepSize={1}
@@ -211,16 +173,13 @@ export const ActionItem: FC<ActionItemProps> = memo(
                           })
                         }}
                       />
-                      <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">
-                        ,
-                      </span>
+                      <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
                       <NumericInput2
                         intOnly
                         buttonPosition="none"
                         inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
                         style={{
-                          width:
-                            String(action.location?.[1] ?? 0).length + 'ch',
+                          width: String(action.location?.[1] ?? 0).length + 'ch',
                         }}
                         value={action.location?.[1] ?? ''}
                         wheelStepSize={1}
@@ -237,236 +196,204 @@ export const ActionItem: FC<ActionItemProps> = memo(
                           })
                         }}
                       />
-                      <span className="text-gray-300 dark:text-gray-600">
-                        {')'}
-                      </span>
+                      <span className="text-gray-300 dark:text-gray-600">{')'}</span>
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {t.components.editor2.label.operation.actions.location}
-                    </div>
+                    <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.location}</div>
                   </div>
                 </>
               ),
             )}
-            {renderForTypes(
-              [CopilotDocV1.Type.MoveCamera],
-              ({ action, setAction }) => (
-                <>
-                  <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
-                    <Divider className="grow rotate-12" />
+            {renderForTypes([CopilotDocV1.Type.MoveCamera], ({ action, setAction }) => (
+              <>
+                <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
+                  <Divider className="grow rotate-12" />
+                </div>
+                <div className="shrink-0">
+                  <div className="flex items-center text-3xl">
+                    <span className="text-gray-300 dark:text-gray-600">{'('}</span>
+                    <NumericInput2
+                      intOnly
+                      buttonPosition="none"
+                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                      value={action.distance?.[0] ?? ''}
+                      style={{
+                        width: String(action.distance?.[0] ?? 0).length + 'ch',
+                      }}
+                      wheelStepSize={1}
+                      onValueChange={(v) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            draft.distance = [v, draft.distance?.[1] ?? 0]
+                          })
+                          return {
+                            action: 'set-action-distance-x',
+                            desc: i18n.actions.editor2.set_action_distance,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
+                    <NumericInput2
+                      intOnly
+                      buttonPosition="none"
+                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                      value={action.distance?.[1] ?? ''}
+                      style={{
+                        width: String(action.distance?.[1] ?? 0).length + 'ch',
+                      }}
+                      wheelStepSize={1}
+                      onValueChange={(v) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            draft.distance = [draft.distance?.[0] ?? 0, v]
+                          })
+                          return {
+                            action: 'set-action-distance-y',
+                            desc: i18n.actions.editor2.set_action_distance,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="text-gray-300 dark:text-gray-600">{')'}</span>
                   </div>
-                  <div className="shrink-0">
-                    <div className="flex items-center text-3xl">
-                      <span className="text-gray-300 dark:text-gray-600">
-                        {'('}
-                      </span>
-                      <NumericInput2
-                        intOnly
-                        buttonPosition="none"
-                        inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
-                        value={action.distance?.[0] ?? ''}
-                        style={{
-                          width:
-                            String(action.distance?.[0] ?? 0).length + 'ch',
-                        }}
-                        wheelStepSize={1}
-                        onValueChange={(v) => {
+                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.distance}</div>
+                </div>
+              </>
+            ))}
+            {renderForTypes([CopilotDocV1.Type.Deploy], ({ action, setAction }) => (
+              <>
+                <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
+                  <Divider className="rotate-12" />
+                </div>
+                <div className="mt-2 !text-inherit">
+                  <div className="flex items-center !text-inherit">
+                    {Object.values(CopilotDocV1.Direction).map((dir) => (
+                      <Button
+                        small
+                        minimal
+                        className={clsx(
+                          '!px-2.5 !bg-transparent [&_.bp4-icon]:!text-current',
+                          action.direction === dir
+                            ? '!text-inherit drop-shadow'
+                            : '!text-gray-200 hover:!text-gray-400',
+                        )}
+                        key={dir}
+                        active={action.direction === dir}
+                        onClick={() => {
                           edit(() => {
                             setAction((draft) => {
-                              draft.distance = [v, draft.distance?.[1] ?? 0]
+                              draft.direction = dir
                             })
                             return {
-                              action: 'set-action-distance-x',
-                              desc: i18n.actions.editor2.set_action_distance,
-                              squashBy: action.id,
+                              action: 'set-action-direction',
+                              desc: i18n.actions.editor2.set_action_direction,
                             }
                           })
                         }}
-                      />
-                      <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">
-                        ,
-                      </span>
-                      <NumericInput2
-                        intOnly
-                        buttonPosition="none"
-                        inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
-                        value={action.distance?.[1] ?? ''}
-                        style={{
-                          width:
-                            String(action.distance?.[1] ?? 0).length + 'ch',
-                        }}
-                        wheelStepSize={1}
-                        onValueChange={(v) => {
-                          edit(() => {
-                            setAction((draft) => {
-                              draft.distance = [draft.distance?.[0] ?? 0, v]
-                            })
-                            return {
-                              action: 'set-action-distance-y',
-                              desc: i18n.actions.editor2.set_action_distance,
-                              squashBy: action.id,
+                        icon={
+                          <Icon
+                            size={24}
+                            icon={
+                              dir === CopilotDocV1.Direction.Left
+                                ? 'arrow-left'
+                                : dir === CopilotDocV1.Direction.Right
+                                  ? 'arrow-right'
+                                  : dir === CopilotDocV1.Direction.Up
+                                    ? 'arrow-up'
+                                    : dir === CopilotDocV1.Direction.Down
+                                      ? 'arrow-down'
+                                      : 'disable'
                             }
-                          })
-                        }}
+                          />
+                        }
                       />
-                      <span className="text-gray-300 dark:text-gray-600">
-                        {')'}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {t.components.editor2.label.operation.actions.distance}
-                    </div>
+                    ))}
                   </div>
-                </>
-              ),
-            )}
-            {renderForTypes(
-              [CopilotDocV1.Type.Deploy],
-              ({ action, setAction }) => (
+                  <div className="ml-1 mt-1 text-xs text-gray-500">
+                    {t.components.editor2.label.operation.actions.direction}
+                  </div>
+                </div>
+              </>
+            ))}
+            {renderForTypes([CopilotDocV1.Type.SkillUsage], ({ action, setAction }) => {
+              return (
                 <>
                   <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
                     <Divider className="rotate-12" />
                   </div>
-                  <div className="mt-2 !text-inherit">
-                    <div className="flex items-center !text-inherit">
-                      {Object.values(CopilotDocV1.Direction).map((dir) => (
-                        <Button
-                          small
-                          minimal
-                          className={clsx(
-                            '!px-2.5 !bg-transparent [&_.bp4-icon]:!text-current',
-                            action.direction === dir
-                              ? '!text-inherit drop-shadow'
-                              : '!text-gray-200 hover:!text-gray-400',
-                          )}
-                          key={dir}
-                          active={action.direction === dir}
-                          onClick={() => {
-                            edit(() => {
-                              setAction((draft) => {
-                                draft.direction = dir
-                              })
-                              return {
-                                action: 'set-action-direction',
-                                desc: i18n.actions.editor2.set_action_direction,
+                  <div className="">
+                    <div className="flex items-baseline gap-1 text-xl">
+                      <DetailedSelect
+                        items={alternativeOperatorSkillUsages.map((item) =>
+                          item.value === CopilotDocV1.SkillUsageType.ReadyToUseTimes
+                            ? {
+                                ...item,
+                                menuItemProps: {
+                                  shouldDismissPopover: false,
+                                },
+                                description: (
+                                  <>
+                                    <div>{item.description()}</div>
+                                    <span className="mr-2 text-lg">x</span>
+                                    <NumericInput2
+                                      intOnly
+                                      min={1}
+                                      className="inline-flex"
+                                      inputClassName="!p-0 !w-8 text-center font-semibold"
+                                      value={action.skillTimes ?? 1}
+                                      wheelStepSize={1}
+                                      onValueChange={(v) => {
+                                        edit(() => {
+                                          setAction((draft) => {
+                                            draft.skillTimes = v
+                                          })
+                                          return {
+                                            action: 'set-action-skillTimes',
+                                            desc: i18n.actions.editor2.set_action_skill_times,
+                                            squashBy: action.id,
+                                          }
+                                        })
+                                      }}
+                                    />
+                                  </>
+                                ),
                               }
+                            : item,
+                        )}
+                        value={action.skillUsage}
+                        onItemSelect={(item) => {
+                          if (item.value === action.skillUsage) return
+                          edit(() => {
+                            setAction((draft) => {
+                              draft.skillUsage = item.value as number
                             })
-                          }}
-                          icon={
-                            <Icon
-                              size={24}
-                              icon={
-                                dir === CopilotDocV1.Direction.Left
-                                  ? 'arrow-left'
-                                  : dir === CopilotDocV1.Direction.Right
-                                    ? 'arrow-right'
-                                    : dir === CopilotDocV1.Direction.Up
-                                      ? 'arrow-up'
-                                      : dir === CopilotDocV1.Direction.Down
-                                        ? 'arrow-down'
-                                        : 'disable'
-                              }
-                            />
+                            return {
+                              action: 'set-action-skillUsage',
+                              desc: i18n.actions.editor2.set_action_skill_usage,
+                            }
+                          })
+                        }}
+                      >
+                        <Button
+                          minimal
+                          className="-ml-1 !px-1 !py-0 !text-xl !font-normal !text-inherit"
+                          text={
+                            action.skillUsage
+                              ? getSkillUsageAltTitle(action.skillUsage, action.skillTimes)
+                              : t.components.editor2.ActionItem.select_usage
                           }
                         />
-                      ))}
+                      </DetailedSelect>
                     </div>
-                    <div className="ml-1 mt-1 text-xs text-gray-500">
-                      {t.components.editor2.label.operation.actions.direction}
+                    <div className="text-xs text-gray-500">
+                      {t.components.editor2.label.operation.actions.skill_usage}
                     </div>
                   </div>
                 </>
-              ),
-            )}
-            {renderForTypes(
-              [CopilotDocV1.Type.SkillUsage],
-              ({ action, setAction }) => {
-                return (
-                  <>
-                    <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
-                      <Divider className="rotate-12" />
-                    </div>
-                    <div className="">
-                      <div className="flex items-baseline gap-1 text-xl">
-                        <DetailedSelect
-                          items={alternativeOperatorSkillUsages.map((item) =>
-                            item.value ===
-                            CopilotDocV1.SkillUsageType.ReadyToUseTimes
-                              ? {
-                                  ...item,
-                                  menuItemProps: {
-                                    shouldDismissPopover: false,
-                                  },
-                                  description: (
-                                    <>
-                                      <div>{item.description()}</div>
-                                      <span className="mr-2 text-lg">x</span>
-                                      <NumericInput2
-                                        intOnly
-                                        min={1}
-                                        className="inline-flex"
-                                        inputClassName="!p-0 !w-8 text-center font-semibold"
-                                        value={action.skillTimes ?? 1}
-                                        wheelStepSize={1}
-                                        onValueChange={(v) => {
-                                          edit(() => {
-                                            setAction((draft) => {
-                                              draft.skillTimes = v
-                                            })
-                                            return {
-                                              action: 'set-action-skillTimes',
-                                              desc: i18n.actions.editor2
-                                                .set_action_skill_times,
-                                              squashBy: action.id,
-                                            }
-                                          })
-                                        }}
-                                      />
-                                    </>
-                                  ),
-                                }
-                              : item,
-                          )}
-                          value={action.skillUsage}
-                          onItemSelect={(item) => {
-                            if (item.value === action.skillUsage) return
-                            edit(() => {
-                              setAction((draft) => {
-                                draft.skillUsage = item.value as number
-                              })
-                              return {
-                                action: 'set-action-skillUsage',
-                                desc: i18n.actions.editor2
-                                  .set_action_skill_usage,
-                              }
-                            })
-                          }}
-                        >
-                          <Button
-                            minimal
-                            className="-ml-1 !px-1 !py-0 !text-xl !font-normal !text-inherit"
-                            text={
-                              action.skillUsage
-                                ? getSkillUsageAltTitle(
-                                    action.skillUsage,
-                                    action.skillTimes,
-                                  )
-                                : t.components.editor2.ActionItem.select_usage
-                            }
-                          />
-                        </DetailedSelect>
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {
-                          t.components.editor2.label.operation.actions
-                            .skill_usage
-                        }
-                      </div>
-                    </div>
-                  </>
-                )
-              },
-            )}
+              )
+            })}
             <div className="ml-auto flex">
               <Button
                 minimal
@@ -520,17 +447,11 @@ export const ActionItem: FC<ActionItemProps> = memo(
             </div>
           </div>
           {(doc !== undefined || action.docColor !== undefined) && (
-            <div
-              data-doc-section
-              className="flex items-center bg-gray-200 text-gray-500"
-            >
+            <div data-doc-section className="flex items-center bg-gray-200 text-gray-500">
               <Select
                 filterable={false}
                 items={actionDocColors}
-                itemRenderer={(
-                  color,
-                  { index, handleClick, handleFocus, modifiers },
-                ) => (
+                itemRenderer={(color, { index, handleClick, handleFocus, modifiers }) => (
                   <MenuItem
                     key={color.value}
                     className={modifiers.active ? Classes.ACTIVE : undefined}
@@ -543,11 +464,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                         {color.title()}
                       </div>
                     }
-                    selected={
-                      action.docColor !== undefined
-                        ? action.docColor === color.value
-                        : index === 0
-                    }
+                    selected={action.docColor !== undefined ? action.docColor === color.value : index === 0}
                   />
                 )}
                 onItemSelect={(item) => {
@@ -567,8 +484,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   <span
                     className="absolute bottom-0.5 right-0.5 w-2 h-2 rounded-full"
                     style={{
-                      backgroundColor:
-                        action.docColor ?? actionDocColors[0].value,
+                      backgroundColor: action.docColor ?? actionDocColors[0].value,
                     }}
                   />
                 </Button>
@@ -622,11 +538,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
             </div>
           )}
           {errors && (
-            <Callout
-              icon={null}
-              intent="danger"
-              className="!p-2 !rounded-none text-xs"
-            >
+            <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
               {errors.map(({ path, message, fieldLabel }) => (
                 <p key={path.join()}>
                   {fieldLabel && fieldLabel + ': '}
@@ -669,8 +581,7 @@ const ActionTarget: FC<{
   const [{ name }, setAction] = useAtom(actionAtom)
   const groupNames = useAtomValue(groupNamesAtom)
 
-  const isGroup = (name?: string) =>
-    name !== undefined && groupNames.includes(name)
+  const isGroup = (name?: string) => name !== undefined && groupNames.includes(name)
 
   let displayName: string | undefined
   let subtitle = '<<<'
@@ -717,24 +628,17 @@ const ActionTarget: FC<{
           />
           <div className="ml-1 w-[6.5em]">
             <div
-              className={clsx(
-                'leading-4 tracking-tighter',
-                displayName && displayName?.length > 6 && 'text-xs',
-              )}
+              className={clsx('leading-4 tracking-tighter', displayName && displayName?.length > 6 && 'text-xs')}
               title={displayName}
             >
               {displayName === undefined ? (
-                <span className="text-gray-500">
-                  {t.components.editor2.ActionItem.select_target}
-                </span>
+                <span className="text-gray-500">{t.components.editor2.ActionItem.select_target}</span>
               ) : (
                 displayName
               )}
             </div>
             <Divider className="m-0 mr-1" />
-            <div className="text-gray-500 text-xs font-normal truncate">
-              {subtitle}
-            </div>
+            <div className="text-gray-500 text-xs font-normal truncate">{subtitle}</div>
           </div>
         </div>
       </Button>

@@ -162,11 +162,7 @@ const notFoundActionType: Omit<ActionType, 'value'> & { value: 'Unknown' } = {
 
 export const findActionType = (type?: string) => {
   if (!type) return notFoundActionType
-  return (
-    ACTION_TYPES.find(
-      (item) => item.value === type || item.alternativeValue === type,
-    ) || notFoundActionType
-  )
+  return ACTION_TYPES.find((item) => item.value === type || item.alternativeValue === type) || notFoundActionType
 }
 
 export type ActionConditionType =
@@ -186,17 +182,12 @@ export const ACTION_CONDITIONS: Record<
   intermediatePreDelay: {
     title: i18nDefer.models.types.action_condition.intermediate_pre_delay.title,
     icon: 'time',
-    description:
-      i18nDefer.models.types.action_condition.intermediate_pre_delay
-        .description,
+    description: i18nDefer.models.types.action_condition.intermediate_pre_delay.description,
   },
   intermediatePostDelay: {
-    title:
-      i18nDefer.models.types.action_condition.intermediate_post_delay.title,
+    title: i18nDefer.models.types.action_condition.intermediate_post_delay.title,
     icon: 'time',
-    description:
-      i18nDefer.models.types.action_condition.intermediate_post_delay
-        .description,
+    description: i18nDefer.models.types.action_condition.intermediate_post_delay.description,
   },
   costs: {
     title: i18nDefer.models.types.action_condition.costs.title,
@@ -206,8 +197,7 @@ export const ACTION_CONDITIONS: Record<
   costChanges: {
     title: i18nDefer.models.types.action_condition.cost_changes.title,
     icon: 'dollar',
-    description:
-      i18nDefer.models.types.action_condition.cost_changes.description,
+    description: i18nDefer.models.types.action_condition.cost_changes.description,
   },
   kills: {
     title: i18nDefer.models.types.action_condition.kills.title,

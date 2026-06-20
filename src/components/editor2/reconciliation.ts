@@ -8,12 +8,7 @@ import { CopilotDocV1 } from '../../models/copilot.schema'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
-import {
-  EditorAction,
-  EditorGroup,
-  EditorOperation,
-  EditorOperator,
-} from './editor-state'
+import { EditorAction, EditorGroup, EditorOperation, EditorOperator } from './editor-state'
 import { CopilotOperationLoose } from './validation/schema'
 
 export type WithPartialCoordinates<T> = T extends {
@@ -40,9 +35,7 @@ type WithoutIdDeep<T> = T extends unknown[]
     ? Omit<{ [K in keyof T]: WithoutIdDeep<T[K]> }, 'id'>
     : T
 
-export function createAction(
-  initialValues: SetRequired<Partial<Omit<EditorAction, 'id'>>, 'type'>,
-) {
+export function createAction(initialValues: SetRequired<Partial<Omit<EditorAction, 'id'>>, 'type'>) {
   const action: EditorAction = defaults({ id: uniqueId() }, initialValues)
   if (action.type === CopilotDocV1.Type.SkillUsage) {
     action.skillUsage = CopilotDocV1.SkillUsageType.ReadyToUse
@@ -50,9 +43,7 @@ export function createAction(
   return action
 }
 
-export function createGroup(
-  initialValues: Partial<Omit<EditorGroup, 'id' | 'opers'>> = {},
-): EditorGroup {
+export function createGroup(initialValues: Partial<Omit<EditorGroup, 'id' | 'opers'>> = {}): EditorGroup {
   const group: EditorGroup = defaults({ id: uniqueId() }, initialValues, {
     name: '',
     opers: [],
@@ -60,18 +51,13 @@ export function createGroup(
   return group
 }
 
-export function createOperator(
-  initialValues: Omit<EditorOperator, 'id'>,
-): EditorOperator {
+export function createOperator(initialValues: Omit<EditorOperator, 'id'>): EditorOperator {
   const operator: EditorOperator = defaults({ id: uniqueId() }, initialValues)
   return operator
 }
 
 const favOperatorCache = new WeakMap<FavOperator, WithId<FavOperator>>()
-const favOperatorReverseCache = new WeakMap<
-  WithId<FavOperator> | EditorOperator,
-  FavOperator
->()
+const favOperatorReverseCache = new WeakMap<WithId<FavOperator> | EditorOperator, FavOperator>()
 export const editorFavOperatorsAtom = atom(
   (get) =>
     get(favOperatorAtom).map((operator) => {
@@ -89,9 +75,7 @@ export const editorFavOperatorsAtom = atom(
     set,
     update:
       | (WithId<FavOperator> | EditorOperator)[]
-      | ((
-          prev: WithId<FavOperator>[],
-        ) => (WithId<FavOperator> | EditorOperator)[]),
+      | ((prev: WithId<FavOperator>[]) => (WithId<FavOperator> | EditorOperator)[]),
   ) => {
     if (typeof update === 'function') {
       update = update(get(editorFavOperatorsAtom))
@@ -114,10 +98,7 @@ export const editorFavOperatorsAtom = atom(
 )
 
 const favGroupCache = new WeakMap<FavGroup, WithId<FavGroup>>()
-const favGroupReverseCache = new WeakMap<
-  WithId<FavGroup> | EditorGroup,
-  FavGroup
->()
+const favGroupReverseCache = new WeakMap<WithId<FavGroup> | EditorGroup, FavGroup>()
 export const editorFavGroupsAtom = atom(
   (get) =>
     get(favGroupAtom).map((group) => {
@@ -133,9 +114,7 @@ export const editorFavGroupsAtom = atom(
   (
     get,
     set,
-    update:
-      | (WithId<FavGroup> | EditorGroup)[]
-      | ((prev: WithId<FavGroup>[]) => (WithId<FavGroup> | EditorGroup)[]),
+    update: (WithId<FavGroup> | EditorGroup)[] | ((prev: WithId<FavGroup>[]) => (WithId<FavGroup> | EditorGroup)[]),
   ) => {
     if (typeof update === 'function') {
       update = update(get(editorFavGroupsAtom))
@@ -148,15 +127,13 @@ export const editorFavGroupsAtom = atom(
       const { id, ...newGroup } = {
         ...group,
         id: '',
-        opers: group.opers?.map(
-          (operator: CopilotDocV1.Operator | EditorOperator) => {
-            const { id, ...newOperator } = {
-              ...operator,
-              id: '',
-            }
-            return newOperator
-          },
-        ),
+        opers: group.opers?.map((operator: CopilotDocV1.Operator | EditorOperator) => {
+          const { id, ...newOperator } = {
+            ...operator,
+            id: '',
+          }
+          return newOperator
+        }),
       }
       favGroupCache.set(newGroup, group)
       favGroupReverseCache.set(group, newGroup)
@@ -164,10 +141,7 @@ export const editorFavGroupsAtom = atom(
     })
 
     // 检查有没有多余的属性
-    0 as unknown as FavGroup satisfies SetOptional<
-      (typeof newGroups)[number],
-      'opers'
-    >
+    0 as unknown as FavGroup satisfies SetOptional<(typeof newGroups)[number], 'opers'>
     set(favGroupAtom, newGroups)
   },
 )
@@ -177,9 +151,7 @@ export const editorFavGroupsAtom = atom(
  * for storage or transmission. Essentially, it strips all `id` fields
  * which only makes sense in the context of the editor.
  */
-export function dehydrateOperation(
-  source: EditorOperation,
-): DehydratedEditorOperation {
+export function dehydrateOperation(source: EditorOperation): DehydratedEditorOperation {
   return {
     ...source,
     opers: source.opers.map(({ id, ...operator }) => operator),
@@ -191,9 +163,7 @@ export function dehydrateOperation(
   }
 }
 
-export function hydrateOperation(
-  source: DehydratedEditorOperation,
-): EditorOperation {
+export function hydrateOperation(source: DehydratedEditorOperation): EditorOperation {
   return {
     ...source,
     opers: source.opers.map((operator) => ({
@@ -215,9 +185,7 @@ export function hydrateOperation(
   }
 }
 
-export function toEditorOperation(
-  source: CopilotOperationLoose,
-): EditorOperation {
+export function toEditorOperation(source: CopilotOperationLoose): EditorOperation {
   const camelCased = camelcaseKeys(source, { deep: true })
   const operation = JSON.parse(
     JSON.stringify(migrateOperation(camelCased as CopilotDocV1.Operation)),
@@ -230,8 +198,7 @@ export function toEditorOperation(
         postDelay,
         rearDelay,
         ...newAction
-      }: WithoutIdDeep<EditorAction> & (typeof operation)['actions'][number] =
-        action
+      }: WithoutIdDeep<EditorAction> & (typeof operation)['actions'][number] = action
       // intermediatePostDelay 等于当前动作的 preDelay
       if (preDelay !== undefined) {
         newAction.intermediatePostDelay = preDelay
@@ -256,21 +223,15 @@ export function toEditorOperation(
 /**
  * To MAA's standard format. No validation is performed so it's not guaranteed to be valid.
  */
-export function toMaaOperation(
-  operation: EditorOperation,
-): CopilotOperationLoose {
+export function toMaaOperation(operation: EditorOperation): CopilotOperationLoose {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
   const converted = {
     ...dehydrated,
     actions: dehydrated.actions.map((action, index, actions) => {
       type Action = PartialDeep<WithPartialCoordinates<CopilotDocV1.Action>>
-      const {
-        _id,
-        intermediatePreDelay,
-        intermediatePostDelay,
-        ...newAction
-      }: WithoutIdDeep<EditorAction> & Action = action
+      const { _id, intermediatePreDelay, intermediatePostDelay, ...newAction }: WithoutIdDeep<EditorAction> & Action =
+        action
       // preDelay 等于当前动作的 intermediatePostDelay
       if (intermediatePostDelay !== undefined) {
         newAction.preDelay = intermediatePostDelay
@@ -300,9 +261,7 @@ export function toMaaOperation(
   if (converted.version === undefined) {
     if (
       converted.opers.some((operator) => operator.requirements) ||
-      converted.groups.some((group) =>
-        group.opers.some((operator) => operator.requirements),
-      )
+      converted.groups.some((group) => group.opers.some((operator) => operator.requirements))
     ) {
       converted.version = CopilotDocV1.VERSION
     }

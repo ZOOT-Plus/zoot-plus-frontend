@@ -67,17 +67,11 @@ export const NeoOperationCard = ({
             <div className="flex items-center text-slate-900">
               <NeoELevel
                 level={
-                  findLevelByStageName(
-                    levels,
-                    operation.parsedContent.stageName,
-                  ) || createCustomLevel(operation.parsedContent.stageName)
+                  findLevelByStageName(levels, operation.parsedContent.stageName) ||
+                  createCustomLevel(operation.parsedContent.stageName)
                 }
               />
-              <EDifficulty
-                difficulty={
-                  operation.parsedContent.difficulty ?? OpDifficulty.UNKNOWN
-                }
-              />
+              <EDifficulty difficulty={operation.parsedContent.difficulty ?? OpDifficulty.UNKNOWN} />
             </div>
 
             <div className="grow text-gray-700 leading-normal">
@@ -95,11 +89,7 @@ export const NeoOperationCard = ({
             <div className="flex">
               <div className="flex items-center gap-1.5">
                 <Icon icon="star" />
-                <OperationRating
-                  className="text-sm"
-                  operation={operation}
-                  layout="horizontal"
-                />
+                <OperationRating className="text-sm" operation={operation} layout="horizontal" />
               </div>
               <div className="flex-1" />
 
@@ -119,17 +109,12 @@ export const NeoOperationCard = ({
             <div className="flex">
               <div>
                 <Icon icon="time" className="mr-1.5" />
-                <RelativeTime
-                  Tooltip2Props={{ placement: 'top' }}
-                  moment={operation.uploadTime}
-                />
+                <RelativeTime Tooltip2Props={{ placement: 'top' }} moment={operation.uploadTime} />
               </div>
               <div className="flex-1" />
               <div className="text-zinc-500">
                 <Icon icon="user" className="mr-1.5" />
-                <UserName userId={operation.uploaderId}>
-                  {operation.uploader}
-                </UserName>
+                <UserName userId={operation.uploaderId}>{operation.uploader}</UserName>
               </div>
             </div>
           </Card>
@@ -156,13 +141,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
       <ReLinkRenderer
         search={{ op: operation.id }}
         render={({ onClick, onKeyDown }) => (
-          <Card
-            interactive
-            elevation={Elevation.TWO}
-            tabIndex={0}
-            onClick={onClick}
-            onKeyDown={onKeyDown}
-          >
+          <Card interactive elevation={Elevation.TWO} tabIndex={0} onClick={onClick} onKeyDown={onKeyDown}>
             <div className="flex flex-wrap mb-4 sm:mb-2">
               {/* title */}
               <div className="flex flex-col gap-3">
@@ -179,10 +158,8 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                 <H5 className="flex items-center text-slate-900 -mt-3">
                   <EDifficultyLevel
                     level={
-                      findLevelByStageName(
-                        levels,
-                        operation.parsedContent.stageName,
-                      ) || createCustomLevel(operation.parsedContent.stageName)
+                      findLevelByStageName(levels, operation.parsedContent.stageName) ||
+                      createCustomLevel(operation.parsedContent.stageName)
                     }
                     difficulty={operation.parsedContent.difficulty}
                   />
@@ -195,11 +172,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
               <div className="flex flex-wrap items-start gap-x-4 gap-y-1 text-zinc-500">
                 <div className="flex items-center gap-1.5">
                   <Icon icon="star" />
-                  <OperationRating
-                    className="text-sm"
-                    operation={operation}
-                    layout="horizontal"
-                  />
+                  <OperationRating className="text-sm" operation={operation} layout="horizontal" />
                 </div>
 
                 <Tooltip2
@@ -216,17 +189,12 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
 
                 <div>
                   <Icon icon="time" className="mr-1.5" />
-                  <RelativeTime
-                    Tooltip2Props={{ placement: 'top' }}
-                    moment={operation.uploadTime}
-                  />
+                  <RelativeTime Tooltip2Props={{ placement: 'top' }} moment={operation.uploadTime} />
                 </div>
 
                 <div>
                   <Icon icon="user" className="mr-1.5" />
-                  <UserName userId={operation.uploaderId}>
-                    {operation.uploader}
-                  </UserName>
+                  <UserName userId={operation.uploaderId}>{operation.uploader}</UserName>
                 </div>
               </div>
             </div>
@@ -247,10 +215,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
           </Card>
         )}
       />
-      <CardActions
-        className="absolute top-4 xl:top-12 right-[18px]"
-        operation={operation}
-      />
+      <CardActions className="absolute top-4 xl:top-12 right-[18px]" operation={operation} />
     </li>
   )
 }
@@ -273,12 +238,8 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           className="mr-2 last:mr-0 mb-1 last:mb-0"
           placement="top"
           content={
-            opers
-              ?.map(
-                ({ name, skill }) =>
-                  `${getLocalizedOperatorName(name, language)} ${skill ?? 1}`,
-              )
-              .join(', ') || t.components.OperationCard.no_operators
+            opers?.map(({ name, skill }) => `${getLocalizedOperatorName(name, language)} ${skill ?? 1}`).join(', ') ||
+            t.components.OperationCard.no_operators
           }
         >
           <Tag>[{name}]</Tag>
@@ -318,50 +279,25 @@ const CardActions = ({
     <div className={clsx('flex gap-1', className)}>
       <Tooltip2
         placement="bottom"
-        content={
-          <div className="max-w-sm dark:text-slate-900">
-            {t.components.OperationCard.download_json}
-          </div>
-        }
+        content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.download_json}</div>}
       >
         <Button
           small
           icon="download"
-          onClick={() =>
-            handleLazyDownloadJSON(
-              operation.id,
-              operation.parsedContent.doc.title,
-            )
-          }
+          onClick={() => handleLazyDownloadJSON(operation.id, operation.parsedContent.doc.title)}
         />
       </Tooltip2>
       <Tooltip2
         placement="bottom"
-        content={
-          <div className="max-w-sm dark:text-slate-900">
-            {t.components.OperationCard.copy_secret_code}
-          </div>
-        }
+        content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.copy_secret_code}</div>}
       >
-        <Button
-          small
-          icon="clipboard"
-          onClick={() => copyShortCode(operation)}
-        />
+        <Button small icon="clipboard" onClick={() => copyShortCode(operation)} />
       </Tooltip2>
       <Tooltip2
         placement="bottom"
-        content={
-          <div className="max-w-sm dark:text-slate-900">
-            {t.components.OperationCard.add_to_job_set}
-          </div>
-        }
+        content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.add_to_job_set}</div>}
       >
-        <AddToOperationSetButton
-          small
-          icon="plus"
-          operationIds={[operation.id]}
-        />
+        <AddToOperationSetButton small icon="plus" operationIds={[operation.id]} />
       </Tooltip2>
     </div>
   )

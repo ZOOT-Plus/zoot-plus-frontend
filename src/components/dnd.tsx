@@ -1,9 +1,5 @@
 import { UniqueIdentifier, useDroppable } from '@dnd-kit/core'
-import {
-  AnimateLayoutChanges,
-  defaultAnimateLayoutChanges,
-  useSortable,
-} from '@dnd-kit/sortable'
+import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 import clsx from 'clsx'
@@ -28,35 +24,20 @@ const animateLayoutChanges: AnimateLayoutChanges = (args) => {
   return true
 }
 
-export const Sortable: FC<SortableProps> = ({
-  id,
-  data,
-  noSortAnimation,
-  className,
-  children,
-}) => {
+export const Sortable: FC<SortableProps> = ({ id, data, noSortAnimation, className, children }) => {
   const sortable = useSortable({
     id,
     data,
     animateLayoutChanges: noSortAnimation ? animateLayoutChanges : undefined,
   })
 
-  const {
-    isSorting,
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = sortable
+  const { isSorting, attributes, listeners, setNodeRef, transform, transition } = sortable
 
   const style = {
     transform:
       isSorting && noSortAnimation
         ? undefined
-        : CSS.Transform.toString(
-            transform && { ...transform, scaleY: 1, scaleX: 1 },
-          ),
+        : CSS.Transform.toString(transform && { ...transform, scaleY: 1, scaleX: 1 }),
     transition,
   }
 
@@ -71,13 +52,7 @@ export const Sortable: FC<SortableProps> = ({
   }
 
   return (
-    <li
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      style={style}
-      className={className}
-    >
+    <li ref={setNodeRef} {...listeners} {...attributes} style={style} className={className}>
       {children}
     </li>
   )
@@ -92,12 +67,7 @@ export interface DroppableProps {
   children: ReactNode | ((childProps: DroppableItemProps) => ReactNode)
 }
 
-export const Droppable: FC<DroppableProps> = ({
-  id,
-  data,
-  className,
-  children,
-}) => {
+export const Droppable: FC<DroppableProps> = ({ id, data, className, children }) => {
   const droppable = useDroppable({ id, data })
   const { active, over, isOver, setNodeRef } = droppable
   const isOverAsContainer = isOver || over?.data.current?.container === id

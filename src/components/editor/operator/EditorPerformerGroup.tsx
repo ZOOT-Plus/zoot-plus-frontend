@@ -15,21 +15,12 @@ import { FactItem } from '../../FactItem'
 
 export interface EditorPerformerGroupProps {
   group?: CopilotDocV1.Group
-  submit: (
-    group: CopilotDocV1.Group,
-    setError?: UseFormSetError<CopilotDocV1.Group>,
-    fromSheet?: boolean,
-  ) => boolean
+  submit: (group: CopilotDocV1.Group, setError?: UseFormSetError<CopilotDocV1.Group>, fromSheet?: boolean) => boolean
   onCancel: () => void
   categorySelector: JSX.Element
 }
 
-export const EditorPerformerGroup = ({
-  group,
-  submit,
-  onCancel,
-  categorySelector,
-}: EditorPerformerGroupProps) => {
+export const EditorPerformerGroup = ({ group, submit, onCancel, categorySelector }: EditorPerformerGroupProps) => {
   const t = useTranslation()
   const isNew = !group
 
@@ -68,10 +59,7 @@ export const EditorPerformerGroup = ({
 
         <EditorResetButton
           reset={reset}
-          entityName={
-            t.components.editor.operator.EditorPerformerGroup
-              .editing_operator_group
-          }
+          entityName={t.components.editor.operator.EditorPerformerGroup.editing_operator_group}
         />
       </div>
 
@@ -79,14 +67,10 @@ export const EditorPerformerGroup = ({
         <FactItem
           dense
           icon="info-sign"
-          title={
-            t.components.editor.operator.EditorPerformerGroup.what_is_group
-          }
+          title={t.components.editor.operator.EditorPerformerGroup.what_is_group}
           className="font-bold"
         />
-        <div>
-          {t.components.editor.operator.EditorPerformerGroup.group_explanation}
-        </div>
+        <div>{t.components.editor.operator.EditorPerformerGroup.group_explanation}</div>
       </Callout>
 
       <FormField
@@ -94,22 +78,15 @@ export const EditorPerformerGroup = ({
         field="name"
         control={control}
         error={errors.name}
-        description={
-          t.components.editor.operator.EditorPerformerGroup.name_description
-        }
+        description={t.components.editor.operator.EditorPerformerGroup.name_description}
         ControllerProps={{
           rules: {
-            validate: (value) =>
-              !!value.trim() ||
-              t.components.editor.operator.EditorPerformerGroup.name_required,
+            validate: (value) => !!value.trim() || t.components.editor.operator.EditorPerformerGroup.name_required,
           },
           render: ({ field }) => (
             <InputGroup
               large
-              placeholder={
-                t.components.editor.operator.EditorPerformerGroup
-                  .name_placeholder
-              }
+              placeholder={t.components.editor.operator.EditorPerformerGroup.name_placeholder}
               {...field}
             />
           ),

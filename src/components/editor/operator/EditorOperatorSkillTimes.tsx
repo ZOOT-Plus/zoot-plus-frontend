@@ -6,9 +6,7 @@ import type { CopilotDocV1 } from 'models/copilot.schema'
 import { useTranslation } from '../../../i18n/i18n'
 import { NumericInput2 } from '../NumericInput2'
 
-export const EditorOperatorSkillTimes = <
-  T extends CopilotDocV1.Operator | CopilotDocV1.ActionSkillUsage,
->({
+export const EditorOperatorSkillTimes = <T extends CopilotDocV1.Operator | CopilotDocV1.ActionSkillUsage>({
   name,
   control,
   ...controllerProps
@@ -29,9 +27,7 @@ export const EditorOperatorSkillTimes = <
       defaultValue={0}
       onValueChange={(val) => onChange(Math.min(val, 100))}
       onBlur={onBlur}
-      placeholder={
-        t.components.editor.operator.EditorOperatorSkillTimes.skill_usage_count
-      }
+      placeholder={t.components.editor.operator.EditorOperatorSkillTimes.skill_usage_count}
       value={value ?? ''}
       large
       min={1}

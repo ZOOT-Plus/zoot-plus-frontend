@@ -66,24 +66,15 @@ const groupStrict = group.extend({
 
 const actionShape = {
   name: z.string().min(1).optional(),
-  location: z
-    .tuple([
-      z.number().int().or(z.undefined()),
-      z.number().int().or(z.undefined()),
-    ])
-    .optional(),
+  location: z.tuple([z.number().int().or(z.undefined()), z.number().int().or(z.undefined())]).optional(),
 
   // We have to use `distance: z.string()` here and later validate it in `.check()`,
   // because if we use `distance: z.enum()` here, it becomes the second discriminator key,
   // which leads to very counterintuitive behavior when parsing. See: https://github.com/colinhacks/zod/issues/4280
   // We also need to cast its type to match the expected type in `actionWithDirection` below.
-  direction: z.string().optional() as unknown as z.ZodOptional<
-    typeof actionWithDirection.shape.direction
-  >,
+  direction: z.string().optional() as unknown as z.ZodOptional<typeof actionWithDirection.shape.direction>,
 
-  distance: z
-    .tuple([z.number().or(z.undefined()), z.number().or(z.undefined())])
-    .optional(),
+  distance: z.tuple([z.number().or(z.undefined()), z.number().or(z.undefined())]).optional(),
   skill_usage: operator.shape.skill_usage,
   skill_times: operator.shape.skill_times,
 
@@ -144,7 +135,7 @@ const action = z
     if ('direction' in value && value.direction !== undefined) {
       const result = actionWithDirection.safeParse(value)
       if (result.error) {
-        issues.push(...result.error.issues as any)
+        issues.push(...(result.error.issues as any))
       }
     }
   })
@@ -209,7 +200,7 @@ const actionStrict = z
     if ('direction' in value && value.direction !== undefined) {
       const result = actionWithDirection.safeParse(value)
       if (result.error) {
-        issues.push(...result.error.issues as any)
+        issues.push(...(result.error.issues as any))
       }
     }
     if (
@@ -305,15 +296,11 @@ z.config({
     // so we override it with our own one
     if (
       (issue.code === 'invalid_type' && issue.input === undefined) ||
-      (issue.code === 'too_small' &&
-        issue.origin === 'string' &&
-        issue.minimum === 1)
+      (issue.code === 'too_small' && issue.origin === 'string' && issue.minimum === 1)
     ) {
       return i18n.components.editor2.validation.required
     }
 
-    return i18n.currentLanguage === 'cn'
-      ? cnError.localeError(issue)
-      : enError.localeError(issue)
+    return i18n.currentLanguage === 'cn' ? cnError.localeError(issue) : enError.localeError(issue)
   },
 })

@@ -13,8 +13,7 @@ export interface AnnouncementSection {
   meta?: AnnouncementSectionMeta
 }
 
-export interface AnnouncementSectionMeta
-  extends Omit<Required<AnnouncementSectionMetaRaw>, 'time'> {
+export interface AnnouncementSectionMeta extends Omit<Required<AnnouncementSectionMetaRaw>, 'time'> {
   time: Date
 }
 
@@ -39,45 +38,37 @@ export function parseAnnouncement(raw: string): Announcement {
     // ignore everything before the first section
     .slice(1)
 
-  const rawSections = chunk(sectionSlices, 2).map(
-    ([headingMarks, rest]) => headingMarks + rest,
-  )
+  const rawSections = chunk(sectionSlices, 2).map(([headingMarks, rest]) => headingMarks + rest)
 
-  const sections: (AnnouncementSection | undefined)[] = rawSections.map(
-    (rawSection) => {
-      try {
-        const emptyLinesMatcher = /^(\s*\n)+/m
-        const slices = rawSection.split(emptyLinesMatcher)
-        const segments = compact(slices.map((s) => s.trim())) // filter out the matched empty lines
+  const sections: (AnnouncementSection | undefined)[] = rawSections.map((rawSection) => {
+    try {
+      const emptyLinesMatcher = /^(\s*\n)+/m
+      const slices = rawSection.split(emptyLinesMatcher)
+      const segments = compact(slices.map((s) => s.trim())) // filter out the matched empty lines
 
-        const title =
-          segments[0]?.replace(/^#+/, '').trim() ||
-          i18n.models.announcement.default_title
+      const title = segments[0]?.replace(/^#+/, '').trim() || i18n.models.announcement.default_title
 
-        let meta: AnnouncementSectionMeta | undefined
-        const jsonBlockStart = '```json'
-        const jsonBlockEnd = '```'
+      let meta: AnnouncementSectionMeta | undefined
+      const jsonBlockStart = '```json'
+      const jsonBlockEnd = '```'
 
-        if (segments[1]?.startsWith(jsonBlockStart)) {
-          // remove the block to hide it from view
-          rawSection = rawSection.replace(segments[1], '')
+      if (segments[1]?.startsWith(jsonBlockStart)) {
+        // remove the block to hide it from view
+        rawSection = rawSection.replace(segments[1], '')
 
-          meta = parseSectionMeta(
-            segments[1].slice(jsonBlockStart.length, -jsonBlockEnd.length),
-          )
-        }
-
-        return {
-          title,
-          meta,
-          raw: rawSection,
-        }
-      } catch (e) {
-        console.warn(e)
-        return undefined
+        meta = parseSectionMeta(segments[1].slice(jsonBlockStart.length, -jsonBlockEnd.length))
       }
-    },
-  )
+
+      return {
+        title,
+        meta,
+        raw: rawSection,
+      }
+    } catch (e) {
+      console.warn(e)
+      return undefined
+    }
+  })
 
   return {
     sections: compact(sections),

@@ -5,12 +5,8 @@ import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
 import { Plugin } from 'vite'
 
-const translationsFile = fileURLToPath(
-  new URL('../src/i18n/translations.json', import.meta.url),
-)
-const outputDir = fileURLToPath(
-  new URL('../src/i18n/generated', import.meta.url),
-)
+const translationsFile = fileURLToPath(new URL('../src/i18n/translations.json', import.meta.url))
+const outputDir = fileURLToPath(new URL('../src/i18n/generated', import.meta.url))
 
 export function generateTranslations(): Plugin {
   splitTranslations()
@@ -38,17 +34,12 @@ function splitTranslations() {
   }
 
   const translationsJson = readFileSync(translationsFile, 'utf-8')
-  const languages = Object.keys(
-    JSON.parse(translationsJson).essentials.language,
-  )
+  const languages = Object.keys(JSON.parse(translationsJson).essentials.language)
   const essentials: Record<string, Record<string, unknown>> = {}
 
   for (const language of languages) {
     const languageTranslations = JSON.parse(translationsJson, (key, value) => {
-      if (
-        isObject(value) &&
-        Object.keys(value).some((key) => languages.includes(key))
-      ) {
+      if (isObject(value) && Object.keys(value).some((key) => languages.includes(key))) {
         return value[language] || '__NOT_TRANSLATED__'
       }
       return value

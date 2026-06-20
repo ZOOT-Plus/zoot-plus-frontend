@@ -22,12 +22,7 @@ import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
 import { getLocalizedOperatorName } from '../../../models/operator'
 import { Droppable, Sortable } from '../../dnd'
 import { AtomRenderer } from '../AtomRenderer'
-import {
-  EditorOperator,
-  editorAtoms,
-  traverseOperators,
-  useEdit,
-} from '../editor-state'
+import { EditorOperator, editorAtoms, traverseOperators, useEdit } from '../editor-state'
 import { createGroup, createOperator } from '../reconciliation'
 import { EntityIssue } from '../validation/validation'
 import { GroupItem } from './GroupItem'
@@ -63,8 +58,7 @@ export const OperatorEditor: FC = memo(() => {
   const handleDragEnd = useAtomCallback(
     useCallback(
       (get, set, { active, over }: DragEndEvent) => {
-        const getType = (item: Active | Over) =>
-          item.data.current?.type as 'operator' | 'group'
+        const getType = (item: Active | Over) => item.data.current?.type as 'operator' | 'group'
 
         if (!over || active.id === over.id || getType(active) !== 'operator') {
           return
@@ -79,13 +73,11 @@ export const OperatorEditor: FC = memo(() => {
           } => {
             if (getType(target) === 'operator') {
               for (const [index, operator] of draft.opers.entries()) {
-                if (operator.id === target.id)
-                  return { container: draft, index }
+                if (operator.id === target.id) return { container: draft, index }
               }
               for (const group of draft.groups) {
                 for (const [index, operator] of group.opers.entries()) {
-                  if (operator.id === target.id)
-                    return { container: group, index }
+                  if (operator.id === target.id) return { container: group, index }
                 }
               }
             } else {
@@ -93,17 +85,14 @@ export const OperatorEditor: FC = memo(() => {
                 return { container: draft, index: -1 }
               }
               for (const group of draft.groups) {
-                if (group.id === target.id)
-                  return { container: group, index: -1 }
+                if (group.id === target.id) return { container: group, index: -1 }
               }
             }
             return { index: -1 }
           }
 
-          const { container: activeContainer, index: activeIndex } =
-            locateOperator(active)
-          const { container: overContainer, index: overIndex } =
-            locateOperator(over)
+          const { container: activeContainer, index: activeIndex } = locateOperator(active)
+          const { container: overContainer, index: overIndex } = locateOperator(over)
           if (!activeContainer || !overContainer || activeIndex === -1) return
 
           // 移除拖拽中的干员
@@ -115,9 +104,7 @@ export const OperatorEditor: FC = memo(() => {
           } else if (activeContainer !== overContainer) {
             // 不在同一个容器时无法触发排序动画，需要手动计算插入在 over 的左边还是右边
             if (active.rect.current.translated) {
-              const activeCenter =
-                active.rect.current.translated.left +
-                active.rect.current.translated.width / 2
+              const activeCenter = active.rect.current.translated.left + active.rect.current.translated.width / 2
               const overCenter = over.rect.left + over.rect.width / 2
               if (activeCenter > overCenter) {
                 insertionIndex += 1
@@ -144,12 +131,7 @@ export const OperatorEditor: FC = memo(() => {
   )
 
   return (
-    <div
-      className="h-full flex flex-col"
-      onMouseDownCapture={() =>
-        toggleSelectorPanel && setSelectorMode('operator')
-      }
-    >
+    <div className="h-full flex flex-col" onMouseDownCapture={() => toggleSelectorPanel && setSelectorMode('operator')}>
       <div className="flex items-center border-b border-gray-200 dark:border-gray-600">
         <CreateGroupButton />
         <CreateOperatorButton />
@@ -157,10 +139,7 @@ export const OperatorEditor: FC = memo(() => {
       <div className="grow md:overflow-auto px-4 pt-4">
         <OperatorError />
         {operatorAtoms.length === 0 && baseGroupAtoms.length === 0 ? (
-          <NonIdealState
-            icon="helicopter"
-            title={t.components.editor2.OperatorEditor.no_operators}
-          />
+          <NonIdealState icon="helicopter" title={t.components.editor2.OperatorEditor.no_operators} />
         ) : (
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <Droppable id={globalContainerId} data={{ type: 'group' }}>
@@ -206,10 +185,7 @@ export const OperatorEditor: FC = memo(() => {
             </Droppable>
             <ul className="mt-4 flex flex-wrap gap-2 md:pb-48">
               {baseGroupAtoms.map((baseGroupAtom) => (
-                <GroupItem
-                  key={baseGroupAtom.toString()}
-                  baseGroupAtom={baseGroupAtom}
-                />
+                <GroupItem key={baseGroupAtom.toString()} baseGroupAtom={baseGroupAtom} />
               ))}
             </ul>
             <OperatorDragOverlay />
@@ -293,11 +269,7 @@ const OperatorDragOverlay = () => {
     [active?.id],
   )
   const activeOperator = useAtomValue(activeOperatorAtom)
-  return (
-    <DragOverlay>
-      {activeOperator && <OperatorItem onOverlay operator={activeOperator} />}
-    </DragOverlay>
-  )
+  return <DragOverlay>{activeOperator && <OperatorItem onOverlay operator={activeOperator} />}</DragOverlay>
 }
 
 const operatorErrorsAtom = atom((get) => {
@@ -306,8 +278,7 @@ const operatorErrorsAtom = atom((get) => {
 
   const opers = get(editorAtoms.operators)
   const groups = get(editorAtoms.groups)
-  const operatorErrors: { operator: EditorOperator; errors: EntityIssue[] }[] =
-    []
+  const operatorErrors: { operator: EditorOperator; errors: EntityIssue[] }[] = []
 
   for (const [id, errors] of Object.entries(entityErrors)) {
     traverseOperators({ opers, groups }, (operator) => {

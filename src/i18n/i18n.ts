@@ -15,8 +15,7 @@ const updater = mitt()
 export type Language = (typeof languages)[number]
 
 export type I18NTranslations = MakeTranslations<
-  | typeof import('./generated/cn').default
-  | typeof import('./generated/en').default
+  typeof import('./generated/cn').default | typeof import('./generated/en').default
 > & { essentials: I18NEssentials }
 
 type I18NEssentials = MakeTranslations<(typeof ESSENTIALS)[Language]>
@@ -55,10 +54,7 @@ type ParseMessage<
   Keys = InterpolationKeys<T, InitialKeys>,
 > = Keys extends [] ? string : Keys
 
-type InterpolationKeys<
-  Str,
-  Keys extends string[],
-> = Str extends `${string}{{${infer Key}}}${infer End}`
+type InterpolationKeys<Str, Keys extends string[]> = Str extends `${string}{{${infer Key}}}${infer End}`
   ? InterpolationKeys<End, [...Keys, Key]>
   : Keys
 
@@ -94,9 +90,7 @@ type Interpolation<
   [K in keyof KeyMapping as K extends KeyMapping[K] ? K : never]: Primitive
 }) => string) & {
   jsx: (options: {
-    [K in keyof KeyMapping as KeyMapping[K] & string]: KeyMapping[K] extends K
-      ? ReactNode
-      : (arg?: string) => ReactNode
+    [K in keyof KeyMapping as KeyMapping[K] & string]: KeyMapping[K] extends K ? ReactNode : (arg?: string) => ReactNode
   }) => ReactElement
 }
 
@@ -117,35 +111,26 @@ const languageStorageKey = 'maa-copilot-lang'
 let currentLanguage: Language
 let currentTranslations: I18NTranslations | undefined
 
-export const i18n = new Proxy(
-  {} as I18NTranslations & { currentLanguage: Language },
-  {
-    get(target, prop) {
-      if (prop === 'currentLanguage') {
-        return currentLanguage
+export const i18n = new Proxy({} as I18NTranslations & { currentLanguage: Language }, {
+  get(target, prop) {
+    if (prop === 'currentLanguage') {
+      return currentLanguage
+    }
+    if (!currentTranslations) {
+      if (prop === 'essentials') {
+        return allEssentials[currentLanguage]
       }
-      if (!currentTranslations) {
-        if (prop === 'essentials') {
-          return allEssentials[currentLanguage]
-        }
-        // if this error occurs during dev, it's probably because the code containing i18n.* is executed
-        // before the translations are loaded, in which case you should change it to i18nDefer.*
-        throw new Error(allEssentials[currentLanguage].translations_not_loaded)
-      }
-      return currentTranslations[prop] || prop
-    },
+      // if this error occurs during dev, it's probably because the code containing i18n.* is executed
+      // before the translations are loaded, in which case you should change it to i18nDefer.*
+      throw new Error(allEssentials[currentLanguage].translations_not_loaded)
+    }
+    return currentTranslations[prop] || prop
   },
-)
+})
 
-type Deferred<T> = T extends string
-  ? () => string
-  : T extends Function
-    ? T
-    : { [K in keyof T]: Deferred<T[K]> }
+type Deferred<T> = T extends string ? () => string : T extends Function ? T : { [K in keyof T]: Deferred<T[K]> }
 
-export const i18nDefer = createDeferredProxy(
-  '',
-) as unknown as Deferred<I18NTranslations>
+export const i18nDefer = createDeferredProxy('') as unknown as Deferred<I18NTranslations>
 
 function createDeferredProxy(path: string) {
   const toString = () => path
@@ -164,9 +149,7 @@ function createDeferredProxy(path: string) {
       if (typeof prop === 'symbol') {
         return undefined
       }
-      target[prop] = createDeferredProxy(
-        (path ? path + '.' : '') + String(prop),
-      )
+      target[prop] = createDeferredProxy((path ? path + '.' : '') + String(prop))
       return target[prop]
     },
     apply(target, _this, args) {
@@ -187,12 +170,9 @@ function createDeferredProxy(path: string) {
   })
 }
 
-export const languageAtom = atomWithStorage<Language>(
-  languageStorageKey,
-  defaultLanguage,
-  undefined,
-  { getOnInit: true },
-)
+export const languageAtom = atomWithStorage<Language>(languageStorageKey, defaultLanguage, undefined, {
+  getOnInit: true,
+})
 
 currentLanguage = getDefaultStore().get(languageAtom) as Language
 
@@ -201,7 +181,9 @@ export interface RawTranslations {
   data: object
 }
 
-const internalRawTranslationsAtom = atom<RawTranslations | undefined>(undefined) as PrimitiveAtom<RawTranslations | undefined>
+const internalRawTranslationsAtom = atom<RawTranslations | undefined>(undefined) as PrimitiveAtom<
+  RawTranslations | undefined
+>
 export const rawTranslationsAtom = atom(
   (get) => get(internalRawTranslationsAtom),
   (get, set, rawTranslations: RawTranslations) => {
@@ -209,13 +191,15 @@ export const rawTranslationsAtom = atom(
     currentLanguage = rawTranslations.language
     currentTranslations = translations
 
-// @ts-ignore jotai v2.20 type narrowing
+    // @ts-ignore jotai v2.20 type narrowing
     set(internalRawTranslationsAtom as any, rawTranslations)
     // @ts-ignore jotai v2.20 type narrowing
     set(translationsAtom as any, translations)
   },
 )
-const internalTranslationsAtom = atom<I18NTranslations | undefined>(undefined) as PrimitiveAtom<I18NTranslations | undefined>
+const internalTranslationsAtom = atom<I18NTranslations | undefined>(undefined) as PrimitiveAtom<
+  I18NTranslations | undefined
+>
 export const translationsAtom = atom(
   (get) => {
     const translations = get(internalTranslationsAtom)
@@ -224,8 +208,7 @@ export const translationsAtom = atom(
     }
     return translations
   },
-  (get, set, translations: I18NTranslations) =>
-    set(internalTranslationsAtom, translations),
+  (get, set, translations: I18NTranslations) => set(internalTranslationsAtom, translations),
 )
 
 function setupTranslations({ language, data }: RawTranslations) {
@@ -248,13 +231,9 @@ function setupTranslations({ language, data }: RawTranslations) {
 
     if (isObject(value)) {
       const keys = Object.keys(value)
-      isPlural = keys.every(
-        (key) => key === 'other' || !Number.isNaN(Number(key)),
-      )
+      isPlural = keys.every((key) => key === 'other' || !Number.isNaN(Number(key)))
       if (!isPlural) {
-        return Object.fromEntries(
-          keys.map((key) => [key, convert(`${path}.${key}`, value[key])]),
-        )
+        return Object.fromEntries(keys.map((key) => [key, convert(`${path}.${key}`, value[key])]))
       }
     } else if (!isString(value)) {
       return value
@@ -268,10 +247,7 @@ function setupTranslations({ language, data }: RawTranslations) {
     // as of now, value is either an interpolatable string or a plural object
 
     const interpolate = (
-      options: Record<
-        string,
-        Primitive | ReactNode | ((arg?: string) => ReactNode)
-      >,
+      options: Record<string, Primitive | ReactNode | ((arg?: string) => ReactNode)>,
       jsx: boolean,
     ) => {
       try {
@@ -330,13 +306,10 @@ function setupTranslations({ language, data }: RawTranslations) {
       }
     }
 
-    const interpolationEndpoint = (
-      options: Record<string, Primitive>,
-    ): string => interpolate(options, false) as string
+    const interpolationEndpoint = (options: Record<string, Primitive>): string => interpolate(options, false) as string
 
-    interpolationEndpoint.jsx = (
-      options: Record<string, ReactNode | ((arg?: string) => ReactNode)>,
-    ): ReactElement => interpolate(options, true) as ReactElement
+    interpolationEndpoint.jsx = (options: Record<string, ReactNode | ((arg?: string) => ReactNode)>): ReactElement =>
+      interpolate(options, true) as ReactElement
 
     return interpolationEndpoint
   }

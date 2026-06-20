@@ -1,11 +1,4 @@
-import {
-  Callout,
-  FormGroup,
-  InputGroup,
-  Radio,
-  RadioGroup,
-  TextArea,
-} from '@blueprintjs/core'
+import { Callout, FormGroup, InputGroup, Radio, RadioGroup, TextArea } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
@@ -38,14 +31,8 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         className,
       )}
     >
-      <h3 className="mb-2 text-lg font-bold">
-        {t.components.editor2.InfoEditor.job_info}
-      </h3>
-      <FormGroup
-        contentClassName="grow"
-        label={t.components.editor2.InfoEditor.stage}
-        labelInfo="*"
-      >
+      <h3 className="mb-2 text-lg font-bold">{t.components.editor2.InfoEditor.job_info}</h3>
+      <FormGroup contentClassName="grow" label={t.components.editor2.InfoEditor.stage} labelInfo="*">
         <LevelSelect
           difficulty={info.difficulty}
           value={info.stageName}
@@ -58,9 +45,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
                   // 如果没有标题，则使用关卡名作为标题
                   prev.doc.title = isCustomLevel(level)
                     ? level.name
-                    : [level.catTwo, level.catThree, level.name]
-                        .filter(Boolean)
-                        .join(' - ')
+                    : [level.catTwo, level.catThree, level.name].filter(Boolean).join(' - ')
                 }
               })
               return {
@@ -72,10 +57,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         />
         <FieldError path="stage_name" />
       </FormGroup>
-      <FormGroup
-        contentClassName="grow"
-        label={t.components.editor2.InfoEditor.difficulty}
-      >
+      <FormGroup contentClassName="grow" label={t.components.editor2.InfoEditor.difficulty}>
         <DifficultyPicker
           stageName={info.stageName}
           value={info.difficulty}
@@ -97,11 +79,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         />
         <FieldError path="difficulty" />
       </FormGroup>
-      <FormGroup
-        contentClassName="grow"
-        label={t.components.editor2.InfoEditor.title}
-        labelInfo="*"
-      >
+      <FormGroup contentClassName="grow" label={t.components.editor2.InfoEditor.title} labelInfo="*">
         <InputGroup
           large
           fill
@@ -123,10 +101,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         />
         <FieldError path="doc.title" />
       </FormGroup>
-      <FormGroup
-        contentClassName="grow"
-        label={t.components.editor2.InfoEditor.description}
-      >
+      <FormGroup contentClassName="grow" label={t.components.editor2.InfoEditor.description}>
         <TextArea
           fill
           rows={4}
@@ -149,11 +124,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
         />
         <FieldError path="doc.details" />
       </FormGroup>
-      <FormGroup
-        className="mb-0"
-        contentClassName="grow"
-        label={t.components.editor2.InfoEditor.visibility}
-      >
+      <FormGroup className="mb-0" contentClassName="grow" label={t.components.editor2.InfoEditor.visibility}>
         <RadioGroup
           inline
           selectedValue={metadata.visibility}
@@ -175,9 +146,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
           </Radio>
           <Radio className="!mt-0" value="private">
             {t.components.editor2.InfoEditor.private}
-            <span className="ml-2 text-xs opacity-50">
-              {t.components.editor2.InfoEditor.private_note}
-            </span>
+            <span className="ml-2 text-xs opacity-50">{t.components.editor2.InfoEditor.private_note}</span>
           </Radio>
         </RadioGroup>
       </FormGroup>

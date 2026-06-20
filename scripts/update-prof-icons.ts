@@ -23,17 +23,12 @@ async function main() {
     await mkdir(outDir)
   }
 
-  const [{ professions }, files] = await Promise.all([
-    getOperators(),
-    getProfIconsFromPrtsWiki(),
-  ])
+  const [{ professions }, files] = await Promise.all([getOperators(), getProfIconsFromPrtsWiki()])
 
   console.info('all metadata fetched.')
 
   for (const { id, name } of professions) {
-    const url = files.find(
-      (el) => el.name === `图标_职业_透明_${name}.png`,
-    )?.url
+    const url = files.find((el) => el.name === `图标_职业_透明_${name}.png`)?.url
     if (!url) {
       console.error(`${name}: cannot found icon`)
       continue

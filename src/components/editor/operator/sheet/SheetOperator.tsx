@@ -4,10 +4,7 @@ import { useTranslation } from '../../../../i18n/i18n'
 import { SheetContainerSkeleton } from './SheetContainerSkeleton'
 import { OperatorNoData } from './SheetNoneData'
 import { ProfClassificationWithFilters } from './sheetOperator/ProfClassificationWithFilters'
-import {
-  OperatorFilterProvider,
-  useOperatorFilterProvider,
-} from './sheetOperator/SheetOperatorFilterProvider'
+import { OperatorFilterProvider, useOperatorFilterProvider } from './sheetOperator/SheetOperatorFilterProvider'
 import { SheetOperatorItem } from './sheetOperator/SheetOperatorItem'
 import { ShowMore } from './sheetOperator/ShowMore'
 
@@ -16,10 +13,7 @@ export interface SheetOperatorProps {}
 const SheetOperator: FC<SheetOperatorProps> = () => {
   const operatorScrollRef = useRef<HTMLDivElement>(null)
 
-  const toTop = useCallback(
-    () => operatorScrollRef?.current?.scrollIntoView(),
-    [operatorScrollRef],
-  )
+  const toTop = useCallback(() => operatorScrollRef?.current?.scrollIntoView(), [operatorScrollRef])
 
   const {
     operatorFiltered: { data: operatorFilteredData },
@@ -53,15 +47,10 @@ const SheetOperator: FC<SheetOperatorProps> = () => {
   )
 }
 
-export const SheetOperatorContainer = (
-  sheetOperatorProp: SheetOperatorProps,
-) => {
+export const SheetOperatorContainer = (sheetOperatorProp: SheetOperatorProps) => {
   const t = useTranslation()
   return (
-    <SheetContainerSkeleton
-      title={t.components.editor.operator.sheet.SheetOperator.select_operator}
-      icon="person"
-    >
+    <SheetContainerSkeleton title={t.components.editor.operator.sheet.SheetOperator.select_operator} icon="person">
       <OperatorFilterProvider>
         <SheetOperator {...sheetOperatorProp} />
       </OperatorFilterProvider>

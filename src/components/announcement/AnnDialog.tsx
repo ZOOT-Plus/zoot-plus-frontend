@@ -1,21 +1,11 @@
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogProps,
-  NonIdealState,
-} from '@blueprintjs/core'
+import { Button, Dialog, DialogBody, DialogFooter, DialogProps, NonIdealState } from '@blueprintjs/core'
 
 import { FC } from 'react'
 import { type Components } from 'react-markdown'
 
 import { announcementBaseURL } from '../../apis/announcement'
 import { useTranslation } from '../../i18n/i18n'
-import {
-  AnnouncementSection,
-  AnnouncementSectionMeta,
-} from '../../models/announcement'
+import { AnnouncementSection, AnnouncementSectionMeta } from '../../models/announcement'
 import { formatDateTime, formatRelativeTime } from '../../utils/times'
 import { Markdown } from '../Markdown'
 
@@ -56,10 +46,7 @@ export const AnnDialog: FC<AnnDialogProps> = ({ sections, ...dialogProps }) => {
       <Tag {...(props as any)}>
         {children}
         {meta?.time && (
-          <span
-            className="ml-2 font-normal text-sm whitespace-nowrap text-gray-500"
-            title={formatDateTime(meta.time)}
-          >
+          <span className="ml-2 font-normal text-sm whitespace-nowrap text-gray-500" title={formatDateTime(meta.time)}>
             {formatRelativeTime(meta.time)}
           </span>
         )}
@@ -68,12 +55,7 @@ export const AnnDialog: FC<AnnDialogProps> = ({ sections, ...dialogProps }) => {
   }
 
   return (
-    <Dialog
-      className=""
-      title={t.components.announcement.AnnDialog.title}
-      icon="info-sign"
-      {...dialogProps}
-    >
+    <Dialog className="" title={t.components.announcement.AnnDialog.title} icon="info-sign" {...dialogProps}>
       <DialogBody className="">
         {content ? (
           <Markdown
@@ -91,19 +73,12 @@ export const AnnDialog: FC<AnnDialogProps> = ({ sections, ...dialogProps }) => {
             {content || ''}
           </Markdown>
         ) : (
-          <NonIdealState
-            icon="help"
-            title={t.components.announcement.AnnDialog.no_announcements}
-          />
+          <NonIdealState icon="help" title={t.components.announcement.AnnDialog.no_announcements} />
         )}
       </DialogBody>
       <DialogFooter
         actions={
-          <Button
-            intent="primary"
-            text={t.components.announcement.AnnDialog.ok}
-            onClick={dialogProps.onClose}
-          />
+          <Button intent="primary" text={t.components.announcement.AnnDialog.ok} onClick={dialogProps.onClose} />
         }
       />
     </Dialog>

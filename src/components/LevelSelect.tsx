@@ -18,11 +18,7 @@ interface LevelSelectProps {
   onChange: (level: string) => void
 }
 
-export const LevelSelect: FC<LevelSelectProps> = ({
-  className,
-  value,
-  onChange,
-}) => {
+export const LevelSelect: FC<LevelSelectProps> = ({ className, value, onChange }) => {
   const t = useTranslation()
   const { data } = useLevels()
   const levels = useMemo(
@@ -42,18 +38,15 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     [levels],
   )
 
-  const { query, debouncedQuery, updateQuery, onOptionMouseDown } =
-    useDebouncedQuery({
-      onDebouncedQueryChange: (value) => {
-        if (value !== debouncedQuery) {
-          // 清空 activeItem，之后会自动设置为第一项
-          setActiveItem(null)
-        }
-      },
-    })
-  const [activeItem, setActiveItem] = useState<Level | 'createNewItem' | null>(
-    null,
-  )
+  const { query, debouncedQuery, updateQuery, onOptionMouseDown } = useDebouncedQuery({
+    onDebouncedQueryChange: (value) => {
+      if (value !== debouncedQuery) {
+        // 清空 activeItem，之后会自动设置为第一项
+        setActiveItem(null)
+      }
+    },
+  })
+  const [activeItem, setActiveItem] = useState<Level | 'createNewItem' | null>(null)
 
   const selectedLevel = useMemo(() => {
     const level = levels.find((el) => el.stageId === value)
@@ -75,33 +68,19 @@ export const LevelSelect: FC<LevelSelectProps> = ({
 
       if (selectedLevel.catOne === '剿灭作战') {
         headerName = t.components.LevelSelect.annihilation
-        similarLevels = levels.filter(
-          (el) => el.catOne === selectedLevel.catOne,
-        )
-      } else if (
-        selectedLevel.stageId.includes('rune') ||
-        selectedLevel.stageId.includes('crisis')
-      ) {
+        similarLevels = levels.filter((el) => el.catOne === selectedLevel.catOne)
+      } else if (selectedLevel.stageId.includes('rune') || selectedLevel.stageId.includes('crisis')) {
         // 危机合约分类非常混乱，直接全塞到一起
         headerName = t.components.LevelSelect.contingency_contract
-        similarLevels = levels.filter(
-          (el) => el.stageId.includes('rune') || el.stageId.includes('crisis'),
-        )
+        similarLevels = levels.filter((el) => el.stageId.includes('rune') || el.stageId.includes('crisis'))
       } else if (selectedLevel.catTwo) {
         headerName = selectedLevel.catTwo
-        similarLevels = levels.filter(
-          (el) => el.catTwo === selectedLevel.catTwo,
-        )
+        similarLevels = levels.filter((el) => el.catTwo === selectedLevel.catTwo)
       } else {
         // catTwo 为空的时候用 levelId 来分类
         headerName = t.components.LevelSelect.related_levels
-        const levelIdPrefix = selectedLevel.levelId
-          .split('/')
-          .slice(0, -1)
-          .join('/')
-        similarLevels = levelIdPrefix
-          ? levels.filter((el) => el.levelId.startsWith(levelIdPrefix))
-          : []
+        const levelIdPrefix = selectedLevel.levelId.split('/').slice(0, -1).join('/')
+        similarLevels = levelIdPrefix ? levels.filter((el) => el.levelId.startsWith(levelIdPrefix)) : []
       }
 
       if (similarLevels.length > 1) {
@@ -111,9 +90,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       }
     }
 
-    return debouncedQuery.trim()
-      ? fuse.search(debouncedQuery).map((el) => el.item)
-      : levels
+    return debouncedQuery.trim() ? fuse.search(debouncedQuery).map((el) => el.item) : levels
   }, [debouncedQuery, selectedLevel, levels, fuse, t])
 
   useEffect(() => {
@@ -130,9 +107,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     <Select<Level>
       items={levels}
       itemListPredicate={() => filteredLevels}
-      activeItem={
-        activeItem === 'createNewItem' ? getCreateNewItem() : activeItem
-      }
+      activeItem={activeItem === 'createNewItem' ? getCreateNewItem() : activeItem}
       onActiveItemChange={(item, isCreateNewItem) => {
         setActiveItem(isCreateNewItem ? 'createNewItem' : item)
       }}
@@ -187,15 +162,8 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       }}
     >
       {
-        <Button
-          minimal
-          className="!pl-3 !pr-2"
-          icon="area-of-interest"
-          rightIcon="chevron-down"
-        >
-          {selectedLevel
-            ? selectedLevel.catThree
-            : t.components.LevelSelect.level}
+        <Button minimal className="!pl-3 !pr-2" icon="area-of-interest" rightIcon="chevron-down">
+          {selectedLevel ? selectedLevel.catThree : t.components.LevelSelect.level}
         </Button>
       }
     </Select>

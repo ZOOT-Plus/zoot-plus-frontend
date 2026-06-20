@@ -22,12 +22,7 @@ export const HelperText: FCC<{
   }
 
   return (
-    <div
-      className={clsx(
-        'flex text-gray-600 dark:text-zinc-400 text-xs items-center',
-        className,
-      )}
-    >
+    <div className={clsx('flex text-gray-600 dark:text-zinc-400 text-xs items-center', className)}>
       <Icon icon="info-sign" size={12} className="mr-1.5" />
       <div>{child()}</div>
     </div>

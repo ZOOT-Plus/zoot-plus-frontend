@@ -47,10 +47,7 @@ export const EditorGroupItem = ({
       className={clsx(editing && 'bg-gray-100', isDragging && 'invisible')}
       style={{ width: 'fit-content' }}
     >
-      <SortableContext
-        items={group.opers?.map(getOperatorId) || []}
-        strategy={verticalListSortingStrategy}
-      >
+      <SortableContext items={group.opers?.map(getOperatorId) || []} strategy={verticalListSortingStrategy}>
         <div className="flex items-start mb-2">
           <Icon
             className="cursor-grab active:cursor-grabbing p-1 -mt-1 -ml-2 rounded-[1px]"
@@ -87,9 +84,7 @@ export const EditorGroupItem = ({
         </ul>
 
         {!group.opers?.length && (
-          <NonIdealState>
-            {t.components.editor.operator.EditorGroupItem.drag_operators_here}
-          </NonIdealState>
+          <NonIdealState>{t.components.editor.operator.EditorGroupItem.drag_operators_here}</NonIdealState>
         )}
       </SortableContext>
     </Card>

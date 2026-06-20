@@ -4,38 +4,24 @@ const DEBUG = false as boolean
 
 let messengerName = 'Copilot'
 
-export type Message<
-  T extends string = string,
-  D = undefined,
-> = D extends undefined ? BaseMessage<T> : PayloadMessage<T, D>
+export type Message<T extends string = string, D = undefined> = D extends undefined
+  ? BaseMessage<T>
+  : PayloadMessage<T, D>
 
 interface BaseMessage<T extends string = string> {
   readonly id?: number | string
   readonly type: T
 }
 
-export interface PayloadMessage<T extends string = string, D = never>
-  extends BaseMessage<T> {
+export interface PayloadMessage<T extends string = string, D = never> extends BaseMessage<T> {
   readonly data: D
 }
 
 interface Messenger {
-  addEventListener<M extends Message>(
-    type: string,
-    callback: ((ev: MessengerEvent<M>) => void) | null,
-  ): void
-  addEventListener(
-    type: string,
-    callback: EventListenerOrEventListenerObject,
-  ): void
-  removeEventListener<M extends Message>(
-    type: string,
-    callback: ((ev: MessengerEvent<M>) => void) | null,
-  ): void
-  removeEventListener(
-    type: string,
-    callback: EventListenerOrEventListenerObject,
-  ): void
+  addEventListener<M extends Message>(type: string, callback: ((ev: MessengerEvent<M>) => void) | null): void
+  addEventListener(type: string, callback: EventListenerOrEventListenerObject): void
+  removeEventListener<M extends Message>(type: string, callback: ((ev: MessengerEvent<M>) => void) | null): void
+  removeEventListener(type: string, callback: EventListenerOrEventListenerObject): void
 }
 
 class Messenger extends EventTarget {}
@@ -45,9 +31,7 @@ export class MessengerEvent<M extends Message = Message> extends Event {
   readonly origin: MessageEvent['origin']
   readonly message: M
 
-  constructor(
-    params: Pick<MessengerEvent<M>, 'type' | 'source' | 'origin' | 'message'>,
-  ) {
+  constructor(params: Pick<MessengerEvent<M>, 'type' | 'source' | 'origin' | 'message'>) {
     super(params.type)
     this.source = params.source
     this.origin = params.origin

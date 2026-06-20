@@ -18,12 +18,7 @@ export function toEditableOperation(
 
   // generate IDs
   compact(
-    [
-      operation.actions,
-      operation.opers,
-      operation.groups,
-      operation.groups?.map((group) => group?.opers),
-    ].flat(2),
+    [operation.actions, operation.opers, operation.groups, operation.groups?.map((group) => group?.opers)].flat(2),
   ).forEach((item) => {
     item._id = uniqueId()
   })
@@ -62,12 +57,7 @@ export function toMaaOperation(
 
   // strip IDs
   compact(
-    [
-      operation.actions,
-      operation.opers,
-      operation.groups,
-      operation.groups?.map((group) => group?.opers),
-    ].flat(2),
+    [operation.actions, operation.opers, operation.groups, operation.groups?.map((group) => group?.opers)].flat(2),
   ).forEach((item) => {
     delete item._id
 
@@ -81,9 +71,7 @@ export function toMaaOperation(
 /**
  * Attempts to patch the operation to satisfy the JSON schema.
  */
-export function patchOperation(
-  operation: DeepPartial<CopilotDocV1.OperationSnakeCased>,
-) {
+export function patchOperation(operation: DeepPartial<CopilotDocV1.OperationSnakeCased>) {
   if (operation.doc) {
     operation.doc.details ||= operation.doc.title
   }

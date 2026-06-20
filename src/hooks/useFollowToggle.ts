@@ -5,12 +5,7 @@ import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
 import { useCallback, useEffect, useState } from 'react'
 import { useSWRConfig } from 'swr'
 
-import {
-  isFollowing as checkIsFollowing,
-  follow,
-  unfollow,
-  patchFollowListUserRelation,
-} from '../apis/follow'
+import { isFollowing as checkIsFollowing, follow, unfollow, patchFollowListUserRelation } from '../apis/follow'
 import { AppToaster } from '../components/Toaster'
 import { useTranslation } from '../i18n/i18n'
 import { authAtom } from '../store/auth'
@@ -30,12 +25,7 @@ interface UseFollowToggleOptions {
   onUnfollowed?: () => void
 }
 
-export function useFollowToggle({
-  user,
-  onRelationChange,
-  onFollowed,
-  onUnfollowed,
-}: UseFollowToggleOptions) {
+export function useFollowToggle({ user, onRelationChange, onFollowed, onUnfollowed }: UseFollowToggleOptions) {
   const t = useTranslation()
   const auth = useAtomValue(authAtom)
   const swr = useSWRConfig()
@@ -67,16 +57,12 @@ export function useFollowToggle({
 
       if (following) {
         await unfollow(Number(user.id))
-        newRelation = isMutual
-          ? MaaUserInfoRelationEnum.FollowedBy
-          : MaaUserInfoRelationEnum.None
+        newRelation = isMutual ? MaaUserInfoRelationEnum.FollowedBy : MaaUserInfoRelationEnum.None
         onUnfollowed?.()
         showToast('success', t.components.UserProfile.unfollowSuccess)
       } else {
         await follow(Number(user.id))
-        newRelation = isFollowBy
-          ? MaaUserInfoRelationEnum.Mutual
-          : MaaUserInfoRelationEnum.Following
+        newRelation = isFollowBy ? MaaUserInfoRelationEnum.Mutual : MaaUserInfoRelationEnum.Following
         onFollowed?.()
         showToast('success', t.components.UserProfile.followSuccess)
       }
@@ -88,10 +74,7 @@ export function useFollowToggle({
       const bumpFollowingCount = (current?: MaaUserInfo) =>
         current && {
           ...current,
-          followingCount: Math.max(
-            0,
-            (current.followingCount ?? 0) + followingDelta,
-          ),
+          followingCount: Math.max(0, (current.followingCount ?? 0) + followingDelta),
         }
 
       const userId = String(user.id)

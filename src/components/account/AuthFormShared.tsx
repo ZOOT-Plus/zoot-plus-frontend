@@ -1,10 +1,6 @@
 import { InputGroup, InputGroupProps2 } from '@blueprintjs/core'
 
-import {
-  ControllerProps,
-  FieldValues,
-  UseControllerProps,
-} from 'react-hook-form'
+import { ControllerProps, FieldValues, UseControllerProps } from 'react-hook-form'
 
 import { FormField, FormFieldProps } from 'components/FormField'
 import { REGEX_EMAIL, REGEX_USERNAME } from 'utils/regexes'
@@ -63,16 +59,11 @@ function useRules(): Record<RuleKeys, UseControllerProps['rules']> {
   }
 }
 
-export type AuthFormFieldProps<T extends FieldValues> = Pick<
-  FormFieldProps<T, any>,
-  'control' | 'error' | 'field'
-> & {
+export type AuthFormFieldProps<T extends FieldValues> = Pick<FormFieldProps<T, any>, 'control' | 'error' | 'field'> & {
   label?: string
   register?: boolean
   autoComplete?: string
-  inputGroupProps?: (
-    ...params: Parameters<ControllerProps<T, any>['render']>
-  ) => InputGroupProps2
+  inputGroupProps?: (...params: Parameters<ControllerProps<T, any>['render']>) => InputGroupProps2
 }
 
 export const AuthFormEmailField = <T extends FieldValues>({
@@ -109,9 +100,7 @@ export const AuthFormEmailField = <T extends FieldValues>({
         ),
       }}
       FormGroupProps={{
-        helperText:
-          register &&
-          t.components.account.AuthFormShared.email_verification_note,
+        helperText: register && t.components.account.AuthFormShared.email_verification_note,
       }}
     />
   )
@@ -131,9 +120,7 @@ export const AuthRegistrationTokenField = <T extends FieldValues>({
 
   return (
     <FormField
-      label={
-        label || t.components.account.AuthFormShared.email_verification_code
-      }
+      label={label || t.components.account.AuthFormShared.email_verification_code}
       field={field}
       control={control as any}
       error={error}
@@ -151,8 +138,7 @@ export const AuthRegistrationTokenField = <T extends FieldValues>({
         ),
       }}
       FormGroupProps={{
-        helperText:
-          register && t.components.account.AuthFormShared.enter_email_code,
+        helperText: register && t.components.account.AuthFormShared.enter_email_code,
       }}
     />
   )

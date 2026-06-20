@@ -94,9 +94,7 @@ export const NavAside = () => {
           ))}
         </div>
         <div className="mt-2 p-2">
-          <div className="text-sm font-medium text-zinc-600 dark:text-slate-100 mb-2">
-            {t.links.friendly_links}
-          </div>
+          <div className="text-sm font-medium text-zinc-600 dark:text-slate-100 mb-2">{t.links.friendly_links}</div>
           <div className="flex flex-wrap leading-relaxed mb-2 section-social-links">
             {FRIENDLY_LINKS.map((link) => (
               <a
@@ -119,10 +117,7 @@ export const NavAside = () => {
         </div>
       </Drawer>
 
-      <OperationSetEditorDialog
-        isOpen={showOperationSetDialog}
-        onClose={() => setShowOperationSetDialog(false)}
-      />
+      <OperationSetEditorDialog isOpen={showOperationSetDialog} onClose={() => setShowOperationSetDialog(false)} />
     </>
   )
 }

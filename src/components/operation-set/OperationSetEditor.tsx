@@ -12,18 +12,8 @@ import {
   TextArea,
 } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
-import {
-  DndContext,
-  DragEndEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
-import {
-  SortableContext,
-  arrayMove,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 import { useOperations } from 'apis/operation'
 import {
@@ -34,14 +24,7 @@ import {
 } from 'apis/operation-set'
 import clsx from 'clsx'
 import { UpdateCopilotSetRequest } from 'maa-copilot-client'
-import {
-  Ref,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import { Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Controller, UseFormSetError, useForm } from 'react-hook-form'
 
 import { FormField } from 'components/FormField'
@@ -64,10 +47,7 @@ export function OperationSetEditorLauncher() {
       <Button large fill icon="folder-close" onClick={() => setIsOpen(true)}>
         {t.components.operationSet.OperationSetEditor.create_job_set}
       </Button>
-      <OperationSetEditorDialog
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
+      <OperationSetEditorDialog isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   )
 }
@@ -78,24 +58,14 @@ interface OperationSetEditorDialogProps extends DialogProps {
   onClose: () => void
 }
 
-export function OperationSetEditorDialog({
-  isOpen,
-  onClose,
-  operationSet,
-  ...props
-}: OperationSetEditorDialogProps) {
+export function OperationSetEditorDialog({ isOpen, onClose, operationSet, ...props }: OperationSetEditorDialogProps) {
   const t = useTranslation()
   const isEdit = !!operationSet
 
   const refreshOperationSets = useRefreshOperationSets()
   const refreshOperationSet = useRefreshOperationSet()
 
-  const onSubmit: FormProps['onSubmit'] = async ({
-    name,
-    description,
-    status,
-    copilotIds,
-  }) => {
+  const onSubmit: FormProps['onSubmit'] = async ({ name, description, status, copilotIds }) => {
     const updateInfo = async () => {
       if (isEdit) {
         const params: UpdateCopilotSetRequest['copilotSetUpdateReq'] = {
@@ -151,21 +121,14 @@ export function OperationSetEditorDialog({
       onClose={onClose}
       {...props}
     >
-      <OperationSetForm
-        key={operationSet?.id}
-        operationSet={operationSet}
-        onSubmit={onSubmit}
-      />
+      <OperationSetForm key={operationSet?.id} operationSet={operationSet} onSubmit={onSubmit} />
     </Dialog>
   )
 }
 
 interface FormProps {
   operationSet?: OperationSet
-  onSubmit: (
-    values: FormValues,
-    setError: UseFormSetError<FormValues>,
-  ) => void | Promise<void>
+  onSubmit: (values: FormValues, setError: UseFormSetError<FormValues>) => void | Promise<void>
 }
 
 interface FormValues {
@@ -205,9 +168,7 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
 
       // 标题含“自用”，但未勾选“自用”(status !== PRIVATE) → 提示
       if (titleHasPersonal && values.status !== 'PRIVATE') {
-        setGlobalError(
-          t.components.operationSet.OperationSetEditor.personal_use_warning,
-        )
+        setGlobalError(t.components.operationSet.OperationSetEditor.personal_use_warning)
         return
       }
 
@@ -236,11 +197,7 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
         {isEdit && (
           <div className="grow basis-full lg:overflow-y-auto border-t lg:border-t-0 lg:border-r border-slate-200">
             {operationSet.copilotIds.length > 0 ? (
-              <OperationSelector
-                key={operationSet.id}
-                operationSet={operationSet}
-                selectorRef={operationSelectorRef}
-              />
+              <OperationSelector key={operationSet.id} operationSet={operationSet} selectorRef={operationSelectorRef} />
             ) : (
               <NonIdealState
                 icon="helicopter"
@@ -264,15 +221,9 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
             error={errors.name}
             ControllerProps={{
               rules: {
-                required:
-                  t.components.operationSet.OperationSetEditor.title_required,
+                required: t.components.operationSet.OperationSetEditor.title_required,
               },
-              render: (renderProps) => (
-                <InputGroup
-                  {...renderProps.field}
-                  value={renderProps.field.value || ''}
-                />
-              ),
+              render: (renderProps) => <InputGroup {...renderProps.field} value={renderProps.field.value || ''} />,
             }}
           />
 
@@ -283,11 +234,7 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
             error={errors.description}
             ControllerProps={{
               render: (renderProps) => (
-                <TextArea
-                  rows={6}
-                  {...renderProps.field}
-                  value={renderProps.field.value || ''}
-                />
+                <TextArea rows={6} {...renderProps.field} value={renderProps.field.value || ''} />
               ),
             }}
           />
@@ -300,16 +247,8 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
                 {...field}
                 value={undefined}
                 checked={field.value === 'PRIVATE'}
-                onChange={(e) =>
-                  field.onChange(
-                    (e.target as HTMLInputElement).checked
-                      ? 'PRIVATE'
-                      : 'PUBLIC',
-                  )
-                }
-                label={
-                  t.components.operationSet.OperationSetEditor.for_personal_use
-                }
+                onChange={(e) => field.onChange((e.target as HTMLInputElement).checked ? 'PRIVATE' : 'PUBLIC')}
+                label={t.components.operationSet.OperationSetEditor.for_personal_use}
               />
             )}
           />
@@ -319,8 +258,7 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
       <div className="flex items-end">
         {isEdit && (
           <div className="text-xs text-gray-500">
-            <Icon icon="info-sign" />{' '}
-            {t.components.operationSet.OperationSetEditor.click_save}
+            <Icon icon="info-sign" /> {t.components.operationSet.OperationSetEditor.click_save}
           </div>
         )}
 
@@ -339,11 +277,7 @@ function OperationSetForm({ operationSet, onSubmit }: FormProps) {
       </div>
 
       {globalError && (
-        <Callout
-          intent="danger"
-          icon="error"
-          title={t.components.operationSet.OperationSetEditor.error}
-        >
+        <Callout intent="danger" icon="error" title={t.components.operationSet.OperationSetEditor.error}>
           {globalError}
         </Callout>
       )}
@@ -364,19 +298,12 @@ interface OperationSelectorRef {
   }
 }
 
-function OperationSelector({
-  operationSet,
-  selectorRef,
-}: OperationSelectorProps) {
+function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps) {
   const t = useTranslation()
   const { operations, error } = useOperations({
     operationIds: operationSet.copilotIds,
   })
-  const {
-    data: levels,
-    isLoading: levelLoading,
-    error: levelError,
-  } = useLevels()
+  const { data: levels, isLoading: levelLoading, error: levelError } = useLevels()
 
   const [renderedOperations, setRenderedOperations] = useState<Operation[]>([])
   useEffect(() => {
@@ -384,9 +311,7 @@ function OperationSelector({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operations.length])
 
-  const [checkboxOverrides, setCheckboxOverrides] = useState(
-    {} as Record<number, boolean>,
-  )
+  const [checkboxOverrides, setCheckboxOverrides] = useState({} as Record<number, boolean>)
 
   const alreadyAdded = useCallback(
     (operationId: number) => operationSet.copilotIds.includes(operationId),
@@ -399,9 +324,7 @@ function OperationSelector({
       getValues() {
         const copilotIds: number[] = []
         copilotIds.push(
-          ...renderedOperations
-            .map(({ id }) => (checkboxOverrides[id] === false ? 0 : id))
-            .filter((id) => !!id),
+          ...renderedOperations.map(({ id }) => (checkboxOverrides[id] === false ? 0 : id)).filter((id) => !!id),
         )
 
         return { copilotIds }
@@ -433,22 +356,22 @@ function OperationSelector({
       }
       return [...items].sort((a, b) => {
         if (type === 'title') {
-          return a.parsedContent.doc.title.localeCompare(
-            b.parsedContent.doc.title,
-          )
+          return a.parsedContent.doc.title.localeCompare(b.parsedContent.doc.title)
         } else if (type === 'level') {
-          const aLevel = (levelCache[a.parsedContent.stageName] ??=
-            findLevelByStageName(levels, a.parsedContent.stageName))
-          const bLevel = (levelCache[b.parsedContent.stageName] ??=
-            findLevelByStageName(levels, b.parsedContent.stageName))
+          const aLevel = (levelCache[a.parsedContent.stageName] ??= findLevelByStageName(
+            levels,
+            a.parsedContent.stageName,
+          ))
+          const bLevel = (levelCache[b.parsedContent.stageName] ??= findLevelByStageName(
+            levels,
+            b.parsedContent.stageName,
+          ))
 
           if (aLevel && bLevel) {
             return aLevel.catThree.localeCompare(bLevel.catThree)
           } else if (!aLevel && !bLevel) {
             // 如果两个都是未知关卡，可能是自定义关卡，或者关卡列表加载失败，直接按 stageName 排序
-            return a.parsedContent.stageName.localeCompare(
-              b.parsedContent.stageName,
-            )
+            return a.parsedContent.stageName.localeCompare(b.parsedContent.stageName)
           } else if (!aLevel) {
             // 未知关卡排最后面
             return 1
@@ -476,23 +399,16 @@ function OperationSelector({
                 text={
                   t.components.operationSet.OperationSetEditor.sort_by_level +
                   (levelLoading
-                    ? ' (' +
-                      t.components.operationSet.OperationSetEditor.loading +
-                      ')'
+                    ? ' (' + t.components.operationSet.OperationSetEditor.loading + ')'
                     : levelError
-                      ? ' (' +
-                        t.components.operationSet.OperationSetEditor
-                          .level_load_failed +
-                        ')'
+                      ? ' (' + t.components.operationSet.OperationSetEditor.level_load_failed + ')'
                       : '')
                 }
                 onClick={() => sort('level')}
               />
               <MenuItem
                 icon="sort-alphabetical"
-                text={
-                  t.components.operationSet.OperationSetEditor.sort_by_title
-                }
+                text={t.components.operationSet.OperationSetEditor.sort_by_title}
                 onClick={() => sort('title')}
               />
               <MenuItem
@@ -503,14 +419,7 @@ function OperationSelector({
             </Menu>
           }
         >
-          <Button
-            small
-            minimal
-            icon="sort"
-            text={
-              t.components.operationSet.OperationSetEditor.quick_sort + '...'
-            }
-          />
+          <Button small minimal icon="sort" text={t.components.operationSet.OperationSetEditor.quick_sort + '...'} />
         </Popover2>
         <Button
           small
@@ -522,27 +431,17 @@ function OperationSelector({
       </div>
 
       {error && (
-        <Callout
-          intent="danger"
-          icon="error"
-          title={t.components.operationSet.OperationSetEditor.error}
-        >
+        <Callout intent="danger" icon="error" title={t.components.operationSet.OperationSetEditor.error}>
           {formatError(error)}
         </Callout>
       )}
 
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={(renderedOperations ?? []).map(({ id }) => id)}
-          strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={(renderedOperations ?? []).map(({ id }) => id)} strategy={verticalListSortingStrategy}>
           {renderedOperations?.map(({ id, parsedContent }) => (
             <Sortable key={id} id={id}>
               {({ listeners, attributes }) => (
-                <div
-                  key={id}
-                  className="flex items-center hover:bg-slate-200 dark:hover:bg-slate-800"
-                >
+                <div key={id} className="flex items-center hover:bg-slate-200 dark:hover:bg-slate-800">
                   <Icon
                     className="cursor-grab active:cursor-grabbing p-1 -my-1 -ml-2 -mr-1 rounded-[1px]"
                     icon="drag-handle-vertical"
@@ -552,9 +451,7 @@ function OperationSelector({
                   <Checkbox
                     className={clsx(
                       'flex items-center m-0 p-2 !pl-10 flex-1',
-                      checkboxOverrides[id] !== undefined &&
-                        checkboxOverrides[id] !== alreadyAdded(id) &&
-                        'font-bold',
+                      checkboxOverrides[id] !== undefined && checkboxOverrides[id] !== alreadyAdded(id) && 'font-bold',
                     )}
                     checked={checkboxOverrides[id] ?? alreadyAdded(id)}
                     onChange={(e) => {
@@ -565,12 +462,8 @@ function OperationSelector({
                       }))
                     }}
                   >
-                    <div className="tabular-nums text-slate-500">
-                      {id}:&nbsp;
-                    </div>
-                    <div className="truncate text-ellipsis">
-                      {parsedContent.doc.title}
-                    </div>
+                    <div className="tabular-nums text-slate-500">{id}:&nbsp;</div>
+                    <div className="truncate text-ellipsis">{parsedContent.doc.title}</div>
                   </Checkbox>
                 </div>
               )}

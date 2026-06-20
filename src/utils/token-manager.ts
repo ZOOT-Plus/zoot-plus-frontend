@@ -3,12 +3,7 @@ import { getDefaultStore } from 'jotai'
 import { noop } from 'lodash-es'
 
 import { authAtom, fromCredentials } from 'store/auth'
-import {
-  InvalidTokenError,
-  NetworkError,
-  TokenExpiredError,
-  UnauthorizedError,
-} from 'utils/error'
+import { InvalidTokenError, NetworkError, TokenExpiredError, UnauthorizedError } from 'utils/error'
 
 let store = getDefaultStore()
 let pendingGetToken: Promise<string> | undefined
@@ -22,8 +17,7 @@ export const TokenManager = {
       return pendingGetToken
     }
 
-    const { token, validBefore, refreshToken, refreshTokenValidBefore } =
-      store.get(authAtom)
+    const { token, validBefore, refreshToken, refreshTokenValidBefore } = store.get(authAtom)
 
     const endTime = +new Date(validBefore || 0) || 0
     const refreshEndTime = +new Date(refreshTokenValidBefore || 0) || 0

@@ -15,8 +15,7 @@ export const ThemeSwitchButton = () => {
   const labels = t.components.ThemeSwitchButton
 
   // 查找当前主题的配置用于显示按钮图标
-  const currentConfig =
-    THEME_CONFIG.find((item) => item.id === theme) || THEME_CONFIG[0]
+  const currentConfig = THEME_CONFIG.find((item) => item.id === theme) || THEME_CONFIG[0]
 
   // 获取当前主题的翻译标签
   // 使用类型断言确保 i18nKey 是 labels 的合法属性
@@ -38,9 +37,7 @@ export const ThemeSwitchButton = () => {
           active={theme === item.id}
           icon={item.icon}
           // 动态获取翻译：labels[key]
-          text={renderOptionText(
-            labels[item.i18nKey as keyof typeof labels] || item.id,
-          )}
+          text={renderOptionText(labels[item.i18nKey as keyof typeof labels] || item.id)}
           onClick={() => setTheme(item.id)}
           shouldDismissPopover={true}
         />

@@ -8,9 +8,7 @@ interface FormErrorProps<T extends FieldValues> {
   errors: FieldErrors<T>
 }
 
-export const FormError = <T extends FieldValues>({
-  errors,
-}: FormErrorProps<T>) => {
+export const FormError = <T extends FieldValues>({ errors }: FormErrorProps<T>) => {
   const t = useTranslation()
   const errorsArray = Object.values(errors) as FieldError[]
 
@@ -19,16 +17,10 @@ export const FormError = <T extends FieldValues>({
   }
 
   return (
-    <Callout
-      intent="danger"
-      className="mt-2"
-      title={t.components.editor.FormError.error_occurred}
-    >
+    <Callout intent="danger" className="mt-2" title={t.components.editor.FormError.error_occurred}>
       <ol className="list-decimal list-inside">
         {errorsArray.map((error, i) => (
-          <li key={i}>
-            {error?.message || t.components.editor.FormError.unknown_error}
-          </li>
+          <li key={i}>{error?.message || t.components.editor.FormError.unknown_error}</li>
         ))}
       </ol>
     </Callout>
