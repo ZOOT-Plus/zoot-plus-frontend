@@ -194,7 +194,7 @@ export async function getOperators() {
   ).sort((a, b) => {
     // 默认的 pinyin.compare() 没有传入 locale 参数，导致在不同的系统上有不同的排序结果，
     // 所以这里手动实现一下，并带上 locale
-    // https://github.com/MaaAssistantArknights/maa-copilot-frontend/pull/265
+    // https://github.com/ZOOT-Plus/zoot-plus-frontend/pull/265
     const pinyinA = String(pinyin(a.name))
     const pinyinB = String(pinyin(b.name))
     return (

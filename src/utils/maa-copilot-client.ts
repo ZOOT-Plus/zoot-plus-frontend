@@ -7,6 +7,7 @@ import {
   CopilotSetApi,
   CopilotUserApi,
   JSONApiResponse,
+  UserFollowApi,
   querystring,
 } from 'maa-copilot-client'
 import { SetRequired } from 'type-fest'
@@ -15,11 +16,15 @@ import {
   ApiError,
   InvalidTokenError,
   NetworkError,
+  TokenExpiredError,
   UnauthorizedError,
 } from 'utils/error'
+import { getDefaultStore } from 'jotai'
 import { TokenManager } from 'utils/token-manager'
 
+import { AppToaster } from '../components/Toaster'
 import { i18n } from '../i18n/i18n'
+import { authAtom } from '../store/auth'
 
 declare module 'maa-copilot-client' {
   interface Configuration {
@@ -108,6 +113,13 @@ export class LevelApi<
     super(createConfiguration(options as T))
   }
 }
+export class FollowApi<
+  T extends ApiOptions,
+> extends (UserFollowApi as WithOptions<UserFollowApi>)<T> {
+  constructor(options?: ValidateOptions<T>) {
+    super(createConfiguration(options as T))
+  }
+}
 
 function createConfiguration(options?: ApiOptions) {
   options = {
@@ -130,6 +142,14 @@ function createConfiguration(options?: ApiOptions) {
             } catch (e) {
               if (options.sendToken === 'always') {
                 throw e
+              }
+              if (e instanceof InvalidTokenError || e instanceof TokenExpiredError) {
+                const store = getDefaultStore()
+                store.set(authAtom, {})
+                AppToaster.show({
+                  intent: 'warning',
+                  message: e.message,
+                })
               }
             }
           }

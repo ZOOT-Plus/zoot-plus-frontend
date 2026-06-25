@@ -9,7 +9,9 @@ export const App: FCC = ({ children }) => {
   return (
     <SWRConfig
       value={{
-        focusThrottleInterval: 1000 * 60,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        dedupingInterval: 1000 * 60,
         errorRetryInterval: 1000 * 3,
         errorRetryCount: 3,
       }}

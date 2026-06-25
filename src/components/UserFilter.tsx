@@ -15,7 +15,9 @@ import { Select } from './Select'
 interface UserFilterProps {
   className?: string
   user?: MaaUserInfo
+  onlyFollowing?: boolean
   onChange: (user: MaaUserInfo | undefined) => void
+  onOnlyFollowingChange?: (onlyFollowing: boolean) => void
 }
 
 const MYSELF: MaaUserInfo = {
@@ -31,7 +33,9 @@ function isMyself(user: MaaUserInfo | undefined) {
 export const UserFilter: FC<UserFilterProps> = ({
   className,
   user,
+  onlyFollowing,
   onChange,
+  onOnlyFollowingChange,
 }) => {
   const t = useTranslation()
   const auth = useAtomValue(authAtom)
@@ -49,7 +53,10 @@ export const UserFilter: FC<UserFilterProps> = ({
     if (isMyself(user) && !auth.token) {
       onChange(undefined)
     }
-  }, [auth.token, user, onChange])
+    if (onlyFollowing && !auth.token) {
+      onOnlyFollowingChange?.(false)
+    }
+  }, [auth.token, onlyFollowing, user, onChange, onOnlyFollowingChange])
 
   return (
     <>
@@ -110,6 +117,26 @@ export const UserFilter: FC<UserFilterProps> = ({
             : t.components.UserFilter.author}
         </Button>
       </Select>
+      {!!auth.token && (
+        <Button
+          minimal
+          icon="following"
+          className="!px-3"
+          title={t.components.UserFilter.only_following}
+          active={onlyFollowing}
+          intent={onlyFollowing ? 'primary' : 'none'}
+          onClick={() => {
+            if (onlyFollowing) {
+              onOnlyFollowingChange?.(false)
+            } else {
+              onChange(undefined)
+              onOnlyFollowingChange?.(true)
+            }
+          }}
+        >
+          {t.components.UserFilter.only_following}
+        </Button>
+      )}
       {!!auth.token && (
         <Button
           minimal
