@@ -6,10 +6,7 @@ import { FC } from 'react'
 
 import { useTranslation } from '../../i18n/i18n'
 
-export const CardDuplicateOption: FC<ButtonProps> = ({
-  className,
-  ...props
-}) => {
+export const CardDuplicateOption: FC<ButtonProps> = ({ className, ...props }) => {
   const t = useTranslation()
 
   return (
@@ -37,11 +34,7 @@ export const CardEditOption: FC<ButtonProps> = ({ className, ...props }) => {
   )
 }
 
-export const CardDeleteOption: FC<ButtonProps> = ({
-  className,
-  onClick,
-  ...props
-}) => {
+export const CardDeleteOption: FC<ButtonProps> = ({ className, onClick, ...props }) => {
   const t = useTranslation()
 
   return (
@@ -49,12 +42,7 @@ export const CardDeleteOption: FC<ButtonProps> = ({
       position="right"
       content={
         <Menu className="p-0">
-          <MenuItem
-            intent="danger"
-            text={t.components.editor.CardOptions.delete}
-            icon="trash"
-            onClick={onClick}
-          />
+          <MenuItem intent="danger" text={t.components.editor.CardOptions.delete} icon="trash" onClick={onClick} />
         </Menu>
       }
     >

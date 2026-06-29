@@ -14,10 +14,7 @@ interface SourceEditorHeaderProps {
   onChange: (text: string) => void
 }
 
-export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
-  text,
-  onChange,
-}) => {
+export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange }) => {
   const t = useTranslation()
   const [importDropdownOpen, setImportDropdownOpen] = useState(false)
 
@@ -54,8 +51,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
     URL.revokeObjectURL(url)
 
     AppToaster.show({
-      message:
-        t.components.editor.source.SourceEditorHeader.job_json_downloaded,
+      message: t.components.editor.source.SourceEditorHeader.job_json_downloaded,
       intent: 'success',
     })
   }
@@ -63,9 +59,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
   return (
     <>
       <Icon icon="manually-entered-data" />
-      <span className="ml-2">
-        {t.components.editor.source.SourceEditorHeader.edit_json}
-      </span>
+      <span className="ml-2">{t.components.editor.source.SourceEditorHeader.edit_json}</span>
 
       <div className="flex-1" />
 
@@ -95,11 +89,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
         position="bottom-left"
         content={
           <Menu>
-            <MenuItem
-              icon="clipboard"
-              text={t.components.editor.source.SourceEditorHeader.copy}
-              onClick={handleCopy}
-            />
+            <MenuItem icon="clipboard" text={t.components.editor.source.SourceEditorHeader.copy} onClick={handleCopy} />
             <MenuItem
               icon="download"
               text={t.components.editor.source.SourceEditorHeader.download}

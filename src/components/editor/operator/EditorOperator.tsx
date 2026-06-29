@@ -16,8 +16,7 @@ import { Suggest } from '../../Suggest'
 type OperatorInfo = (typeof OPERATORS)[number]
 type PerformerItem = OperatorInfo | CopilotDocV1.Group
 
-const isOperator = (item: PerformerItem): item is OperatorInfo =>
-  !!(item as OperatorInfo).alias
+const isOperator = (item: PerformerItem): item is OperatorInfo => !!(item as OperatorInfo).alias
 
 const createArbitraryOperator = (name: string): OperatorInfo => ({
   id: '',
@@ -99,19 +98,13 @@ export const EditorOperatorName = <T extends FieldValues>({
   return (
     <Suggest<PerformerItem>
       items={items}
-      itemListPredicate={(query) =>
-        query ? fuse.search(query).map((el) => el.item) : items
-      }
+      itemListPredicate={(query) => (query ? fuse.search(query).map((el) => el.item) : items)}
       fieldState={fieldState}
       onReset={() => onChange('')}
       itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
         <MenuItem
           key={'id' in item ? item.id : item.name}
-          text={
-            isOperator(item) && language === 'en' && item.name_en
-              ? item.name_en
-              : item.name
-          }
+          text={isOperator(item) && language === 'en' && item.name_en ? item.name_en : item.name}
           icon={
             isOperator(item) ? (
               <OperatorAvatar id={item.id} size="small" />
@@ -127,11 +120,7 @@ export const EditorOperatorName = <T extends FieldValues>({
       )}
       onItemSelect={(item) => onChange(item.name)}
       selectedItem={createArbitraryOperator((value || '') as string)}
-      inputValueRenderer={(item) =>
-        isOperator(item) && language === 'en' && item.name_en
-          ? item.name_en
-          : item.name
-      }
+      inputValueRenderer={(item) => (isOperator(item) && language === 'en' && item.name_en ? item.name_en : item.name)}
       createNewItemFromQuery={(query) => createArbitraryOperator(query)}
       createNewItemRenderer={(query, active, handleClick) => (
         <MenuItem

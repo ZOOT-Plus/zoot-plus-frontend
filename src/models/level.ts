@@ -36,9 +36,7 @@ export function isCustomLevel(level: Level): boolean {
 }
 
 export function isHardMode(stageId: string) {
-  return (
-    stageId.endsWith(HARD_MODE_SUFFIX) || stageId.includes(BOSSRUSH_HARD_INFIX)
-  )
+  return stageId.endsWith(HARD_MODE_SUFFIX) || stageId.includes(BOSSRUSH_HARD_INFIX)
 }
 
 export function toHardMode(stageId: string) {
@@ -46,10 +44,7 @@ export function toHardMode(stageId: string) {
     return stageId
   }
 
-  const replacedStageId = stageId.replace(
-    BOSSRUSH_NORMAL_INFIX,
-    BOSSRUSH_HARD_INFIX,
-  )
+  const replacedStageId = stageId.replace(BOSSRUSH_NORMAL_INFIX, BOSSRUSH_HARD_INFIX)
   if (replacedStageId !== stageId) {
     return replacedStageId
   }
@@ -59,16 +54,11 @@ export function toHardMode(stageId: string) {
 
 export function toNormalMode(stageId: string) {
   return isHardMode(stageId)
-    ? stageId
-        .replace(HARD_MODE_SUFFIX, '')
-        .replace(BOSSRUSH_HARD_INFIX, BOSSRUSH_NORMAL_INFIX)
+    ? stageId.replace(HARD_MODE_SUFFIX, '').replace(BOSSRUSH_HARD_INFIX, BOSSRUSH_NORMAL_INFIX)
     : stageId
 }
 
-export function getStageIdWithDifficulty(
-  stageId: string,
-  difficulty: OpDifficulty,
-) {
+export function getStageIdWithDifficulty(stageId: string, difficulty: OpDifficulty) {
   if (difficulty & OpDifficulty.HARD) {
     return toHardMode(stageId)
   }
@@ -116,9 +106,7 @@ export function hasHardMode(levels: Level[], stageName: string) {
 
 export function matchLevelByStageName(level: Level, stageName: string) {
   return (
-    matchStageIdIgnoringDifficulty(level.stageId, stageName) ||
-    level.levelId === stageName ||
-    level.name === stageName
+    matchStageIdIgnoringDifficulty(level.stageId, stageName) || level.levelId === stageName || level.name === stageName
   )
 }
 

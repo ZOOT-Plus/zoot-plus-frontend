@@ -9,11 +9,7 @@ import { findActionType } from 'models/types'
 
 import { ActionCard } from '../../ActionCard'
 import { SortableItemProps } from '../../dnd'
-import {
-  CardDeleteOption,
-  CardDuplicateOption,
-  CardEditOption,
-} from '../CardOptions'
+import { CardDeleteOption, CardDuplicateOption, CardEditOption } from '../CardOptions'
 
 interface EditorActionItemProps extends Partial<SortableItemProps> {
   editing?: boolean

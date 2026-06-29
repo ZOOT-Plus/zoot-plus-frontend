@@ -1,13 +1,4 @@
-﻿import {
-  Button,
-  ButtonGroup,
-  Card,
-  Divider,
-  H6,
-  InputGroup,
-  Tab,
-  Tabs,
-} from '@blueprintjs/core'
+﻿import { Button, ButtonGroup, Card, Divider, H6, InputGroup, Tab, Tabs } from '@blueprintjs/core'
 
 import { UseOperationsParams } from 'apis/operation'
 import clsx from 'clsx'
@@ -29,16 +20,11 @@ import { UserFilter } from './UserFilter'
 
 export const Operations: ComponentType = withSuspensable(() => {
   const t = useTranslation()
-  const [queryParams, setQueryParams] = useState<
-    Omit<UseOperationsParams, 'operator'>
-  >({
+  const [queryParams, setQueryParams] = useState<Omit<UseOperationsParams, 'operator'>>({
     limit: 10,
     orderBy: 'hot',
   })
-  const debouncedSetQueryParams = useMemo(
-    () => debounce(setQueryParams, 500),
-    [],
-  )
+  const debouncedSetQueryParams = useMemo(() => debounce(setQueryParams, 500), [])
 
   const { operatorFilter, setOperatorFilter } = useOperatorFilter()
   const [selectedUser, setSelectedUser] = useState<MaaUserInfo>()
@@ -55,24 +41,16 @@ export const Operations: ComponentType = withSuspensable(() => {
             id="operation-tabs"
             large
             selectedTabId={tab}
-            onChange={(newTab) =>
-              setTab(newTab as 'operation' | 'operationSet')
-            }
+            onChange={(newTab) => setTab(newTab as 'operation' | 'operationSet')}
           >
             <Tab
-              className={clsx(
-                'text-inherit',
-                tab !== 'operation' && 'opacity-75',
-              )}
+              className={clsx('text-inherit', tab !== 'operation' && 'opacity-75')}
               id="operation"
               title={t.components.Operations.operations}
             />
             <Divider className="self-center h-[1em]" />
             <Tab
-              className={clsx(
-                'text-inherit',
-                tab !== 'operationSet' && 'opacity-75',
-              )}
+              className={clsx('text-inherit', tab !== 'operationSet' && 'opacity-75')}
               id="operationSet"
               title={t.components.Operations.operation_sets}
             />
@@ -86,16 +64,8 @@ export const Operations: ComponentType = withSuspensable(() => {
             onClick={() => setMultiselect((v) => !v)}
           />
           <ButtonGroup>
-            <Button
-              icon="grid-view"
-              active={neoLayout}
-              onClick={() => setNeoLayout(true)}
-            />
-            <Button
-              icon="list"
-              active={!neoLayout}
-              onClick={() => setNeoLayout(false)}
-            />
+            <Button icon="grid-view" active={neoLayout} onClick={() => setNeoLayout(true)} />
+            <Button icon="list" active={!neoLayout} onClick={() => setNeoLayout(false)} />
           </ButtonGroup>
         </CardTitle>
         {tab === 'operation' && (
@@ -150,15 +120,9 @@ export const Operations: ComponentType = withSuspensable(() => {
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-4 mt-2">
-              <OperatorFilter
-                className=""
-                filter={operatorFilter}
-                onChange={setOperatorFilter}
-              />
+              <OperatorFilter className="" filter={operatorFilter} onChange={setOperatorFilter} />
               <div className="flex flex-wrap items-center ml-auto">
-                <H6 className="mb-0 mr-1 opacity-75">
-                  {t.components.Operations.sort_by}
-                </H6>
+                <H6 className="mb-0 mr-1 opacity-75">{t.components.Operations.sort_by}</H6>
                 <ButtonGroup minimal className="flex-wrap">
                   {(
                     [
@@ -255,12 +219,7 @@ export const Operations: ComponentType = withSuspensable(() => {
             revalidateFirstPage={queryParams.orderBy !== 'hot'}
           />
         )}
-        {tab === 'operationSet' && (
-          <OperationSetList
-            {...queryParams}
-            creatorId={queryParams.uploaderId}
-          />
-        )}
+        {tab === 'operationSet' && <OperationSetList {...queryParams} creatorId={queryParams.uploaderId} />}
       </div>
     </>
   )

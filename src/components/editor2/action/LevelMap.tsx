@@ -64,10 +64,7 @@ const activeActionLocationAtom = atom(
 // Defer initializing the map until it's visible. It's handled via atoms instead of
 // component states to avoid unnecessary rerenders when the map has already been initialized.
 const initializedAtom = atom(false)
-const shouldInitializeAtom = atom(
-  (get) =>
-    !get(initializedAtom) && get(editorAtoms.selectorPanelMode) === 'map',
-)
+const shouldInitializeAtom = atom((get) => !get(initializedAtom) && get(editorAtoms.selectorPanelMode) === 'map')
 
 export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
   const t = useTranslation()
@@ -76,10 +73,7 @@ export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
   const shouldInitialize = useAtomValue(shouldInitializeAtom)
   const stageName = useAtomValue(stageNameAtom)
   const [activeLocation, setActiveLocation] = useAtom(activeActionLocationAtom)
-  const level = useMemo(
-    () => (stageName ? findLevelByStageName(levels, stageName) : undefined),
-    [stageName, levels],
-  )
+  const level = useMemo(() => (stageName ? findLevelByStageName(levels, stageName) : undefined), [stageName, levels])
   const [mapStatus, setMapStatus] = useState<MapStatus>('idle')
   const [iframeWindow, setIframeWindow] = useState<Window | null>(null)
 
@@ -157,17 +151,9 @@ export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
         <NonIdealState
           className="absolute inset-0"
           icon={
-            mapStatus === 'loading' ? (
-              <Spinner className="[&_.bp4-spinner-head]:stroke-current" />
-            ) : (
-              'area-of-interest'
-            )
+            mapStatus === 'loading' ? <Spinner className="[&_.bp4-spinner-head]:stroke-current" /> : 'area-of-interest'
           }
-          description={
-            mapStatus === 'idle'
-              ? t.components.editor2.LevelMap.select_level
-              : undefined
-          }
+          description={mapStatus === 'idle' ? t.components.editor2.LevelMap.select_level : undefined}
         />
       )}
     </div>

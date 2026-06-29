@@ -1,13 +1,4 @@
-import {
-  Alert,
-  Button,
-  Card,
-  Collapse,
-  Icon,
-  Intent,
-  Menu,
-  MenuItem,
-} from '@blueprintjs/core'
+import { Alert, Button, Card, Collapse, Icon, Intent, Menu, MenuItem } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
@@ -25,15 +16,10 @@ import { GroupListModifyProp } from '../SheetGroup'
 import { OperatorNoData } from '../SheetNoneData'
 import { useSheet } from '../SheetProvider'
 import { CollapseButton, SheetGroupOperatorSelectProp } from './CollapseButton'
-import {
-  OperatorInGroupItem,
-  OperatorInGroupItemProp,
-} from './OperatorInGroupItem'
+import { OperatorInGroupItem, OperatorInGroupItemProp } from './OperatorInGroupItem'
 import { SheetOperatorEditor } from './SheetOperatorEditor'
 
-export interface GroupItemProps
-  extends SheetGroupOperatorSelectProp,
-    GroupListModifyProp {
+export interface GroupItemProps extends SheetGroupOperatorSelectProp, GroupListModifyProp {
   exist: boolean
   pinned: boolean
 }
@@ -85,20 +71,11 @@ const GroupTitle = ({
         onConfirm={editContinue}
         intent={Intent.DANGER}
         onCancel={editCancel}
-        confirmButtonText={
-          t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.cancel
-        }
-        cancelButtonText={
-          t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.confirm
-        }
+        confirmButtonText={t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.cancel}
+        cancelButtonText={t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.confirm}
         isOpen={alertState}
       >
-        <p>
-          {
-            t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-              .unsaved_changes
-          }
-        </p>
+        <p>{t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.unsaved_changes}</p>
       </Alert>
       <form
         className="flex items-center"
@@ -112,14 +89,8 @@ const GroupTitle = ({
         <div className="flex items-center w-full">
           <Icon icon="people" />
           <input
-            title={
-              t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-                .edit_group_name
-            }
-            className={clsx(
-              'ml-1 w-full bg-transparent text-xs',
-              !editable && 'placeholder:text-current',
-            )}
+            title={t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.edit_group_name}
+            className={clsx('ml-1 w-full bg-transparent text-xs', !editable && 'placeholder:text-current')}
             autoComplete="off"
             disabled={!editable}
             onFocus={() => setNameEditState(true)}
@@ -134,14 +105,7 @@ const GroupTitle = ({
             }}
             {...registerRest}
           />
-          {nameEditState && (
-            <Button
-              minimal
-              icon="tick"
-              type="submit"
-              onMouseDown={(e) => e.preventDefault()}
-            />
-          )}
+          {nameEditState && <Button minimal icon="tick" type="submit" onMouseDown={(e) => e.preventDefault()} />}
         </div>
       </form>
     </>
@@ -155,37 +119,20 @@ export interface SheetGroupItemProp {
   itemType: ItemType
 }
 
-export const SheetGroupItem: FC<SheetGroupItemProp> = ({
-  groupInfo,
-  itemType,
-}) => {
-  const {
-    selected,
-    onGroupNameChange,
-    defaultOperatorCollapseOpen,
-    ActionList,
-    onOperatorSkillChange,
-  } = useSheetGroupItemController({
-    groupInfo,
-    itemType,
-  })
-  const [operatorCollapse, setOperatorCollapse] = useState(
-    defaultOperatorCollapseOpen,
-  )
+export const SheetGroupItem: FC<SheetGroupItemProp> = ({ groupInfo, itemType }) => {
+  const { selected, onGroupNameChange, defaultOperatorCollapseOpen, ActionList, onOperatorSkillChange } =
+    useSheetGroupItemController({
+      groupInfo,
+      itemType,
+    })
+  const [operatorCollapse, setOperatorCollapse] = useState(defaultOperatorCollapseOpen)
 
   return (
     <Card interactive={!selected} className="mt-1 mx-0.5">
       <div className="flex items-center justify-between">
-        <GroupTitle
-          groupTitle={groupInfo.name}
-          editable
-          renameSubmit={onGroupNameChange}
-        />
+        <GroupTitle groupTitle={groupInfo.name} editable renameSubmit={onGroupNameChange} />
         <div className="flex items-center">
-          <CollapseButton
-            isCollapse={operatorCollapse}
-            onClick={() => setOperatorCollapse((prev) => !prev)}
-          />
+          <CollapseButton isCollapse={operatorCollapse} onClick={() => setOperatorCollapse((prev) => !prev)} />
           {ActionList}
         </div>
       </div>
@@ -225,31 +172,20 @@ const useSheetGroupItemController = ({
 
   switch (itemType) {
     case 'selected': {
-      const findFavByName = favGroup.find(
-        ({ name: nameInFav }) => nameInFav === name,
-      )
+      const findFavByName = favGroup.find(({ name: nameInFav }) => nameInFav === name)
       const pinned = isEqual({ name, opers }, findFavByName)
 
       const onPinChange: GroupPinOptionProp['onPinChange'] = () => {
-        const newFavGroup = [
-          ...favGroup.filter(({ name: nameInFav }) => nameInFav !== name),
-        ]
-        setFavGroup(
-          pinned
-            ? newFavGroup
-            : [...newFavGroup, cloneDeep({ name, opers, ...rest })],
-        )
+        const newFavGroup = [...favGroup.filter(({ name: nameInFav }) => nameInFav !== name)]
+        setFavGroup(pinned ? newFavGroup : [...newFavGroup, cloneDeep({ name, opers, ...rest })])
       }
       return {
         selected: true,
-        onGroupNameChange: (name: string) =>
-          submitGroupInSheet({ opers, ...rest, name }),
+        onGroupNameChange: (name: string) => submitGroupInSheet({ opers, ...rest, name }),
         defaultOperatorCollapseOpen: true,
         onOperatorSkillChange: (operator: Operator) => {
           opers.splice(
-            opers.findIndex(
-              ({ name: nameInExist }) => nameInExist === operator.name,
-            ),
+            opers.findIndex(({ name: nameInExist }) => nameInExist === operator.name),
             1,
             operator,
           )
@@ -258,19 +194,9 @@ const useSheetGroupItemController = ({
         ActionList: (
           <>
             <CardDeleteOption
-              onClick={() =>
-                removeGroup(
-                  existedGroups.findIndex(
-                    ({ name: nameInExist }) => nameInExist === name,
-                  ),
-                )
-              }
+              onClick={() => removeGroup(existedGroups.findIndex(({ name: nameInExist }) => nameInExist === name))}
             />
-            <GroupPinOption
-              pinned={pinned}
-              onPinChange={onPinChange}
-              isDuplicate={!!findFavByName}
-            />
+            <GroupPinOption pinned={pinned} onPinChange={onPinChange} isDuplicate={!!findFavByName} />
           </>
         ),
       }
@@ -286,10 +212,7 @@ const useSheetGroupItemController = ({
             <Button
               minimal
               icon="arrow-left"
-              title={
-                t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-                  .use_recommended_group
-              }
+              title={t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.use_recommended_group}
               onClick={() => submitGroupInSheet({ name, opers })}
             />
           </>
@@ -297,38 +220,25 @@ const useSheetGroupItemController = ({
       }
     }
     case 'fav': {
-      const selected = existedGroups.find(
-        ({ name: nameInExist }) => nameInExist === name,
-      )
-      const equal = selected
-        ? isEqual(omit(selected, ...ignoreKeyDic), { name, opers })
-        : false
+      const selected = existedGroups.find(({ name: nameInExist }) => nameInExist === name)
+      const equal = selected ? isEqual(omit(selected, ...ignoreKeyDic), { name, opers }) : false
       const onPinChange: GroupPinOptionProp['onPinChange'] = () => {
-        setFavGroup(
-          favGroup.filter(({ name: nameInFav }) => nameInFav !== name),
-        )
+        setFavGroup(favGroup.filter(({ name: nameInFav }) => nameInFav !== name))
       }
 
       return {
         selected: false,
         onGroupNameChange: (name: string) =>
-          setFavGroup([
-            ...favGroup.filter(({ name: favName }) => favName !== name),
-            { opers, name, ...rest },
-          ]),
+          setFavGroup([...favGroup.filter(({ name: favName }) => favName !== name), { opers, name, ...rest }]),
         defaultOperatorCollapseOpen: false,
         onOperatorSkillChange: (operator: Operator) => {
           opers.splice(
-            opers.findIndex(
-              ({ name: nameInExist }) => nameInExist === operator.name,
-            ),
+            opers.findIndex(({ name: nameInExist }) => nameInExist === operator.name),
             1,
             operator,
           )
           favGroup.splice(
-            favGroup.findIndex(
-              ({ name: nameInFav }) => nameInFav === operator.name,
-            ),
+            favGroup.findIndex(({ name: nameInFav }) => nameInFav === operator.name),
             1,
             { name, opers, ...rest },
           )
@@ -343,12 +253,9 @@ const useSheetGroupItemController = ({
               title={
                 selected
                   ? equal
-                    ? t.components.editor.operator.sheet.sheetGroup
-                        .SheetGroupItem.already_added
-                    : t.components.editor.operator.sheet.sheetGroup
-                        .SheetGroupItem.same_name_detected
-                  : t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-                      .use_recommended_group
+                    ? t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.already_added
+                    : t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.same_name_detected
+                  : t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.use_recommended_group
               }
               onClick={() => submitGroupInSheet({ name, opers })}
             />
@@ -374,21 +281,14 @@ interface GroupPinOptionProp {
   isDuplicate?: boolean
 }
 
-const GroupPinOption: FC<GroupPinOptionProp> = ({
-  pinned,
-  onPinChange,
-  isDuplicate = false,
-}) => {
+const GroupPinOption: FC<GroupPinOptionProp> = ({ pinned, onPinChange, isDuplicate = false }) => {
   const t = useTranslation()
 
   const pinText = pinned
-    ? t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-        .remove_from_favorites
+    ? t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.remove_from_favorites
     : isDuplicate
-      ? t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-          .will_replace_same_name
-      : t.components.editor.operator.sheet.sheetGroup.SheetGroupItem
-          .add_to_favorites
+      ? t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.will_replace_same_name
+      : t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.add_to_favorites
 
   return (
     <Popover2

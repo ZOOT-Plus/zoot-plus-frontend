@@ -1,27 +1,11 @@
-import {
-  AnchorButton,
-  Button,
-  ButtonGroup,
-  Callout,
-  H4,
-  Icon,
-  InputGroup,
-  MenuItem,
-  TextArea,
-} from '@blueprintjs/core'
+import { AnchorButton, Button, ButtonGroup, Callout, H4, Icon, InputGroup, MenuItem, TextArea } from '@blueprintjs/core'
 import { Tooltip2 } from '@blueprintjs/popover2'
 
 import { useLevels } from 'apis/level'
 import clsx from 'clsx'
 import Fuse from 'fuse.js'
 import { FC, ReactNode, useEffect, useMemo, useState } from 'react'
-import {
-  Control,
-  FieldErrors,
-  UseFormReturn,
-  useController,
-  useWatch,
-} from 'react-hook-form'
+import { Control, FieldErrors, UseFormReturn, useController, useWatch } from 'react-hook-form'
 
 import { FormField, FormField2 } from 'components/FormField'
 import { HelperText } from 'components/HelperText'
@@ -44,14 +28,8 @@ import { formatError } from '../../utils/error'
 import { Suggest } from '../Suggest'
 import { EditorActions } from './action/EditorActions'
 import { FloatingMap } from './floatingMap/FloatingMap'
-import {
-  FloatingMapContext,
-  useFloatingMap,
-} from './floatingMap/FloatingMapContext'
-import {
-  EditorPerformer,
-  EditorPerformerProps,
-} from './operator/EditorPerformer'
+import { FloatingMapContext, useFloatingMap } from './floatingMap/FloatingMapContext'
+import { EditorPerformer, EditorPerformerProps } from './operator/EditorPerformer'
 
 export const StageNameInput: FC<{
   control: Control<CopilotDocV1.Operation, object>
@@ -99,12 +77,7 @@ export const StageNameInput: FC<{
 
   const difficulty = useWatch({ control, name: 'difficulty' })
   const prtsMapUrl = selectedLevel
-    ? getPrtsMapUrl(
-        getStageIdWithDifficulty(
-          selectedLevel.stageId,
-          difficulty ?? OpDifficulty.UNKNOWN,
-        ),
-      )
+    ? getPrtsMapUrl(getStageIdWithDifficulty(selectedLevel.stageId, difficulty ?? OpDifficulty.UNKNOWN))
     : undefined
 
   // stageName should always be in normal mode
@@ -135,9 +108,7 @@ export const StageNameInput: FC<{
       <div className="flex">
         <Suggest<Level>
           items={levels}
-          itemListPredicate={(query) =>
-            query ? fuse.search(query).map((el) => el.item) : levels
-          }
+          itemListPredicate={(query) => (query ? fuse.search(query).map((el) => el.item) : levels)}
           fieldState={fieldState}
           onReset={() => onChange('')}
           className={clsx('flex-grow mr-2', isLoading && 'bp4-skeleton')}
@@ -159,12 +130,7 @@ export const StageNameInput: FC<{
               ? `${item.name} (${t.components.editor.OperationEditor.custom})`
               : `${item.catThree} ${item.name}`
           }
-          noResults={
-            <MenuItem
-              disabled
-              text={t.components.editor.OperationEditor.no_matching_stages}
-            />
-          }
+          noResults={<MenuItem disabled text={t.components.editor.OperationEditor.no_matching_stages} />}
           createNewItemFromQuery={(query) => createCustomLevel(query)}
           createNewItemRenderer={(query, active, handleClick) => (
             <MenuItem
@@ -183,17 +149,8 @@ export const StageNameInput: FC<{
             onBlur,
           }}
         />
-        <Tooltip2
-          placement="top"
-          content={t.components.editor.OperationEditor.view_in_prts_map}
-        >
-          <AnchorButton
-            large
-            icon="share"
-            target="_blank"
-            href={prtsMapUrl}
-            disabled={!prtsMapUrl}
-          />
+        <Tooltip2 placement="top" content={t.components.editor.OperationEditor.view_in_prts_map}>
+          <AnchorButton large icon="share" target="_blank" href={prtsMapUrl} disabled={!prtsMapUrl} />
         </Tooltip2>
       </div>
     </FormField2>
@@ -242,9 +199,7 @@ const DifficultyPicker: FC<{
       label={t.components.editor.OperationEditor.stage_difficulty}
       description={t.components.editor.OperationEditor.difficulty_description}
       FormGroupProps={{
-        helperText: invalid
-          ? t.components.editor.OperationEditor.no_challenge_mode
-          : '',
+        helperText: invalid ? t.components.editor.OperationEditor.no_challenge_mode : '',
       }}
       field="difficulty"
       error={error}
@@ -297,12 +252,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       const level = findLevelByStageName(levels, stageName)
 
       if (level) {
-        setValue(
-          'doc.title',
-          [level.catTwo, level.catThree, level.name]
-            .filter(Boolean)
-            .join(' - '),
-        )
+        setValue('doc.title', [level.catTwo, level.catThree, level.name].filter(Boolean).join(' - '))
       }
     }
   }, [stageName, levels, getValues, setValue])
@@ -314,21 +264,14 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       <section className="flex flex-col relative h-full pt-4 pb-16">
         <div className="px-8 text-lg font-medium flex items-center flex-wrap w-full">
           <Icon icon="document" />
-          <span className="ml-2 mr-4">
-            {t.components.editor.OperationEditor.job_editor}
-          </span>
+          <span className="ml-2 mr-4">{t.components.editor.OperationEditor.job_editor}</span>
           <div className="flex-1" />
 
           {toolbar}
         </div>
 
         {globalError && (
-          <Callout
-            className="mt-4"
-            intent="danger"
-            icon="error"
-            title={t.components.editor.OperationEditor.error}
-          >
+          <Callout className="mt-4" intent="danger" icon="error" title={t.components.editor.OperationEditor.error}>
             {globalError.split('\n').map((line) => (
               <p key={line}>{line}</p>
             ))}
@@ -349,16 +292,13 @@ export const OperationEditor: FC<OperationEditorProps> = ({
                 error={errors.doc?.title}
                 ControllerProps={{
                   rules: {
-                    required:
-                      t.components.editor.OperationEditor.title_required,
+                    required: t.components.editor.OperationEditor.title_required,
                   },
                   render: ({ field }) => (
                     <InputGroup
                       large
                       id="doc.title"
-                      placeholder={
-                        t.components.editor.OperationEditor.title_placeholder
-                      }
+                      placeholder={t.components.editor.OperationEditor.title_placeholder}
                       {...field}
                       value={field.value || ''}
                     />
@@ -386,10 +326,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
                       growVertically
                       large
                       id="doc.details"
-                      placeholder={
-                        t.components.editor.OperationEditor
-                          .description_placeholder
-                      }
+                      placeholder={t.components.editor.OperationEditor.description_placeholder}
                       {...field}
                       value={field.value || ''}
                     />
@@ -408,9 +345,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
             <div className="w-full pb-8">
               <H4>{t.components.editor.OperationEditor.action_sequence}</H4>
               <HelperText className="mb-4">
-                <span>
-                  {t.components.editor.OperationEditor.drag_to_reorder}
-                </span>
+                <span>{t.components.editor.OperationEditor.drag_to_reorder}</span>
               </HelperText>
               <EditorActions control={control} />
             </div>
@@ -437,9 +372,7 @@ const EditorPerformerPanel: FC<EditorPerformerProps> = (props) => {
     <>
       <H4>{t.components.editor.OperationEditor.operators_and_groups}</H4>
       <HelperText className="mb-4">
-        <span>
-          {t.components.editor.OperationEditor.drag_to_reorder_operators}
-        </span>
+        <span>{t.components.editor.OperationEditor.drag_to_reorder_operators}</span>
         <span>
           {t.components.editor.OperationEditor.drag_too_fast_issue}
           <Button

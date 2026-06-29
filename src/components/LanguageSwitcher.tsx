@@ -24,9 +24,7 @@ export const LanguageSwitcher: ComponentType = withGlobalErrorBoundary(() => {
   return (
     <DetailedSelect
       items={options}
-      onItemSelect={(item) =>
-        setLanguage(item.value as (typeof options)[number]['value'])
-      }
+      onItemSelect={(item) => setLanguage(item.value as (typeof options)[number]['value'])}
       popoverProps={{
         matchTargetWidth: !shrinked,
       }}

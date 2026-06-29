@@ -1,14 +1,4 @@
-import {
-  Button,
-  ButtonProps,
-  Callout,
-  H2,
-  Icon,
-  Menu,
-  MenuDivider,
-  MenuItem,
-  Tag,
-} from '@blueprintjs/core'
+import { Button, ButtonProps, Callout, H2, Icon, Menu, MenuDivider, MenuItem, Tag } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
@@ -26,23 +16,14 @@ import { editorAtoms, historyAtom, useEdit } from './editor-state'
 import { useHistoryControls, useHistoryValue } from './history'
 import { hydrateOperation } from './reconciliation'
 import { SourceEditorButton } from './source/SourceEditor'
-import {
-  AUTO_SAVE_INTERVAL,
-  AUTO_SAVE_LIMIT,
-  editorArchiveAtom,
-  editorSaveAtom,
-} from './useAutoSave'
+import { AUTO_SAVE_INTERVAL, AUTO_SAVE_LIMIT, editorArchiveAtom, editorSaveAtom } from './useAutoSave'
 import { getLabeledPath } from './validation/schema'
 
 interface EditorToolbarProps extends SubmitButtonProps {
   subtitle?: string
 }
 
-export const EditorToolbar: FC<EditorToolbarProps> = ({
-  subtitle,
-  submitAction,
-  onSubmit,
-}) => {
+export const EditorToolbar: FC<EditorToolbarProps> = ({ subtitle, submitAction, onSubmit }) => {
   const t = useTranslation()
   const { isLG } = useCurrentSize()
   const buttonProps = {
@@ -54,17 +35,11 @@ export const EditorToolbar: FC<EditorToolbarProps> = ({
     <div className="px-4 md:px-8 flex items-center flex-wrap [&_.bp4-button-text]:leading-none bg-white dark:bg-[#383e47]">
       <Icon icon="properties" />
       <div className="ml-2 flex items-baseline">
-        <H2 className="!text-base mb-0">
-          {t.components.editor2.EditorToolbar.title}
-        </H2>
+        <H2 className="!text-base mb-0">{t.components.editor2.EditorToolbar.title}</H2>
         <Tag minimal className="ml-1" intent="warning">
           Beta
         </Tag>
-        {subtitle && (
-          <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-            {subtitle}
-          </span>
-        )}
+        {subtitle && <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">{subtitle}</span>}
       </div>
       <div className="grow py-1 flex flex-wrap items-center justify-end">
         <span className="grow" />
@@ -86,12 +61,7 @@ interface SubmitButtonProps extends ButtonProps {
   onSubmit: () => Promise<void | false> | false | void
 }
 
-const SubmitButton = ({
-  submitAction,
-  onSubmit,
-  className,
-  ...buttonProps
-}: SubmitButtonProps) => {
+const SubmitButton = ({ submitAction, onSubmit, className, ...buttonProps }: SubmitButtonProps) => {
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const statusResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -121,13 +91,7 @@ const SubmitButton = ({
     <Button
       large
       {...buttonProps}
-      intent={
-        status === 'success'
-          ? 'success'
-          : status === 'error'
-            ? 'danger'
-            : 'primary'
-      }
+      intent={status === 'success' ? 'success' : status === 'error' ? 'danger' : 'primary'}
       className={clsx('w-40', className)}
       icon={status === 'success' ? 'tick' : 'upload'}
       loading={submitting}
@@ -149,11 +113,7 @@ const AutoSaveButton = (buttonProps: ButtonProps) => {
       content={
         isOpen ? (
           <>
-            <Callout
-              intent="primary"
-              icon={null}
-              className="p-0 pl-2 flex items-center gap-2"
-            >
+            <Callout intent="primary" icon={null} className="p-0 pl-2 flex items-center gap-2">
               {t.components.editor2.EditorToolbar.auto_save_interval({
                 count: AUTO_SAVE_INTERVAL / 1000 / 60,
                 records: archive.length,
@@ -167,10 +127,9 @@ const AutoSaveButton = (buttonProps: ButtonProps) => {
                     save()
                   } catch (e) {
                     AppToaster.show({
-                      message:
-                        i18n.components.editor2.EditorToolbar.cannot_save({
-                          error: formatError(e),
-                        }),
+                      message: i18n.components.editor2.EditorToolbar.cannot_save({
+                        error: formatError(e),
+                      }),
                       intent: 'danger',
                     })
                   }
@@ -184,10 +143,7 @@ const AutoSaveButton = (buttonProps: ButtonProps) => {
                 <MenuItem
                   multiline
                   icon="time"
-                  text={
-                    record.v.operation.doc.title ||
-                    t.components.editor2.EditorToolbar.untitled
-                  }
+                  text={record.v.operation.doc.title || t.components.editor2.EditorToolbar.untitled}
                   label={formatRelativeTime(record.t)}
                   key={record.t}
                   onClick={() => {
@@ -214,11 +170,7 @@ const AutoSaveButton = (buttonProps: ButtonProps) => {
       onOpening={() => setIsOpen(true)}
       onClosed={() => setIsOpen(false)}
     >
-      <Button
-        {...buttonProps}
-        icon="projects"
-        title={t.components.editor2.EditorToolbar.auto_save}
-      />
+      <Button {...buttonProps} icon="projects" title={t.components.editor2.EditorToolbar.auto_save} />
     </Popover2>
   )
 }
@@ -259,24 +211,9 @@ const HistoryButtons = (buttonProps: ButtonProps) => {
                 return (
                   <MenuItem
                     key={index}
-                    className={clsx(
-                      index === 0 && 'italic',
-                      index === history.index ? 'font-bold' : undefined,
-                    )}
-                    text={
-                      index +
-                      1 +
-                      '. ' +
-                      (record.action === 'init'
-                        ? t.actions.editor2.init
-                        : record.desc)
-                    }
-                    labelElement={
-                      <RelativeTime
-                        className="ml-4 text-xs"
-                        moment={record.time}
-                      />
-                    }
+                    className={clsx(index === 0 && 'italic', index === history.index ? 'font-bold' : undefined)}
+                    text={index + 1 + '. ' + (record.action === 'init' ? t.actions.editor2.init : record.desc)}
+                    labelElement={<RelativeTime className="ml-4 text-xs" moment={record.time} />}
                     onClick={() => checkout(index)}
                   />
                 )
@@ -313,10 +250,7 @@ const ErrorButton = (buttonProps: ButtonProps) => {
       content={
         isOpen ? (
           <>
-            <MenuDivider
-              className="pb-2 border-b"
-              title={t.components.editor2.EditorToolbar.errors_header}
-            />
+            <MenuDivider className="pb-2 border-b" title={t.components.editor2.EditorToolbar.errors_header} />
             <ul className="m-2 text-red-500">
               {allErrors.map(({ path, message }) => (
                 <li key={path.join()}>
@@ -344,9 +278,7 @@ const ErrorButton = (buttonProps: ButtonProps) => {
             ? t.components.editor2.EditorToolbar.errors_header
             : t.components.editor2.EditorToolbar.no_errors
         }
-        text={
-          allErrors.length || <Icon className="!-ml-px" icon="small-tick" />
-        }
+        text={allErrors.length || <Icon className="!-ml-px" icon="small-tick" />}
       />
     </Popover2>
   )

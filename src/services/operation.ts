@@ -49,11 +49,7 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
   )
 
   try {
-    const json = JSON.stringify(
-      snakeCaseKeysUnicode(JSON.parse(resp.data!.content) as any),
-      null,
-      2,
-    )
+    const json = JSON.stringify(snakeCaseKeysUnicode(JSON.parse(resp.data!.content) as any), null, 2)
     doTriggerDownloadJSON(json, `MAACopilot_${title}.json`)
     AppToaster.show({
       message: i18n.services.operation.json_downloaded,

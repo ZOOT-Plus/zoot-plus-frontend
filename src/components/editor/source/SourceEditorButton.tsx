@@ -9,11 +9,7 @@ interface SourceEditorButtonProps extends SourceEditorProps {
   className?: string
 }
 
-export const SourceEditorButton: FC<SourceEditorButtonProps> = ({
-  className,
-  triggerValidation,
-  ...editorProps
-}) => {
+export const SourceEditorButton: FC<SourceEditorButtonProps> = ({ className, triggerValidation, ...editorProps }) => {
   const t = useTranslation()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -30,12 +26,7 @@ export const SourceEditorButton: FC<SourceEditorButtonProps> = ({
         }}
       />
       <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        {drawerOpen && (
-          <SourceEditor
-            triggerValidation={triggerValidation}
-            {...editorProps}
-          />
-        )}
+        {drawerOpen && <SourceEditor triggerValidation={triggerValidation} {...editorProps} />}
       </Drawer>
     </>
   )

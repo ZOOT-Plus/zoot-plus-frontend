@@ -55,18 +55,12 @@ export const Confirm: FCC<ConfirmProps> = ({
       {trigger({ handleClick: () => setIsOpen(true) })}
       <Alert
         cancelButtonText={t.components.Confirm.cancel}
-        icon={
-          intent === 'danger' || intent === 'warning' ? 'error' : 'info-sign'
-        }
+        icon={intent === 'danger' || intent === 'warning' ? 'error' : 'info-sign'}
         {...props}
         isOpen={isOpen}
         loading={confirming}
         intent={intent}
-        confirmButtonText={
-          repeats
-            ? `${confirmButtonText} (${remainingRepeats})`
-            : confirmButtonText
-        }
+        confirmButtonText={repeats ? `${confirmButtonText} (${remainingRepeats})` : confirmButtonText}
         onCancel={() => {
           if (confirming) return
           setIsOpen(false)

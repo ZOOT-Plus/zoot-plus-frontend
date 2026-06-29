@@ -4,15 +4,10 @@ import { noop } from 'lodash-es'
 import { useEffect, useRef } from 'react'
 import { ControllerFieldState } from 'react-hook-form'
 
-import {
-  UseDebouncedQueryParams,
-  useDebouncedQuery,
-} from '../utils/useDebouncedQuery'
+import { UseDebouncedQueryParams, useDebouncedQuery } from '../utils/useDebouncedQuery'
 import { FieldResetButton } from './FieldResetButton'
 
-interface SuggestProps<T>
-  extends Omit<Suggest2Props<T>, 'onQueryChange'>,
-    UseDebouncedQueryParams {
+interface SuggestProps<T> extends Omit<Suggest2Props<T>, 'onQueryChange'>, UseDebouncedQueryParams {
   query?: string // controlled query, optional
   fieldState?: ControllerFieldState
   onReset?: () => void
@@ -57,11 +52,7 @@ export const Suggest = <T,>({
       query={query}
       onQueryChange={(query) => updateQuery(query, false)}
       selectedItem={selectedItem}
-      itemListPredicate={
-        itemListPredicate
-          ? (query, items) => itemListPredicate(debouncedQuery, items)
-          : undefined
-      }
+      itemListPredicate={itemListPredicate ? (query, items) => itemListPredicate(debouncedQuery, items) : undefined}
       inputProps={{
         onKeyDown: (event) => {
           // prevent form submission
@@ -74,11 +65,7 @@ export const Suggest = <T,>({
             disabled={
               !(
                 // enabled =
-                (fieldState
-                  ? fieldState.isDirty
-                  : onReset
-                    ? query || selectedItem !== null
-                    : false)
+                (fieldState ? fieldState.isDirty : onReset ? query || selectedItem !== null : false)
               )
             }
             onReset={() => {

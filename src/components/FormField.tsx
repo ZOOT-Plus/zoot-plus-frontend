@@ -1,27 +1,13 @@
 import { FormGroup, FormGroupProps, Icon, Tag } from '@blueprintjs/core'
-import {
-  Popover2InteractionKind,
-  Tooltip2,
-  Tooltip2Props,
-} from '@blueprintjs/popover2'
+import { Popover2InteractionKind, Tooltip2, Tooltip2Props } from '@blueprintjs/popover2'
 
 import { ReactNode } from 'react'
-import {
-  Control,
-  Controller,
-  ControllerProps,
-  FieldError,
-  FieldValues,
-  Path,
-} from 'react-hook-form'
+import { Control, Controller, ControllerProps, FieldError, FieldValues, Path } from 'react-hook-form'
 import { WithChildren } from 'types'
 
 import { formatError } from '../utils/error'
 
-export interface FormFieldRenderProps<
-  T extends FieldValues,
-  P extends Path<T>,
-> {
+export interface FormFieldRenderProps<T extends FieldValues, P extends Path<T>> {
   name: Path<T>
   control: Control<T>
   props?: Omit<ControllerProps<T, P>, 'name' | 'render'>
@@ -57,13 +43,7 @@ export const FormField = <T extends FieldValues, P extends Path<T>>({
             <Tooltip2
               className="!inline-block !mt-0"
               interactionKind={Popover2InteractionKind.HOVER}
-              content={
-                typeof description === 'string' ? (
-                  <div className="max-w-sm">{description}</div>
-                ) : (
-                  description
-                )
-              }
+              content={typeof description === 'string' ? <div className="max-w-sm">{description}</div> : description}
             >
               <Icon className="ml-1 text-slate-600" icon="help" />
             </Tooltip2>
@@ -76,9 +56,7 @@ export const FormField = <T extends FieldValues, P extends Path<T>>({
         </span>
       }
       labelFor={field}
-      labelInfo={
-        FormGroupProps?.labelInfo || (ControllerProps?.rules?.required && '*')
-      }
+      labelInfo={FormGroupProps?.labelInfo || (ControllerProps?.rules?.required && '*')}
       {...FormGroupProps}
     >
       {render ? (
@@ -120,13 +98,7 @@ export const FormField2 = <T extends FieldValues>({
             <Tooltip2
               className="!inline-block !mt-0"
               interactionKind={Popover2InteractionKind.HOVER}
-              content={
-                typeof description === 'string' ? (
-                  <div className="max-w-sm">{description}</div>
-                ) : (
-                  description
-                )
-              }
+              content={typeof description === 'string' ? <div className="max-w-sm">{description}</div> : description}
             >
               <Icon className="ml-1 text-slate-600" icon="help" />
             </Tooltip2>

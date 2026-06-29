@@ -34,9 +34,5 @@ export function FloatingMapContext({ children }: { children: ReactNode }) {
     [level, activeTiles],
   )
 
-  return (
-    <FloatingMapContextObject.Provider value={value}>
-      {children}
-    </FloatingMapContextObject.Provider>
-  )
+  return <FloatingMapContextObject.Provider value={value}>{children}</FloatingMapContextObject.Provider>
 }

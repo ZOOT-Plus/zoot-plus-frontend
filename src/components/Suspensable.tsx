@@ -51,11 +51,7 @@ export const Suspensable: FCC<SuspensableProps> = ({
           <NonIdealState
             icon="issue"
             title={t.components.Suspensable.loadFailed}
-            description={
-              fetcher
-                ? t.components.Suspensable.dataLoadFailedRetry
-                : error.message
-            }
+            description={fetcher ? t.components.Suspensable.dataLoadFailedRetry : error.message}
             className="py-8"
             action={
               fetcher && (
@@ -76,15 +72,7 @@ export const Suspensable: FCC<SuspensableProps> = ({
         )
       }}
     >
-      <Suspense
-        fallback={
-          <NonIdealState
-            icon={<Spinner />}
-            title={pendingTitle}
-            className="py-8"
-          />
-        }
-      >
+      <Suspense fallback={<NonIdealState icon={<Spinner />} title={pendingTitle} className="py-8" />}>
         {children}
       </Suspense>
     </ErrorBoundary>
@@ -103,10 +91,7 @@ export function withSuspensable<P extends {}>(
 ): ComponentType<P> {
   const Wrapped: ComponentType<P> = (props) => {
     return (
-      <Suspensable
-        {...suspensableProps}
-        retryDeps={retryOnChange?.map((key) => props[key])}
-      >
+      <Suspensable {...suspensableProps} retryDeps={retryOnChange?.map((key) => props[key])}>
         <Component {...props} />
       </Suspensable>
     )

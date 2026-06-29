@@ -56,10 +56,7 @@ export const EditorPerformerOperator = ({
 
   const findGroupByOperator = useCallback(
     (operator?: CopilotDocV1.Operator) =>
-      operator &&
-      groups.find((group) =>
-        group.opers?.find((op) => op._id === operator._id),
-      ),
+      operator && groups.find((group) => group.opers?.find((op) => op._id === operator._id)),
     [groups],
   )
 
@@ -83,9 +80,7 @@ export const EditorPerformerOperator = ({
   useEffect(() => {
     setValue(
       'skillTimes',
-      skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-        ? operator?.skillTimes ?? 1
-        : undefined,
+      skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes ? (operator?.skillTimes ?? 1) : undefined,
     )
   }, [skillUsage, setValue, operator])
 
@@ -110,48 +105,30 @@ export const EditorPerformerOperator = ({
 
         <EditorResetButton<CopilotDocV1.Operator>
           reset={reset}
-          entityName={
-            t.components.editor.operator.EditorPerformerOperator
-              .editing_operator
-          }
+          entityName={t.components.editor.operator.EditorPerformerOperator.editing_operator}
         />
       </div>
 
       <FormField2
-        label={
-          t.components.editor.operator.EditorPerformerOperator.operator_name
-        }
-        description={
-          t.components.editor.operator.EditorPerformerOperator
-            .operator_description
-        }
+        label={t.components.editor.operator.EditorPerformerOperator.operator_name}
+        description={t.components.editor.operator.EditorPerformerOperator.operator_description}
         field="name"
         error={errors.name}
         asterisk
         FormGroupProps={{
-          helperText:
-            t.components.editor.operator.EditorPerformerOperator.search_hint,
+          helperText: t.components.editor.operator.EditorPerformerOperator.search_hint,
         }}
       >
         <EditorOperatorName control={control} name="name" />
       </FormField2>
 
       <FormField2
-        label={
-          t.components.editor.operator.EditorPerformerOperator.group_membership
-        }
-        description={
-          t.components.editor.operator.EditorPerformerOperator
-            .group_membership_description
-        }
+        label={t.components.editor.operator.EditorPerformerOperator.group_membership}
+        description={t.components.editor.operator.EditorPerformerOperator.group_membership_description}
         field="groupName"
         error={errors.groupName}
       >
-        <EditorOperatorGroupSelect
-          groups={groups}
-          control={control}
-          name="groupName"
-        />
+        <EditorOperatorGroupSelect groups={groups} control={control} name="groupName" />
       </FormField2>
 
       <div className="flex flex-col lg:flex-row gap-2 flex-wrap">
@@ -164,9 +141,7 @@ export const EditorPerformerOperator = ({
         </FormField2>
 
         <FormField2
-          label={
-            t.components.editor.operator.EditorPerformerOperator.skill_usage
-          }
+          label={t.components.editor.operator.EditorPerformerOperator.skill_usage}
           field="skillUsage"
           error={errors.skillUsage}
         >
@@ -175,10 +150,7 @@ export const EditorPerformerOperator = ({
 
         {skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes && (
           <FormField2
-            label={
-              t.components.editor.operator.EditorPerformerOperator
-                .skill_usage_count
-            }
+            label={t.components.editor.operator.EditorPerformerOperator.skill_usage_count}
             field="skillTimes"
             error={errors.skillTimes}
           >

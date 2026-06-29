@@ -38,12 +38,9 @@ function transformOperatorName(name: string) {
 
   return {
     name,
-    alias: uniq([
-      ...pinyinify(cleanedName),
-      traditional,
-      cleanedTraditional,
-      ...pinyinify(cleanedTraditional),
-    ]).join(' '),
+    alias: uniq([...pinyinify(cleanedName), traditional, cleanedTraditional, ...pinyinify(cleanedTraditional)]).join(
+      ' ',
+    ),
   }
 }
 
@@ -109,55 +106,43 @@ async function json(url: string) {
 }
 
 export async function getOperators() {
-  const [charTableCN, uniequipTableCN, charTableEN, uniequipTableEN] =
-    await Promise.all([
-      json(CHARACTER_TABLE_JSON_URL_CN),
-      json(UNIEQUIP_TABLE_JSON_URL_CN),
-      json(CHARACTER_TABLE_JSON_URL_EN),
-      json(UNIEQUIP_TABLE_JSON_URL_EN),
-    ])
+  const [charTableCN, uniequipTableCN, charTableEN, uniequipTableEN] = await Promise.all([
+    json(CHARACTER_TABLE_JSON_URL_CN),
+    json(UNIEQUIP_TABLE_JSON_URL_CN),
+    json(CHARACTER_TABLE_JSON_URL_EN),
+    json(UNIEQUIP_TABLE_JSON_URL_EN),
+  ])
 
-  const {
-    subProfDict: subProfDictCN,
-    subProfToProfDict,
-    equipDict,
-  } = uniequipTableCN
+  const { subProfDict: subProfDictCN, subProfToProfDict, equipDict } = uniequipTableCN
   const { subProfDict: subProfDictEN } = uniequipTableEN
-  const equipsByOperatorId = Object.values(equipDict).reduce(
-    (acc: Record<string, any[]>, equip: any) => {
-      acc[equip.charId] ||= []
-      acc[equip.charId].push(equip)
-      return acc
-    },
-    {},
-  )
+  const equipsByOperatorId = Object.values(equipDict).reduce((acc: Record<string, any[]>, equip: any) => {
+    acc[equip.charId] ||= []
+    acc[equip.charId].push(equip)
+    return acc
+  }, {})
 
-  const professions: Professions = Object.entries(PROFESSIONS).map(
-    ([id, { name, name_en, code }]) => {
-      const subProfessions = (
-        Object.values(subProfDictCN) as {
-          subProfessionId: string
-          subProfessionName: string
-          subProfessionCatagory: number
-        }[]
-      )
-        .filter((x) => subProfToProfDict[x.subProfessionId] === code)
-        .sort((a, b) => a.subProfessionCatagory - b.subProfessionCatagory)
-        .map(({ subProfessionId, subProfessionName }) => ({
-          id: subProfessionId,
-          name: subProfessionName,
-          name_en:
-            subProfDictEN[subProfessionId]?.subProfessionName ||
-            capitalize(subProfessionId),
-        }))
-      return {
-        id,
-        name,
-        name_en,
-        sub: subProfessions,
-      }
-    },
-  )
+  const professions: Professions = Object.entries(PROFESSIONS).map(([id, { name, name_en, code }]) => {
+    const subProfessions = (
+      Object.values(subProfDictCN) as {
+        subProfessionId: string
+        subProfessionName: string
+        subProfessionCatagory: number
+      }[]
+    )
+      .filter((x) => subProfToProfDict[x.subProfessionId] === code)
+      .sort((a, b) => a.subProfessionCatagory - b.subProfessionCatagory)
+      .map(({ subProfessionId, subProfessionName }) => ({
+        id: subProfessionId,
+        name: subProfessionName,
+        name_en: subProfDictEN[subProfessionId]?.subProfessionName || capitalize(subProfessionId),
+      }))
+    return {
+      id,
+      name,
+      name_en,
+      sub: subProfessions,
+    }
+  })
 
   const opIds = Object.keys(charTableCN)
   const result = uniqBy(
@@ -181,10 +166,7 @@ export async function getOperators() {
           subProf: op.subProfessionId,
           name_en: enName,
           ...transformOperatorName(op.name),
-          rarity:
-            op.subProfessionId === 'notchar1'
-              ? 0
-              : Number(op.rarity?.split('TIER_').join('') || 0),
+          rarity: op.subProfessionId === 'notchar1' ? 0 : Number(op.rarity?.split('TIER_').join('') || 0),
           alt_name: op.appellation,
           modules: modules.length > 0 ? modules : undefined,
         },
@@ -197,9 +179,7 @@ export async function getOperators() {
     // https://github.com/ZOOT-Plus/zoot-plus-frontend/pull/265
     const pinyinA = String(pinyin(a.name))
     const pinyinB = String(pinyin(b.name))
-    return (
-      pinyinA.localeCompare(pinyinB, 'zh') || a.id.localeCompare(b.id, 'en')
-    )
+    return pinyinA.localeCompare(pinyinB, 'zh') || a.id.localeCompare(b.id, 'en')
   })
   return {
     professions,

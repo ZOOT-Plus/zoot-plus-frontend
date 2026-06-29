@@ -10,28 +10,21 @@ import { ratingLevelToString } from 'models/rating'
 
 import { useTranslation } from '../../i18n/i18n'
 
-type PickedOperation = Pick<
-  Operation,
-  'notEnoughRating' | 'ratingRatio' | 'ratingLevel' | 'like' | 'dislike'
->
+type PickedOperation = Pick<Operation, 'notEnoughRating' | 'ratingRatio' | 'ratingLevel' | 'like' | 'dislike'>
 
 const GetLevelDescription: FC<{
   operation: PickedOperation
   layout?: 'horizontal' | 'vertical'
 }> = ({ operation, layout }) => {
   const t = useTranslation()
-  const likePercent = Math.round(
-    (operation.like / (operation.like + operation.dislike)) * 100,
-  )
+  const likePercent = Math.round((operation.like / (operation.like + operation.dislike)) * 100)
   const likeRatio = `${operation.like}/${operation.like + operation.dislike}`
 
   return operation.notEnoughRating ? (
     layout === 'vertical' ? (
       <span>{t.components.viewer.OperationRating.not_enough_ratings_long}</span>
     ) : (
-      <span>
-        {t.components.viewer.OperationRating.not_enough_ratings_short}
-      </span>
+      <span>{t.components.viewer.OperationRating.not_enough_ratings_short}</span>
     )
   ) : (
     <Tooltip2
@@ -67,27 +60,21 @@ export const OperationRating: FC<{
           initialRating={operation.ratingRatio * 5}
           fullSymbol={
             <Icon
-              size={
-                layout === 'horizontal' ? IconSize.STANDARD : IconSize.LARGE
-              }
+              size={layout === 'horizontal' ? IconSize.STANDARD : IconSize.LARGE}
               icon="star"
               className="text-yellow-500"
             />
           }
           placeholderSymbol={
             <Icon
-              size={
-                layout === 'horizontal' ? IconSize.STANDARD : IconSize.LARGE
-              }
+              size={layout === 'horizontal' ? IconSize.STANDARD : IconSize.LARGE}
               icon="star"
               className="text-yellow-500"
             />
           }
           emptySymbol={
             <Icon
-              size={
-                layout === 'horizontal' ? IconSize.STANDARD : IconSize.LARGE
-              }
+              size={layout === 'horizontal' ? IconSize.STANDARD : IconSize.LARGE}
               icon="star-empty"
               className="text-zinc-600 dark:text-slate-100"
             />

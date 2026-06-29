@@ -5,9 +5,7 @@ import { ChangeEventHandler, FC, useRef } from 'react'
 import { useTranslation } from '../../../i18n/i18n'
 import { AppToaster } from '../../Toaster'
 
-export const FileImporter: FC<{ onImport: (content: string) => void }> = ({
-  onImport,
-}) => {
+export const FileImporter: FC<{ onImport: (content: string) => void }> = ({ onImport }) => {
   const t = useTranslation()
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -38,13 +36,7 @@ export const FileImporter: FC<{ onImport: (content: string) => void }> = ({
         text={
           <>
             {t.components.editor.source.FileImporter.import_local_file}
-            <input
-              className="hidden"
-              type="file"
-              accept="application/json"
-              ref={inputRef}
-              onChange={handleUpload}
-            />
+            <input className="hidden" type="file" accept="application/json" ref={inputRef} onChange={handleUpload} />
           </>
         }
       />

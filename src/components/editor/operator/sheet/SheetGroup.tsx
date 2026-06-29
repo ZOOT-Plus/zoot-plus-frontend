@@ -9,10 +9,7 @@ import { favGroupAtom } from 'store/useFavGroups'
 
 import { useTranslation } from '../../../../i18n/i18n'
 import { Group, Operator } from '../EditorSheet'
-import {
-  SheetContainerSkeleton,
-  SheetContainerSkeletonProps,
-} from './SheetContainerSkeleton'
+import { SheetContainerSkeleton, SheetContainerSkeletonProps } from './SheetContainerSkeleton'
 import { GroupNoData } from './SheetNoneData'
 import { useSheet } from './SheetProvider'
 import { SheetGroupItem, SheetGroupItemProp } from './sheetGroup/SheetGroupItem'
@@ -50,9 +47,7 @@ const EditorGroupName: FC = () => {
       <InputGroup
         type="text"
         value={groupName}
-        placeholder={
-          t.components.editor.operator.sheet.SheetGroup.enter_group_name
-        }
+        placeholder={t.components.editor.operator.sheet.SheetGroup.enter_group_name}
         onChange={(e) => setGroupName(e.target.value)}
         fill
       />
@@ -83,16 +78,10 @@ const SheetGroup: FC<SheetGroupProps> = () => {
       Object.entries(
         existedOperators.reduce(
           (acc, { name, ...rest }) => {
-            const { prof = '', subProf = '' } =
-              OPERATORS.find(({ name: OPERName }) => OPERName === name) || {}
+            const { prof = '', subProf = '' } = OPERATORS.find(({ name: OPERName }) => OPERName === name) || {}
             const profInfo = PROFESSIONS.find(({ id }) => id === prof)
-            const subProfName = profInfo?.sub?.find(
-              ({ id }) => id === subProf,
-            )?.name
-            const key =
-              (profInfo?.name || '其它') +
-              (profInfo?.name ? '-' : '') +
-              (subProfName || '')
+            const subProfName = profInfo?.sub?.find(({ id }) => id === subProf)?.name
+            const key = (profInfo?.name || '其它') + (profInfo?.name ? '-' : '') + (subProfName || '')
             if (!acc[key]) acc[key] = []
             acc[key].push({ name, ...rest })
             return acc
@@ -114,9 +103,7 @@ const SheetGroup: FC<SheetGroupProps> = () => {
         <div className="flex-1 sticky top-0 h-screen flex flex-col">
           <div className="grow overflow-y-auto">
             <SheetContainerSkeleton
-              title={
-                t.components.editor.operator.sheet.SheetGroup.add_operator_group
-              }
+              title={t.components.editor.operator.sheet.SheetGroup.add_operator_group}
               icon="add"
               mini
               className="sticky top-0 z-10 backdrop-blur-lg py-1"
@@ -124,9 +111,7 @@ const SheetGroup: FC<SheetGroupProps> = () => {
               <EditorGroupName />
             </SheetContainerSkeleton>
             <SheetGroupItemsWithSkeleton
-              title={
-                t.components.editor.operator.sheet.SheetGroup.configured_groups
-              }
+              title={t.components.editor.operator.sheet.SheetGroup.configured_groups}
               icon="cog"
               mini
               groups={existedGroups}
@@ -144,18 +129,14 @@ const SheetGroup: FC<SheetGroupProps> = () => {
         <Divider />
         <div className="flex-1">
           <SheetGroupItemsWithSkeleton
-            title={
-              t.components.editor.operator.sheet.SheetGroup.recommended_groups
-            }
+            title={t.components.editor.operator.sheet.SheetGroup.recommended_groups}
             icon="thumbs-up"
             mini
             groups={defaultGroup}
             itemType="recommend"
           />
           <SheetGroupItemsWithSkeleton
-            title={
-              t.components.editor.operator.sheet.SheetGroup.favorite_groups
-            }
+            title={t.components.editor.operator.sheet.SheetGroup.favorite_groups}
             icon="star"
             mini
             groups={favGroups}
@@ -170,10 +151,7 @@ const SheetGroup: FC<SheetGroupProps> = () => {
 export const SheetGroupContainer: FC<SheetGroupProps> = () => {
   const t = useTranslation()
   return (
-    <SheetContainerSkeleton
-      title={t.components.editor.operator.sheet.SheetGroup.set_operator_groups}
-      icon="people"
-    >
+    <SheetContainerSkeleton title={t.components.editor.operator.sheet.SheetGroup.set_operator_groups} icon="people">
       <SheetGroup />
     </SheetContainerSkeleton>
   )
@@ -188,13 +166,7 @@ const SheetGroupItemsWithSkeleton: FC<
   <SheetContainerSkeleton {...sheetContainerSkeletonProps}>
     <div>
       {groups.length ? (
-        groups.map((item) => (
-          <SheetGroupItem
-            key={item.name}
-            groupInfo={item}
-            itemType={itemType}
-          />
-        ))
+        groups.map((item) => <SheetGroupItem key={item.name} groupInfo={item} itemType={itemType} />)
       ) : (
         <GroupNoData />
       )}

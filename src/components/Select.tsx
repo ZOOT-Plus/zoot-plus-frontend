@@ -1,11 +1,6 @@
 import { Button, ButtonProps, Classes, Label } from '@blueprintjs/core'
 import { Classes as Popover2Classes } from '@blueprintjs/popover2'
-import {
-  QueryList,
-  Select2,
-  Select2Props,
-  isCreateNewItem,
-} from '@blueprintjs/select'
+import { QueryList, Select2, Select2Props, isCreateNewItem } from '@blueprintjs/select'
 
 import clsx from 'clsx'
 
@@ -64,15 +59,10 @@ export const Select = <T,>({
 // TODO: 升级到 BP 5 后删除
 function patchHandleItemSelect(instance: Select2<any> | null) {
   if (!instance || instance['handleItemSelect']._patched) return
-  instance['handleItemSelect'] = (
-    item: unknown,
-    event?: React.SyntheticEvent<HTMLElement>,
-  ) => {
+  instance['handleItemSelect'] = (item: unknown, event?: React.SyntheticEvent<HTMLElement>) => {
     const target = event?.target as HTMLElement
     const shouldDismiss =
-      target
-        ?.closest(`.${Classes.MENU_ITEM}`)
-        ?.classList?.contains(Popover2Classes.POPOVER2_DISMISS) ?? true
+      target?.closest(`.${Classes.MENU_ITEM}`)?.classList?.contains(Popover2Classes.POPOVER2_DISMISS) ?? true
 
     instance.setState({ isOpen: !shouldDismiss })
     instance.props.onItemSelect?.(item, event)
@@ -83,9 +73,7 @@ function patchHandleItemSelect(instance: Select2<any> | null) {
 
 // 修复 BP 的远古 bug：https://github.com/palantir/blueprint/issues/3751
 
-const originalSetQuery =
-  (QueryList.prototype.setQuery as any)._original ??
-  QueryList.prototype.setQuery
+const originalSetQuery = (QueryList.prototype.setQuery as any)._original ?? QueryList.prototype.setQuery
 QueryList.prototype.setQuery = function (...args) {
   ;(this as any)._isCallingSetQuery = true
   originalSetQuery.apply(this, args)
@@ -94,14 +82,10 @@ QueryList.prototype.setQuery = function (...args) {
 ;(QueryList.prototype.setQuery as any)._original = originalSetQuery
 
 const originalGetActiveIndex =
-  (QueryList.prototype['getActiveIndex'] as any)._original ??
-  QueryList.prototype['getActiveIndex']
+  (QueryList.prototype['getActiveIndex'] as any)._original ?? QueryList.prototype['getActiveIndex']
 QueryList.prototype['getActiveIndex'] = function (items) {
   if ((this as any)._isCallingSetQuery) {
-    const activeItem =
-      this.props.activeItem === undefined
-        ? this.state.activeItem
-        : this.props.activeItem
+    const activeItem = this.props.activeItem === undefined ? this.state.activeItem : this.props.activeItem
 
     if (isCreateNewItem(activeItem)) {
       // bug 1：如果 activeItem 是 createNewItem，QueryList 会直接将 activeItem 刷新为第一个 item，
@@ -125,5 +109,4 @@ QueryList.prototype['getActiveIndex'] = function (items) {
   }
   return originalGetActiveIndex.call(this, items)
 }
-;(QueryList.prototype['getActiveIndex'] as any)._original =
-  originalGetActiveIndex
+;(QueryList.prototype['getActiveIndex'] as any)._original = originalGetActiveIndex

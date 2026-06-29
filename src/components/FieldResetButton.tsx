@@ -7,11 +7,7 @@ interface FieldResetButtonProps extends ButtonProps {
   onReset: () => void
 }
 
-export const FieldResetButton = ({
-  disabled,
-  onReset,
-  ...buttonProps
-}: FieldResetButtonProps) => {
+export const FieldResetButton = ({ disabled, onReset, ...buttonProps }: FieldResetButtonProps) => {
   return (
     <Button
       small

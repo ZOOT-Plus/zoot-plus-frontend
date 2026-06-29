@@ -15,11 +15,7 @@ export const GlobalErrorBoundary: FCC = ({ children }) => {
           title={i18n.essentials.error_occurred}
           description={i18n.essentials.render_error}
           action={
-            <Button
-              intent="primary"
-              icon="refresh"
-              onClick={() => window.location.reload()}
-            >
+            <Button intent="primary" icon="refresh" onClick={() => window.location.reload()}>
               {i18n.essentials.refresh_page}
             </Button>
           }
@@ -31,9 +27,7 @@ export const GlobalErrorBoundary: FCC = ({ children }) => {
   )
 }
 
-export function withGlobalErrorBoundary<P extends {}>(
-  Component: ComponentType<P>,
-): ComponentType<P> {
+export function withGlobalErrorBoundary<P extends {}>(Component: ComponentType<P>): ComponentType<P> {
   const Wrapped: ComponentType<P> = (props) => {
     return (
       <GlobalErrorBoundary>

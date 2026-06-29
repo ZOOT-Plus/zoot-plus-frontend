@@ -1,27 +1,17 @@
 import ajvLocalizeZh from 'ajv-i18n/localize/zh'
-import {
-  DeepPartial,
-  ErrorOption,
-  FieldPath,
-  UseFormSetError,
-} from 'react-hook-form'
+import { DeepPartial, ErrorOption, FieldPath, UseFormSetError } from 'react-hook-form'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
 import { i18n } from '../../i18n/i18n'
 import { copilotSchemaValidator } from '../../models/copilot.schema.validator'
-import {
-  findActionType,
-  validTypesFollowingBulletTime,
-} from '../../models/types'
+import { findActionType, validTypesFollowingBulletTime } from '../../models/types'
 
 export function validateOperation(
   operation: DeepPartial<CopilotDocV1.OperationSnakeCased>,
   setError: UseFormSetError<CopilotDocV1.Operation>,
 ): boolean {
-  const errors: Partial<
-    Record<FieldPath<CopilotDocV1.Operation> | 'global', ErrorOption>
-  > = {}
+  const errors: Partial<Record<FieldPath<CopilotDocV1.Operation> | 'global', ErrorOption>> = {}
   const globalErrors: string[] = []
 
   const { actions, groups } = operation
@@ -68,16 +58,8 @@ export function validateOperation(
     },
   }
 
-  const jsonSchemaValidation = copilotSchemaValidator.validate(
-    'copilot',
-    operation,
-  )
-  console.log(
-    'jsonSchemaValidationResult',
-    jsonSchemaValidation,
-    'errors',
-    copilotSchemaValidator.errors,
-  )
+  const jsonSchemaValidation = copilotSchemaValidator.validate('copilot', operation)
+  console.log('jsonSchemaValidationResult', jsonSchemaValidation, 'errors', copilotSchemaValidator.errors)
 
   if (!jsonSchemaValidation && copilotSchemaValidator.errors) {
     if (i18n.essentials.language === '简体中文') {
@@ -96,9 +78,7 @@ export function validateOperation(
   }
 
   if (Object.keys(errors).length > 0) {
-    Object.entries(errors).forEach(
-      ([key, value]) => value && setError(key as any, value),
-    )
+    Object.entries(errors).forEach(([key, value]) => value && setError(key as any, value))
     return false
   }
 

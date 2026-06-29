@@ -20,11 +20,7 @@ export function ratingLevelToString(level: number): string {
 
   const ratio = level / (maxRatingLevel - minRatingLevel)
 
-  const index = clamp(
-    Math.floor(ratio * ratingLevelKeys.length),
-    0,
-    ratingLevelKeys.length - 1,
-  )
+  const index = clamp(Math.floor(ratio * ratingLevelKeys.length), 0, ratingLevelKeys.length - 1)
 
   return ratingLevelKeys[index]
 }

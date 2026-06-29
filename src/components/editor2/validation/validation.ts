@@ -11,12 +11,7 @@ export type EntityIssue = ZodIssue & {
 }
 
 export function useEntityErrors(id: string): EntityIssue[] | undefined {
-  return useAtomValue(
-    useMemo(
-      () => atom((get) => get(editorAtoms.visibleEntityErrors)?.[id]),
-      [id],
-    ),
-  )
+  return useAtomValue(useMemo(() => atom((get) => get(editorAtoms.visibleEntityErrors)?.[id]), [id]))
 }
 
 export const editorValidationAtom = atom(null, (get, set) => {
@@ -49,13 +44,9 @@ export const editorValidationAtom = atom(null, (get, set) => {
   }
 
   set(editorAtoms.entityErrors, (prev) =>
-    Object.keys(entityIssues).length === 0 && Object.keys(prev).length === 0
-      ? prev
-      : entityIssues,
+    Object.keys(entityIssues).length === 0 && Object.keys(prev).length === 0 ? prev : entityIssues,
   )
-  set(editorAtoms.globalErrors, (prev) =>
-    prev.length === 0 && globalIssues.length === 0 ? prev : globalIssues,
-  )
+  set(editorAtoms.globalErrors, (prev) => (prev.length === 0 && globalIssues.length === 0 ? prev : globalIssues))
 
   return result
 })

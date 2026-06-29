@@ -59,18 +59,15 @@ export const LevelSelect: FC<LevelSelectProps> = ({
     [levels],
   )
 
-  const { query, debouncedQuery, updateQuery, onOptionMouseDown } =
-    useDebouncedQuery({
-      onDebouncedQueryChange: (value) => {
-        if (value !== debouncedQuery) {
-          // 清空 activeItem，之后会自动设置为第一项
-          setActiveItem(null)
-        }
-      },
-    })
-  const [activeItem, setActiveItem] = useState<Level | 'createNewItem' | null>(
-    null,
-  )
+  const { query, debouncedQuery, updateQuery, onOptionMouseDown } = useDebouncedQuery({
+    onDebouncedQueryChange: (value) => {
+      if (value !== debouncedQuery) {
+        // 清空 activeItem，之后会自动设置为第一项
+        setActiveItem(null)
+      }
+    },
+  })
+  const [activeItem, setActiveItem] = useState<Level | 'createNewItem' | null>(null)
 
   const selectedLevel = useMemo(() => {
     const level = levels.find((el) => el.stageId === value)
@@ -85,12 +82,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
   }, [levels, value])
 
   const prtsMapUrl = selectedLevel
-    ? getPrtsMapUrl(
-        getStageIdWithDifficulty(
-          selectedLevel.stageId,
-          difficulty ?? OpDifficulty.UNKNOWN,
-        ),
-      )
+    ? getPrtsMapUrl(getStageIdWithDifficulty(selectedLevel.stageId, difficulty ?? OpDifficulty.UNKNOWN))
     : undefined
 
   const filteredLevels = useMemo(() => {
@@ -101,33 +93,19 @@ export const LevelSelect: FC<LevelSelectProps> = ({
 
       if (selectedLevel.catOne === '剿灭作战') {
         headerName = selectedLevel.catOne
-        similarLevels = levels.filter(
-          (el) => el.catOne === selectedLevel.catOne,
-        )
-      } else if (
-        selectedLevel.stageId.includes('rune') ||
-        selectedLevel.stageId.includes('crisis')
-      ) {
+        similarLevels = levels.filter((el) => el.catOne === selectedLevel.catOne)
+      } else if (selectedLevel.stageId.includes('rune') || selectedLevel.stageId.includes('crisis')) {
         // 危机合约分类非常混乱，直接全塞到一起
         headerName = '危机合约'
-        similarLevels = levels.filter(
-          (el) => el.stageId.includes('rune') || el.stageId.includes('crisis'),
-        )
+        similarLevels = levels.filter((el) => el.stageId.includes('rune') || el.stageId.includes('crisis'))
       } else if (selectedLevel.catTwo) {
         headerName = selectedLevel.catTwo
-        similarLevels = levels.filter(
-          (el) => el.catTwo === selectedLevel.catTwo,
-        )
+        similarLevels = levels.filter((el) => el.catTwo === selectedLevel.catTwo)
       } else {
         // catTwo 为空的时候用 levelId 来分类
         headerName = i18n.components.editor2.LevelSelect.related_levels
-        const levelIdPrefix = selectedLevel.levelId
-          .split('/')
-          .slice(0, -1)
-          .join('/')
-        similarLevels = levelIdPrefix
-          ? levels.filter((el) => el.levelId.startsWith(levelIdPrefix))
-          : []
+        const levelIdPrefix = selectedLevel.levelId.split('/').slice(0, -1).join('/')
+        similarLevels = levelIdPrefix ? levels.filter((el) => el.levelId.startsWith(levelIdPrefix)) : []
       }
 
       if (similarLevels.length > 1) {
@@ -137,9 +115,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       }
     }
 
-    return debouncedQuery.trim()
-      ? fuse.search(debouncedQuery).map((el) => el.item)
-      : levels
+    return debouncedQuery.trim() ? fuse.search(debouncedQuery).map((el) => el.item) : levels
   }, [debouncedQuery, selectedLevel, levels, fuse])
 
   useEffect(() => {
@@ -157,9 +133,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
       <Suggest<Level>
         items={levels}
         itemListPredicate={() => filteredLevels}
-        activeItem={
-          activeItem === 'createNewItem' ? getCreateNewItem() : activeItem
-        }
+        activeItem={activeItem === 'createNewItem' ? getCreateNewItem() : activeItem}
         onActiveItemChange={(item, isCreateNewItem) => {
           setActiveItem(isCreateNewItem ? 'createNewItem' : item)
         }}
@@ -168,11 +142,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         onQueryChange={(query) => updateQuery(query, false)}
         onReset={() => onChange('')}
         disabled={isLoading}
-        className={clsx(
-          'items-stretch',
-          isLoading && 'bp4-skeleton',
-          className,
-        )}
+        className={clsx('items-stretch', isLoading && 'bp4-skeleton', className)}
         itemsEqual={(a, b) => a.stageId === b.stageId}
         itemDisabled={(item) => item.stageId === 'header'} // 避免 header 被选中为 active
         itemRenderer={(item, { handleClick, handleFocus, modifiers }) =>
@@ -231,10 +201,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           },
         }}
       />
-      <Tooltip2
-        placement="top"
-        content={t.components.editor2.LevelSelect.view_external}
-      >
+      <Tooltip2 placement="top" content={t.components.editor2.LevelSelect.view_external}>
         <AnchorButton
           minimal
           large

@@ -10,15 +10,8 @@ import {
   UserFollowApi,
   querystring,
 } from 'maa-copilot-client'
-import { SetRequired } from 'type-fest'
 
-import {
-  ApiError,
-  InvalidTokenError,
-  NetworkError,
-  TokenExpiredError,
-  UnauthorizedError,
-} from 'utils/error'
+import { ApiError, InvalidTokenError, NetworkError, TokenExpiredError, UnauthorizedError } from 'utils/error'
 import { getDefaultStore } from 'jotai'
 import { TokenManager } from 'utils/token-manager'
 
@@ -58,10 +51,11 @@ if (!import.meta.env.VITE_API) {
 
 const API_URL = import.meta.env.VITE_API
 
-// 把函数返回值里的 data 字段标记为 required
+// 把函数返回值里的 data 字段标记为 required 且非空
+// （requireData: true 时运行时已校验 data 存在，见下方 JSONApiResponse.value 拦截）
 type RequireData<T> = T extends (...params: infer P) => Promise<infer R>
   ? R extends { data?: any }
-    ? (...params: P) => Promise<SetRequired<R, 'data'>>
+    ? (...params: P) => Promise<Omit<R, 'data'> & { data: NonNullable<R['data']> }>
     : T
   : T
 
@@ -78,44 +72,32 @@ type WithOptions<T> = {
 // 就把类型切换为 ApiOptions，这样 TS 就会正常报错并提示多余的属性
 type ValidateOptions<T> = keyof T extends keyof ApiOptions ? T : ApiOptions
 
-export class UserApi<
-  T extends ApiOptions,
-> extends (CopilotUserApi as WithOptions<CopilotUserApi>)<T> {
+export class UserApi<T extends ApiOptions> extends (CopilotUserApi as WithOptions<CopilotUserApi>)<T> {
   constructor(options?: ValidateOptions<T>) {
     super(createConfiguration(options as T))
   }
 }
-export class CommentApi<
-  T extends ApiOptions,
-> extends (CommentAreaApi as WithOptions<CommentAreaApi>)<T> {
+export class CommentApi<T extends ApiOptions> extends (CommentAreaApi as WithOptions<CommentAreaApi>)<T> {
   constructor(options?: ValidateOptions<T>) {
     super(createConfiguration(options as T))
   }
 }
-export class OperationApi<
-  T extends ApiOptions,
-> extends (CopilotControllerApi as WithOptions<CopilotControllerApi>)<T> {
+export class OperationApi<T extends ApiOptions> extends (CopilotControllerApi as WithOptions<CopilotControllerApi>)<T> {
   constructor(options?: ValidateOptions<T>) {
     super(createConfiguration(options as T))
   }
 }
-export class OperationSetApi<
-  T extends ApiOptions,
-> extends (CopilotSetApi as WithOptions<CopilotSetApi>)<T> {
+export class OperationSetApi<T extends ApiOptions> extends (CopilotSetApi as WithOptions<CopilotSetApi>)<T> {
   constructor(options?: ValidateOptions<T>) {
     super(createConfiguration(options as T))
   }
 }
-export class LevelApi<
-  T extends ApiOptions,
-> extends (ArkLevelControllerApi as WithOptions<ArkLevelControllerApi>)<T> {
+export class LevelApi<T extends ApiOptions> extends (ArkLevelControllerApi as WithOptions<ArkLevelControllerApi>)<T> {
   constructor(options?: ValidateOptions<T>) {
     super(createConfiguration(options as T))
   }
 }
-export class FollowApi<
-  T extends ApiOptions,
-> extends (UserFollowApi as WithOptions<UserFollowApi>)<T> {
+export class FollowApi<T extends ApiOptions> extends (UserFollowApi as WithOptions<UserFollowApi>)<T> {
   constructor(options?: ValidateOptions<T>) {
     super(createConfiguration(options as T))
   }
@@ -156,10 +138,7 @@ function createConfiguration(options?: ApiOptions) {
         },
         async post({ init, response }) {
           if (response.status === 401) {
-            if (
-              init.headers instanceof Headers &&
-              init.headers.get('Authorization')
-            ) {
+            if (init.headers instanceof Headers && init.headers.get('Authorization')) {
               throw new InvalidTokenError()
             }
             throw new UnauthorizedError()
@@ -242,23 +221,16 @@ JSONApiResponse.prototype.value = async function value() {
     }
   }
 
-  if (
-    validateStatusCode === 'always' ||
-    (validateStatusCode === 'if-object' && isObject(result))
-  ) {
+  if (validateStatusCode === 'always' || (validateStatusCode === 'if-object' && isObject(result))) {
     if (result.statusCode !== 200) {
       console.error('response.statusCode is not 200', result)
-      throw new ApiError(
-        result.message || i18n.utils.maa_copilot_client.server_error,
-      )
+      throw new ApiError(result.message || i18n.utils.maa_copilot_client.server_error)
     }
   }
 
   if (requireData && (result.data === undefined || result.data === null)) {
     console.error('response.data is missing', result)
-    throw new ApiError(
-      result.message || i18n.utils.maa_copilot_client.invalid_response,
-    )
+    throw new ApiError(result.message || i18n.utils.maa_copilot_client.invalid_response)
   }
 
   return result

@@ -21,18 +21,23 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v6
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Update static
         run: |
-          yarn scripts:update
+          pnpm scripts:update
 
       - name: Create Pull Request
         id: cpr

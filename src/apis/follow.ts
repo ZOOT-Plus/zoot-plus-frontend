@@ -1,8 +1,4 @@
-﻿import {
-  MaaUserInfo,
-  MaaUserInfoRelationEnum,
-  PagedDTOMaaUserInfo,
-} from 'maa-copilot-client'
+﻿import { MaaUserInfo, MaaUserInfoRelationEnum, PagedDTOMaaUserInfo } from 'maa-copilot-client'
 import useSWRInfinite from 'swr/infinite'
 
 import { FollowApi } from '../utils/maa-copilot-client'
@@ -36,10 +32,7 @@ export async function unfollow(followUserId: number): Promise<void> {
  * @param page - 页码，从 1 开始
  * @param size - 每页数量
  */
-export async function getFollowingList(
-  page: number = 1,
-  size: number = 20,
-): Promise<PagedDTOMaaUserInfo> {
+export async function getFollowingList(page: number = 1, size: number = 20): Promise<PagedDTOMaaUserInfo> {
   const res = await new FollowApi({
     sendToken: 'always',
     requireData: true,
@@ -53,10 +46,7 @@ export async function getFollowingList(
  * @param page - 页码，从 1 开始
  * @param size - 每页数量
  */
-export async function getFansList(
-  page: number = 1,
-  size: number = 20,
-): Promise<PagedDTOMaaUserInfo> {
+export async function getFansList(page: number = 1, size: number = 20): Promise<PagedDTOMaaUserInfo> {
   const res = await new FollowApi({
     sendToken: 'always',
     requireData: true,
@@ -128,13 +118,8 @@ export function useFollowList({
 /**
  * 判断当前用户是否已关注目标用户
  */
-export function isFollowing(
-  relation?: MaaUserInfoRelationEnum | null,
-): boolean {
-  return (
-    relation === MaaUserInfoRelationEnum.Following ||
-    relation === MaaUserInfoRelationEnum.Mutual
-  )
+export function isFollowing(relation?: MaaUserInfoRelationEnum | null): boolean {
+  return relation === MaaUserInfoRelationEnum.Following || relation === MaaUserInfoRelationEnum.Mutual
 }
 
 export function resolveFollowButtonText(
@@ -171,9 +156,7 @@ export function patchFollowListUserRelation(
     cache: { keys: () => IterableIterator<string> }
     mutate: (
       key: string,
-      data?: (
-        page?: PagedDTOMaaUserInfo,
-      ) => PagedDTOMaaUserInfo | undefined,
+      data?: (page?: PagedDTOMaaUserInfo) => PagedDTOMaaUserInfo | undefined,
       options?: { revalidate?: boolean },
     ) => unknown
   },
@@ -190,11 +173,7 @@ export function patchFollowListUserRelation(
 
         return {
           ...page,
-          data: page.data.map((user) =>
-            String(user.id) === userId
-              ? { ...user, relation: newRelation }
-              : user,
-          ),
+          data: page.data.map((user) => (String(user.id) === userId ? { ...user, relation: newRelation } : user)),
         }
       },
       { revalidate: false },

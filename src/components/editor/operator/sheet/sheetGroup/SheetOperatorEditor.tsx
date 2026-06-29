@@ -1,45 +1,23 @@
-import {
-  Button,
-  Card,
-  Classes,
-  Collapse,
-  H6,
-  Icon,
-  Intent,
-  Position,
-} from '@blueprintjs/core'
+import { Button, Card, Classes, Collapse, H6, Icon, Intent, Position } from '@blueprintjs/core'
 import { Popover2 } from '@blueprintjs/popover2'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import {
-  DetailedHTMLProps,
-  Dispatch,
-  FC,
-  ReactNode,
-  SetStateAction,
-  useMemo,
-  useState,
-} from 'react'
+import { DetailedHTMLProps, Dispatch, FC, ReactNode, SetStateAction, useMemo, useState } from 'react'
 
 import { getLocalizedOperatorName } from 'models/operator'
 
 import { languageAtom, useTranslation } from '../../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../../OperatorAvatar'
 import { Group } from '../../EditorSheet'
-import {
-  SheetContainerSkeleton,
-  SheetContainerSkeletonProps,
-} from '../SheetContainerSkeleton'
+import { SheetContainerSkeleton, SheetContainerSkeletonProps } from '../SheetContainerSkeleton'
 import { OperatorNoData } from '../SheetNoneData'
 import { useSheet } from '../SheetProvider'
 import { CollapseButton } from './CollapseButton'
 
 export interface SheetOperatorEditorProp extends SheetOperatorEditorFormProp {}
 
-export const SheetOperatorEditor: FC<SheetOperatorEditorProp> = ({
-  ...SheetOperatorEditorFormProps
-}) => {
+export const SheetOperatorEditor: FC<SheetOperatorEditorProp> = ({ ...SheetOperatorEditorFormProps }) => {
   const t = useTranslation()
 
   return (
@@ -51,10 +29,7 @@ export const SheetOperatorEditor: FC<SheetOperatorEditorProp> = ({
       <Card
         className="flex items-center justify-center"
         interactive
-        title={
-          t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor
-            .edit_operator_info
-        }
+        title={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.edit_operator_info}
       >
         <Icon icon="plus" size={30} />
       </Card>
@@ -72,38 +47,21 @@ interface SheetOperatorEditorFormProp {
   opers?: Group['opers']
 }
 
-const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
-  name,
-  opers = [],
-}) => {
+const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({ name, opers = [] }) => {
   const t = useTranslation()
-  const {
-    existedOperators,
-    existedGroups,
-    removeOperator,
-    submitGroupInSheet,
-  } = useSheet()
-  const [selectedOperators, setSelectedOperators] = useState<
-    OperatorInSheetOperatorEditor[]
-  >(
+  const { existedOperators, existedGroups, removeOperator, submitGroupInSheet } = useSheet()
+  const [selectedOperators, setSelectedOperators] = useState<OperatorInSheetOperatorEditor[]>(
     opers.map(({ name: operName }) => ({
       groupName: name,
       operName,
     })),
   )
   const otherGroups = useMemo(
-    () =>
-      existedGroups.filter(
-        ({ name: existedName, opers }) =>
-          existedName !== name && !!opers?.length,
-      ),
+    () => existedGroups.filter(({ name: existedName, opers }) => existedName !== name && !!opers?.length),
     [existedGroups, name],
   )
 
-  const onSubmit: DetailedHTMLProps<
-    React.FormHTMLAttributes<HTMLFormElement>,
-    HTMLFormElement
-  >['onSubmit'] = (e) => {
+  const onSubmit: DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>['onSubmit'] = (e) => {
     e.preventDefault()
     const needModifyGroups = selectedOperators.reduce(
       (acc, { groupName, operName }) => {
@@ -119,25 +77,17 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
       if (key === 'noneGrouped') {
         removeOperator(
           value.map((name) => {
-            const index = existedOperators.findIndex(
-              ({ name: existedName }) => existedName === name,
-            )
+            const index = existedOperators.findIndex(({ name: existedName }) => existedName === name)
             newOpers?.push(existedOperators[index])
             return index
           }),
         )
       } else {
-        const { opers: otherGroupOpers, ...groupRestField } =
-          existedGroups.find(
-            ({ name: existedGroups }) => existedGroups === key,
-          )!
+        const { opers: otherGroupOpers, ...groupRestField } = existedGroups.find(
+          ({ name: existedGroups }) => existedGroups === key,
+        )!
         newOpers = newOpers?.concat(
-          value.map(
-            (name) =>
-              otherGroupOpers?.find(
-                ({ name: existedName }) => existedName === name,
-              )!,
-          ),
+          value.map((name) => otherGroupOpers?.find(({ name: existedName }) => existedName === name)!),
         )
         if (key !== name)
           submitGroupInSheet({
@@ -164,32 +114,21 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
 
   return (
     <SheetContainerSkeleton
-      title={
-        t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor
-          .select_operator
-      }
+      title={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.select_operator}
       icon="select"
     >
       <form className="mt-3" onSubmit={onSubmit}>
         <div className="max-h-96 overflow-y-auto overflow-x-hidden">
           <OperatorSelectorSkeleton
             icon="person"
-            title={
-              t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor
-                .selected_operators
-            }
+            title={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.selected_operators}
             collapseDisabled={!opers.length}
           >
-            <OperatorSelectorItem
-              {...{ selectedOperators, setSelectedOperators, opers }}
-            />
+            <OperatorSelectorItem {...{ selectedOperators, setSelectedOperators, opers }} />
           </OperatorSelectorSkeleton>
           <OperatorSelectorSkeleton
             icon="person"
-            title={
-              t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor
-                .unselected_operators
-            }
+            title={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.unselected_operators}
             collapseDisabled={!existedOperators.length}
           >
             <OperatorSelectorItem
@@ -202,10 +141,7 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
           </OperatorSelectorSkeleton>
           <OperatorSelectorSkeleton
             icon="people"
-            title={
-              t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor
-                .operators_in_other_groups
-            }
+            title={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.operators_in_other_groups}
             collapseDisabled={!otherGroups?.length}
           >
             {otherGroups.map(({ name: otherGroupName, opers }) => (
@@ -215,22 +151,11 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
                   <Button
                     minimal
                     icon="arrow-top-left"
-                    title={
-                      t.components.editor.operator.sheet.sheetGroup
-                        .SheetOperatorEditor.select_all
-                    }
+                    title={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.select_all}
                     onClick={() =>
                       opers?.forEach(({ name }) => {
-                        if (
-                          selectedOperators.find(
-                            ({ operName }) => operName === name,
-                          )
-                        )
-                          return
-                        setSelectedOperators((prev) => [
-                          ...prev,
-                          { operName: name, groupName: otherGroupName },
-                        ])
+                        if (selectedOperators.find(({ operName }) => operName === name)) return
+                        setSelectedOperators((prev) => [...prev, { operName: name, groupName: otherGroupName }])
                       })
                     }
                   />
@@ -249,10 +174,7 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
         </div>
         <div className="flex p-0.5">
           <Button
-            text={
-              t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor
-                .confirm
-            }
+            text={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.confirm}
             className={Classes.POPOVER_DISMISS}
             type="submit"
           />
@@ -260,26 +182,15 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
             captureDismiss
             content={
               <div className="flex items-center">
-                <p>
-                  {
-                    t.components.editor.operator.sheet.sheetGroup
-                      .SheetOperatorEditor.unsaved_data_warning
-                  }
-                </p>
+                <p>{t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.unsaved_data_warning}</p>
                 <Button
                   type="reset"
-                  text={
-                    t.components.editor.operator.sheet.sheetGroup
-                      .SheetOperatorEditor.continue
-                  }
+                  text={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.continue}
                   onClick={onReset}
                   className={clsx(Classes.POPOVER_DISMISS, 'mx-1')}
                 />
                 <Button
-                  text={
-                    t.components.editor.operator.sheet.sheetGroup
-                      .SheetOperatorEditor.cancel
-                  }
+                  text={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.cancel}
                   className={Classes.POPOVER_DISMISS}
                 />
               </div>
@@ -289,10 +200,7 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
             <Button
               intent={Intent.DANGER}
               className="ml-1"
-              text={
-                t.components.editor.operator.sheet.sheetGroup
-                  .SheetOperatorEditor.reset
-              }
+              text={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.reset}
             />
           </Popover2>
         </div>
@@ -303,9 +211,7 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({
 
 const OperatorSelectorItem: FC<{
   selectedOperators: OperatorInSheetOperatorEditor[]
-  setSelectedOperators: Dispatch<
-    SetStateAction<OperatorInSheetOperatorEditor[]>
-  >
+  setSelectedOperators: Dispatch<SetStateAction<OperatorInSheetOperatorEditor[]>>
   groupName?: OperatorInSheetOperatorEditor['groupName']
   opers: Group['opers']
 }> = ({ selectedOperators, setSelectedOperators, groupName, opers }) => {
@@ -314,9 +220,7 @@ const OperatorSelectorItem: FC<{
   return (
     <div className="flex flex-wrap">
       {opers?.map(({ name }) => {
-        const selected = !!selectedOperators.find(
-          ({ operName }) => operName === name,
-        )
+        const selected = !!selectedOperators.find(({ operName }) => operName === name)
         return (
           <Card
             key={name}
@@ -328,10 +232,7 @@ const OperatorSelectorItem: FC<{
             onClick={() => {
               setSelectedOperators((prev) =>
                 selected
-                  ? prev.filter(
-                      ({ operName: selectedOperName }) =>
-                        selectedOperName !== name,
-                    )
+                  ? prev.filter(({ operName: selectedOperName }) => selectedOperName !== name)
                   : [...prev, { groupName, operName: name }],
               )
             }}
@@ -361,11 +262,7 @@ const OperatorSelectorSkeleton: FC<{
       mini
       className="w-96"
       rightOptions={
-        <CollapseButton
-          isCollapse={isOpen}
-          onClick={() => setIsOpen((prev) => !prev)}
-          disabled={collapseDisabled}
-        />
+        <CollapseButton isCollapse={isOpen} onClick={() => setIsOpen((prev) => !prev)} disabled={collapseDisabled} />
       }
     >
       {collapseDisabled ? (

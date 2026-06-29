@@ -8,11 +8,7 @@ interface UserNameProps {
   children: ReactNode
 }
 
-export const UserName: FC<UserNameProps> = ({
-  className,
-  userId,
-  children,
-}) => {
+export const UserName: FC<UserNameProps> = ({ className, userId, children }) => {
   return (
     <ReLink className={className} to={`/profile/${userId}`}>
       {children}

@@ -54,10 +54,7 @@ export const SheetList: FC<SheetListProps> = () => {
                 ref={operatorScrollRef}
               >
                 {operatorFilteredData.map(({ name }, index) => (
-                  <div
-                    className="flex items-center flex-0 w-full h-32"
-                    key={index}
-                  >
+                  <div className="flex items-center flex-0 w-full h-32" key={index}>
                     <SheetOperatorItem {...{ name }} />
                   </div>
                 ))}

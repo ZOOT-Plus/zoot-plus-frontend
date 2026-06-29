@@ -6,14 +6,8 @@ import { FC, useMemo } from 'react'
 import type { CopilotDocV1 } from 'models/copilot.schema'
 
 import { useTranslation } from '../../../i18n/i18n'
-import {
-  EditorPerformerGroup,
-  EditorPerformerGroupProps,
-} from './EditorPerformerGroup'
-import {
-  EditorPerformerOperator,
-  EditorPerformerOperatorProps,
-} from './EditorPerformerOperator'
+import { EditorPerformerGroup, EditorPerformerGroupProps } from './EditorPerformerGroup'
+import { EditorPerformerOperator, EditorPerformerOperatorProps } from './EditorPerformerOperator'
 
 export type PerformerType = 'operator' | 'group'
 
@@ -59,9 +53,7 @@ export const EditorPerformerAdd: FC<EditorPerformerAddProps> = ({
     [t],
   )
 
-  const selectedItem =
-    performerSelectItems.find((item) => item.value === mode) ||
-    performerSelectItems[0]
+  const selectedItem = performerSelectItems.find((item) => item.value === mode) || performerSelectItems[0]
 
   const selector = useMemo(
     () => (
@@ -82,11 +74,7 @@ export const EditorPerformerAdd: FC<EditorPerformerAddProps> = ({
             />
           )}
         >
-          <Button
-            large
-            text={selectedItem.label}
-            rightIcon="double-caret-vertical"
-          />
+          <Button large text={selectedItem.label} rightIcon="double-caret-vertical" />
         </Select2>
       </>
     ),
@@ -103,23 +91,9 @@ export const EditorPerformerAdd: FC<EditorPerformerAddProps> = ({
         groups={groups}
       />
     ) : (
-      <EditorPerformerGroup
-        group={group}
-        submit={submitGroup}
-        onCancel={onCancel}
-        categorySelector={selector}
-      />
+      <EditorPerformerGroup group={group} submit={submitGroup} onCancel={onCancel} categorySelector={selector} />
     )
-  }, [
-    mode,
-    submitOperator,
-    submitGroup,
-    group,
-    groups,
-    onCancel,
-    operator,
-    selector,
-  ])
+  }, [mode, submitOperator, submitGroup, group, groups, onCancel, operator, selector])
 
   return <Card className="mb-8 pt-4">{child}</Card>
 }

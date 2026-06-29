@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       deploy-to-prod:
-        description: "Deploy to GitHub Pages"
+        description: 'Deploy to GitHub Pages'
         default: false
         required: true
         type: boolean
@@ -32,17 +32,22 @@ jobs:
         with:
           show-progress: false
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: yarn build:skiptsc
+        run: pnpm build:fast
 
       - name: Add .nojekyll file
         run: touch ./dist/.nojekyll

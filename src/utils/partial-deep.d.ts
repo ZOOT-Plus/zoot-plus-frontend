@@ -91,27 +91,20 @@ export type PartialDeep<T, Options extends PartialDeepOptions = {}> = T extends
 /**
 Same as `PartialDeep`, but accepts only `Map`s and as inputs. Internal helper for `PartialDeep`.
 */
-type PartialMapDeep<
-  KeyType,
-  ValueType,
-  Options extends PartialDeepOptions,
-> = {} & Map<PartialDeep<KeyType, Options>, PartialDeep<ValueType, Options>>
+type PartialMapDeep<KeyType, ValueType, Options extends PartialDeepOptions> = {} & Map<
+  PartialDeep<KeyType, Options>,
+  PartialDeep<ValueType, Options>
+>
 
 /**
 Same as `PartialDeep`, but accepts only `Set`s as inputs. Internal helper for `PartialDeep`.
 */
-type PartialSetDeep<T, Options extends PartialDeepOptions> = {} & Set<
-  PartialDeep<T, Options>
->
+type PartialSetDeep<T, Options extends PartialDeepOptions> = {} & Set<PartialDeep<T, Options>>
 
 /**
 Same as `PartialDeep`, but accepts only `ReadonlyMap`s as inputs. Internal helper for `PartialDeep`.
 */
-type PartialReadonlyMapDeep<
-  KeyType,
-  ValueType,
-  Options extends PartialDeepOptions,
-> = {} & ReadonlyMap<
+type PartialReadonlyMapDeep<KeyType, ValueType, Options extends PartialDeepOptions> = {} & ReadonlyMap<
   PartialDeep<KeyType, Options>,
   PartialDeep<ValueType, Options>
 >
@@ -119,17 +112,11 @@ type PartialReadonlyMapDeep<
 /**
 Same as `PartialDeep`, but accepts only `ReadonlySet`s as inputs. Internal helper for `PartialDeep`.
 */
-type PartialReadonlySetDeep<
-  T,
-  Options extends PartialDeepOptions,
-> = {} & ReadonlySet<PartialDeep<T, Options>>
+type PartialReadonlySetDeep<T, Options extends PartialDeepOptions> = {} & ReadonlySet<PartialDeep<T, Options>>
 
 /**
 Same as `PartialDeep`, but accepts only `object`s as inputs. Internal helper for `PartialDeep`.
 */
-type PartialObjectDeep<
-  ObjectType extends object,
-  Options extends PartialDeepOptions,
-> = {
+type PartialObjectDeep<ObjectType extends object, Options extends PartialDeepOptions> = {
   [KeyType in keyof ObjectType]?: PartialDeep<ObjectType[KeyType], Options>
 }

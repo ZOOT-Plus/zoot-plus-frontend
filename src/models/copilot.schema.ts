@@ -21,8 +21,7 @@ export namespace CopilotDocV1 {
     difficulty?: OpDifficulty
   }
 
-  export type OperationSnakeCased =
-    import('type-fest').SnakeCasedPropertiesDeep<Operation>
+  export type OperationSnakeCased = import('type-fest').SnakeCasedPropertiesDeep<Operation>
 
   interface ActionBase {
     /** Required in editor; should be stripped when exporting. */

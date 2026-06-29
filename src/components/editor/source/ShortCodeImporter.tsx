@@ -44,21 +44,14 @@ export const ShortCodeImporter: FC<{
       const shortCodeContent = parseShortCode(code)
 
       if (!shortCodeContent) {
-        throw new Error(
-          t.components.editor.source.ShortCodeImporter.invalid_shortcode,
-        )
+        throw new Error(t.components.editor.source.ShortCodeImporter.invalid_shortcode)
       }
 
       const { id } = shortCodeContent
       const operationContent = (await getOperation({ id })).parsedContent
 
-      if (
-        operationContent.doc.title ===
-        t.models.converter.invalid_operation_content
-      ) {
-        throw new Error(
-          t.components.editor.source.ShortCodeImporter.cannot_parse_content,
-        )
+      if (operationContent.doc.title === t.models.converter.invalid_operation_content) {
+        throw new Error(t.components.editor.source.ShortCodeImporter.cannot_parse_content)
       }
 
       // deal with race condition
@@ -73,9 +66,7 @@ export const ShortCodeImporter: FC<{
     } catch (e) {
       console.warn(e)
       setError('code', {
-        message:
-          t.components.editor.source.ShortCodeImporter.load_failed +
-          formatError(e),
+        message: t.components.editor.source.ShortCodeImporter.load_failed + formatError(e),
       })
     } finally {
       setPending(false)
@@ -93,9 +84,7 @@ export const ShortCodeImporter: FC<{
       <Dialog
         className="w-full max-w-xl"
         isOpen={dialogOpen}
-        title={
-          t.components.editor.source.ShortCodeImporter.import_shortcode_title
-        }
+        title={t.components.editor.source.ShortCodeImporter.import_shortcode_title}
         icon="backlink"
         onClose={() => {
           setPending(false)
@@ -106,27 +95,13 @@ export const ShortCodeImporter: FC<{
           <FormField2
             field="code"
             label={t.components.editor.source.ShortCodeImporter.shortcode_label}
-            description={
-              t.components.editor.source.ShortCodeImporter.shortcode_description
-            }
+            description={t.components.editor.source.ShortCodeImporter.shortcode_description}
             error={errors.code}
           >
-            <InputGroup
-              large
-              placeholder="maa://..."
-              value={value || ''}
-              onChange={onChange}
-            />
+            <InputGroup large placeholder="maa://..." value={value || ''} onChange={onChange} />
           </FormField2>
 
-          <Button
-            disabled={!isValid && !isDirty}
-            intent="primary"
-            loading={pending}
-            type="submit"
-            icon="import"
-            large
-          >
+          <Button disabled={!isValid && !isDirty} intent="primary" loading={pending} type="submit" icon="import" large>
             {t.components.editor.source.ShortCodeImporter.import_button}
           </Button>
         </form>

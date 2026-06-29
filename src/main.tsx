@@ -51,18 +51,10 @@ if (navigator.userAgent.includes('Win')) {
 
 clearOutdatedSwrCache()
 
-const CreatePageLazy = withSuspensable(
-  lazy(() => import('./pages/create').then((m) => ({ default: m.CreatePage }))),
-)
-const EditorPageLazy = withSuspensable(
-  lazy(() => import('./pages/editor').then((m) => ({ default: m.EditorPage }))),
-)
-const AboutPageLazy = withSuspensable(
-  lazy(() => import('./pages/about').then((m) => ({ default: m.AboutPage }))),
-)
-const ProfilePageLazy = withSuspensable(
-  lazy(() => import('./pages/profile').then((m) => ({ default: m.ProfilePage }))),
-)
+const CreatePageLazy = withSuspensable(lazy(() => import('./pages/create').then((m) => ({ default: m.CreatePage }))))
+const EditorPageLazy = withSuspensable(lazy(() => import('./pages/editor').then((m) => ({ default: m.EditorPage }))))
+const AboutPageLazy = withSuspensable(lazy(() => import('./pages/about').then((m) => ({ default: m.AboutPage }))))
+const ProfilePageLazy = withSuspensable(lazy(() => import('./pages/profile').then((m) => ({ default: m.ProfilePage }))))
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

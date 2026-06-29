@@ -18,12 +18,8 @@ export const OperatorMutipleSelect: FC<OperatorMutipleSelectProp> = () => {
   const { cancelAllDisabled, selectAllDisabled } = useMemo(() => {
     const existedOperatorsNames = existedOperators.map(({ name }) => name)
     return {
-      cancelAllDisabled: !operatorFilteredData.some(({ name }) =>
-        existedOperatorsNames.includes(name),
-      ),
-      selectAllDisabled: operatorFilteredData.every(({ name }) =>
-        existedOperatorsNames.includes(name),
-      ),
+      cancelAllDisabled: !operatorFilteredData.some(({ name }) => existedOperatorsNames.includes(name)),
+      selectAllDisabled: operatorFilteredData.every(({ name }) => existedOperatorsNames.includes(name)),
     }
   }, [existedOperators, operatorFilteredData])
 
@@ -47,17 +43,17 @@ export const OperatorMutipleSelect: FC<OperatorMutipleSelectProp> = () => {
         minimal
         icon="circle"
         disabled={cancelAllDisabled}
-        title={t.components.editor.operator.sheet.sheetOperator.toolbox.OperatorMutipleSelect.deselect_all_operators(
-          { count: existedOperators.length },
-        )}
+        title={t.components.editor.operator.sheet.sheetOperator.toolbox.OperatorMutipleSelect.deselect_all_operators({
+          count: existedOperators.length,
+        })}
         onClick={cancelAll}
       />
       <Button
         minimal
         icon="selection"
-        title={t.components.editor.operator.sheet.sheetOperator.toolbox.OperatorMutipleSelect.select_all_operators(
-          { count: operatorFilteredData.length },
-        )}
+        title={t.components.editor.operator.sheet.sheetOperator.toolbox.OperatorMutipleSelect.select_all_operators({
+          count: operatorFilteredData.length,
+        })}
         disabled={selectAllDisabled}
         onClick={selectAll}
       />

@@ -38,11 +38,7 @@ const DIFFICULTIES = [
   },
 ] satisfies DetailedSelectChoice[]
 
-export const DifficultyPicker: FC<DifficultyPickerProps> = ({
-  stageName,
-  value,
-  onChange,
-}) => {
+export const DifficultyPicker: FC<DifficultyPickerProps> = ({ stageName, value, onChange }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
 
@@ -58,11 +54,7 @@ export const DifficultyPicker: FC<DifficultyPickerProps> = ({
   }, [levels, stageName])
 
   useEffect(() => {
-    if (
-      !isValidLevel &&
-      value !== undefined &&
-      value !== OpDifficulty.UNKNOWN
-    ) {
+    if (!isValidLevel && value !== undefined && value !== OpDifficulty.UNKNOWN) {
       onChange(OpDifficulty.UNKNOWN, true)
     }
   }, [isValidLevel, value, onChange])
@@ -81,10 +73,7 @@ export const DifficultyPicker: FC<DifficultyPickerProps> = ({
             rightIcon="double-caret-vertical"
             disabled={!isValidLevel}
           >
-            {(
-              DIFFICULTIES.find((item) => item.value === value) ??
-              DIFFICULTIES[0]
-            ).title()}
+            {(DIFFICULTIES.find((item) => item.value === value) ?? DIFFICULTIES[0]).title()}
           </Button>
         }
       </DetailedSelect>

@@ -11,14 +11,9 @@ import { actionDocColors } from 'models/operator'
 
 import { useTranslation } from '../../../i18n/i18n'
 
-interface EditorActionDocColorProps
-  extends SetOptional<EditorFieldProps<CopilotDocV1.Action, string>, 'name'> {}
+interface EditorActionDocColorProps extends SetOptional<EditorFieldProps<CopilotDocV1.Action, string>, 'name'> {}
 
-export const EditorActionDocColor = ({
-  name = 'docColor',
-  control,
-  ...controllerProps
-}: EditorActionDocColorProps) => {
+export const EditorActionDocColor = ({ name = 'docColor', control, ...controllerProps }: EditorActionDocColorProps) => {
   const t = useTranslation()
 
   const {
@@ -38,9 +33,7 @@ export const EditorActionDocColor = ({
       label={t.components.editor.action.EditorActionDocColor.description_color}
       field={name}
       error={errors[name]}
-      description={
-        t.components.editor.action.EditorActionDocColor.color_description
-      }
+      description={t.components.editor.action.EditorActionDocColor.color_description}
     >
       <Select2
         filterable={false}
@@ -53,11 +46,7 @@ export const EditorActionDocColor = ({
             onFocus={handleFocus}
             text={
               <span>
-                <Icon
-                  icon="full-circle"
-                  color={color?.value}
-                  className="mr-2"
-                />
+                <Icon icon="full-circle" color={color?.value} className="mr-2" />
                 <span style={{ color: color?.value }}>{color?.title()}</span>
               </span>
             }

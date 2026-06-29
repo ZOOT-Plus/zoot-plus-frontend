@@ -24,10 +24,7 @@ interface FormValues {
   password: string
 }
 
-export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
-  isOpen,
-  onClose,
-}) => {
+export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({ isOpen, onClose }) => {
   const t = useTranslation()
 
   const {
@@ -71,11 +68,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
         <GlobalErrorBoundary>
           <form>
             {globalError && (
-              <Callout
-                intent="danger"
-                icon="error"
-                title={t.components.account.ResetPasswordDialog.error}
-              >
+              <Callout intent="danger" icon="error" title={t.components.account.ResetPasswordDialog.error}>
                 {globalError}
               </Callout>
             )}
@@ -85,12 +78,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
               control={control}
               error={errors.email}
               inputGroupProps={({ field, fieldState }) => ({
-                rightElement: (
-                  <RequestTokenButton
-                    email={field.value}
-                    disabled={!!fieldState.error}
-                  />
-                ),
+                rightElement: <RequestTokenButton email={field.value} disabled={!!fieldState.error} />,
               })}
             />
 
@@ -101,27 +89,20 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
               error={errors.token}
               ControllerProps={{
                 rules: {
-                  required:
-                    t.components.account.ResetPasswordDialog.code_required,
+                  required: t.components.account.ResetPasswordDialog.code_required,
                 },
                 render: ({ field: { value, ...binding } }) => (
                   <InputGroup
                     id="token"
                     value={value || ''}
-                    placeholder={
-                      t.components.account.ResetPasswordDialog.enter_email_code
-                    }
+                    placeholder={t.components.account.ResetPasswordDialog.enter_email_code}
                     {...binding}
                   />
                 ),
               }}
             />
 
-            <AuthFormPasswordField
-              field="password"
-              control={control}
-              error={errors.password}
-            />
+            <AuthFormPasswordField field="password" control={control} error={errors.password} />
 
             <div className="mt-6 flex justify-end">
               <Button
@@ -146,13 +127,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
   )
 }
 
-const RequestTokenButton = ({
-  email,
-  disabled,
-}: {
-  email: string
-  disabled: boolean
-}) => {
+const RequestTokenButton = ({ email, disabled }: { email: string; disabled: boolean }) => {
   const t = useTranslation()
   const { networkState, start, finish } = useNetworkState()
   const [sent, setSent] = useState(false)
@@ -186,9 +161,7 @@ const RequestTokenButton = ({
       onClick={handleClick}
       loading={networkState.loading}
     >
-      {sent
-        ? t.components.account.ResetPasswordDialog.resend
-        : t.components.account.ResetPasswordDialog.get_code}
+      {sent ? t.components.account.ResetPasswordDialog.resend : t.components.account.ResetPasswordDialog.get_code}
     </Button>
   )
 }

@@ -13,10 +13,7 @@ interface UserCardProps {
   showFollowButton?: boolean
 }
 
-export const UserCard: FC<UserCardProps> = ({
-  user,
-  showFollowButton = true,
-}) => {
+export const UserCard: FC<UserCardProps> = ({ user, showFollowButton = true }) => {
   const t = useTranslation()
   const navigate = useNavigate()
   const [fansCount, setFansCount] = useState(user.fansCount ?? 0)
@@ -25,18 +22,14 @@ export const UserCard: FC<UserCardProps> = ({
     setFansCount(user.fansCount ?? 0)
   }, [user.fansCount])
 
-  const { relation, following, loading, toggleFollow } =
-    useFollowToggle({
-      user,
-      onFollowed: () => setFansCount((count) => count + 1),
-      onUnfollowed: () => setFansCount((count) => Math.max(count - 1, 0)),
-    })
+  const { relation, following, loading, toggleFollow } = useFollowToggle({
+    user,
+    onFollowed: () => setFansCount((count) => count + 1),
+    onUnfollowed: () => setFansCount((count) => Math.max(count - 1, 0)),
+  })
 
   const isSelf = relation === MaaUserInfoRelationEnum.Self
-  const followButtonText = resolveFollowButtonText(
-    t.components.UserProfile,
-    relation,
-  )
+  const followButtonText = resolveFollowButtonText(t.components.UserProfile, relation)
   const followButtonClassName = [
     'w-24 h-8 shrink-0 rounded !inline-flex !items-center !justify-center !px-3 !text-center !font-medium !shadow-none [&_.bp4-button-text]:w-full [&_.bp4-button-text]:text-center',
     !following
@@ -57,8 +50,7 @@ export const UserCard: FC<UserCardProps> = ({
         <div>
           <div className="font-medium">{user.userName}</div>
           <div className="text-sm text-gray-500">
-            {user.followingCount ?? 0} {t.components.UserStats.following} ·{' '}
-            {fansCount} {t.components.UserStats.fans}
+            {user.followingCount ?? 0} {t.components.UserStats.following} · {fansCount} {t.components.UserStats.fans}
           </div>
         </div>
       </div>

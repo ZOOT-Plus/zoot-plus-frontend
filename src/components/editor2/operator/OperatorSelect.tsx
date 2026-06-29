@@ -45,19 +45,12 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
     const language = useAtomValue(languageAtom)
     const t = useTranslation()
     const [isOpen, setIsOpen] = useState(false)
-    const operatorNames = useAtomValue(
-      isOpen ? operatorNamesAtom : dummyArrayAtom,
-    )
-    const groupNames = useAtomValue(
-      isOpen && liftPicked ? groupNamesAtom : dummyArrayAtom,
-    )
-    const groupedOperatorNames = useAtomValue(
-      isOpen && markPicked ? groupedOperatorNamesAtom : dummyArrayAtom,
-    )
+    const operatorNames = useAtomValue(isOpen ? operatorNamesAtom : dummyArrayAtom)
+    const groupNames = useAtomValue(isOpen && liftPicked ? groupNamesAtom : dummyArrayAtom)
+    const groupedOperatorNames = useAtomValue(isOpen && markPicked ? groupedOperatorNamesAtom : dummyArrayAtom)
     const overallOperatorNames = [...operatorNames, ...groupedOperatorNames]
 
-    const isGroup = (name?: string) =>
-      name !== undefined && groupNames.includes(name)
+    const isGroup = (name?: string) => name !== undefined && groupNames.includes(name)
 
     type Item = {
       key: string
@@ -84,9 +77,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
       }))
 
       const unpickedOperators = (
-        pickedOperators.length
-          ? OPERATORS.filter((op) => !operatorNames.includes(op.name))
-          : OPERATORS
+        pickedOperators.length ? OPERATORS.filter((op) => !operatorNames.includes(op.name)) : OPERATORS
       ).map((op) => ({
         key: op.id,
         operatorId: op.id,
@@ -119,14 +110,10 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
       [items],
     )
 
-    const { query, trimmedDebouncedQuery, updateQuery, onOptionMouseDown } =
-      useDebouncedQuery()
+    const { query, trimmedDebouncedQuery, updateQuery, onOptionMouseDown } = useDebouncedQuery()
 
     const filteredItems = useMemo(
-      () =>
-        trimmedDebouncedQuery
-          ? fuse.search(trimmedDebouncedQuery).map((el) => el.item)
-          : items,
+      () => (trimmedDebouncedQuery ? fuse.search(trimmedDebouncedQuery).map((el) => el.item) : items),
       [items, fuse, trimmedDebouncedQuery],
     )
 
@@ -143,23 +130,14 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
           ) : (
             <MenuItem
               roleStructure="listoption"
-              className={clsx(
-                'py-0 items-center',
-                modifiers.active && Classes.ACTIVE,
-              )}
+              className={clsx('py-0 items-center', modifiers.active && Classes.ACTIVE)}
               key={item.key}
               text={
                 <div className="flex items-center gap-2">
                   {isGroup(item.name) ? (
                     <OperatorAvatar
                       className="w-8 h-8 leading-3"
-                      fallback={
-                        <Icon
-                          icon="people"
-                          size={20}
-                          className="align-middle"
-                        />
-                      }
+                      fallback={<Icon icon="people" size={20} className="align-middle" />}
                     />
                   ) : (
                     <OperatorAvatar
@@ -176,17 +154,10 @@ export const OperatorSelect: FC<OperatorSelectProps> = memo(
               onFocus={handleFocus}
               onMouseDown={onOptionMouseDown}
               selected={
-                value === item.value ||
-                (markPicked &&
-                  !!item.value &&
-                  overallOperatorNames.includes(item.value))
+                value === item.value || (markPicked && !!item.value && overallOperatorNames.includes(item.value))
               }
               labelElement={
-                markPicked &&
-                item.value &&
-                overallOperatorNames.includes(item.value) ? (
-                  <Icon icon="tick" />
-                ) : undefined
+                markPicked && item.value && overallOperatorNames.includes(item.value) ? <Icon icon="tick" /> : undefined
               }
               disabled={modifiers.disabled}
             />

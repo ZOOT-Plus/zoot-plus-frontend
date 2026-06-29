@@ -1,10 +1,4 @@
-import {
-  PrimitiveAtom,
-  SetStateAction,
-  atom,
-  getDefaultStore,
-  useAtom,
-} from 'jotai'
+import { PrimitiveAtom, SetStateAction, atom, getDefaultStore, useAtom } from 'jotai'
 import { atomFamily, atomWithStorage, splitAtom } from 'jotai/utils'
 import { noop } from 'lodash-es'
 import { useMemo } from 'react'
@@ -13,11 +7,7 @@ import { SetRequired, Simplify } from 'type-fest'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
-import {
-  WithId,
-  WithPartialCoordinates,
-  toEditorOperation,
-} from './reconciliation'
+import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
 import { ZodIssue, operationLooseSchema } from './validation/schema'
 import { EntityIssue } from './validation/validation'
 
@@ -42,18 +32,13 @@ interface EditorMetadata {
 }
 
 type EditorOperationBase = Simplify<
-  Omit<
-    PartialDeep<CopilotDocV1.Operation>,
-    'doc' | 'opers' | 'groups' | 'actions'
-  > & {
+  Omit<PartialDeep<CopilotDocV1.Operation>, 'doc' | 'opers' | 'groups' | 'actions'> & {
     minimumRequired: string
     doc: PartialDeep<CopilotDocV1.Doc>
   }
 >
 
-export type EditorOperator = Simplify<
-  WithId<SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'>>
->
+export type EditorOperator = Simplify<WithId<SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'>>>
 export type EditorGroup = Simplify<
   WithId<
     PartialDeep<Omit<CopilotDocV1.Group, 'opers'>> & {
@@ -66,12 +51,7 @@ export type EditorAction = GenerateEditorAction<CopilotDocV1.Action>
 type GenerateEditorAction<T extends CopilotDocV1.Action> = T extends never
   ? never
   : Simplify<
-      WithPartialCoordinates<
-        Omit<
-          SetRequired<PartialDeep<T>, 'type'>,
-          'preDelay' | 'postDelay' | 'rearDelay'
-        >
-      > &
+      WithPartialCoordinates<Omit<SetRequired<PartialDeep<T>, 'type'>, 'preDelay' | 'postDelay' | 'rearDelay'>> &
         WithId<{
           intermediatePreDelay?: number
           intermediatePostDelay?: number
@@ -85,9 +65,7 @@ export interface EditorOperation extends EditorOperationBase {
 }
 
 // splitAtom() 有重载，无法用正常方法来构造类型
-const __operAtomsAtom = (noop as typeof splitAtom)(
-  1 as unknown as PrimitiveAtom<EditorOperator[]>,
-)
+const __operAtomsAtom = (noop as typeof splitAtom)(1 as unknown as PrimitiveAtom<EditorOperator[]>)
 export type BaseEditorGroup = Simplify<
   Omit<EditorGroup, 'opers'> & {
     opersAtom: PrimitiveAtom<EditorOperator[]>
@@ -102,10 +80,7 @@ const baseAtom = atom<EditorOperationBase>({
 })
 const operatorsAtom = atom<EditorOperator[]>([])
 const baseGroupsAtom = atom<BaseEditorGroup[]>([])
-const groupCache = new WeakMap<
-  BaseEditorGroup,
-  [EditorGroup, EditorOperator[]]
->()
+const groupCache = new WeakMap<BaseEditorGroup, [EditorGroup, EditorOperator[]]>()
 const groupsAtom: PrimitiveAtom<EditorGroup[]> = atom(
   (get) =>
     get(baseGroupsAtom).map((baseGroup) => {
@@ -131,15 +106,12 @@ const groupsAtom: PrimitiveAtom<EditorGroup[]> = atom(
         return originalBaseGroups[index]
       }
       const { opers, ...rest } = group
-      const originalBaseGroup = originalBaseGroups.find(
-        (original) => original.id === group.id,
-      )
+      const originalBaseGroup = originalBaseGroups.find((original) => original.id === group.id)
 
       // 读取之前的 opersAtom 和 operAtomsAtom，如果没有就创建新的
       const opersAtom = originalBaseGroup?.opersAtom ?? atom(opers)
       set(opersAtom, opers)
-      const operAtomsAtom =
-        originalBaseGroup?.operAtomsAtom ?? splitAtom(opersAtom, getId)
+      const operAtomsAtom = originalBaseGroup?.operAtomsAtom ?? splitAtom(opersAtom, getId)
 
       return {
         ...rest,
@@ -196,12 +168,7 @@ const defaultConfig: EditorConfig = {
   historyLimit: 20,
   showErrorsByDefault: false,
 }
-const localConfigAtom = atomWithStorage<Partial<EditorConfig>>(
-  'prts-editor-config',
-  {},
-  undefined,
-  { getOnInit: true },
-)
+const localConfigAtom = atomWithStorage<Partial<EditorConfig>>('prts-editor-config', {}, undefined, { getOnInit: true })
 const initialConfig = {
   ...defaultConfig,
   ...getDefaultStore().get(localConfigAtom),
@@ -240,9 +207,7 @@ const editorVisibleEntityErrorsAtom = atom((get) =>
 )
 
 // this atom will cause some memory leak but generally not a big deal
-const skillLevelOverridesAtom = atomFamily((id: string) =>
-  atom<Record<number, number>>({}),
-)
+const skillLevelOverridesAtom = atomFamily((id: string) => atom<Record<number, number>>({}))
 
 export const editorAtoms = {
   editor: editorAtom,
@@ -278,44 +243,33 @@ export const editorAtoms = {
   visibleGlobalErrors: editorVisibleGlobalErrorsAtom,
   visibleEntityErrors: editorVisibleEntityErrorsAtom,
 
-  reset: atom(
-    null,
-    (get, set, editorState: EditorState = defaultEditorState) => {
-      set(historyAtom, 'RESET')
-      set(editorAtom, editorState)
-      set(editorGlobalErrorsAtom, [])
-      set(editorEntityErrorsAtom, {})
+  reset: atom(null, (get, set, editorState: EditorState = defaultEditorState) => {
+    set(historyAtom, 'RESET')
+    set(editorAtom, editorState)
+    set(editorGlobalErrorsAtom, [])
+    set(editorEntityErrorsAtom, {})
 
-      skillLevelOverridesAtom.setShouldRemove(() => true)
-      skillLevelOverridesAtom.setShouldRemove(null)
-      const setSkillLevel = (operator: EditorOperator) => {
-        if (operator.skill && operator.requirements?.skillLevel) {
-          set(skillLevelOverridesAtom(operator.id), {
-            [operator.skill]: operator.requirements.skillLevel,
-          })
-        }
+    skillLevelOverridesAtom.setShouldRemove(() => true)
+    skillLevelOverridesAtom.setShouldRemove(null)
+    const setSkillLevel = (operator: EditorOperator) => {
+      if (operator.skill && operator.requirements?.skillLevel) {
+        set(skillLevelOverridesAtom(operator.id), {
+          [operator.skill]: operator.requirements.skillLevel,
+        })
       }
-      editorState.operation.opers.forEach(setSkillLevel)
-      editorState.operation.groups.forEach((group) =>
-        group.opers.forEach(setSkillLevel),
-      )
-    },
-  ),
+    }
+    editorState.operation.opers.forEach(setSkillLevel)
+    editorState.operation.groups.forEach((group) => group.opers.forEach(setSkillLevel))
+  }),
 }
 
-export const historyAtom = createHistoryAtom(
-  editorAtom,
-  initialConfig.historyLimit,
-)
+export const historyAtom = createHistoryAtom(editorAtom, initialConfig.historyLimit)
 
 export function useEdit() {
   return useHistoryEdit(historyAtom)
 }
 
-export function useActiveState(
-  targetAtom: PrimitiveAtom<string | undefined>,
-  id: string,
-) {
+export function useActiveState(targetAtom: PrimitiveAtom<string | undefined>, id: string) {
   return useAtom(
     useMemo(() => {
       return atom(

@@ -39,17 +39,11 @@ export const THEME_CONFIG: ThemeDefinition[] = [
 ]
 
 // 辅助函数：获取所有主题可能用到的 CSS 类名（用于清理）
-const ALL_THEME_CLASSES = Array.from(
-  new Set(THEME_CONFIG.flatMap((t) => t.classList)),
-)
+const ALL_THEME_CLASSES = Array.from(new Set(THEME_CONFIG.flatMap((t) => t.classList)))
 
 // 获取系统默认主题
 const getSystemTheme = (): ThemeMode => {
-  if (
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
+  if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'dark'
   }
   return 'light'

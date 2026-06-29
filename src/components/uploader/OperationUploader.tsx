@@ -1,14 +1,4 @@
-import {
-  AnchorButton,
-  Callout,
-  FileInput,
-  FormGroup,
-  H4,
-  Icon,
-  Spinner,
-  SpinnerSize,
-  Tag,
-} from '@blueprintjs/core'
+import { AnchorButton, Callout, FileInput, FormGroup, H4, Icon, Spinner, SpinnerSize, Tag } from '@blueprintjs/core'
 import { Tooltip2 } from '@blueprintjs/popover2'
 
 import { useLevels } from 'apis/level'
@@ -35,29 +25,21 @@ interface FileEntry {
 
 export const OperationUploader: ComponentType = withSuspensable(() => {
   const t = useTranslation()
-  const [files, { set: setFiles, update: updateFileWhere }] =
-    useList<FileEntry>([])
+  const [files, { set: setFiles, update: updateFileWhere }] = useList<FileEntry>([])
 
   const [globalErrors, setGlobalErrors] = useState(null as string[] | null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [operationStatus] = useState<CopilotSetStatus>(
-    CopilotSetStatus.Private,
-  )
+  const [operationStatus] = useState<CopilotSetStatus>(CopilotSetStatus.Private)
 
   // reasons are in the order of keys
   const nonUploadableReason = Object.entries({
     [t.components.uploader.OperationUploader.wait_upload]: isUploading,
     [t.components.uploader.OperationUploader.wait_parsing]: isProcessing,
     [t.components.uploader.OperationUploader.select_files]: !files.length,
-    [t.components.uploader.OperationUploader.contains_uploaded]: files.some(
-      (file) => file.uploaded,
-    ),
-    [t.components.uploader.OperationUploader.file_errors]: files.some(
-      (file) => file.error,
-    ),
-    [t.components.uploader.OperationUploader.errors_exist]:
-      globalErrors?.length,
+    [t.components.uploader.OperationUploader.contains_uploaded]: files.some((file) => file.uploaded),
+    [t.components.uploader.OperationUploader.file_errors]: files.some((file) => file.error),
+    [t.components.uploader.OperationUploader.errors_exist]: globalErrors?.length,
   }).find(([, value]) => value)?.[0]
 
   const isUploadable = !nonUploadableReason
@@ -92,9 +74,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
         return entry
       }
 
-      setFiles(
-        await Promise.all(Array.from(event.currentTarget.files, toFileEntry)),
-      )
+      setFiles(await Promise.all(Array.from(event.currentTarget.files, toFileEntry)))
 
       setIsProcessing(false)
     } else {
@@ -155,9 +135,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
       title={
         <>
           <Icon icon="cloud-upload" />
-          <span className="ml-2 mr-4">
-            {t.components.uploader.OperationUploader.upload_local_jobs}
-          </span>
+          <span className="ml-2 mr-4">{t.components.uploader.OperationUploader.upload_local_jobs}</span>
         </>
       }
     >
@@ -174,11 +152,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
 
         <FormGroup
           className="mt-4"
-          label={
-            <span className="font-bold">
-              {t.components.uploader.OperationUploader.select_job_files}
-            </span>
-          }
+          label={<span className="font-bold">{t.components.uploader.OperationUploader.select_job_files}</span>}
           labelFor="file-input"
           labelInfo={t.components.uploader.OperationUploader.json_files_only}
         >
@@ -202,17 +176,9 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
           />
         </FormGroup>
 
-        <Tooltip2
-          fill
-          className="mt-4"
-          placement="top"
-          disabled={!nonUploadableReason}
-          content={nonUploadableReason}
-        >
+        <Tooltip2 fill className="mt-4" placement="top" disabled={!nonUploadableReason} content={nonUploadableReason}>
           {(() => {
-            const settledCount = files.filter(
-              (file) => file.uploaded || file.error,
-            ).length
+            const settledCount = files.filter((file) => file.uploaded || file.error).length
 
             return (
               // do not use <Button> because its disabled state does not work well with Tooltip
@@ -222,42 +188,28 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
                 disabled={!isUploadable}
                 icon={
                   isUploading ? (
-                    <Spinner
-                      size={SpinnerSize.SMALL}
-                      value={settledCount / files.length}
-                    />
+                    <Spinner size={SpinnerSize.SMALL} value={settledCount / files.length} />
                   ) : (
                     'cloud-upload'
                   )
                 }
                 onClick={handleOperationSubmit}
               >
-                {isUploading
-                  ? `${settledCount}/${files.length}`
-                  : t.components.uploader.OperationUploader.upload}
+                {isUploading ? `${settledCount}/${files.length}` : t.components.uploader.OperationUploader.upload}
               </AnchorButton>
             )
           })()}
         </Tooltip2>
 
         {globalErrors && (
-          <Callout
-            className="mt-4"
-            intent="danger"
-            icon="error"
-            title={t.components.uploader.OperationUploader.error}
-          >
+          <Callout className="mt-4" intent="danger" icon="error" title={t.components.uploader.OperationUploader.error}>
             {globalErrors.map((error) => (
               <li key={error}>{error}</li>
             ))}
           </Callout>
         )}
 
-        {!!files.length && (
-          <div className="mt-4 font-bold">
-            {t.components.uploader.OperationUploader.file_details}
-          </div>
-        )}
+        {!!files.length && <div className="mt-4 font-bold">{t.components.uploader.OperationUploader.file_details}</div>}
         {files.map(({ file, uploaded, error, operation }, index) => (
           <Callout
             className="mt-2"
@@ -267,10 +219,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
             icon={!uploaded && !error ? 'document' : undefined}
           >
             <p className="text-black/60">
-              {operation
-                ? operation.doc.title ||
-                  t.components.uploader.OperationUploader.untitled
-                : null}
+              {operation ? operation.doc.title || t.components.uploader.OperationUploader.untitled : null}
             </p>
             {error && <p className="text-red-500">{error}</p>}
           </Callout>

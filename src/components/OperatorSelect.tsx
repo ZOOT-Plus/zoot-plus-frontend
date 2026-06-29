@@ -21,15 +21,10 @@ interface OperatorSelectProps {
 
 type OperatorInfo = (typeof OPERATORS)[number]
 
-export const OperatorSelect: FC<OperatorSelectProps> = ({
-  className,
-  operators,
-  onChange,
-}) => {
+export const OperatorSelect: FC<OperatorSelectProps> = ({ className, operators, onChange }) => {
   const t = useTranslation()
   const language = useAtomValue(languageAtom)
-  const { query, trimmedDebouncedQuery, updateQuery, onOptionMouseDown } =
-    useDebouncedQuery()
+  const { query, trimmedDebouncedQuery, updateQuery, onOptionMouseDown } = useDebouncedQuery()
 
   const fuse = useMemo(
     () =>
@@ -41,10 +36,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
   )
 
   const selectedItems = useMemo(
-    () =>
-      compact(
-        operators.map((name) => OPERATORS.find((item) => item.name === name)),
-      ),
+    () => compact(operators.map((name) => OPERATORS.find((item) => item.name === name))),
     [operators],
   )
 
@@ -79,11 +71,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
           key={item.id}
           text={
             <div className="flex items-center gap-2">
-              <OperatorAvatar
-                className="w-8 h-8"
-                id={item.id}
-                rarity={item.rarity}
-              />
+              <OperatorAvatar className="w-8 h-8" id={item.id} rarity={item.rarity} />
               {language === 'en' ? item.name_en : item.name}
             </div>
           }
@@ -105,11 +93,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
       placeholder=""
       noResults={
         trimmedDebouncedQuery ? (
-          <MenuItem
-            roleStructure="listoption"
-            disabled
-            text={t.components.OperatorSelect.no_matching_operators}
-          />
+          <MenuItem roleStructure="listoption" disabled text={t.components.OperatorSelect.no_matching_operators} />
         ) : undefined
       }
       tagInputProps={{
@@ -126,18 +110,12 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({
       resetOnSelect={true}
       tagRenderer={(item) => (
         <div className="flex items-center gap-2">
-          <OperatorAvatar
-            className="w-8 h-8"
-            id={item.id}
-            rarity={item.rarity}
-          />
+          <OperatorAvatar className="w-8 h-8" id={item.id} rarity={item.rarity} />
           {language === 'en' ? item.name_en : item.name}
         </div>
       )}
       popoverProps={{
-        popoverClassName: trimmedDebouncedQuery
-          ? undefined
-          : '[&_.bp4-popover2-content]:!p-0',
+        popoverClassName: trimmedDebouncedQuery ? undefined : '[&_.bp4-popover2-content]:!p-0',
         placement: 'bottom-start',
         minimal: true,
         matchTargetWidth: true,

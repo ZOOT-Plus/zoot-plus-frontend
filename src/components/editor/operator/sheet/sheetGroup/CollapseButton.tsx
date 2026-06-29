@@ -19,11 +19,7 @@ interface CollapseButtonProps {
   disabled?: ButtonProps['disabled']
 }
 
-export const CollapseButton: FC<CollapseButtonProps> = ({
-  isCollapse,
-  onClick,
-  disabled,
-}) => {
+export const CollapseButton: FC<CollapseButtonProps> = ({ isCollapse, onClick, disabled }) => {
   const t = useTranslation()
 
   return (
@@ -31,8 +27,7 @@ export const CollapseButton: FC<CollapseButtonProps> = ({
       icon={isCollapse ? 'collapse-all' : 'expand-all'}
       title={
         isCollapse
-          ? t.components.editor.operator.sheet.sheetGroup.CollapseButton
-              .collapse
+          ? t.components.editor.operator.sheet.sheetGroup.CollapseButton.collapse
           : t.components.editor.operator.sheet.sheetGroup.CollapseButton.expand
       }
       minimal

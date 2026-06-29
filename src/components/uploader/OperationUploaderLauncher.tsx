@@ -12,20 +12,11 @@ export const OperationUploaderLauncher: FC = () => {
 
   return (
     <>
-      <Drawer
-        size="560px"
-        isOpen={uploaderActive}
-        onClose={() => setUploaderActive(false)}
-      >
+      <Drawer size="560px" isOpen={uploaderActive} onClose={() => setUploaderActive(false)}>
         <OperationUploader />
       </Drawer>
 
-      <Button
-        large
-        fill
-        icon="cloud-upload"
-        onClick={() => setUploaderActive(true)}
-      >
+      <Button large fill icon="cloud-upload" onClick={() => setUploaderActive(true)}>
         {t.components.uploader.OperationUploaderLauncher.upload_local_jobs}
       </Button>
     </>

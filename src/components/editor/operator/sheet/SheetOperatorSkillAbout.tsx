@@ -24,10 +24,7 @@ export interface SkillAboutProps {
 
 const skillDic = operatorSkillUsages as DetailedSelectChoice[]
 
-export const SkillAboutTrigger = ({
-  operator,
-  onSkillChange,
-}: SkillAboutProps) => {
+export const SkillAboutTrigger = ({ operator, onSkillChange }: SkillAboutProps) => {
   const t = useTranslation()
 
   const {
@@ -58,9 +55,7 @@ export const SkillAboutTrigger = ({
       <div onClick={(e) => e.stopPropagation()} role="presentation">
         <div className="flex flex-wrap">
           <FormField2
-            label={
-              t.components.editor.operator.sheet.SheetOperatorSkillAbout.skill
-            }
+            label={t.components.editor.operator.sheet.SheetOperatorSkillAbout.skill}
             field="skill"
             error={errors.skill}
             className="mr-1"
@@ -68,10 +63,7 @@ export const SkillAboutTrigger = ({
             <EditorOperatorSkill control={control} name="skill" />
           </FormField2>
           <FormField2
-            label={
-              t.components.editor.operator.sheet.SheetOperatorSkillAbout
-                .skill_usage
-            }
+            label={t.components.editor.operator.sheet.SheetOperatorSkillAbout.skill_usage}
             field="skillUsage"
             error={errors.skillUsage}
           >
@@ -81,10 +73,7 @@ export const SkillAboutTrigger = ({
 
         {needSkillTime && (
           <FormField2
-            label={
-              t.components.editor.operator.sheet.SheetOperatorSkillAbout
-                .skill_usage_count
-            }
+            label={t.components.editor.operator.sheet.SheetOperatorSkillAbout.skill_usage_count}
             field="skillTimes"
             error={errors.skillTimes}
           >
@@ -94,17 +83,12 @@ export const SkillAboutTrigger = ({
       </div>
       <div className="flex items-center">
         <Button
-          text={
-            t.components.editor.operator.sheet.SheetOperatorSkillAbout.confirm
-          }
+          text={t.components.editor.operator.sheet.SheetOperatorSkillAbout.confirm}
           type="submit"
           className={Classes.POPOVER_DISMISS}
         />
         <Tooltip2
-          content={
-            t.components.editor.operator.sheet.SheetOperatorSkillAbout
-              .default_settings_tooltip
-          }
+          content={t.components.editor.operator.sheet.SheetOperatorSkillAbout.default_settings_tooltip}
           className="ml-1"
         >
           <Icon icon="help" />
@@ -113,15 +97,8 @@ export const SkillAboutTrigger = ({
     </form>
   )
   const SkillAboutTrigger = (
-    <div
-      className={clsx(
-        'flex mt-1 text-gray-500 items-center text-xs',
-        operator && 'hover:text-black',
-      )}
-    >
-      {!operator?.skill && (
-        <Icon icon="info-sign" size={12} className="flex items-center mr-1" />
-      )}
+    <div className={clsx('flex mt-1 text-gray-500 items-center text-xs', operator && 'hover:text-black')}>
+      {!operator?.skill && <Icon icon="info-sign" size={12} className="flex items-center mr-1" />}
       <p>
         {operator?.skill
           ? t.models.operator.skill_number({ count: operator.skill })
@@ -130,9 +107,7 @@ export const SkillAboutTrigger = ({
       </p>
       {operator?.skillUsage !== undefined && (
         <Icon
-          icon={
-            skillDic.find((item) => item.value === operator.skillUsage)?.icon
-          }
+          icon={skillDic.find((item) => item.value === operator.skillUsage)?.icon}
           className="flex items-center ml-1"
           size={12}
         />

@@ -16,13 +16,11 @@ export const useLinks = () => {
     label: labelKey(),
   }))
 
-  const FRIENDLY_LINKS = FRIENDLY_LINKS_CONFIG.map(
-    ({ icon, href, labelKey }) => ({
-      icon,
-      href,
-      label: labelKey(),
-    }),
-  )
+  const FRIENDLY_LINKS = FRIENDLY_LINKS_CONFIG.map(({ icon, href, labelKey }) => ({
+    icon,
+    href,
+    label: labelKey(),
+  }))
 
   return { NAV_LINKS, SOCIAL_LINKS, FRIENDLY_LINKS }
 }

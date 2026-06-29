@@ -10,21 +10,12 @@ interface RelativeTimeProps {
   Tooltip2Props?: Omit<Tooltip2Props, 'content'>
 }
 
-export const RelativeTime: FC<RelativeTimeProps> = ({
-  moment,
-  className,
-  Tooltip2Props,
-}) => {
+export const RelativeTime: FC<RelativeTimeProps> = ({ moment, className, Tooltip2Props }) => {
   // Convert to timestamp if needed
-  const timestamp =
-    typeof moment === 'string' || moment instanceof Date
-      ? new Date(moment).getTime()
-      : moment
+  const timestamp = typeof moment === 'string' || moment instanceof Date ? new Date(moment).getTime() : moment
 
   const formattedDate = formatDateTime(timestamp)
-  const [relativeTime, setRelativeTime] = useState(
-    formatRelativeTime(timestamp),
-  )
+  const [relativeTime, setRelativeTime] = useState(formatRelativeTime(timestamp))
   useEffect(() => {
     const interval = setInterval(() => {
       setRelativeTime(formatRelativeTime(timestamp))
@@ -33,11 +24,7 @@ export const RelativeTime: FC<RelativeTimeProps> = ({
   }, [timestamp])
 
   return (
-    <Tooltip2
-      content={formattedDate}
-      {...Tooltip2Props}
-      disabled={!formattedDate}
-    >
+    <Tooltip2 content={formattedDate} {...Tooltip2Props} disabled={!formattedDate}>
       <span className={className}>{relativeTime}</span>
     </Tooltip2>
   )

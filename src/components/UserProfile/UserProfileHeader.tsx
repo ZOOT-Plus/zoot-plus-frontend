@@ -16,25 +16,18 @@ interface UserProfileHeaderProps {
   onFollowChange?: (newRelation: MaaUserInfoRelationEnum) => void
 }
 
-export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
-  user,
-  onFollowChange,
-}) => {
+export const UserProfileHeader: FC<UserProfileHeaderProps> = ({ user, onFollowChange }) => {
   const t = useTranslation()
   const auth = useAtomValue(authAtom)
   const isSelf = auth.userId === user.id
   const isLoggedIn = !!auth.token
 
-  const { relation, following, isMutual, loading, toggleFollow } =
-    useFollowToggle({
-      user,
-      onRelationChange: onFollowChange,
-    })
+  const { relation, following, isMutual, loading, toggleFollow } = useFollowToggle({
+    user,
+    onRelationChange: onFollowChange,
+  })
 
-  const followButtonText = resolveFollowButtonText(
-    t.components.UserProfile,
-    relation,
-  )
+  const followButtonText = resolveFollowButtonText(t.components.UserProfile, relation)
 
   return (
     <Card className="flex flex-col mb-4 space-y-3">
@@ -64,9 +57,7 @@ export const UserProfileHeader: FC<UserProfileHeaderProps> = ({
       )}
 
       {!isLoggedIn && (
-        <div className={clsx(Classes.TEXT_MUTED, 'text-sm')}>
-          {t.components.UserProfile.loginToFollow}
-        </div>
+        <div className={clsx(Classes.TEXT_MUTED, 'text-sm')}>{t.components.UserProfile.loginToFollow}</div>
       )}
     </Card>
   )
