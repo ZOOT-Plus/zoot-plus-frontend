@@ -1,5 +1,5 @@
 import { Classes, H6, Icon, IconName, MenuItem, MenuItemProps } from '@blueprintjs/core'
-import { Select2Props } from '@blueprintjs/select'
+import { SelectProps } from '@blueprintjs/select'
 
 import clsx from 'clsx'
 import { ReactNode } from 'react'
@@ -24,7 +24,7 @@ export interface DetailedSelectChoice {
 }
 
 export const DetailedSelect: FCC<
-  Omit<Select2Props<DetailedSelectItem>, 'itemRenderer' | 'onItemSelect' | 'itemDisabled'> & {
+  Omit<SelectProps<DetailedSelectItem>, 'itemRenderer' | 'onItemSelect' | 'itemDisabled'> & {
     value?: string | number
     onItemSelect: (item: DetailedSelectChoice) => void
   }

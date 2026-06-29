@@ -1,5 +1,4 @@
-import { Button, Callout, Card, Classes, Divider, Icon, InputGroup, MenuItem } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Callout, Card, Classes, Divider, Icon, InputGroup, MenuItem, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { Draft } from 'immer'
@@ -139,9 +138,9 @@ export const ActionItem: FC<ActionItemProps> = memo(
                     action.type === CopilotDocV1.Type.BulletTime ? (
                       <>
                         <Divider className="grow rotate-12 ml-3" />
-                        <Tooltip2 placement="top" content={t.components.editor2.ActionItem.target_or_location}>
+                        <Tooltip placement="top" content={t.components.editor2.ActionItem.target_or_location}>
                           {t.components.editor2.ActionItem.or}
-                        </Tooltip2>
+                        </Tooltip>
                         <Divider className="grow rotate-12 mr-3" />
                       </>
                     ) : (
@@ -274,7 +273,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                         small
                         minimal
                         className={clsx(
-                          '!px-2.5 !bg-transparent [&_.bp4-icon]:!text-current',
+                          '!px-2.5 !bg-transparent [&_.bp6-icon]:!text-current',
                           action.direction === dir
                             ? '!text-inherit drop-shadow'
                             : '!text-gray-200 hover:!text-gray-400',

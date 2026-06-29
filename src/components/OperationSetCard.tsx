@@ -1,5 +1,4 @@
-import { Button, Card, Elevation, H4, Icon, Tag } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Card, Elevation, H4, Icon, Tag, Tooltip } from '@blueprintjs/core'
 
 import { copyShortCode } from 'services/operation'
 
@@ -18,12 +17,12 @@ export const NeoOperationSetCard = ({ operationSet }: { operationSet: OperationS
       <ReLink search={{ opset: operationSet.id }} className="block no-underline hover:no-underline hover:text-inherit">
         {/* title */}
         <div className="flex gap-1">
-          <Tooltip2 content={operationSet.name} className="flex-1 whitespace-nowrap overflow-hidden text-ellipsis">
+          <Tooltip content={operationSet.name} className="flex-1 whitespace-nowrap overflow-hidden text-ellipsis">
             <H4 className="p-0 m-0 mr-20 whitespace-nowrap overflow-hidden text-ellipsis">
               {operationSet.status === 'PRIVATE' && <Tag className="mr-1">{t.components.OperationSetCard.private}</Tag>}
               {operationSet.name}
             </H4>
-          </Tooltip2>
+          </Tooltip>
         </div>
         <div className="flex-1 flex flex-col my-3 gap-2 justify-center">
           <div className="text-gray-700 leading-normal">
@@ -44,7 +43,7 @@ export const NeoOperationSetCard = ({ operationSet }: { operationSet: OperationS
             </span>
 
             <Icon icon="time" className="ml-4 mr-1" />
-            <RelativeTime Tooltip2Props={{ placement: 'top' }} moment={operationSet.createTime} />
+            <RelativeTime TooltipProps={{ placement: 'top' }} moment={operationSet.createTime} />
           </div>
           <div className="flex-1" />
           <div className="text-zinc-500">
@@ -85,7 +84,7 @@ export const OperationSetCard = ({ operationSet }: { operationSet: OperationSetL
               </span>
 
               <Icon icon="time" className="ml-4 mr-1" />
-              <RelativeTime Tooltip2Props={{ placement: 'top' }} moment={operationSet.createTime} />
+              <RelativeTime TooltipProps={{ placement: 'top' }} moment={operationSet.createTime} />
             </div>
             <div>
               <Icon icon="user" className="mr-1.5" />
@@ -112,7 +111,7 @@ const CardActions = ({ className, operationSet }: { className?: string; operatio
   const t = useTranslation()
   return (
     <div className={className}>
-      <Tooltip2
+      <Tooltip
         placement="bottom"
         content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationSetCard.copy_secret_code}</div>}
       >
@@ -124,7 +123,7 @@ const CardActions = ({ className, operationSet }: { className?: string; operatio
             copyShortCode(operationSet)
           }}
         />
-      </Tooltip2>
+      </Tooltip>
     </div>
   )
 }

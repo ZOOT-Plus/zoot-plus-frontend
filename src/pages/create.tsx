@@ -1,5 +1,4 @@
-import { Button, Checkbox } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Checkbox, Tooltip } from '@blueprintjs/core'
 
 import { isEqual } from 'lodash-es'
 import { CopilotSetStatus } from 'maa-copilot-client'
@@ -173,7 +172,7 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
             />
             <div className="flex-[100%_0_0]" />
             <div className="ml-auto mt-2">
-              <Tooltip2
+              <Tooltip
                 placement="bottom"
                 content={
                   <>
@@ -192,7 +191,7 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
                 >
                   <span className="-ml-1 opacity-75">{t.pages.create.public}</span>
                 </Checkbox>
-              </Tooltip2>
+              </Tooltip>
             </div>
           </>
         }

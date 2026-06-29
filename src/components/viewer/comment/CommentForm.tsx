@@ -86,7 +86,7 @@ export const CommentForm = ({
       <TextArea
         fill
         rows={2}
-        growVertically
+        autoResize
         large
         maxLength={maxLength}
         placeholder={placeholder || defaultPlaceholder}

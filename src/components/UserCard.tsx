@@ -1,4 +1,4 @@
-﻿import { Button, Card } from '@blueprintjs/core'
+import { Button, Card } from '@blueprintjs/core'
 
 import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
 import { FC, useEffect, useState } from 'react'
@@ -31,7 +31,7 @@ export const UserCard: FC<UserCardProps> = ({ user, showFollowButton = true }) =
   const isSelf = relation === MaaUserInfoRelationEnum.Self
   const followButtonText = resolveFollowButtonText(t.components.UserProfile, relation)
   const followButtonClassName = [
-    'w-24 h-8 shrink-0 rounded !inline-flex !items-center !justify-center !px-3 !text-center !font-medium !shadow-none [&_.bp4-button-text]:w-full [&_.bp4-button-text]:text-center',
+    'w-24 h-8 shrink-0 rounded !inline-flex !items-center !justify-center !px-3 !text-center !font-medium !shadow-none [&_.bp6-button-text]:w-full [&_.bp6-button-text]:text-center',
     !following
       ? '!border !border-blue-600 !bg-blue-600 !text-white hover:!border-blue-700 hover:!bg-blue-700 dark:!border-blue-500 dark:!bg-blue-500 dark:hover:!border-blue-400 dark:hover:!bg-blue-400'
       : '!border !border-slate-200 !bg-slate-200 !text-slate-700 hover:!border-slate-300 hover:!bg-slate-300 dark:!border-slate-600 dark:!bg-slate-700 dark:!text-slate-100 dark:hover:!border-slate-500 dark:hover:!bg-slate-600',

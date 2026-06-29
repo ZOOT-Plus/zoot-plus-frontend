@@ -1,5 +1,4 @@
-import { Button, Icon, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Icon, Menu, MenuItem, PopoverNext, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { Draft } from 'immer'
@@ -43,10 +42,11 @@ export const ActionLinker: FC<ActionLinkerProps> = ({ actionAtom, isDragging, is
             {t.components.editor2.ActionLinker.action}
           </Button>
         </CreateActionMenu>
-        <Popover2
-          minimal
+        <PopoverNext
+          animation="minimal"
+          arrow={false}
           placement="right-start"
-          popoverClassName="[&>.bp4-popover2-content]:!p-0 overflow-hidden"
+          popoverClassName="[&>.bp6-popover-content]:!p-0 overflow-hidden"
           content={
             <Menu>
               {(
@@ -77,9 +77,9 @@ export const ActionLinker: FC<ActionLinkerProps> = ({ actionAtom, isDragging, is
                     icon={icon}
                     text={title()}
                     labelElement={
-                      <Tooltip2 content={description()}>
+                      <Tooltip content={description()}>
                         <Icon className="!text-gray-300 dark:!text-gray-500" icon="info-sign" />
-                      </Tooltip2>
+                      </Tooltip>
                     }
                     onClick={() => {
                       if (index === 0 && conditionType === 'intermediatePreDelay') {
@@ -133,7 +133,7 @@ export const ActionLinker: FC<ActionLinkerProps> = ({ actionAtom, isDragging, is
           >
             {t.components.editor2.ActionLinker.condition}
           </Button>
-        </Popover2>
+        </PopoverNext>
       </div>
 
       <ConditionChain actionAtom={actionAtom} index={index} />
@@ -240,7 +240,7 @@ const ConditionNode: FC<ConditionNodeProps> = ({ title, unit, inputProps, index,
   title ??= typeInfo.title()
   return (
     <div className="flex items-baseline">
-      <Popover2
+      <PopoverNext
         placement="bottom"
         content={
           <Menu>
@@ -268,7 +268,7 @@ const ConditionNode: FC<ConditionNodeProps> = ({ title, unit, inputProps, index,
         <Button minimal className="!px-0 !py-1 min-h-0 !font-normal !text-inherit">
           {title}
         </Button>
-      </Popover2>
+      </PopoverNext>
       <NumericInput2
         intOnly
         buttonPosition="none"

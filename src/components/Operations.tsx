@@ -1,4 +1,4 @@
-﻿import { Button, ButtonGroup, Card, Divider, H6, InputGroup, Tab, Tabs } from '@blueprintjs/core'
+import { Button, ButtonGroup, Card, Divider, H6, InputGroup, Tab, Tabs } from '@blueprintjs/core'
 
 import { UseOperationsParams } from 'apis/operation'
 import clsx from 'clsx'
@@ -75,7 +75,6 @@ export const Operations: ComponentType = withSuspensable(() => {
                 className="max-w-md [&>input]:!rounded-md"
                 placeholder={t.components.Operations.search_placeholder}
                 leftIcon="search"
-                size={64}
                 large
                 type="search"
                 enterKeyHint="search"
@@ -149,7 +148,7 @@ export const Operations: ComponentType = withSuspensable(() => {
                     <Button
                       key={orderBy}
                       className={clsx(
-                        '!px-2 !py-1 !border-none [&>.bp4-icon]:!mr-1',
+                        '!px-2 !py-1 !border-none [&>.bp6-icon]:!mr-1',
                         !active && 'opacity-75 !font-normal',
                       )}
                       icon={icon}
@@ -173,7 +172,6 @@ export const Operations: ComponentType = withSuspensable(() => {
               className="max-w-md [&>input]:!rounded-md"
               placeholder={t.components.Operations.search_placeholder}
               leftIcon="search"
-              size={64}
               large
               type="search"
               enterKeyHint="search"

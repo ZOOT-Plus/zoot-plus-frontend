@@ -4,7 +4,9 @@ import clsx from 'clsx'
 import { clamp, noop } from 'lodash-es'
 import { WheelEventHandler, useCallback, useEffect, useRef, useState } from 'react'
 
-type MixedNumericInputProps = HTMLInputProps & NumericInputProps
+// v6 起 NumericInputProps.size 是 Blueprint 的 Size 变体，与 HTMLInputProps.size(number) 冲突，
+// 交叉后会塌成 never，这里从 HTML props 中剔除 size，保留 Blueprint 的 size 语义。
+type MixedNumericInputProps = Omit<HTMLInputProps, 'size'> & NumericInputProps
 
 export interface NumericInput2Props extends MixedNumericInputProps {
   intOnly?: boolean

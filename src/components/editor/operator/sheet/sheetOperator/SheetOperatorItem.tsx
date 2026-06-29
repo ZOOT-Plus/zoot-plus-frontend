@@ -1,5 +1,4 @@
-import { Button, Card, Icon, Intent } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Card, Icon, Intent, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
@@ -105,7 +104,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
             {(() => {
               const isFavDuplicate = favOperators.find(({ name: existedName }) => existedName === name)
               return (
-                <Popover2
+                <PopoverNext
                   content={
                     <Button minimal onClick={onPinnedChange}>
                       <Icon icon={pinned ? 'pin' : 'warning-sign'} className={clsx(pinned && '-rotate-45')} />
@@ -123,7 +122,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
                     className={clsx(pinned && '-rotate-45')}
                     onClick={!pinned && !isFavDuplicate ? onPinnedChange : undefined}
                   />
-                </Popover2>
+                </PopoverNext>
               )
             })()}
           </div>

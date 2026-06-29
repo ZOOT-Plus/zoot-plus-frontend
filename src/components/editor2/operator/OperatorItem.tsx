@@ -1,5 +1,4 @@
-import { Button, Card, Classes, Icon, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Card, Classes, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtom, useSetAtom } from 'jotai'
@@ -60,7 +59,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
     return (
       <div className={clsx('relative flex items-start', isDragging && 'invisible')}>
         <div className="relative">
-          <Popover2
+          <PopoverNext
             placement="top"
             content={
               <Menu>
@@ -108,7 +107,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                 />
               )}
             </Card>
-          </Popover2>
+          </PopoverNext>
 
           {info?.prof !== 'TOKEN' && (
             <>
@@ -453,7 +452,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               }}
               popoverProps={{
                 placement: 'top',
-                popoverClassName: '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-0 [&_li]:!mb-0',
+                popoverClassName: '!rounded-none [&_.bp6-popover-content]:!p-0 [&_.bp6-menu]:min-w-0 [&_li]:!mb-0',
               }}
             >
               <Button

@@ -353,7 +353,7 @@ export const EditorActionAdd = ({
                   <TextArea
                     fill
                     rows={2}
-                    growVertically
+                    autoResize
                     large
                     id="doc"
                     placeholder={t.components.editor.action.EditorActionAdd.description_placeholder}

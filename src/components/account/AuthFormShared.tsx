@@ -1,4 +1,4 @@
-import { InputGroup, InputGroupProps2 } from '@blueprintjs/core'
+import { InputGroup, InputGroupProps } from '@blueprintjs/core'
 
 import { ControllerProps, FieldValues, UseControllerProps } from 'react-hook-form'
 
@@ -63,7 +63,7 @@ export type AuthFormFieldProps<T extends FieldValues> = Pick<FormFieldProps<T, a
   label?: string
   register?: boolean
   autoComplete?: string
-  inputGroupProps?: (...params: Parameters<ControllerProps<T, any>['render']>) => InputGroupProps2
+  inputGroupProps?: (...params: Parameters<ControllerProps<T, any>['render']>) => InputGroupProps
 }
 
 export const AuthFormEmailField = <T extends FieldValues>({

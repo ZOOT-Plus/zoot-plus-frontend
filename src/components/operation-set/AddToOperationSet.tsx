@@ -170,7 +170,7 @@ function AddToOperationSet({ operationIds, onSuccess }: AddToOperationSetProps) 
             <div key={id}>
               <Checkbox
                 className={clsx(
-                  'flex items-center m-0 p-2 !pl-10 hover:bg-slate-200 dark:hover:bg-slate-800 [&>.bp4-control-indicator]:mt-0',
+                  'flex items-center m-0 p-2 !pl-10 hover:bg-slate-200 dark:hover:bg-slate-800 [&>.bp6-control-indicator]:mt-0',
                   checkboxOverrides[id] !== undefined && checkboxOverrides[id] !== defaultChecked(id) && 'font-bold',
                 )}
                 checked={checkboxOverrides[id] ?? defaultChecked(id)}

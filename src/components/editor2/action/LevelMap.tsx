@@ -151,7 +151,7 @@ export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
         <NonIdealState
           className="absolute inset-0"
           icon={
-            mapStatus === 'loading' ? <Spinner className="[&_.bp4-spinner-head]:stroke-current" /> : 'area-of-interest'
+            mapStatus === 'loading' ? <Spinner className="[&_.bp6-spinner-head]:stroke-current" /> : 'area-of-interest'
           }
           description={mapStatus === 'idle' ? t.components.editor2.LevelMap.select_level : undefined}
         />

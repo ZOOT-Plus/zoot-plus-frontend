@@ -1,5 +1,5 @@
 import { Button, MenuItem } from '@blueprintjs/core'
-import { Select2 } from '@blueprintjs/select'
+import { Select } from '@blueprintjs/select'
 
 import { useController } from 'react-hook-form'
 import { SetOptional } from 'type-fest'
@@ -44,7 +44,7 @@ export const EditorActionOperatorDirection = ({
       error={errors[name]}
       description={t.components.editor.action.EditorActionOperatorDirection.direction_description}
     >
-      <Select2<OperatorDirection>
+      <Select<OperatorDirection>
         filterable={false}
         resetOnSelect={true}
         items={operatorDirections}
@@ -69,7 +69,7 @@ export const EditorActionOperatorDirection = ({
           onBlur={onBlur}
           ref={ref}
         />
-      </Select2>
+      </Select>
     </FormField2>
   )
 }

@@ -26,7 +26,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
   return (
     <div
       className={clsx(
-        'p-4 md:[&>.bp4-form-group]:flex-row md:[&>.bp4-form-group>.bp4-label]:w-20',
+        'p-4 md:[&>.bp6-form-group]:flex-row md:[&>.bp6-form-group>.bp6-label]:w-20',
         '[&_[type="text"]]:!border-0 [&_textarea]:!outline-none [&_[type="text"]]:shadow-[inset_0_0_2px_0_rgba(0,0,0,0.4)] [&_textarea:not(:focus)]:!shadow-[inset_0_0_2px_0_rgba(0,0,0,0.4)]',
         className,
       )}

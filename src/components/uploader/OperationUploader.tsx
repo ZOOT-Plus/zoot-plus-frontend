@@ -1,5 +1,15 @@
-import { AnchorButton, Callout, FileInput, FormGroup, H4, Icon, Spinner, SpinnerSize, Tag } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import {
+  AnchorButton,
+  Callout,
+  FileInput,
+  FormGroup,
+  H4,
+  Icon,
+  Spinner,
+  SpinnerSize,
+  Tag,
+  Tooltip,
+} from '@blueprintjs/core'
 
 import { useLevels } from 'apis/level'
 import { createOperation } from 'apis/operation'
@@ -176,7 +186,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
           />
         </FormGroup>
 
-        <Tooltip2 fill className="mt-4" placement="top" disabled={!nonUploadableReason} content={nonUploadableReason}>
+        <Tooltip fill className="mt-4" placement="top" disabled={!nonUploadableReason} content={nonUploadableReason}>
           {(() => {
             const settledCount = files.filter((file) => file.uploaded || file.error).length
 
@@ -199,7 +209,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
               </AnchorButton>
             )
           })()}
-        </Tooltip2>
+        </Tooltip>
 
         {globalErrors && (
           <Callout className="mt-4" intent="danger" icon="error" title={t.components.uploader.OperationUploader.error}>

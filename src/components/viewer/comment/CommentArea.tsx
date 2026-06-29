@@ -316,7 +316,7 @@ const CommentRatingButtons = ({ comment }: { comment: CommentInfo }) => {
       <Button
         minimal
         small
-        className="[&_.bp4-button-text]:-ml-0.5 "
+        className="[&_.bp6-button-text]:-ml-0.5 "
         icon={<OutlinedIcon icon="thumbs-up" size={14} />}
         onClick={() => rate(CommentRating.Like)}
       >

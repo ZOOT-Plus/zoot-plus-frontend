@@ -1,10 +1,14 @@
-import { Button, ButtonProps, Classes, Label } from '@blueprintjs/core'
-import { Classes as Popover2Classes } from '@blueprintjs/popover2'
-import { QueryList, Select2, Select2Props, isCreateNewItem } from '@blueprintjs/select'
+import { Button, ButtonProps, Label } from '@blueprintjs/core'
+import {
+  QueryList,
+  Select as BlueprintSelect,
+  SelectProps as BlueprintSelectProps,
+  isCreateNewItem,
+} from '@blueprintjs/select'
 
 import clsx from 'clsx'
 
-interface SelectProps<T> extends Select2Props<T> {
+interface SelectProps<T> extends BlueprintSelectProps<T> {
   selectedItem?: T
   resetButtonProps?: ButtonProps
   canReset?: boolean
@@ -24,14 +28,13 @@ export const Select = <T,>({
 
   return (
     <Label className={clsx('!inline-flex items-center !mb-0', className)}>
-      <Select2
-        ref={patchHandleItemSelect}
+      <BlueprintSelect
         className="!mt-0"
         resetOnQuery={false} // 这个功能有无限 reset 的 bug，不要用
         inputProps={{
           ...inputProps,
           className: clsx(
-            '[&_.bp4-input]:rounded-md [&_.bp4-icon-search]:!m-[7px] [&_.bp4-button]:!p-[0_7px]',
+            '[&_.bp6-input]:rounded-md [&_.bp6-icon-search]:!m-[7px] [&_.bp6-button]:!p-[0_7px]',
             inputProps?.className,
           ),
         }}
@@ -54,22 +57,6 @@ export const Select = <T,>({
     </Label>
   )
 }
-
-// 临时实现 PR 里的内容： https://github.com/palantir/blueprint/pull/6070
-// TODO: 升级到 BP 5 后删除
-function patchHandleItemSelect(instance: Select2<any> | null) {
-  if (!instance || instance['handleItemSelect']._patched) return
-  instance['handleItemSelect'] = (item: unknown, event?: React.SyntheticEvent<HTMLElement>) => {
-    const target = event?.target as HTMLElement
-    const shouldDismiss =
-      target?.closest(`.${Classes.MENU_ITEM}`)?.classList?.contains(Popover2Classes.POPOVER2_DISMISS) ?? true
-
-    instance.setState({ isOpen: !shouldDismiss })
-    instance.props.onItemSelect?.(item, event)
-  }
-  instance['handleItemSelect']._patched = true
-}
-//
 
 // 修复 BP 的远古 bug：https://github.com/palantir/blueprint/issues/3751
 

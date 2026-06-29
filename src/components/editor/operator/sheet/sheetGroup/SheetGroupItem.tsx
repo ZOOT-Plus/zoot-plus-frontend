@@ -1,5 +1,4 @@
-import { Alert, Button, Card, Collapse, Icon, Intent, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Alert, Button, Card, Collapse, Icon, Intent, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
@@ -291,7 +290,7 @@ const GroupPinOption: FC<GroupPinOptionProp> = ({ pinned, onPinChange, isDuplica
       : t.components.editor.operator.sheet.sheetGroup.SheetGroupItem.add_to_favorites
 
   return (
-    <Popover2
+    <PopoverNext
       disabled={!pinned && !isDuplicate}
       content={
         <Menu className="p-0">
@@ -309,6 +308,6 @@ const GroupPinOption: FC<GroupPinOptionProp> = ({ pinned, onPinChange, isDuplica
         title={pinText}
         onClick={pinned || isDuplicate ? undefined : onPinChange}
       />
-    </Popover2>
+    </PopoverNext>
   )
 }

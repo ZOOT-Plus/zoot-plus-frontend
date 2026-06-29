@@ -8,11 +8,11 @@
 
 // 加上最外层的id，保证自定义css优先级
 body {
-  .bp4-card {
+  .bp6-card {
     @apply rounded-lg py-4;
   }
 
-  .bp4-input {
+  .bp6-input {
     @apply block w-full py-2 pl-3 pr-3;
     @apply bg-white shadow-sm border border-slate-400 rounded-md border-solid;
     @apply focus:border-violet-500;
@@ -26,36 +26,36 @@ body {
     }
   }
 
-  .bp4-input,
+  .bp6-input,
   // class of TagInput (also used by MultiSelect2)
-  .bp4-input-ghost {
+  .bp6-input-ghost {
     @apply placeholder:italic placeholder:text-slate-400;
   }
 
   // simulate border using outline because Blueprint TextArea's auto-sizing doesn't work well with border
-  textarea.bp4-input {
+  textarea.bp6-input {
     @apply border-none outline outline-1 outline-slate-400;
 
     outline-offset: -1px;
   }
 
-  .bp4-file-upload-input {
+  .bp6-file-upload-input {
     @apply placeholder:italic placeholder:text-slate-400;
     @apply block w-full;
     @apply bg-white shadow-sm border border-slate-400 rounded-md border-solid;
     @apply focus:border-violet-500;
   }
 
-  .bp4-large .bp4-file-upload-input::after {
+  .bp6-large .bp6-file-upload-input::after {
     @apply m-1;
   }
 
-  .bp4-callout {
+  .bp6-callout {
     @apply rounded-md;
   }
 
-  .bp4-input-group {
-    .bp4-icon {
+  .bp6-input-group {
+    .bp6-icon {
       @apply absolute inset-y-0 left-0 flex items-center m-0;
 
       span {
@@ -63,20 +63,20 @@ body {
       }
     }
 
-    .bp4-button .bp4-icon {
+    .bp6-button .bp6-icon {
       @apply relative;
     }
 
-    .bp4-icon + .bp4-input {
+    .bp6-icon + .bp6-input {
       @apply pl-8;
     }
   }
 
-  .bp4-large .bp4-file-upload-input {
+  .bp6-large .bp6-file-upload-input {
     line-height: 2.375rem;
   }
 
-  .bp4-large .bp4-file-upload-input::after {
+  .bp6-large .bp6-file-upload-input::after {
     @apply text-slate-900 shadow-none rounded-none m-0;
     @apply border-l border-solid border-slate-400;
     @apply hover:shadow-none;
@@ -85,74 +85,74 @@ body {
     line-height: 2.375rem;
   }
 
-  .bp4-button {
+  .bp6-button {
     @apply flex;
     @apply border border-solid border-transparent rounded-md font-semibold;
     @apply text-sm;
     @apply transition-colors;
     @apply justify-center items-center;
 
-    &:not(.bp4-small) {
+    &:not(.bp6-small) {
       @apply py-2 px-4;
     }
 
-    &:not([class*='bp4-intent-']):not(.bp4-minimal) {
+    &:not([class*='bp6-intent-']):not(.bp6-minimal) {
       @apply text-slate-900 shadow-none;
       @apply border-slate-400;
       @apply hover:shadow-none;
     }
 
-    &.bp4-disabled {
+    &.bp6-disabled {
       @apply opacity-50;
     }
 
-    &.bp4-intent-primary {
+    &.bp6-intent-primary {
       &,
-      &.bp4-disabled {
+      &.bp6-disabled {
         @apply bg-violet-500 enabled:hover:bg-violet-600;
       }
-      &.bp4-minimal {
+      &.bp6-minimal {
         @apply bg-transparent enabled:hover:bg-violet-100;
       }
     }
 
-    &.bp4-intent-success {
+    &.bp6-intent-success {
       &,
-      &.bp4-disabled {
+      &.bp6-disabled {
         @apply bg-emerald-500 enabled:hover:bg-emerald-600;
       }
-      &.bp4-minimal {
+      &.bp6-minimal {
         @apply bg-transparent enabled:hover:bg-emerald-100;
       }
     }
 
-    &.bp4-intent-warning {
+    &.bp6-intent-warning {
       &,
-      &.bp4-disabled {
+      &.bp6-disabled {
         @apply bg-amber-500 enabled:hover:bg-amber-600;
       }
-      &.bp4-minimal {
+      &.bp6-minimal {
         @apply bg-transparent enabled:hover:bg-amber-100;
       }
     }
 
-    &.bp4-intent-danger {
+    &.bp6-intent-danger {
       &,
-      &.bp4-disabled {
+      &.bp6-disabled {
         @apply bg-red-500 enabled:hover:bg-red-600;
       }
-      &.bp4-minimal {
+      &.bp6-minimal {
         @apply bg-transparent enabled:hover:bg-red-100;
       }
     }
 
-    .bp4-icon:first-child {
+    .bp6-icon:first-child {
       @apply mr-2;
     }
   }
 
   // TODO: 请把select换成组件库的select
-  // .bp4-html-select select {
+  // .bp6-html-select select {
   //   @apply block py-2 px-4;
   //   @apply border border-solid border-slate-400 rounded-md font-semibold;
   //   @apply text-sm shadow-none text-center;
@@ -160,13 +160,13 @@ body {
   //   @apply focus:outline-none;
   // }
 
-  .bp4-popover2 {
+  .bp6-popover {
     @apply rounded-lg;
-    .bp4-popover2-content {
+    .bp6-popover-content {
       @apply rounded-lg p-2;
     }
     ul li {
-      .bp4-menu-item {
+      .bp6-menu-item {
         @apply rounded-md;
       }
 
@@ -176,44 +176,44 @@ body {
     }
   }
 
-  .bp4-dialog {
+  .bp6-dialog {
     @apply rounded-lg;
-    & .bp4-dialog-header {
+    & .bp6-dialog-header {
       @apply rounded-t-lg;
     }
   }
 
-  .bp4-popover2 .bp4-heading {
+  .bp6-popover .bp6-heading {
     @apply opacity-80;
   }
 
-  .bp4-toast {
+  .bp6-toast {
     @apply rounded border-none;
-    &.bp4-intent-success {
+    &.bp6-intent-success {
       @apply bg-emerald-500;
-      .bp4-button {
+      .bp6-button {
         @apply !bg-emerald-500;
       }
     }
-    &.bp4-intent-warning {
+    &.bp6-intent-warning {
       @apply bg-amber-500;
-      .bp4-button {
+      .bp6-button {
         @apply !bg-amber-500;
       }
     }
-    &.bp4-intent-danger {
+    &.bp6-intent-danger {
       @apply bg-red-500;
-      .bp4-button {
+      .bp6-button {
         @apply !bg-red-500;
       }
     }
-    .bp4-button {
+    .bp6-button {
       @apply border-none p-0;
     }
   }
 
-  .bp4-numeric-input {
-    & .bp4-input-group {
+  .bp6-numeric-input {
+    & .bp6-input-group {
       @apply !mr-0;
 
       & input {
@@ -221,7 +221,7 @@ body {
       }
     }
 
-    & .bp4-button-group {
+    & .bp6-button-group {
       & button {
         @apply !rounded-l-none;
       }
@@ -234,16 +234,16 @@ body {
     }
   }
 
-  .bp4-skeleton {
+  .bp6-skeleton {
     @apply rounded-md;
   }
 
-  label.bp4-checkbox {
+  label.bp6-checkbox {
     @apply select-none;
   }
 }
 
-.bp4-dark {
+.bp6-dark {
   @dark-content-bg: #2f343c;
 
   // background
@@ -253,9 +253,9 @@ body {
   }
 
   // navbar
-  .bp4-navbar {
+  .bp6-navbar {
     a,
-    .bp4-tag span {
+    .bp6-tag span {
       @apply text-slate-50;
     }
   }
@@ -272,8 +272,8 @@ body {
   }
 
   // 作业详情页
-  .bp4-card p,
-  .bp4-card div,
+  .bp6-card p,
+  .bp6-card div,
   .markdown-body,
   .markdown-body blockquote,
   .markdown-body span {
@@ -285,33 +285,33 @@ body {
   }
 
   // 通用样式 - 按钮、tag、提示
-  .bp4-button {
-    .bp4-button-text {
+  .bp6-button {
+    .bp6-button-text {
       @apply text-slate-50;
     }
 
-    &.bp4-minimal.bp4-intent-danger:hover:enabled {
+    &.bp6-minimal.bp6-intent-danger:hover:enabled {
       @apply bg-red-500;
     }
   }
 
-  .bp4-tag {
+  .bp6-tag {
     @apply bg-slate-900 text-slate-200;
 
-    &.bp4-intent-danger {
+    &.bp6-intent-danger {
       @apply bg-red-500;
     }
 
-    &.bp4-intent-primary {
+    &.bp6-intent-primary {
       @apply bg-blue-500;
     }
   }
 
-  .bp4-callout p {
+  .bp6-callout p {
     @apply text-slate-50;
   }
 
-  .bp4-label {
+  .bp6-label {
     p,
     span,
     div {
@@ -319,27 +319,27 @@ body {
     }
   }
 
-  .bp4-text-muted {
+  .bp6-text-muted {
     @apply text-slate-100;
   }
 
-  .bp4-menu {
-    .bp4-menu-item.bp4-selected {
+  .bp6-menu {
+    .bp6-menu-item.bp6-selected {
       @apply text-slate-100;
     }
   }
 
-  .bp4-form-group {
-    .bp4-form-helper-text {
+  .bp6-form-group {
+    .bp6-form-helper-text {
       @apply text-slate-100;
     }
 
-    .bp4-input-group input {
+    .bp6-input-group input {
       @apply text-slate-100;
     }
   }
 
-  .bp4-tabs {
+  .bp6-tabs {
     div,
     span,
     p {
@@ -348,7 +348,7 @@ body {
   }
 }
 
-body.bp4-dark.high-contrast-theme {
+body.bp6-dark.high-contrast-theme {
   @hc-dark-bg: #232326;
   @hc-dark-border: #38383b;
   @hc-input-bg: #2d2d30;
@@ -360,30 +360,30 @@ body.bp4-dark.high-contrast-theme {
   }
 
   // navbar
-  .bp4-navbar {
+  .bp6-navbar {
     background-color: @hc-dark-bg;
     border-bottom: 1px solid @hc-dark-border;
 
     a,
-    .bp4-tag span {
+    .bp6-tag span {
       @apply text-slate-50;
     }
   }
 
-  .bp4-dialog,
-  .bp4-drawer,
-  .bp4-menu {
+  .bp6-dialog,
+  .bp6-drawer,
+  .bp6-menu {
     background-color: @hc-dark-bg;
     border: 1px solid @hc-dark-border;
     color: @hc-text-color;
   }
 
-  .bp4-card {
+  .bp6-card {
     background-color: @hc-dark-bg;
     color: @hc-text-color;
   }
 
-  .bp4-drawer {
+  .bp6-drawer {
     .bg-slate-100,
     .dark\:bg-slate-900 {
       background-color: @hc-dark-bg !important;
@@ -393,29 +393,29 @@ body.bp4-dark.high-contrast-theme {
     }
   }
 
-  .bp4-popover2 .bp4-popover2-content,
-  .bp4-popover2.bp4-dark .bp4-popover2-content {
+  .bp6-popover .bp6-popover-content,
+  .bp6-popover.bp6-dark .bp6-popover-content {
     background-color: @hc-dark-bg !important;
     border: 1px solid @hc-dark-border !important;
     color: @hc-text-color !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
   }
 
-  .bp4-popover2 .bp4-popover2-arrow-fill {
+  .bp6-popover .bp6-popover-arrow-fill {
     fill: @hc-dark-bg !important;
   }
-  .bp4-popover2 .bp4-popover2-arrow-border {
+  .bp6-popover .bp6-popover-arrow-border {
     fill: @hc-dark-border !important;
   }
 
-  .bp4-popover2-content {
-    .bp4-menu {
+  .bp6-popover-content {
+    .bp6-menu {
       background-color: transparent;
       border: none;
     }
 
-    .bp4-input-group {
-      .bp4-input {
+    .bp6-input-group {
+      .bp6-input {
         background-color: @hc-input-bg;
         border: 1px solid @hc-dark-border;
         color: #ffffff;
@@ -430,24 +430,24 @@ body.bp4-dark.high-contrast-theme {
         }
       }
 
-      .bp4-icon {
+      .bp6-icon {
         color: #9ca3af;
         background-color: transparent;
       }
     }
   }
 
-  .bp4-input,
+  .bp6-input,
   textarea,
-  .bp4-file-upload-input {
+  .bp6-file-upload-input {
     background-color: @hc-input-bg;
     border-color: @hc-dark-border;
     color: #fff;
   }
 
   // 作业详情页
-  .bp4-card p,
-  .bp4-card div,
+  .bp6-card p,
+  .bp6-card div,
   .markdown-body,
   .markdown-body blockquote,
   .markdown-body span {
@@ -465,8 +465,8 @@ body.bp4-dark.high-contrast-theme {
   }
 
   // 按钮
-  .bp4-button {
-    &:not([class*='bp4-intent-']):not(.bp4-minimal) {
+  .bp6-button {
+    &:not([class*='bp6-intent-']):not(.bp6-minimal) {
       background-color: @hc-input-bg;
       border-color: @hc-dark-border;
 
@@ -475,15 +475,15 @@ body.bp4-dark.high-contrast-theme {
       }
     }
 
-    .bp4-button-text {
+    .bp6-button-text {
       @apply text-slate-50;
     }
   }
 
-  .bp4-button.bp4-minimal.bp4-active.\!text-inherit {
+  .bp6-button.bp6-minimal.bp6-active.\!text-inherit {
     color: rgb(3 105 161 / var(--tw-bg-opacity)) !important;
 
-    .bp4-icon,
+    .bp6-icon,
     svg {
       fill: currentColor !important;
       color: inherit !important;
@@ -491,19 +491,19 @@ body.bp4-dark.high-contrast-theme {
   }
 
   // Tag
-  .bp4-tag {
+  .bp6-tag {
     background-color: #333 !important;
     border: 1px solid #444 !important;
     color: @hc-text-color !important;
 
-    &.bp4-intent-danger,
+    &.bp6-intent-danger,
     &.bg-red-400 {
       background-color: #4a1e1e !important;
       border-color: #7f1d1d !important;
       color: #fca5a5 !important;
     }
 
-    &.bp4-intent-primary,
+    &.bp6-intent-primary,
     &.bg-violet-400 {
       background-color: #4c1d95 !important;
       border-color: #6d28d9 !important;
@@ -515,8 +515,8 @@ body.bp4-dark.high-contrast-theme {
     }
   }
 
-  .bp4-tooltip2 {
-    .bp4-popover2-content {
+  .bp6-tooltip2 {
+    .bp6-popover-content {
       background-color: @hc-dark-bg !important;
       border: 1px solid @hc-dark-border !important;
       color: @hc-text-color !important;
@@ -527,16 +527,16 @@ body.bp4-dark.high-contrast-theme {
       }
     }
 
-    .bp4-popover2-arrow-fill {
+    .bp6-popover-arrow-fill {
       fill: @hc-dark-bg !important;
     }
-    .bp4-popover2-arrow-border {
+    .bp6-popover-arrow-border {
       fill: @hc-dark-border !important;
     }
   }
 
-  .bp4-menu {
-    .bp4-menu-item.bp4-selected {
+  .bp6-menu {
+    .bp6-menu-item.bp6-selected {
       @apply text-slate-100;
       background-color: rgba(139, 92, 246, 0.15) !important;
     }
@@ -569,25 +569,25 @@ body.bp4-dark.high-contrast-theme {
     border-bottom: 1px solid @hc-dark-border !important;
   }
 
-  .bp4-file-upload-input {
+  .bp6-file-upload-input {
     box-shadow: inset 0 0 0 1px @hc-dark-border !important;
     background-color: @hc-input-bg !important;
     color: @hc-text-color !important;
   }
 
-  .bp4-file-upload-input::after {
+  .bp6-file-upload-input::after {
     background-color: @hc-input-bg !important;
     border-left: 1px solid @hc-dark-border !important;
     color: @hc-text-color !important;
     box-shadow: none !important;
   }
-  .bp4-file-input:hover .bp4-file-upload-input::after {
+  .bp6-file-input:hover .bp6-file-upload-input::after {
     background-color: #3e3e42 !important;
   }
 
-  .bp4-input,
-  textarea.bp4-input,
-  input.bp4-input {
+  .bp6-input,
+  textarea.bp6-input,
+  input.bp6-input {
     background-color: @hc-input-bg !important;
     box-shadow: inset 0 0 0 1px @hc-dark-border !important;
     color: #ffffff !important;
@@ -595,17 +595,17 @@ body.bp4-dark.high-contrast-theme {
       color: #6b7280 !important;
     }
     &:disabled,
-    &.bp4-disabled {
+    &.bp6-disabled {
       background-color: #202023 !important;
       box-shadow: none !important;
       color: #71717a !important;
     }
   }
 
-  .bp4-input:focus,
-  .bp4-input.bp4-active,
-  textarea.bp4-input:focus,
-  textarea.bp4-input.bp4-active {
+  .bp6-input:focus,
+  .bp6-input.bp6-active,
+  textarea.bp6-input:focus,
+  textarea.bp6-input.bp6-active {
     border-color: #8b5cf6 !important;
     box-shadow:
       inset 0 0 0 1px #8b5cf6,
@@ -614,14 +614,14 @@ body.bp4-dark.high-contrast-theme {
     outline: none !important;
   }
 
-  .bp4-dialog-header {
+  .bp6-dialog-header {
     background-color: @hc-dark-bg !important;
     border-bottom: 1px solid @hc-dark-border !important;
     color: @hc-text-color !important;
     box-shadow: none !important;
   }
 
-  .bp4-dialog-close-button .bp4-icon {
+  .bp6-dialog-close-button .bp6-icon {
     color: #9ca3af !important;
     &:hover {
       color: #ffffff !important;

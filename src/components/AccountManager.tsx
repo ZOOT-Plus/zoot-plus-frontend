@@ -7,12 +7,11 @@ import {
   Menu,
   MenuDivider,
   MenuItem,
-  Position,
+  PopoverNext,
   Tab,
   TabId,
   Tabs,
 } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
 
 import { useAtom } from 'jotai'
 import { ComponentType, FC, useState } from 'react'
@@ -150,9 +149,9 @@ export const AccountManager: ComponentType = withGlobalErrorBoundary(() => {
       <AccountAuthDialog open={open} onClose={() => setOpen(false)} />
       {authState.token ? (
         // BUTTOM_RIGHT设置防止弹出框撑大body超过100vw
-        <Popover2 content={<AccountMenu />} position={Position.BOTTOM_RIGHT}>
+        <PopoverNext content={<AccountMenu />} placement="bottom-end">
           <Button icon="user" text={!shrinked && authState.username} rightIcon="caret-down" />
-        </Popover2>
+        </PopoverNext>
       ) : (
         <Button className="ml-auto" icon="user" onClick={() => setOpen(true)}>
           {!shrinked && t.components.AccountManager.login_register}

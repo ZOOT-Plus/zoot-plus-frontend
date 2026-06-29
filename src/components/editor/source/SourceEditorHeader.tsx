@@ -1,5 +1,4 @@
-import { Button, Icon, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import { FC, useState } from 'react'
 
@@ -63,9 +62,10 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange
 
       <div className="flex-1" />
 
-      <Popover2
-        minimal
-        position="bottom-left"
+      <PopoverNext
+        animation="minimal"
+        arrow={false}
+        placement="bottom-start"
         isOpen={importDropdownOpen}
         onClose={() => setImportDropdownOpen(false)}
         content={
@@ -82,11 +82,12 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange
           rightIcon="caret-down"
           onClick={() => setImportDropdownOpen(!importDropdownOpen)}
         />
-      </Popover2>
+      </PopoverNext>
 
-      <Popover2
-        minimal
-        position="bottom-left"
+      <PopoverNext
+        animation="minimal"
+        arrow={false}
+        placement="bottom-start"
         content={
           <Menu>
             <MenuItem icon="clipboard" text={t.components.editor.source.SourceEditorHeader.copy} onClick={handleCopy} />
@@ -104,7 +105,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange
           text={t.components.editor.source.SourceEditorHeader.export}
           rightIcon="caret-down"
         />
-      </Popover2>
+      </PopoverNext>
     </>
   )
 }

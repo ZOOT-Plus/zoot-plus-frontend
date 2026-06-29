@@ -1,5 +1,4 @@
-import { Button, Menu, MenuItem, Position } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import { useCurrentSize } from 'utils/useCurrenSize'
 
@@ -46,11 +45,11 @@ export const ThemeSwitchButton = () => {
   )
 
   return (
-    <Popover2
+    <PopoverNext
       content={themeMenu}
-      position={Position.BOTTOM}
+      placement="bottom"
       renderTarget={({ isOpen, ref, ...targetProps }) => (
-        <div className="bp4-popover2-target !mt-0 flex items-center" ref={ref}>
+        <div className="bp6-popover-target !mt-0 flex items-center" ref={ref}>
           <Button
             {...targetProps}
             active={isOpen}

@@ -1,5 +1,4 @@
-import { Icon, IconSize } from '@blueprintjs/core'
-import { Popover2InteractionKind, Tooltip2 } from '@blueprintjs/popover2'
+import { Icon, IconSize, PopoverInteractionKind, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { FC } from 'react'
@@ -27,9 +26,9 @@ const GetLevelDescription: FC<{
       <span>{t.components.viewer.OperationRating.not_enough_ratings_short}</span>
     )
   ) : (
-    <Tooltip2
+    <Tooltip
       className="!inline-block !mt-0"
-      interactionKind={Popover2InteractionKind.HOVER}
+      interactionKind={PopoverInteractionKind.HOVER}
       content={t.components.viewer.OperationRating.liked_percentage({
         percent: likePercent,
         ratio: likeRatio,
@@ -37,7 +36,7 @@ const GetLevelDescription: FC<{
       position="bottom-left"
     >
       {ratingLevelToString(operation.ratingLevel)}
-    </Tooltip2>
+    </Tooltip>
   )
 }
 

@@ -10,8 +10,8 @@ import {
   MenuItem,
   NonIdealState,
   TextArea,
+  PopoverNext,
 } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
@@ -387,8 +387,9 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
   return (
     <div>
       <div className="mb-2 flex">
-        <Popover2
-          minimal
+        <PopoverNext
+          animation="minimal"
+          arrow={false}
           captureDismiss
           placement="bottom-start"
           content={
@@ -420,7 +421,7 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
           }
         >
           <Button small minimal icon="sort" text={t.components.operationSet.OperationSetEditor.quick_sort + '...'} />
-        </Popover2>
+        </PopoverNext>
         <Button
           small
           minimal

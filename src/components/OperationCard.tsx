@@ -1,5 +1,4 @@
-import { Button, Card, Elevation, H4, H5, Icon, Tag } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Card, Elevation, H4, H5, Icon, Tag, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
@@ -48,7 +47,7 @@ export const NeoOperationCard = ({
             onClick={onClick}
             onKeyDown={onKeyDown}
           >
-            <Tooltip2
+            <Tooltip
               content={operation.parsedContent.doc.title}
               className="whitespace-nowrap overflow-hidden text-ellipsis"
             >
@@ -62,7 +61,7 @@ export const NeoOperationCard = ({
                   </Tag>
                 )}
               </H4>
-            </Tooltip2>
+            </Tooltip>
 
             <div className="flex items-center text-slate-900">
               <NeoELevel
@@ -93,7 +92,7 @@ export const NeoOperationCard = ({
               </div>
               <div className="flex-1" />
 
-              <Tooltip2
+              <Tooltip
                 placement="top"
                 content={t.components.OperationCard.views_count({
                   count: operation.views,
@@ -103,13 +102,13 @@ export const NeoOperationCard = ({
                   <Icon icon="eye-open" className="mr-1.5" />
                   <span>{operation.views}</span>
                 </div>
-              </Tooltip2>
+              </Tooltip>
             </div>
 
             <div className="flex">
               <div>
                 <Icon icon="time" className="mr-1.5" />
-                <RelativeTime Tooltip2Props={{ placement: 'top' }} moment={operation.uploadTime} />
+                <RelativeTime TooltipProps={{ placement: 'top' }} moment={operation.uploadTime} />
               </div>
               <div className="flex-1" />
               <div className="text-zinc-500">
@@ -175,7 +174,7 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                   <OperationRating className="text-sm" operation={operation} layout="horizontal" />
                 </div>
 
-                <Tooltip2
+                <Tooltip
                   placement="top"
                   content={t.components.OperationCard.views_count({
                     count: operation.views,
@@ -185,11 +184,11 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                     <Icon icon="eye-open" className="mr-1.5" />
                     <span>{operation.views}</span>
                   </div>
-                </Tooltip2>
+                </Tooltip>
 
                 <div>
                   <Icon icon="time" className="mr-1.5" />
-                  <RelativeTime Tooltip2Props={{ placement: 'top' }} moment={operation.uploadTime} />
+                  <RelativeTime TooltipProps={{ placement: 'top' }} moment={operation.uploadTime} />
                 </div>
 
                 <div>
@@ -233,7 +232,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
         </Tag>
       ))}
       {groups?.map(({ name, opers }, index) => (
-        <Tooltip2
+        <Tooltip
           key={index}
           className="mr-2 last:mr-0 mb-1 last:mb-0"
           placement="top"
@@ -243,7 +242,7 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           }
         >
           <Tag>[{name}]</Tag>
-        </Tooltip2>
+        </Tooltip>
       ))}
     </div>
   ) : (
@@ -277,7 +276,7 @@ const CardActions = ({
     />
   ) : (
     <div className={clsx('flex gap-1', className)}>
-      <Tooltip2
+      <Tooltip
         placement="bottom"
         content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.download_json}</div>}
       >
@@ -286,19 +285,19 @@ const CardActions = ({
           icon="download"
           onClick={() => handleLazyDownloadJSON(operation.id, operation.parsedContent.doc.title)}
         />
-      </Tooltip2>
-      <Tooltip2
+      </Tooltip>
+      <Tooltip
         placement="bottom"
         content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.copy_secret_code}</div>}
       >
         <Button small icon="clipboard" onClick={() => copyShortCode(operation)} />
-      </Tooltip2>
-      <Tooltip2
+      </Tooltip>
+      <Tooltip
         placement="bottom"
         content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.add_to_job_set}</div>}
       >
         <AddToOperationSetButton small icon="plus" operationIds={[operation.id]} />
-      </Tooltip2>
+      </Tooltip>
     </div>
   )
 }
