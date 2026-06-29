@@ -88,10 +88,5 @@
     "tsx": "^4.0.0",
     "typescript": "7.0.1-rc",
     "vite": "^8.1.0"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@popperjs/core@2.11.8": "patches/@popperjs__core@2.11.8.patch"
-    }
   }
 }
