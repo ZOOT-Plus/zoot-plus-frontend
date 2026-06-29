@@ -7,7 +7,7 @@
     "build": "pnpm generate:i18n && tsc --noEmit && vite build",
     "build:fast": "vite build",
     "typecheck": "pnpm generate:i18n && tsc --noEmit",
-    "generate:i18n": "esno scripts/generate-i18n.ts",
+    "generate:i18n": "tsx scripts/generate-i18n.ts",
     "build:azure": "pnpm build:fast && node post-build.mjs",
     "preview": "vite preview",
     "lint": "oxlint",
@@ -16,9 +16,9 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "scripts:update": "pnpm install && pnpm scripts:update-operators & pnpm scripts:update-operator-avatars & pnpm scripts:update-prof-icons & wait",
-    "scripts:update-operators": "esno scripts/update-operators.ts",
-    "scripts:update-operator-avatars": "esno scripts/update-operator-avatars.ts",
-    "scripts:update-prof-icons": "pnpm install && esno scripts/update-prof-icons.ts"
+    "scripts:update-operators": "tsx scripts/update-operators.ts",
+    "scripts:update-operator-avatars": "tsx scripts/update-operator-avatars.ts",
+    "scripts:update-prof-icons": "pnpm install && tsx scripts/update-prof-icons.ts"
   },
   "dependencies": {
     "@blueprintjs/core": "^4.15.1",
@@ -78,7 +78,7 @@
     "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.4.7",
-    "esno": "^4.0.0",
+    "tsx": "^4.0.0",
     "less": "^4.1.2",
     "oxfmt": "^0.56.0",
     "oxlint": "^1.71.0",
