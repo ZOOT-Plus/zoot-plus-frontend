@@ -30,5 +30,5 @@
     "react/jsx-key": "off",
     "typescript/no-useless-default-assignment": "off"
   },
-  "ignorePatterns": ["build", "coverage", ".eslintrc.js"]
+  "ignorePatterns": ["build", "coverage"]
 }

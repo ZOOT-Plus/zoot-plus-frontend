@@ -75,18 +75,18 @@
     "@types/pinyin": "^2.10.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.4.7",
     "esno": "^4.0.0",
     "less": "^4.1.2",
-    "oxfmt": "^0.55.0",
-    "oxlint": "^1.70.0",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0",
     "oxlint-tsgolint": "^0.23.0",
     "pinyin": "^3.0.0-alpha.5",
     "sharp": "^0.34.2",
     "simplebig": "^0.0.3",
     "tailwindcss": "^3.1.4",
     "typescript": "7.0.1-rc",
-    "vite": "^8.0.16"
+    "vite": "^8.1.0"
   }
 }

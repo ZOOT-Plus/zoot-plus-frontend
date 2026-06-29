@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck & Lint
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # NOTE: As of this branch, `pnpm typecheck` and `pnpm lint` still report
+      # pre-existing failures (business-code type errors, ungenerated i18n,
+      # a few oxlint errors). They run as non-blocking for now so the issues
+      # surface in CI without blocking PRs. Once the backlog is cleared, remove
+      # the `continue-on-error` lines to turn these into enforced gates.
+      - name: Type check
+        run: pnpm typecheck
+        continue-on-error: true
+
+      - name: Lint
+        run: pnpm lint
+        continue-on-error: true

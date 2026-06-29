@@ -28,6 +28,8 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       sourcemap: false,
+      // Skip the post-build gzip size report to shave a bit off build time.
+      reportCompressedSize: false,
       rolldownOptions: {
         output: {
           codeSplitting: {
