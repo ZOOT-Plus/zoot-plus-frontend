@@ -16,12 +16,21 @@ export interface UseOperationSetsParams {
   keyword?: string
   creatorId?: string
   onlyFollowing?: boolean
+  /** 是否降序（最新在前）。@default true，与作业列表保持一致 */
+  descending?: boolean
 
   disabled?: boolean
   suspense?: boolean
 }
 
-export function useOperationSets({ keyword, creatorId, onlyFollowing, disabled, suspense }: UseOperationSetsParams) {
+export function useOperationSets({
+  keyword,
+  creatorId,
+  onlyFollowing,
+  descending = true,
+  disabled,
+  suspense,
+}: UseOperationSetsParams) {
   const auth = useAtomValue(authAtom)
   const {
     data: pages,
@@ -44,8 +53,8 @@ export function useOperationSets({ keyword, creatorId, onlyFollowing, disabled, 
           page: pageIndex + 1,
           keyword,
           creatorId: creatorId === 'me' ? auth.userId : creatorId,
-          onlyFollowing,
-          desc: true,
+          onlyFollowing: onlyFollowing ?? false,
+          desc: descending,
         } satisfies CopilotSetQuery,
       ]
     },

@@ -10,7 +10,6 @@ import {
   UserFollowApi,
   querystring,
 } from 'maa-copilot-client'
-import { SetRequired } from 'type-fest'
 
 import { ApiError, InvalidTokenError, NetworkError, TokenExpiredError, UnauthorizedError } from 'utils/error'
 import { getDefaultStore } from 'jotai'
@@ -52,10 +51,11 @@ if (!import.meta.env.VITE_API) {
 
 const API_URL = import.meta.env.VITE_API
 
-// 把函数返回值里的 data 字段标记为 required
+// 把函数返回值里的 data 字段标记为 required 且非空
+// （requireData: true 时运行时已校验 data 存在，见下方 JSONApiResponse.value 拦截）
 type RequireData<T> = T extends (...params: infer P) => Promise<infer R>
   ? R extends { data?: any }
-    ? (...params: P) => Promise<SetRequired<R, 'data'>>
+    ? (...params: P) => Promise<Omit<R, 'data'> & { data: NonNullable<R['data']> }>
     : T
   : T
 

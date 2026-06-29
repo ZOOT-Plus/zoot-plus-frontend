@@ -28,7 +28,8 @@ export const EditorOperatorSkillTimes = <T extends CopilotDocV1.Operator | Copil
       onValueChange={(val) => onChange(Math.min(val, 100))}
       onBlur={onBlur}
       placeholder={t.components.editor.operator.EditorOperatorSkillTimes.skill_usage_count}
-      value={typeof value === 'object' ? '' : (value ?? '')}
+      // SkillTimes 本质是 number；value 的联合类型来自 react-hook-form 的字段路径推断
+      value={typeof value === 'number' ? value : ''}
       large
       min={1}
       max={100}

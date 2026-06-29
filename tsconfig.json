@@ -21,7 +21,7 @@
     "noImplicitThis": true,
     "noImplicitAny": false,
     "importHelpers": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

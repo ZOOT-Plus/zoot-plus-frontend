@@ -16,7 +16,7 @@ export async function getMe(): Promise<MaaUserInfo> {
     requireData: true,
   }).getMe()
 
-  return res.data!
+  return res.data
 }
 
 /**
@@ -29,7 +29,7 @@ export async function getUserInfo(userId: string): Promise<MaaUserInfo> {
     requireData: true,
   }).getUserInfo({ userId })
 
-  return res.data!
+  return res.data
 }
 
 // ── SWR Hooks ────────────────────────────────────────────────
