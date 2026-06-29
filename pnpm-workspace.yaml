@@ -7,3 +7,8 @@ allowBuilds:
 
 overrides:
   react-rating>@types/react: ^18.0.0
+  # Pin two transitive deps to releases that predate the CI minimumReleaseAge
+  # cutoff. Newer patches were pulled in by a local pnpm 10 update (which does
+  # not enforce the supply-chain policy) and got rejected by CI.
+  electron-to-chromium: 1.5.364
+  postcss: 8.5.15
