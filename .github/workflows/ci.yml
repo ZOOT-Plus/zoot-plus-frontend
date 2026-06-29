@@ -35,15 +35,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # NOTE: As of this branch, `pnpm typecheck` and `pnpm lint` still report
-      # pre-existing failures (business-code type errors, ungenerated i18n,
-      # a few oxlint errors). They run as non-blocking for now so the issues
-      # surface in CI without blocking PRs. Once the backlog is cleared, remove
-      # the `continue-on-error` lines to turn these into enforced gates.
+      # `pnpm typecheck` still has pre-existing failures (business-code type
+      # errors + ungenerated i18n), so it runs as non-blocking for now. Remove
+      # `continue-on-error` once those are cleared to make it an enforced gate.
       - name: Type check
         run: pnpm typecheck
         continue-on-error: true
 
+      # Lint is an enforced gate: errors fail the job. Warnings do not fail
+      # oxlint, so the remaining warnings stay visible without blocking.
       - name: Lint
         run: pnpm lint
-        continue-on-error: true

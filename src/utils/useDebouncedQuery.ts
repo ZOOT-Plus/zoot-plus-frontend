@@ -56,7 +56,7 @@ export function useDebouncedQuery({
     updateQuery.flush = debouncedUpdateQuery.flush
     updateQuery.cancel = debouncedUpdateQuery.cancel
     return updateQuery
-  }, [debounceTime, handleDebouncedQueryChange, handleQueryChange])
+  }, [debounceTime])
 
   // 立即更新防止后续冲突
   useEffect(() => () => updateQuery.flush(), [updateQuery])
