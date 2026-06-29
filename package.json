@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "pnpm generate:i18n && tsc --noEmit && vite build",
     "build:fast": "vite build",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm generate:i18n && tsc --noEmit",
+    "generate:i18n": "esno scripts/generate-i18n.ts",
     "build:azure": "pnpm build:fast && node post-build.mjs",
     "preview": "vite preview",
     "lint": "oxlint",

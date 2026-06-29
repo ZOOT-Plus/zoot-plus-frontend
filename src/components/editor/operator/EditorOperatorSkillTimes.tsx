@@ -28,7 +28,7 @@ export const EditorOperatorSkillTimes = <T extends CopilotDocV1.Operator | Copil
       onValueChange={(val) => onChange(Math.min(val, 100))}
       onBlur={onBlur}
       placeholder={t.components.editor.operator.EditorOperatorSkillTimes.skill_usage_count}
-      value={value ?? ''}
+      value={typeof value === 'object' ? '' : (value ?? '')}
       large
       min={1}
       max={100}

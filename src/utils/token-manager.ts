@@ -2,7 +2,7 @@ import { refreshAccessToken } from 'apis/auth'
 import { getDefaultStore } from 'jotai'
 import { noop } from 'lodash-es'
 
-import { authAtom, fromCredentials } from 'store/auth'
+import { authAtom, AuthState, fromCredentials } from 'store/auth'
 import { InvalidTokenError, NetworkError, TokenExpiredError, UnauthorizedError } from 'utils/error'
 
 let store = getDefaultStore()
@@ -17,7 +17,9 @@ export const TokenManager = {
       return pendingGetToken
     }
 
-    const { token, validBefore, refreshToken, refreshTokenValidBefore } = store.get(authAtom)
+    // authAtom 使用同步的 localStorage（getOnInit），运行时必为 AuthState，
+    // 但 jotai 的类型包含异步分支 AuthState | Promise<AuthState>，故断言。
+    const { token, validBefore, refreshToken, refreshTokenValidBefore } = store.get(authAtom) as AuthState
 
     const endTime = +new Date(validBefore || 0) || 0
     const refreshEndTime = +new Date(refreshTokenValidBefore || 0) || 0

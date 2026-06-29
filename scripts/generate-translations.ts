@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 const translationsFile = fileURLToPath(new URL('../src/i18n/translations.json', import.meta.url))
 const outputDir = fileURLToPath(new URL('../src/i18n/generated', import.meta.url))
@@ -28,7 +28,7 @@ export function generateTranslations(): Plugin {
   }
 }
 
-function splitTranslations() {
+export function splitTranslations() {
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, { recursive: true })
   }

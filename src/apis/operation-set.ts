@@ -45,6 +45,7 @@ export function useOperationSets({ keyword, creatorId, onlyFollowing, disabled, 
           keyword,
           creatorId: creatorId === 'me' ? auth.userId : creatorId,
           onlyFollowing,
+          desc: true,
         } satisfies CopilotSetQuery,
       ]
     },

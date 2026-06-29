@@ -35,12 +35,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # `pnpm typecheck` still has pre-existing failures (business-code type
-      # errors + ungenerated i18n), so it runs as non-blocking for now. Remove
-      # `continue-on-error` once those are cleared to make it an enforced gate.
+      # Typecheck generates i18n first (see the `typecheck` script) so it works
+      # on a clean checkout. Enforced gate: type errors fail the job.
       - name: Type check
         run: pnpm typecheck
-        continue-on-error: true
 
       # Lint is an enforced gate: errors fail the job. Warnings do not fail
       # oxlint, so the remaining warnings stay visible without blocking.

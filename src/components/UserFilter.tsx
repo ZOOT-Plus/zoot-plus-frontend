@@ -24,6 +24,8 @@ const MYSELF: MaaUserInfo = {
   id: 'me',
   userName: '我自己',
   activated: true,
+  followingCount: 0,
+  fansCount: 0,
 }
 
 function isMyself(user: MaaUserInfo | undefined) {

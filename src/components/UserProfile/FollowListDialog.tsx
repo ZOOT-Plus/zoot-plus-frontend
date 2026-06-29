@@ -45,7 +45,7 @@ export const FollowListDialog: ComponentType<{
   useEffect(() => {
     setScrollTop(0)
 
-    if (!isOpen) return
+    if (!isOpen) return undefined
 
     const frame = window.requestAnimationFrame(() => {
       if (parentRef.current) {
@@ -57,10 +57,10 @@ export const FollowListDialog: ComponentType<{
   }, [isOpen, type])
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) return undefined
 
     const element = parentRef.current
-    if (!element) return
+    if (!element) return undefined
 
     const updateHeight = () => {
       setViewportHeight(element.clientHeight || MAX_LIST_HEIGHT)
