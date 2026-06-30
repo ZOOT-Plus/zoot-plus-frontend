@@ -16,7 +16,7 @@ export function Markdown({ className, remarkPlugins, components, children, ...pr
         components={{
           ...components,
 
-          a: ({ children, ...props }) => {
+          a: ({ node, children, ...props }) => {
             // set target="_blank" for external links, see: https://github.com/remarkjs/react-markdown/issues/12#issuecomment-1479195975
             if (props.href?.startsWith('http')) {
               props.target = '_blank'

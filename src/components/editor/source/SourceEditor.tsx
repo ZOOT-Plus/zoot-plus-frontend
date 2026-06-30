@@ -98,7 +98,7 @@ export const SourceEditor: FC<SourceEditorProps> = ({
           <Tooltip
             className="flex-1"
             content={t.components.editor.source.SourceEditor.see_errors_in_form}
-            position="bottom"
+            placement="bottom"
             disabled={!hasValidationErrors}
           >
             <Callout

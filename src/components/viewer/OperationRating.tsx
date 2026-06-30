@@ -33,7 +33,7 @@ const GetLevelDescription: FC<{
         percent: likePercent,
         ratio: likeRatio,
       })}
-      position="bottom-left"
+      placement="bottom-start"
     >
       {ratingLevelToString(operation.ratingLevel)}
     </Tooltip>
