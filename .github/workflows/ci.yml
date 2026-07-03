@@ -44,3 +44,8 @@ jobs:
       # oxlint, so the remaining warnings stay visible without blocking.
       - name: Lint
         run: pnpm lint
+
+      # Build uses build:fast (vite build only); typecheck above already ran
+      # generate:i18n and tsc --noEmit, so we skip the redundant work here.
+      - name: Build
+        run: pnpm build:fast
