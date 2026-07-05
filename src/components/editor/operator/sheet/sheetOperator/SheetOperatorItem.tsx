@@ -1,5 +1,4 @@
-import { Button, Card, Icon, Intent } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Card, Icon, Intent, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
@@ -23,17 +22,10 @@ export interface SheetOperatorItemProp {
 
 export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
   const t = useTranslation()
-  const {
-    existedOperators,
-    existedGroups,
-    submitOperatorInSheet,
-    removeOperator,
-  } = useSheet()
+  const { existedOperators, existedGroups, submitOperatorInSheet, removeOperator } = useSheet()
   const [favOperators, setFavOperators] = useAtom(favOperatorAtom)
 
-  const operatorNoneGroupedIndex = existedOperators.findIndex(
-    ({ name: existedName }) => existedName === name,
-  )
+  const operatorNoneGroupedIndex = existedOperators.findIndex(({ name: existedName }) => existedName === name)
   const operatorInGroup = existedGroups
     .map(({ opers }) => opers)
     .flat()
@@ -59,10 +51,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
   const onOperatorSelect = () => {
     if (grouped)
       AppToaster.show({
-        message:
-          t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.operator_in_group(
-            { name },
-          ),
+        message: t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.operator_in_group({ name }),
         intent: Intent.DANGER,
       })
     else {
@@ -78,25 +67,14 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
       ...rest,
       skill: skill || 1,
       skillUsage: skillUsage || 0,
-      skillTimes:
-        skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-          ? skillTimes || 1
-          : undefined,
+      skillTimes: skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes ? skillTimes || 1 : undefined,
     }
-    setFavOperators([
-      ...[...favOperators].filter(({ name }) => name !== formattedValue.name),
-      { ...formattedValue },
-    ])
+    setFavOperators([...[...favOperators].filter(({ name }) => name !== formattedValue.name), { ...formattedValue }])
     submitOperatorInSheet(formattedValue)
   }
 
   const onPinnedChange = () => {
-    if (pinned)
-      setFavOperators(
-        [...favOperators].filter(
-          ({ name: existedName }) => existedName !== name,
-        ),
-      )
+    if (pinned) setFavOperators([...favOperators].filter(({ name: existedName }) => existedName !== name))
     else updateFavOperator()
   }
 
@@ -122,29 +100,18 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
         </p>
 
         {selected && (
-          <div
-            className="absolute top-2 right-2"
-            onClick={(e) => e.stopPropagation()}
-            role="presentation"
-          >
+          <div className="absolute top-2 right-2" onClick={(e) => e.stopPropagation()} role="presentation">
             {(() => {
-              const isFavDuplicate = favOperators.find(
-                ({ name: existedName }) => existedName === name,
-              )
+              const isFavDuplicate = favOperators.find(({ name: existedName }) => existedName === name)
               return (
-                <Popover2
+                <PopoverNext
                   content={
                     <Button minimal onClick={onPinnedChange}>
-                      <Icon
-                        icon={pinned ? 'pin' : 'warning-sign'}
-                        className={clsx(pinned && '-rotate-45')}
-                      />
+                      <Icon icon={pinned ? 'pin' : 'warning-sign'} className={clsx(pinned && '-rotate-45')} />
                       <span>
                         {pinned
-                          ? t.components.editor.operator.sheet.sheetOperator
-                              .SheetOperatorItem.remove_from_favorites
-                          : t.components.editor.operator.sheet.sheetOperator
-                              .SheetOperatorItem.will_replace_operator}
+                          ? t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.remove_from_favorites
+                          : t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.will_replace_operator}
                       </span>
                     </Button>
                   }
@@ -153,11 +120,9 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
                   <Icon
                     icon={pinned ? 'pin' : 'unpin'}
                     className={clsx(pinned && '-rotate-45')}
-                    onClick={
-                      !pinned && !isFavDuplicate ? onPinnedChange : undefined
-                    }
+                    onClick={!pinned && !isFavDuplicate ? onPinnedChange : undefined}
                   />
-                </Popover2>
+                </PopoverNext>
               )
             })()}
           </div>
@@ -174,17 +139,8 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
       )}
       {grouped && (
         <div className={clsx('flex mt-1 text-gray-500 items-center text-xs')}>
-          <Icon
-            icon="warning-sign"
-            size={12}
-            className="flex items-center mr-1"
-          />
-          <p className="font-semibold">
-            {
-              t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem
-                .in_group
-            }
-          </p>
+          <Icon icon="warning-sign" size={12} className="flex items-center mr-1" />
+          <p className="font-semibold">{t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.in_group}</p>
         </div>
       )}
     </Card>

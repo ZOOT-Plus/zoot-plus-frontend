@@ -1,4 +1,4 @@
-import type * as errors from '@zod/core/src/errors'
+import type * as errors from 'zod/v4/core'
 
 import { Primitive } from 'type-fest'
 
@@ -28,10 +28,7 @@ export const parsedType = (data: any): string => {
         return 'null'
       }
 
-      if (
-        Object.getPrototypeOf(data) !== Object.prototype &&
-        data.constructor
-      ) {
+      if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
         return data.constructor.name
       }
     }
@@ -45,10 +42,7 @@ export function stringifyPrimitive(value: any): string {
   return `${value}`
 }
 
-export function joinValues<T extends Primitive[]>(
-  array: T,
-  separator = '|',
-): string {
+export function joinValues<T extends Primitive[]>(array: T, separator = '|'): string {
   return array.map((val) => stringifyPrimitive(val)).join(separator)
 }
 
@@ -57,8 +51,7 @@ const error: errors.$ZodErrorMap = (issue) => {
     case 'invalid_type':
       return `无效的输入：期望 ${issue.expected}，收到 ${parsedType(issue.input)}`
     case 'invalid_value':
-      if (issue.values.length === 1)
-        return `无效的输入：期望 ${stringifyPrimitive(issue.values[0])}`
+      if (issue.values.length === 1) return `无效的输入：期望 ${stringifyPrimitive(issue.values[0])}`
       return `无效的选项：期望是 ${joinValues(issue.values, '|')} 之一`
     case 'too_big': {
       const adj = issue.inclusive ? '<=' : '<'
@@ -81,12 +74,9 @@ const error: errors.$ZodErrorMap = (issue) => {
       if (_issue.format === 'starts_with') {
         return `无效的字符串：必须以 "${_issue.prefix}" 开头`
       }
-      if (_issue.format === 'ends_with')
-        return `无效的字符串：必须以 "${_issue.suffix}" 结尾`
-      if (_issue.format === 'includes')
-        return `无效的字符串：必须包含 "${_issue.includes}"`
-      if (_issue.format === 'regex')
-        return `无效的字符串：必须匹配模式 ${_issue.pattern}`
+      if (_issue.format === 'ends_with') return `无效的字符串：必须以 "${_issue.suffix}" 结尾`
+      if (_issue.format === 'includes') return `无效的字符串：必须包含 "${_issue.includes}"`
+      if (_issue.format === 'regex') return `无效的字符串：必须匹配模式 ${_issue.pattern}`
       return `无效的 ${issue.format}`
     }
     case 'not_multiple_of':

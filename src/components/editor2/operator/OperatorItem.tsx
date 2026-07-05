@@ -1,5 +1,4 @@
-import { Button, Card, Classes, Icon, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Card, Classes, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtom, useSetAtom } from 'jotai'
@@ -46,37 +45,21 @@ const skillUsageClasses: Record<CopilotDocV1.SkillUsageType, string> = {
 }
 
 export const OperatorItem: FC<OperatorItemProps> = memo(
-  ({
-    operator,
-    onChange,
-    onRemove,
-    onOverlay,
-    isDragging,
-    isSorting,
-    attributes,
-    listeners,
-  }) => {
+  ({ operator, onChange, onRemove, onOverlay, isDragging, isSorting, attributes, listeners }) => {
     const t = useTranslation()
     const edit = useEdit()
     const displayName = useLocalizedOperatorName(operator.name)
-    const [skillLevels, setSkillLevels] = useAtom(
-      editorAtoms.skillLevelOverrides(operator.id),
-    )
+    const [skillLevels, setSkillLevels] = useAtom(editorAtoms.skillLevelOverrides(operator.id))
     const setFavOperators = useSetAtom(editorFavOperatorsAtom)
     const info = OPERATORS.find(({ name }) => name === operator.name)
     const skillCount = info ? getSkillCount(info) : 3
-    const requirements = withDefaultRequirements(
-      operator.requirements,
-      info?.rarity,
-    )
+    const requirements = withDefaultRequirements(operator.requirements, info?.rarity)
     const controlsEnabled = !onOverlay && !isDragging && !isSorting
 
     return (
-      <div
-        className={clsx('relative flex items-start', isDragging && 'invisible')}
-      >
+      <div className={clsx('relative flex items-start', isDragging && 'invisible')}>
         <div className="relative">
-          <Popover2
+          <PopoverNext
             placement="top"
             content={
               <Menu>
@@ -86,18 +69,12 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   onClick={() => {
                     setFavOperators((prev) => [...prev, operator])
                     AppToaster.show({
-                      message:
-                        t.components.editor2.OperatorItem.added_to_favorites,
+                      message: t.components.editor2.OperatorItem.added_to_favorites,
                       intent: 'success',
                     })
                   }}
                 />
-                <MenuItem
-                  icon="trash"
-                  text={t.common.delete}
-                  intent="danger"
-                  onClick={onRemove}
-                />
+                <MenuItem icon="trash" text={t.common.delete} intent="danger" onClick={onRemove} />
               </Menu>
             }
           >
@@ -130,7 +107,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                 />
               )}
             </Card>
-          </Popover2>
+          </PopoverNext>
 
           {info?.prof !== 'TOKEN' && (
             <>
@@ -224,18 +201,13 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   },
                   ...alternativeOperatorSkillUsages,
                 ].map((item) =>
-                  item.type === 'choice' &&
-                  item.value === CopilotDocV1.SkillUsageType.ReadyToUseTimes
+                  item.type === 'choice' && item.value === CopilotDocV1.SkillUsageType.ReadyToUseTimes
                     ? {
                         ...item,
                         menuItemProps: { shouldDismissPopover: false },
                         description: (
                           <>
-                            <div>
-                              {typeof item.description === 'function'
-                                ? item.description()
-                                : item.description}
-                            </div>
+                            <div>{typeof item.description === 'function' ? item.description() : item.description}</div>
                             <span className="mr-2 text-lg">x</span>
                             <NumericInput2
                               intOnly
@@ -252,8 +224,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                                   })
                                   return {
                                     action: 'set-operator-skillTimes',
-                                    desc: i18n.actions.editor2
-                                      .set_operator_skill_count,
+                                    desc: i18n.actions.editor2.set_operator_skill_count,
                                     squashBy: operator.id,
                                   }
                                 })
@@ -284,9 +255,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                   minimal
                   className={clsx(
                     '!px-0 h-full !border-none !text-[.7rem] !leading-3 !font-normal !underline underline-offset-2',
-                    skillUsageClasses[
-                      operator.skillUsage ?? CopilotDocV1.SkillUsageType.None
-                    ],
+                    skillUsageClasses[operator.skillUsage ?? CopilotDocV1.SkillUsageType.None],
                   )}
                 >
                   {getSkillUsageAltTitle(
@@ -308,8 +277,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               const maxSkillLevel = requirements.elite === 2 ? 10 : 7
               const skillLevel = selected
                 ? requirements.skillLevel
-                : skillLevels[skillNumber] ??
-                  getDefaultRequirements(info?.rarity).skillLevel
+                : (skillLevels[skillNumber] ?? getDefaultRequirements(info?.rarity).skillLevel)
 
               const selectSkill = () => {
                 if (operator.skill !== skillNumber) {
@@ -368,9 +336,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       edit(() => {
                         // 拿到新输入的一位数字（比如原来是 5，输入 2，变成 52，这里会拿到 2）
                         let newLevel =
-                          valueStr.length > 1
-                            ? +String(valueStr).replace(String(skillLevel), '')
-                            : Number(valueStr)
+                          valueStr.length > 1 ? +String(valueStr).replace(String(skillLevel), '') : Number(valueStr)
 
                         if (newLevel === 0) {
                           newLevel = 10
@@ -398,11 +364,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     onWheelFocused={(e) => {
                       e.preventDefault()
                       edit(() => {
-                        const newLevel = clamp(
-                          requirements.skillLevel + (e.deltaY > 0 ? -1 : 1),
-                          1,
-                          maxSkillLevel,
-                        )
+                        const newLevel = clamp(requirements.skillLevel + (e.deltaY > 0 ? -1 : 1), 1, maxSkillLevel)
                         setSkillLevels((prev) => ({
                           ...prev,
                           [skillNumber]: newLevel,
@@ -442,18 +404,11 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                 CopilotDocV1.Module.Default,
                 ...info.modules
                   .map((m) =>
-                    m
-                      ? (CopilotDocV1.Module[m] as
-                          | CopilotDocV1.Module
-                          | undefined)
-                      : CopilotDocV1.Module.Original,
+                    m ? (CopilotDocV1.Module[m] as CopilotDocV1.Module | undefined) : CopilotDocV1.Module.Original,
                   )
                   .filter((m) => m !== undefined),
               ]}
-              itemRenderer={(
-                value,
-                { handleClick, handleFocus, modifiers },
-              ) => (
+              itemRenderer={(value, { handleClick, handleFocus, modifiers }) => (
                 <MenuItem
                   roleStructure="listoption"
                   key={value}
@@ -497,8 +452,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               }}
               popoverProps={{
                 placement: 'top',
-                popoverClassName:
-                  '!rounded-none [&_.bp4-popover2-content]:!p-0 [&_.bp4-menu]:min-w-0 [&_li]:!mb-0',
+                popoverClassName: '!rounded-none [&_.bp6-popover-content]:!p-0 [&_.bp6-menu]:min-w-0 [&_li]:!mb-0',
               }}
             >
               <Button
@@ -519,8 +473,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                     : '!bg-gray-300 dark:!bg-gray-600 opacity-15 dark:opacity-25 hover:opacity-30 dark:hover:opacity-50',
                 )}
               >
-                {requirements.module ===
-                CopilotDocV1.Module.Default ? null : requirements.module ===
+                {requirements.module === CopilotDocV1.Module.Default ? null : requirements.module ===
                   CopilotDocV1.Module.Original ? (
                   <Icon icon="small-square" />
                 ) : (

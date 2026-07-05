@@ -13,16 +13,11 @@ interface UserStatsCardProps {
   operationCount?: number
 }
 
-export const UserStatsCard: FC<UserStatsCardProps> = ({
-  user,
-  operationCount,
-}) => {
+export const UserStatsCard: FC<UserStatsCardProps> = ({ user, operationCount }) => {
   const t = useTranslation()
   const auth = useAtomValue(authAtom)
   const isSelf = auth.userId === user.id
-  const [dialogType, setDialogType] = useState<'following' | 'fans' | null>(
-    null,
-  )
+  const [dialogType, setDialogType] = useState<'following' | 'fans' | null>(null)
 
   const stats = [
     {

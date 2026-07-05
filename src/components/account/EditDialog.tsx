@@ -1,12 +1,4 @@
-import {
-  Button,
-  Callout,
-  Dialog,
-  Icon,
-  Tab,
-  TabId,
-  Tabs,
-} from '@blueprintjs/core'
+import { Button, Callout, Dialog, Icon, Tab, TabId, Tabs } from '@blueprintjs/core'
 
 import { updatePassword, updateUserInfo } from 'apis/auth'
 import { useAtom } from 'jotai'
@@ -33,12 +25,7 @@ export const EditDialog: FC<EditDialogProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<TabId>('info')
 
   return (
-    <Dialog
-      title={t.components.account.EditDialog.edit_account_info}
-      icon="user"
-      isOpen={isOpen}
-      onClose={onClose}
-    >
+    <Dialog title={t.components.account.EditDialog.edit_account_info} icon="user" isOpen={isOpen} onClose={onClose}>
       <div className="p-4 pt-2">
         <GlobalErrorBoundary>
           <Tabs
@@ -55,9 +42,7 @@ export const EditDialog: FC<EditDialogProps> = ({ isOpen, onClose }) => {
               title={
                 <div>
                   <Icon icon="manually-entered-data" />
-                  <span className="ml-1">
-                    {t.components.account.EditDialog.account_info}
-                  </span>
+                  <span className="ml-1">{t.components.account.EditDialog.account_info}</span>
                 </div>
               }
               panel={<InfoPanel onClose={onClose} />}
@@ -67,9 +52,7 @@ export const EditDialog: FC<EditDialogProps> = ({ isOpen, onClose }) => {
               title={
                 <div>
                   <Icon icon="key" />
-                  <span className="ml-1">
-                    {t.components.account.EditDialog.password}
-                  </span>
+                  <span className="ml-1">{t.components.account.EditDialog.password}</span>
                 </div>
               }
               panel={<PasswordPanel onClose={onClose} />}
@@ -132,20 +115,12 @@ const InfoPanel = ({ onClose }) => {
   return (
     <form>
       {globalError && (
-        <Callout
-          intent="danger"
-          icon="error"
-          title={t.components.account.EditDialog.error}
-        >
+        <Callout intent="danger" icon="error" title={t.components.account.EditDialog.error}>
           {globalError}
         </Callout>
       )}
 
-      <AuthFormUsernameField
-        control={control}
-        error={errors.username}
-        field="username"
-      />
+      <AuthFormUsernameField control={control} error={errors.username} field="username" />
 
       <div className="mt-6 flex justify-end">
         <Button
@@ -188,39 +163,33 @@ const PasswordPanel = ({ onClose }) => {
 
   const globalError = (errors as FieldErrors<{ global: void }>).global?.message
 
-  const onSubmit = handleSubmit(
-    async ({ original, newPassword, newPassword2 }) => {
-      if (newPassword !== newPassword2) {
-        setError('newPassword2', {
-          message: t.components.account.EditDialog.passwords_dont_match,
-        })
-        return
-      }
+  const onSubmit = handleSubmit(async ({ original, newPassword, newPassword2 }) => {
+    if (newPassword !== newPassword2) {
+      setError('newPassword2', {
+        message: t.components.account.EditDialog.passwords_dont_match,
+      })
+      return
+    }
 
-      try {
-        await updatePassword({ originalPassword: original, newPassword })
+    try {
+      await updatePassword({ originalPassword: original, newPassword })
 
-        AppToaster.show({
-          intent: 'success',
-          message: t.components.account.EditDialog.update_success,
-        })
-        onClose(false)
-      } catch (e) {
-        console.warn(e)
-        setError('global' as any, { message: formatError(e) })
-      }
-    },
-  )
+      AppToaster.show({
+        intent: 'success',
+        message: t.components.account.EditDialog.update_success,
+      })
+      onClose(false)
+    } catch (e) {
+      console.warn(e)
+      setError('global' as any, { message: formatError(e) })
+    }
+  })
 
   return (
     <>
       <form>
         {globalError && (
-          <Callout
-            intent="danger"
-            icon="error"
-            title={t.components.account.EditDialog.error}
-          >
+          <Callout intent="danger" icon="error" title={t.components.account.EditDialog.error}>
             {globalError}
           </Callout>
         )}
@@ -247,12 +216,7 @@ const PasswordPanel = ({ onClose }) => {
         />
 
         <div className="mt-6 flex justify-end">
-          <Button
-            minimal
-            className="mr-2"
-            icon="key"
-            onClick={() => setResetPasswordDialogOpen(true)}
-          >
+          <Button minimal className="mr-2" icon="key" onClick={() => setResetPasswordDialogOpen(true)}>
             {t.components.account.EditDialog.forgot_password}
           </Button>
           <Button
@@ -272,10 +236,7 @@ const PasswordPanel = ({ onClose }) => {
         </div>
       </form>
 
-      <ResetPasswordDialog
-        isOpen={resetPasswordDialogOpen}
-        onClose={() => setResetPasswordDialogOpen(false)}
-      />
+      <ResetPasswordDialog isOpen={resetPasswordDialogOpen} onClose={() => setResetPasswordDialogOpen(false)} />
     </>
   )
 }

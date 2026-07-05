@@ -1,12 +1,5 @@
-import {
-  Classes,
-  H6,
-  Icon,
-  IconName,
-  MenuItem,
-  MenuItemProps,
-} from '@blueprintjs/core'
-import { Select2Props } from '@blueprintjs/select'
+import { Classes, H6, Icon, IconName, MenuItem, MenuItemProps } from '@blueprintjs/core'
+import { SelectProps } from '@blueprintjs/select'
 
 import clsx from 'clsx'
 import { ReactNode } from 'react'
@@ -31,10 +24,7 @@ export interface DetailedSelectChoice {
 }
 
 export const DetailedSelect: FCC<
-  Omit<
-    Select2Props<DetailedSelectItem>,
-    'itemRenderer' | 'onItemSelect' | 'itemDisabled'
-  > & {
+  Omit<SelectProps<DetailedSelectItem>, 'itemRenderer' | 'onItemSelect' | 'itemDisabled'> & {
     value?: string | number
     onItemSelect: (item: DetailedSelectChoice) => void
   }
@@ -50,11 +40,7 @@ export const DetailedSelect: FCC<
         if (action.type === 'header') {
           return (
             <li key={'header_' + action.header} className={Classes.MENU_HEADER}>
-              <H6>
-                {typeof action.header === 'function'
-                  ? action.header()
-                  : action.header}
-              </H6>
+              <H6>{typeof action.header === 'function' ? action.header() : action.header}</H6>
             </li>
           )
         }
@@ -70,20 +56,12 @@ export const DetailedSelect: FCC<
             disabled={action.disabled}
             text={
               <div className="flex items-start">
-                {action.icon && (
-                  <Icon icon={action.icon} className="pt-0.5 mr-2" />
-                )}
+                {action.icon && <Icon icon={action.icon} className="pt-0.5 mr-2" />}
                 <div className="flex flex-col">
-                  <div className="flex-1">
-                    {typeof action.title === 'function'
-                      ? action.title()
-                      : action.title}
-                  </div>
+                  <div className="flex-1">{typeof action.title === 'function' ? action.title() : action.title}</div>
                   {action.description && (
                     <div className="text-xs opacity-75">
-                      {typeof action.description === 'function'
-                        ? action.description()
-                        : action.description}
+                      {typeof action.description === 'function' ? action.description() : action.description}
                     </div>
                   )}
                 </div>
@@ -103,8 +81,6 @@ export const DetailedSelect: FCC<
   )
 }
 
-export function isChoice(
-  item: DetailedSelectItem,
-): item is DetailedSelectChoice {
+export function isChoice(item: DetailedSelectItem): item is DetailedSelectChoice {
   return item.type === 'choice'
 }

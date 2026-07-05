@@ -35,8 +35,7 @@ export const RegisterPanel: FC<{
     formState: { errors, isValid, isSubmitting },
     getValues,
   } = useForm<RegisterFormValues>({ mode: 'onChange' })
-  const [isSendEmailButtonDisabled, setSendEmailButtonDisabled] =
-    useState(false)
+  const [isSendEmailButtonDisabled, setSendEmailButtonDisabled] = useState(false)
   const [countdown, setCountdown] = useState(60)
   const onSubmit = async (val: RegisterFormValues) => {
     try {
@@ -103,17 +102,10 @@ export const RegisterPanel: FC<{
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <AuthFormEmailField
-        register
-        control={control}
-        error={errors.email}
-        field="email"
-      />
+      <AuthFormEmailField register control={control} error={errors.email} field="email" />
       <div className="mt-6 flex justify-end">
         <Button
-          disabled={
-            !!errors.email || isSubmitting || isSendEmailButtonDisabled
-          }
+          disabled={!!errors.email || isSubmitting || isSendEmailButtonDisabled}
           intent="primary"
           type="button"
           icon="envelope"
@@ -134,17 +126,9 @@ export const RegisterPanel: FC<{
         field="registrationToken"
       />
 
-      <AuthFormUsernameField
-        control={control}
-        error={errors.username}
-        field="username"
-      />
+      <AuthFormUsernameField control={control} error={errors.username} field="username" />
 
-      <AuthFormPasswordField
-        control={control}
-        error={errors.password}
-        field="password"
-      />
+      <AuthFormPasswordField control={control} error={errors.password} field="password" />
 
       <div className="mt-6 flex justify-end">
         <Button

@@ -12,14 +12,7 @@ import { Level } from '../../../models/operation'
 import { sendMessage, useMessage } from '../../../utils/messenger'
 import { useLazyStorage } from '../../../utils/useLazyStorage'
 import { useFloatingMap } from './FloatingMapContext'
-import {
-  CheckMapMessage,
-  ErrorMessage,
-  MAP_ORIGIN,
-  MapReadyMessage,
-  SetMapStateMessage,
-  getMapUrl,
-} from './connection'
+import { CheckMapMessage, ErrorMessage, MAP_ORIGIN, MapReadyMessage, SetMapStateMessage, getMapUrl } from './connection'
 
 interface FloatingMapConfig {
   show: boolean
@@ -177,10 +170,7 @@ export function FloatingMap() {
           onResizeStart={onResizeStartHandler}
           onResizeStop={onResizeStopHandler}
         >
-          <Card
-            className="h-full !p-0 flex flex-col overflow-hidden"
-            elevation={3}
-          >
+          <Card className="h-full !p-0 flex flex-col overflow-hidden" elevation={3}>
             <FloatingMapHeader config={config} setConfig={setConfig} />
             {level ? (
               <div className="relative flex-grow">
@@ -189,22 +179,15 @@ export function FloatingMap() {
                   className="w-full h-full"
                   src={getMapUrl(level)}
                   onLoad={(e) => {
-                    setIframeWindow(
-                      (e.target as HTMLIFrameElement).contentWindow,
-                    )
+                    setIframeWindow((e.target as HTMLIFrameElement).contentWindow)
                   }}
                 />
                 {mapStatus === MapStatus.Loading && (
                   <NonIdealState
                     className="absolute inset-0 bg-gray-900/50 [&_*]:!text-white"
-                    icon={
-                      <Spinner className="[&_.bp4-spinner-head]:stroke-current" />
-                    }
+                    icon={<Spinner className="[&_.bp6-spinner-head]:stroke-current" />}
                     description={
-                      iframeWindow
-                        ? undefined
-                        : t.components.editor.floatingMap.FloatingMap
-                            .waiting_connection
+                      iframeWindow ? undefined : t.components.editor.floatingMap.FloatingMap.waiting_connection
                     }
                   />
                 )}
@@ -212,18 +195,13 @@ export function FloatingMap() {
             ) : (
               <NonIdealState
                 icon="area-of-interest"
-                title={
-                  t.components.editor.floatingMap.FloatingMap.no_stage_selected
-                }
+                title={t.components.editor.floatingMap.FloatingMap.no_stage_selected}
               />
             )}
           </Card>
         </Rnd>
       ) : (
-        <Card
-          className="absolute !p-0 overflow-hidden pointer-events-auto left-4 bottom-4"
-          elevation={2}
-        >
+        <Card className="absolute !p-0 overflow-hidden pointer-events-auto left-4 bottom-4" elevation={2}>
           <FloatingMapHeader config={config} setConfig={setConfig} />
         </Card>
       )}

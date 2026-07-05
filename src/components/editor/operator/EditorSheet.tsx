@@ -28,19 +28,10 @@ export const EditorSheetTrigger: FC<EditorSheetProps> = (sheetProps) => {
 
   return (
     <>
-      <Drawer
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        size={DrawerSize.LARGE}
-        className="max-w-[900px]"
-      >
+      <Drawer isOpen={open} onClose={() => setOpen(false)} size={DrawerSize.LARGE} className="max-w-[900px]">
         <EditorOperatorSheet {...sheetProps} />
       </Drawer>
-      <Button
-        onClick={() => setOpen(true)}
-        text={t.components.editor.operator.EditorSheet.quick_edit}
-        fill
-      />
+      <Button onClick={() => setOpen(true)} text={t.components.editor.operator.EditorSheet.quick_edit} fill />
     </>
   )
 }

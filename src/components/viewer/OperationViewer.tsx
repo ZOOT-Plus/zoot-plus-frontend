@@ -15,23 +15,15 @@ import {
   NonIdealState,
   Switch,
   Tag,
+  PopoverNext,
+  Tooltip,
 } from '@blueprintjs/core'
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
 import { ErrorBoundary } from '@sentry/react'
 
-import {
-  banComments,
-  deleteOperation,
-  rateOperation,
-  useOperation,
-  useRefreshOperations,
-} from 'apis/operation'
+import { banComments, deleteOperation, rateOperation, useOperation, useRefreshOperations } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
-import {
-  BanCommentsStatusEnum,
-  CopilotSetStatus,
-} from 'maa-copilot-client'
+import { BanCommentsStatusEnum, CopilotSetStatus } from 'maa-copilot-client'
 import { ComponentType, FC, useEffect, useState } from 'react'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
 
@@ -121,11 +113,7 @@ const ManageMenu: FC<{
           to={`/create/${operation.id}`}
           target="_blank"
           render={({ className, ...props }) => (
-            <MenuItem
-              icon="edit"
-              text={t.components.viewer.OperationViewer.modify_task}
-              {...props}
-            />
+            <MenuItem icon="edit" text={t.components.viewer.OperationViewer.modify_task} {...props} />
           )}
         />
         <ReLinkRenderer
@@ -133,11 +121,7 @@ const ManageMenu: FC<{
           to={`/editor/${operation.id}`}
           target="_blank"
           render={({ className, ...props }) => (
-            <MenuItem
-              icon="edit"
-              text={t.components.viewer.OperationViewer.modify_task_v2}
-              {...props}
-            />
+            <MenuItem icon="edit" text={t.components.viewer.OperationViewer.modify_task_v2} {...props} />
           )}
         />
         {operation.commentStatus === BanCommentsStatusEnum.Enabled && (
@@ -155,9 +139,7 @@ const ManageMenu: FC<{
           >
             <H6>{t.components.viewer.OperationViewer.close_comments}</H6>
             <p>{t.components.viewer.OperationViewer.confirm_close_comments}</p>
-            <p>
-              {t.components.viewer.OperationViewer.existing_comments_preserved}
-            </p>
+            <p>{t.components.viewer.OperationViewer.existing_comments_preserved}</p>
           </Confirm>
         )}
         {operation.commentStatus === BanCommentsStatusEnum.Disabled && (
@@ -317,15 +299,13 @@ export const OperationViewer: ComponentType<{
         title={
           <>
             <Icon icon="document" />
-            <span className="ml-2">
-              {t.components.viewer.OperationViewer.maa_copilot_task}
-            </span>
+            <span className="ml-2">{t.components.viewer.OperationViewer.maa_copilot_task}</span>
 
             <div className="flex-1" />
 
             <div className="flex flex-wrap items-center gap-2 md:gap-4">
               {operation.uploaderId === auth.userId && (
-                <Popover2
+                <PopoverNext
                   content={
                     <ManageMenu
                       operation={operation}
@@ -334,12 +314,8 @@ export const OperationViewer: ComponentType<{
                     />
                   }
                 >
-                  <Button
-                    icon="wrench"
-                    text={t.components.viewer.OperationViewer.manage}
-                    rightIcon="caret-down"
-                  />
-                </Popover2>
+                  <Button icon="wrench" text={t.components.viewer.OperationViewer.manage} rightIcon="caret-down" />
+                </PopoverNext>
               )}
 
               <Button
@@ -367,11 +343,7 @@ export const OperationViewer: ComponentType<{
             />
           }
         >
-          <OperationViewerInner
-            levels={levels}
-            operation={operation}
-            handleRating={handleRating}
-          />
+          <OperationViewerInner levels={levels} operation={operation} handleRating={handleRating} />
         </ErrorBoundary>
       </DrawerLayout>
     )
@@ -388,13 +360,8 @@ const OperatorCard: FC<{
   const t = useTranslation()
   const displayName = useLocalizedOperatorName(operator.name)
   const info = OPERATORS.find((o) => o.name === operator.name)
-  const { level, elite, skillLevel, module } = withDefaultRequirements(
-    operator.requirements,
-    info?.rarity,
-  )
-  const skillCount = info
-    ? Math.max(getSkillCount(info), operator.skill ?? 1)
-    : 3
+  const { level, elite, skillLevel, module } = withDefaultRequirements(operator.requirements, info?.rarity)
+  const skillCount = info ? Math.max(getSkillCount(info), operator.skill ?? 1) : 3
 
   return (
     <div className="relative flex items-start">
@@ -415,17 +382,11 @@ const OperatorCard: FC<{
               })}
               className="absolute -bottom-1 right-1 font-serif font-bold text-lg text-white [text-shadow:0_0_3px_#a855f7,0_0_5px_#a855f7]"
             >
-              {module === CopilotDocV1.Module.Original ? (
-                <Icon icon="small-square" />
-              ) : (
-                getModuleName(module)
-              )}
+              {module === CopilotDocV1.Module.Original ? <Icon icon="small-square" /> : getModuleName(module)}
             </div>
           )}
         </div>
-        <h4 className="mt-1 -mx-2 leading-4 font-semibold tracking-tighter text-center">
-          {displayName}
-        </h4>
+        <h4 className="mt-1 -mx-2 leading-4 font-semibold tracking-tighter text-center">{displayName}</h4>
         {info && info.prof !== 'TOKEN' && (
           <img
             className="absolute top-0 right-0 w-5 h-5 p-px bg-gray-600 rounded-tr-md"
@@ -519,82 +480,51 @@ function OperationViewerInner({
           <FactItem title={t.components.viewer.OperationViewer.stage}>
             <EDifficultyLevel
               level={
-                findLevelByStageName(
-                  levels,
-                  operation.parsedContent.stageName,
-                ) || createCustomLevel(operation.parsedContent.stageName)
+                findLevelByStageName(levels, operation.parsedContent.stageName) ||
+                createCustomLevel(operation.parsedContent.stageName)
               }
               difficulty={operation.parsedContent.difficulty}
             />
           </FactItem>
 
-          <FactItem
-            relaxed
-            className="items-start"
-            title={t.components.viewer.OperationViewer.task_rating}
-          >
+          <FactItem relaxed className="items-start" title={t.components.viewer.OperationViewer.task_rating}>
             <OperationRating operation={operation} className="mr-2" />
 
             <ButtonGroup className="flex items-center ml-2">
-              <Tooltip2 content="o(*≧▽≦)ツ" placement="bottom">
+              <Tooltip content="o(*≧▽≦)ツ" placement="bottom">
                 <Button
                   icon="thumbs-up"
-                  intent={
-                    operation.ratingType === OpRatingType.Like
-                      ? 'success'
-                      : 'none'
-                  }
+                  intent={operation.ratingType === OpRatingType.Like ? 'success' : 'none'}
                   className="mr-2"
                   active={operation.ratingType === OpRatingType.Like}
                   onClick={() => handleRating(OpRatingType.Like)}
                 />
-              </Tooltip2>
-              <Tooltip2 content=" ヽ(。>д<)ｐ" placement="bottom">
+              </Tooltip>
+              <Tooltip content=" ヽ(。>д<)ｐ" placement="bottom">
                 <Button
                   icon="thumbs-down"
-                  intent={
-                    operation.ratingType === OpRatingType.Dislike
-                      ? 'danger'
-                      : 'none'
-                  }
+                  intent={operation.ratingType === OpRatingType.Dislike ? 'danger' : 'none'}
                   active={operation.ratingType === OpRatingType.Dislike}
                   onClick={() => handleRating(OpRatingType.Dislike)}
                 />
-              </Tooltip2>
+              </Tooltip>
             </ButtonGroup>
           </FactItem>
         </div>
 
         <div className="flex flex-wrap md:flex-col items-start select-none tabular-nums gap-4">
-          <FactItem
-            dense
-            title={t.components.viewer.OperationViewer.views}
-            icon="eye-open"
-          >
-            <span className="text-gray-800 dark:text-slate-100 font-bold">
-              {operation.views}
-            </span>
+          <FactItem dense title={t.components.viewer.OperationViewer.views} icon="eye-open">
+            <span className="text-gray-800 dark:text-slate-100 font-bold">{operation.views}</span>
           </FactItem>
 
-          <FactItem
-            dense
-            title={t.components.viewer.OperationViewer.published_at}
-            icon="time"
-          >
+          <FactItem dense title={t.components.viewer.OperationViewer.published_at} icon="time">
             <span className="text-gray-800 dark:text-slate-100 font-bold">
               <RelativeTime moment={operation.uploadTime} />
             </span>
           </FactItem>
 
-          <FactItem
-            dense
-            title={t.components.viewer.OperationViewer.author}
-            icon="user"
-          >
-            <UserName
-              className="text-gray-800 dark:text-slate-100 font-bold"
-              userId={operation.uploaderId}
-            >
+          <FactItem dense title={t.components.viewer.OperationViewer.author} icon="user">
+            <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operation.uploaderId}>
               {operation.uploader}
             </UserName>
           </FactItem>
@@ -608,9 +538,7 @@ function OperationViewerInner({
           <NonIdealState
             icon="issue"
             title={t.components.viewer.OperationViewer.render_error}
-            description={
-              t.components.viewer.OperationViewer.render_preview_problem
-            }
+            description={t.components.viewer.OperationViewer.render_preview_problem}
             className="h-96 bg-stripe rounded"
           />
         }
@@ -632,9 +560,7 @@ function OperationViewerInner({
           <NonIdealState
             icon="tree"
             title={t.components.viewer.OperationViewer.comments_closed}
-            description={
-              t.components.viewer.OperationViewer.comments_closed_note
-            }
+            description={t.components.viewer.OperationViewer.comments_closed_note}
           />
         ) : (
           <CommentArea operationId={operation.id} />
@@ -656,13 +582,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         onClick={() => setShowOperators((v) => !v)}
       >
         {t.components.viewer.OperationViewer.operators_and_groups}
-        <Icon
-          icon="chevron-down"
-          className={clsx(
-            'ml-1 transition-transform',
-            showOperators && 'rotate-180',
-          )}
-        />
+        <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
       </H4>
       <details className="inline">
         <summary className="inline cursor-pointer">
@@ -679,49 +599,30 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
       </details>
       <Collapse isOpen={showOperators}>
         <div className="mt-2 flex flex-wrap gap-6">
-          {!operation.parsedContent.opers?.length &&
-            !operation.parsedContent.groups?.length && (
-              <NonIdealState
-                className="my-2"
-                title={t.components.viewer.OperationViewer.no_operators}
-                description={
-                  t.components.viewer.OperationViewer.no_operators_added
-                }
-                icon="slash"
-                layout="horizontal"
-              />
-            )}
-          {operation.parsedContent.opers?.map((operator) => (
-            <OperatorCard
-              key={operator.name}
-              operator={operator}
-              version={operation.parsedContent.version}
+          {!operation.parsedContent.opers?.length && !operation.parsedContent.groups?.length && (
+            <NonIdealState
+              className="my-2"
+              title={t.components.viewer.OperationViewer.no_operators}
+              description={t.components.viewer.OperationViewer.no_operators_added}
+              icon="slash"
+              layout="horizontal"
             />
+          )}
+          {operation.parsedContent.opers?.map((operator) => (
+            <OperatorCard key={operator.name} operator={operator} version={operation.parsedContent.version} />
           ))}
         </div>
         <div className="flex flex-wrap gap-4 mt-4">
           {operation.parsedContent.groups?.map((group) => (
-            <Card
-              elevation={Elevation.ONE}
-              className="!p-2 flex flex-col items-center"
-              key={group.name}
-            >
+            <Card elevation={Elevation.ONE} className="!p-2 flex flex-col items-center" key={group.name}>
               <H6 className="mb-3 text-gray-800">{group.name}</H6>
               <div className="flex flex-wrap px-2 gap-6">
-                {group.opers
-                  ?.filter(Boolean)
-                  .map((operator) => (
-                    <OperatorCard
-                      key={operator.name}
-                      operator={operator}
-                      version={operation.parsedContent.version}
-                    />
-                  ))}
+                {group.opers?.filter(Boolean).map((operator) => (
+                  <OperatorCard key={operator.name} operator={operator} version={operation.parsedContent.version} />
+                ))}
 
                 {group.opers?.filter(Boolean).length === 0 && (
-                  <span className="text-zinc-500">
-                    {t.components.viewer.OperationViewer.no_operator}
-                  </span>
+                  <span className="text-zinc-500">{t.components.viewer.OperationViewer.no_operator}</span>
                 )}
               </div>
             </Card>
@@ -735,13 +636,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
           onClick={() => setShowActions((v) => !v)}
         >
           {t.components.viewer.OperationViewer.action_sequence}
-          <Icon
-            icon="chevron-down"
-            className={clsx(
-              'ml-1 transition-transform',
-              showActions && 'rotate-180',
-            )}
-          />
+          <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showActions && 'rotate-180')} />
         </H4>
         {showActions && (
           <Switch
@@ -758,10 +653,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
         {operation.parsedContent.actions?.length ? (
           <>
             {gridMode ? (
-              <GridTimeline
-                actions={operation.parsedContent.actions}
-                groups={operation.parsedContent.groups}
-              />
+              <GridTimeline actions={operation.parsedContent.actions} groups={operation.parsedContent.groups} />
             ) : (
               <div className="mt-2 flex flex-col pb-8">
                 {operation.parsedContent.actions.map((action, i) => (

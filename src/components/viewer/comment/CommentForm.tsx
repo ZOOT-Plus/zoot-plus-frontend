@@ -30,8 +30,7 @@ export const CommentForm = ({
   const t = useTranslation()
   const { operationId, replyTo, reload } = useContext(CommentAreaContext)
 
-  const defaultPlaceholder =
-    t.components.viewer.comment.friendly_comment_placeholder
+  const defaultPlaceholder = t.components.viewer.comment.friendly_comment_placeholder
 
   const [message, setMessage] = useState('')
   const [showMarkdownPreview, setShowMarkdownPreview] = useState(false)
@@ -53,8 +52,7 @@ export const CommentForm = ({
     setIsSubmitting(true)
 
     await wrapErrorMessage(
-      (e) =>
-        t.components.viewer.comment.submit_failed({ error: formatError(e) }),
+      (e) => t.components.viewer.comment.submit_failed({ error: formatError(e) }),
       (async () => {
         if (primary) {
           // this comment is a main comment and does not reply to others
@@ -88,7 +86,7 @@ export const CommentForm = ({
       <TextArea
         fill
         rows={2}
-        growVertically
+        autoResize
         large
         maxLength={maxLength}
         placeholder={placeholder || defaultPlaceholder}
@@ -99,23 +97,14 @@ export const CommentForm = ({
       />
 
       <div className="mt-2 flex flex-wrap items-center">
-        <Button
-          icon="send-message"
-          intent="primary"
-          loading={isSubmitting}
-          onClick={handleSubmit}
-        >
-          {primary
-            ? t.components.viewer.comment.post_comment
-            : t.components.viewer.comment.reply}
+        <Button icon="send-message" intent="primary" loading={isSubmitting} onClick={handleSubmit}>
+          {primary ? t.components.viewer.comment.post_comment : t.components.viewer.comment.reply}
         </Button>
 
         <Checkbox
           className="mb-0 ml-6"
           checked={showMarkdownPreview}
-          onChange={(e) =>
-            setShowMarkdownPreview((e.target as HTMLInputElement).checked)
-          }
+          onChange={(e) => setShowMarkdownPreview((e.target as HTMLInputElement).checked)}
         >
           {t.components.viewer.comment.preview_markdown}
         </Checkbox>
@@ -127,9 +116,7 @@ export const CommentForm = ({
 
       {showMarkdownPreview && (
         <Card className="mt-2 border-2">
-          <Markdown>
-            {message || t.components.viewer.comment.no_content}
-          </Markdown>
+          <Markdown>{message || t.components.viewer.comment.no_content}</Markdown>
         </Card>
       )}
     </form>

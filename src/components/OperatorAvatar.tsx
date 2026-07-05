@@ -1,11 +1,7 @@
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 
-import {
-  OperatorInfo,
-  findOperatorById,
-  findOperatorByName,
-} from '../models/operator'
+import { OperatorInfo, findOperatorById, findOperatorByName } from '../models/operator'
 
 interface OperatorAvatarProps {
   id?: string
@@ -53,17 +49,11 @@ export function OperatorAvatar({
           ? 'bg-purple-100 ring-purple-200'
           : 'bg-slate-100 ring-slate-200'
 
-  const commonClassName =
-    'ring-inset ring-2 border-solid rounded-md object-cover'
+  const commonClassName = 'ring-inset ring-2 border-solid rounded-md object-cover'
 
   return id ? (
     <img
-      className={clsx(
-        sizingClassName,
-        colorClassName,
-        commonClassName,
-        className,
-      )}
+      className={clsx(sizingClassName, colorClassName, commonClassName, className)}
       src={`/assets/operator-avatars/webp${sourceSize}/${id}.webp`}
       alt={name || id}
       // lazy 要配合 width 和 height 使用，不然图片提前很多就加载了

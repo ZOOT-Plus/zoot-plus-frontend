@@ -24,6 +24,8 @@ const MYSELF: MaaUserInfo = {
   id: 'me',
   userName: '我自己',
   activated: true,
+  followingCount: 0,
+  fansCount: 0,
 }
 
 function isMyself(user: MaaUserInfo | undefined) {
@@ -39,14 +41,8 @@ export const UserFilter: FC<UserFilterProps> = ({
 }) => {
   const t = useTranslation()
   const auth = useAtomValue(authAtom)
-  const { query, debouncedQuery, updateQuery, onOptionMouseDown } =
-    useDebouncedQuery({ debounceTime: 500 })
-  const {
-    data: users = [],
-    error,
-    isLoading,
-    isValidating,
-  } = useUserSearch({ keyword: debouncedQuery })
+  const { query, debouncedQuery, updateQuery, onOptionMouseDown } = useDebouncedQuery({ debounceTime: 500 })
+  const { data: users = [], error, isLoading, isValidating } = useUserSearch({ keyword: debouncedQuery })
 
   useEffect(() => {
     // 退出登录时清空 myself
@@ -98,23 +94,14 @@ export const UserFilter: FC<UserFilterProps> = ({
         }
         inputProps={{
           placeholder: t.components.UserFilter.username_placeholder,
-          leftElement: isValidating ? (
-            <Spinner className="m-[7px] mr-[9px]" size={IconSize.STANDARD} />
-          ) : undefined,
+          leftElement: isValidating ? <Spinner className="m-[7px] mr-[9px]" size={IconSize.STANDARD} /> : undefined,
         }}
         popoverProps={{
           minimal: true,
         }}
       >
-        <Button
-          minimal
-          className="!pl-3 !pr-2"
-          icon="person"
-          rightIcon="chevron-down"
-        >
-          {user && !isMyself(user)
-            ? user.userName
-            : t.components.UserFilter.author}
+        <Button minimal className="!pl-3 !pr-2" icon="person" rightIcon="chevron-down">
+          {user && !isMyself(user) ? user.userName : t.components.UserFilter.author}
         </Button>
       </Select>
       {!!auth.token && (

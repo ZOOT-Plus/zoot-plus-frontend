@@ -42,13 +42,7 @@ export const EditorResetButton = <T extends FieldValues>({
         </p>
       </Alert>
 
-      <Button
-        className="ml-4"
-        icon="reset"
-        minimal
-        intent="danger"
-        onClick={() => setResetDialogOpen(true)}
-      >
+      <Button className="ml-4" icon="reset" minimal intent="danger" onClick={() => setResetDialogOpen(true)}>
         {t.components.editor.EditorResetButton.reset_button}
       </Button>
     </>

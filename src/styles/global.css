@@ -1,8 +1,8 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -63,13 +63,13 @@ body,
     0 0 3px 1px #0001,
     0 2px 3px #0001;
 
-  &.bp4-interactive:hover {
+  &.bp6-interactive:hover {
     box-shadow:
       0 2px 4px #0002,
       0 8px 24px #0003;
   }
 
-  &.bp4-interactive:active {
+  &.bp6-interactive:active {
     box-shadow:
       0 0 3px 1px #0001,
       0 2px 3px #0001;

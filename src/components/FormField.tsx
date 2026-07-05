@@ -1,27 +1,12 @@
-import { FormGroup, FormGroupProps, Icon, Tag } from '@blueprintjs/core'
-import {
-  Popover2InteractionKind,
-  Tooltip2,
-  Tooltip2Props,
-} from '@blueprintjs/popover2'
+import { FormGroup, FormGroupProps, Icon, Tag, PopoverInteractionKind, Tooltip, TooltipProps } from '@blueprintjs/core'
 
 import { ReactNode } from 'react'
-import {
-  Control,
-  Controller,
-  ControllerProps,
-  FieldError,
-  FieldValues,
-  Path,
-} from 'react-hook-form'
+import { Control, Controller, ControllerProps, FieldError, FieldValues, Path } from 'react-hook-form'
 import { WithChildren } from 'types'
 
 import { formatError } from '../utils/error'
 
-export interface FormFieldRenderProps<
-  T extends FieldValues,
-  P extends Path<T>,
-> {
+export interface FormFieldRenderProps<T extends FieldValues, P extends Path<T>> {
   name: Path<T>
   control: Control<T>
   props?: Omit<ControllerProps<T, P>, 'name' | 'render'>
@@ -34,7 +19,7 @@ export interface FormFieldProps<T extends FieldValues, P extends Path<T>> {
   label: ReactNode
   field: P
   ControllerProps?: Omit<ControllerProps<T, P>, 'name'>
-  description?: Tooltip2Props['content']
+  description?: TooltipProps['content']
   render?: (props: FormFieldRenderProps<T, P>) => ReactNode
 }
 
@@ -54,19 +39,13 @@ export const FormField = <T extends FieldValues, P extends Path<T>>({
         <span>
           {label}
           {description && (
-            <Tooltip2
+            <Tooltip
               className="!inline-block !mt-0"
-              interactionKind={Popover2InteractionKind.HOVER}
-              content={
-                typeof description === 'string' ? (
-                  <div className="max-w-sm">{description}</div>
-                ) : (
-                  description
-                )
-              }
+              interactionKind={PopoverInteractionKind.HOVER}
+              content={typeof description === 'string' ? <div className="max-w-sm">{description}</div> : description}
             >
               <Icon className="ml-1 text-slate-600" icon="help" />
-            </Tooltip2>
+            </Tooltip>
           )}
           {error && (
             <Tag minimal intent="danger" className="float-right">
@@ -76,9 +55,7 @@ export const FormField = <T extends FieldValues, P extends Path<T>>({
         </span>
       }
       labelFor={field}
-      labelInfo={
-        FormGroupProps?.labelInfo || (ControllerProps?.rules?.required && '*')
-      }
+      labelInfo={FormGroupProps?.labelInfo || (ControllerProps?.rules?.required && '*')}
       {...FormGroupProps}
     >
       {render ? (
@@ -97,7 +74,7 @@ export interface FormField2Props<T extends FieldValues> {
   label: ReactNode
   field: Path<T>
   asterisk?: boolean
-  description?: Tooltip2Props['content']
+  description?: TooltipProps['content']
 }
 
 export const FormField2 = <T extends FieldValues>({
@@ -117,19 +94,13 @@ export const FormField2 = <T extends FieldValues>({
         <div className="inline-block w-full">
           <span>{label}</span>
           {description && (
-            <Tooltip2
+            <Tooltip
               className="!inline-block !mt-0"
-              interactionKind={Popover2InteractionKind.HOVER}
-              content={
-                typeof description === 'string' ? (
-                  <div className="max-w-sm">{description}</div>
-                ) : (
-                  description
-                )
-              }
+              interactionKind={PopoverInteractionKind.HOVER}
+              content={typeof description === 'string' ? <div className="max-w-sm">{description}</div> : description}
             >
               <Icon className="ml-1 text-slate-600" icon="help" />
-            </Tooltip2>
+            </Tooltip>
           )}
           {asterisk && <span className="ml-1 text-slate-600">*</span>}
           {error && (

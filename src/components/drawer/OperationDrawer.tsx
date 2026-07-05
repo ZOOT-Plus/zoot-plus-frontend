@@ -49,17 +49,8 @@ export function OperationDrawer() {
 
   if (operationSetId) {
     return (
-      <Drawer
-        size={DrawerSize.LARGE}
-        isOpen={!!operationSetId}
-        onClose={handleOuterBackdropClick}
-      >
-        {operationSetId && (
-          <OperationSetViewer
-            operationSetId={operationSetId}
-            onCloseDrawer={closeOperationSet}
-          />
-        )}
+      <Drawer size={DrawerSize.LARGE} isOpen={!!operationSetId} onClose={handleOuterBackdropClick}>
+        {operationSetId && <OperationSetViewer operationSetId={operationSetId} onCloseDrawer={closeOperationSet} />}
 
         <Drawer
           usePortal={false} // 嵌套 Drawer 时需要关闭 Portal
@@ -67,29 +58,15 @@ export function OperationDrawer() {
           isOpen={!!operationId}
           onClose={closeOperation}
         >
-          {operationId && (
-            <OperationViewer
-              operationId={operationId}
-              onCloseDrawer={closeOperation}
-            />
-          )}
+          {operationId && <OperationViewer operationId={operationId} onCloseDrawer={closeOperation} />}
         </Drawer>
       </Drawer>
     )
   }
 
   return (
-    <Drawer
-      size={DrawerSize.LARGE}
-      isOpen={!!operationId}
-      onClose={closeOperation}
-    >
-      {operationId && (
-        <OperationViewer
-          operationId={operationId}
-          onCloseDrawer={closeOperation}
-        />
-      )}
+    <Drawer size={DrawerSize.LARGE} isOpen={!!operationId} onClose={closeOperation}>
+      {operationId && <OperationViewer operationId={operationId} onCloseDrawer={closeOperation} />}
     </Drawer>
   )
 }

@@ -1,5 +1,4 @@
-import { Button } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, PopoverNext } from '@blueprintjs/core'
 
 import { FC, useCallback, useEffect, useRef } from 'react'
 
@@ -54,10 +53,7 @@ export const SheetList: FC<SheetListProps> = () => {
                 ref={operatorScrollRef}
               >
                 {operatorFilteredData.map(({ name }, index) => (
-                  <div
-                    className="flex items-center flex-0 w-full h-32"
-                    key={index}
-                  >
+                  <div className="flex items-center flex-0 w-full h-32" key={index}>
                     <SheetOperatorItem {...{ name }} />
                   </div>
                 ))}
@@ -69,7 +65,7 @@ export const SheetList: FC<SheetListProps> = () => {
           )}
         </div>
         <div className="h-full sticky top-0 self-start shrink-0 z-10 flex flex-col items-center justify-center">
-          <Popover2
+          <PopoverNext
             content={
               <>
                 <OperatorRaritySelect />
@@ -77,7 +73,7 @@ export const SheetList: FC<SheetListProps> = () => {
             }
           >
             <Button minimal icon="filter-list" />
-          </Popover2>
+          </PopoverNext>
           <OperatorMutipleSelect />
           <OperatorBackToTop {...{ toTop }} />
         </div>

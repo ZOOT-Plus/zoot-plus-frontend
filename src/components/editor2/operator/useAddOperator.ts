@@ -13,19 +13,11 @@ export function useAddOperator() {
     useCallback(
       (get, set, operator: EditorOperator, groupId?: string) => {
         const operatorNames = get(editorAtoms.operators).map((op) => op.name)
-        const groupedOperatorNames = get(editorAtoms.groups).flatMap((g) =>
-          g.opers.map((op) => op.name),
-        )
-        if (
-          operatorNames.includes(operator.name) ||
-          groupedOperatorNames.includes(operator.name)
-        ) {
+        const groupedOperatorNames = get(editorAtoms.groups).flatMap((g) => g.opers.map((op) => op.name))
+        if (operatorNames.includes(operator.name) || groupedOperatorNames.includes(operator.name)) {
           AppToaster.show({
             message: i18n.components.editor2.misc.already_exists({
-              name: getLocalizedOperatorName(
-                operator.name,
-                i18n.currentLanguage,
-              ),
+              name: getLocalizedOperatorName(operator.name, i18n.currentLanguage),
             }),
             intent: 'danger',
           })

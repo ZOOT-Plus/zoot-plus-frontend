@@ -5,10 +5,7 @@ import { FC, ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { useAnnouncement } from '../../apis/announcement'
 import { useTranslation } from '../../i18n/i18n'
-import {
-  AnnouncementSection,
-  parseAnnouncement,
-} from '../../models/announcement'
+import { AnnouncementSection, parseAnnouncement } from '../../models/announcement'
 import { formatError } from '../../utils/error'
 import { useLazyStorage } from '../../utils/useLazyStorage'
 import { CardTitle } from '../CardTitle'
@@ -22,23 +19,15 @@ interface AnnPanelProps {
 export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
   const t = useTranslation()
   const { data, error } = useAnnouncement()
-  const announcement = useMemo(
-    () => (data ? parseAnnouncement(data) : undefined),
-    [data],
-  )
-  const [lastNoticed, setLastNoticed] = useLazyStorage(
-    'copilot-last-noticed',
-    0,
-  )
-  const [displaySections, setDisplaySections] =
-    useState<AnnouncementSection[]>()
+  const announcement = useMemo(() => (data ? parseAnnouncement(data) : undefined), [data])
+  const [lastNoticed, setLastNoticed] = useLazyStorage('copilot-last-noticed', 0)
+  const [displaySections, setDisplaySections] = useState<AnnouncementSection[]>()
 
   const [isOpen, setIsOpen] = useState<{ yes: boolean; manually: boolean }>()
 
   useEffect(() => {
     const freshSections = announcement?.sections.filter(
-      ({ meta: { time, level } = {} }) =>
-        level !== 'verbose' && +(time || 0) > lastNoticed,
+      ({ meta: { time, level } = {} }) => level !== 'verbose' && +(time || 0) > lastNoticed,
     )
 
     if (freshSections?.length) {
@@ -55,16 +44,14 @@ export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
 
   trigger ??= ({ handleClick }) => (
     <Card interactive className={clsx(className)} onClick={handleClick}>
-      <CardTitle icon="info-sign">
-        {t.components.announcement.AnnPanel.title}
-      </CardTitle>
+      <CardTitle icon="info-sign">{t.components.announcement.AnnPanel.title}</CardTitle>
 
       <div className="flex">
         {announcement && (
           <ul className="grow list-disc pl-4">
-            {announcement?.sections
-              .slice(0, 3)
-              .map(({ title }) => <li key={title}>{title}</li>)}
+            {announcement?.sections.slice(0, 3).map(({ title }) => (
+              <li key={title}>{title}</li>
+            ))}
           </ul>
         )}
         {!announcement && error && (

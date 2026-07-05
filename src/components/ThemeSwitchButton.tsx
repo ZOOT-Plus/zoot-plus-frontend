@@ -1,5 +1,4 @@
-import { Button, Menu, MenuItem, Position } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import { useCurrentSize } from 'utils/useCurrenSize'
 
@@ -15,8 +14,7 @@ export const ThemeSwitchButton = () => {
   const labels = t.components.ThemeSwitchButton
 
   // 查找当前主题的配置用于显示按钮图标
-  const currentConfig =
-    THEME_CONFIG.find((item) => item.id === theme) || THEME_CONFIG[0]
+  const currentConfig = THEME_CONFIG.find((item) => item.id === theme) || THEME_CONFIG[0]
 
   // 获取当前主题的翻译标签
   // 使用类型断言确保 i18nKey 是 labels 的合法属性
@@ -38,9 +36,7 @@ export const ThemeSwitchButton = () => {
           active={theme === item.id}
           icon={item.icon}
           // 动态获取翻译：labels[key]
-          text={renderOptionText(
-            labels[item.i18nKey as keyof typeof labels] || item.id,
-          )}
+          text={renderOptionText(labels[item.i18nKey as keyof typeof labels] || item.id)}
           onClick={() => setTheme(item.id)}
           shouldDismissPopover={true}
         />
@@ -49,11 +45,11 @@ export const ThemeSwitchButton = () => {
   )
 
   return (
-    <Popover2
+    <PopoverNext
       content={themeMenu}
-      position={Position.BOTTOM}
+      placement="bottom"
       renderTarget={({ isOpen, ref, ...targetProps }) => (
-        <div className="bp4-popover2-target !mt-0 flex items-center" ref={ref}>
+        <div className="bp6-popover-target !mt-0 flex items-center" ref={ref}>
           <Button
             {...targetProps}
             active={isOpen}

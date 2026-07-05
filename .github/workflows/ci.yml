@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck & Lint
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Typecheck generates i18n first (see the `typecheck` script) so it works
+      # on a clean checkout. Enforced gate: type errors fail the job.
+      - name: Type check
+        run: pnpm typecheck
+
+      # Lint is an enforced gate: errors fail the job. Warnings do not fail
+      # oxlint, so the remaining warnings stay visible without blocking.
+      - name: Lint
+        run: pnpm lint
+
+      # Build uses build:fast (vite build only); typecheck above already ran
+      # generate:i18n and tsc --noEmit, so we skip the redundant work here.
+      - name: Build
+        run: pnpm build:fast

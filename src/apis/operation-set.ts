@@ -1,11 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { noop } from 'lodash-es'
-import {
-  CopilotSetQuery,
-  CopilotSetStatus,
-  CopilotSetUpdateReq,
-  PagedDTOCopilotSetListRes,
-} from 'maa-copilot-client'
+import { CopilotSetQuery, CopilotSetStatus, CopilotSetUpdateReq, PagedDTOCopilotSetListRes } from 'maa-copilot-client'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
@@ -21,6 +16,8 @@ export interface UseOperationSetsParams {
   keyword?: string
   creatorId?: string
   onlyFollowing?: boolean
+  /** 是否降序（最新在前）。@default true，与作业列表保持一致 */
+  descending?: boolean
 
   disabled?: boolean
   suspense?: boolean
@@ -30,6 +27,7 @@ export function useOperationSets({
   keyword,
   creatorId,
   onlyFollowing,
+  descending = true,
   disabled,
   suspense,
 }: UseOperationSetsParams) {
@@ -55,7 +53,8 @@ export function useOperationSets({
           page: pageIndex + 1,
           keyword,
           creatorId: creatorId === 'me' ? auth.userId : creatorId,
-          onlyFollowing,
+          onlyFollowing: onlyFollowing ?? false,
+          desc: descending,
         } satisfies CopilotSetQuery,
       ]
     },
@@ -89,19 +88,10 @@ export function useOperationSets({
 export function useRefreshOperationSets() {
   const refresh = useSWRRefresh()
   return () =>
-    refresh(
-      (key) =>
-        key.includes('operationSets') ||
-        (key.includes('operationSet') && key.includes('fromList')),
-    )
+    refresh((key) => key.includes('operationSets') || (key.includes('operationSet') && key.includes('fromList')))
 }
 
-export function useOperationSetSearch({
-  keyword,
-  suspense,
-  disabled,
-  ...params
-}: UseOperationSetsParams) {
+export function useOperationSetSearch({ keyword, suspense, disabled, ...params }: UseOperationSetsParams) {
   if (!suspense) {
     throw new Error('useOperationSetSearch must be used with suspense')
   }
@@ -152,17 +142,12 @@ interface UseOperationSetParams {
 }
 
 export function useOperationSet({ id, suspense }: UseOperationSetParams) {
-  return useSWR(
-    id ? ['operationSet', id] : null,
-    () => getOperationSet({ id: id! }),
-    { suspense },
-  )
+  return useSWR(id ? ['operationSet', id] : null, () => getOperationSet({ id: id! }), { suspense })
 }
 
 export function useRefreshOperationSet() {
   const refresh = useSWRRefresh()
-  return (id: number) =>
-    refresh((key) => key.includes('operationSet') && key.includes(String(id)))
+  return (id: number) => refresh((key) => key.includes('operationSet') && key.includes(String(id)))
 }
 
 export async function getOperationSet(req: { id: number }) {
@@ -197,10 +182,7 @@ export async function deleteOperationSet(req: { id: number }) {
   await new OperationSetApi().deleteCopilotSet({ commonIdReqLong: req })
 }
 
-export async function addToOperationSet(req: {
-  operationSetId: number
-  operationIds: number[]
-}) {
+export async function addToOperationSet(req: { operationSetId: number; operationIds: number[] }) {
   await new OperationSetApi().addCopilotIds({
     copilotSetModCopilotsReq: {
       id: req.operationSetId,
@@ -209,10 +191,7 @@ export async function addToOperationSet(req: {
   })
 }
 
-export async function removeFromOperationSet(req: {
-  operationSetId: number
-  operationIds: number[]
-}) {
+export async function removeFromOperationSet(req: { operationSetId: number; operationIds: number[] }) {
   await new OperationSetApi().removeCopilotIds({
     copilotSetModCopilotsReq: {
       id: req.operationSetId,

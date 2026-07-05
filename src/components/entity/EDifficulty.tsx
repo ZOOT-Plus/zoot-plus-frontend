@@ -1,5 +1,4 @@
-import { Tag } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Tag, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { FC, ReactNode } from 'react'
@@ -14,10 +13,7 @@ const DifficultyTag: FC<{
   hardLevel?: boolean
 }> = ({ tooltip, content, hardLevel }) => {
   return (
-    <Tooltip2
-      placement="bottom"
-      content={<div className="max-w-sm">{tooltip}</div>}
-    >
+    <Tooltip placement="bottom" content={<div className="max-w-sm">{tooltip}</div>}>
       <Tag
         className={clsx(
           'transition border border-solid !text-xs cursor-help tracking-tight !px-2 !py-1 !mx-1 !my-1 leading-none !min-h-0',
@@ -28,7 +24,7 @@ const DifficultyTag: FC<{
       >
         {content}
       </Tag>
-    </Tooltip2>
+    </Tooltip>
   )
 }
 
@@ -76,22 +72,13 @@ export const EDifficulty: FC<{
 
   if (difficulty & OpDifficultyBitFlag.REGULAR) {
     children.push(
-      <DifficultyTag
-        key="regular"
-        tooltip={descriptions.regular.description}
-        content={descriptions.regular.title}
-      />,
+      <DifficultyTag key="regular" tooltip={descriptions.regular.description} content={descriptions.regular.title} />,
     )
   }
 
   if (difficulty & OpDifficultyBitFlag.HARD) {
     children.push(
-      <DifficultyTag
-        key="hard"
-        tooltip={descriptions.hard.description}
-        content={descriptions.hard.title}
-        hardLevel
-      />,
+      <DifficultyTag key="hard" tooltip={descriptions.hard.description} content={descriptions.hard.title} hardLevel />,
     )
   }
 

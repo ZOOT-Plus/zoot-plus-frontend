@@ -26,12 +26,7 @@ export type SheetContextValue = {
 
 const SheetContext = createContext<SheetContextValue>({} as SheetContextValue)
 
-export const SheetProvider: FC<SheetProviderProp> = ({
-  children,
-  submitGroup,
-  submitOperator,
-  ...restValueField
-}) => (
+export const SheetProvider: FC<SheetProviderProp> = ({ children, submitGroup, submitOperator, ...restValueField }) => (
   <SheetContext.Provider
     value={{
       submitOperatorInSheet: (value) => submitOperator(value, undefined, true),

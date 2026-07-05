@@ -1,9 +1,5 @@
 import { uniqBy } from 'lodash-es'
-import {
-  BanCommentsStatusEnum,
-  CopilotSetStatus,
-  QueriesCopilotRequest,
-} from 'maa-copilot-client'
+import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'maa-copilot-client'
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
@@ -92,10 +88,7 @@ export function useOperations({
           document: keyword,
           levelKeyword,
           operator: operator
-            ? [
-                ...operator.included,
-                ...operator.excluded.map((o) => `~${o}`),
-              ].join(',') || undefined
+            ? [...operator.included, ...operator.excluded.map((o) => `~${o}`)].join(',') || undefined
             : undefined,
           orderBy,
           desc: descending,
@@ -144,9 +137,7 @@ export function useOperations({
 
   // 按 operationIds 的顺序排序
   const operations = operationIds?.length
-    ? operationIds
-        ?.map((id) => _operations?.find((v) => v.id === id))
-        .filter((v) => !!v)
+    ? operationIds?.map((id) => _operations?.find((v) => v.id === id)).filter((v) => !!v)
     : _operations
 
   return {
@@ -169,17 +160,12 @@ interface UseOperationParams extends SWRConfiguration {
 }
 
 export function useOperation({ id, ...config }: UseOperationParams) {
-  return useSWR(
-    id ? ['operation', id] : null,
-    () => getOperation({ id: id! }),
-    config,
-  )
+  return useSWR(id ? ['operation', id] : null, () => getOperation({ id: id! }), config)
 }
 
 export function useRefreshOperation() {
   const refresh = useSWRRefresh()
-  return (id: number) =>
-    refresh((key) => key.includes('operation') && key.includes(String(id)))
+  return (id: number) => refresh((key) => key.includes('operation') && key.includes(String(id)))
 }
 
 export async function getOperation(req: { id: number }): Promise<Operation> {
@@ -194,19 +180,11 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   }
 }
 
-export async function createOperation(req: {
-  content: string
-  status: CopilotSetStatus
-}) {
-  return (await new OperationApi().uploadCopilot({ copilotCUDRequest: req }))
-    .data
+export async function createOperation(req: { content: string; status: CopilotSetStatus }) {
+  return (await new OperationApi().uploadCopilot({ copilotCUDRequest: req })).data
 }
 
-export async function updateOperation(req: {
-  id: number
-  content: string
-  status: CopilotSetStatus
-}) {
+export async function updateOperation(req: { id: number; content: string; status: CopilotSetStatus }) {
   await new OperationApi().updateCopilot({ copilotCUDRequest: req })
 }
 
@@ -235,10 +213,7 @@ export async function rateOperation(req: { id: number; rating: OpRatingType }) {
   })
 }
 
-export async function banComments(req: {
-  operationId: number
-  status: BanCommentsStatusEnum
-}) {
+export async function banComments(req: { operationId: number; status: BanCommentsStatusEnum }) {
   await new OperationApi().banComments({
     copilotId: req.operationId,
     ...req,

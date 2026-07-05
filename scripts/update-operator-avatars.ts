@@ -15,9 +15,7 @@ async function getAllAvatarsFromPrtsWiki() {
   let continueParams = new URLSearchParams()
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const resp = (await (
-      await fetch(`${baseUrl}&${continueParams.toString()}`)
-    ).json()) as any
+    const resp = (await (await fetch(`${baseUrl}&${continueParams.toString()}`)).json()) as any
     results.push(...resp.query.allimages)
 
     if (resp.continue) {
@@ -26,13 +24,7 @@ async function getAllAvatarsFromPrtsWiki() {
       break
     }
 
-    console.info(
-      `fetched ${
-        results.length
-      } avatars. fetching next page from ${continueParams.get(
-        'aicontinue',
-      )}...`,
-    )
+    console.info(`fetched ${results.length} avatars. fetching next page from ${continueParams.get('aicontinue')}...`)
   }
 
   console.info(`fetched ${results.length} avatars.`)
@@ -43,18 +35,13 @@ async function getAllAvatarsFromPrtsWiki() {
 async function main() {
   console.info('update-operator-avatars: launched')
 
-  const [{ operators }, files] = await Promise.all([
-    getOperators(),
-    getAllAvatarsFromPrtsWiki(),
-  ])
+  const [{ operators }, files] = await Promise.all([getOperators(), getAllAvatarsFromPrtsWiki()])
 
   console.info('all metadata fetched.')
 
   for (const { id, name } of operators) {
     const withTokenName = id.startsWith('token_') ? `召唤物_${name}` : name
-    const avatarUrl = files.find(
-      (el) => el.name === `头像_${withTokenName}.png`,
-    )?.url
+    const avatarUrl = files.find((el) => el.name === `头像_${withTokenName}.png`)?.url
     if (!avatarUrl) {
       console.error(`${id}: cannot found avatar file`)
       continue
@@ -98,10 +85,7 @@ async function main() {
 
         const buffer = await download()
 
-        await sharp(buffer)
-          .resize(size, size)
-          .toFormat(format, options)
-          .toFile(outputPath)
+        await sharp(buffer).resize(size, size).toFormat(format, options).toFile(outputPath)
 
         return
       } catch (e) {

@@ -1,5 +1,4 @@
 import { writeFile } from 'node:fs/promises'
-import * as prettier from 'prettier'
 import process from 'process'
 
 import { getOperators } from './shared'
@@ -8,17 +7,14 @@ async function main() {
   console.info('Fetching operators...')
   const { operators, professions } = await getOperators()
 
-  const content = JSON.stringify({
-    OPERATORS: operators,
-    PROFESSIONS: professions,
-  })
-
-  const prettierConfig = await prettier.resolveConfig(process.cwd())
-  console.log(prettierConfig)
-  const formatted = await prettier.format(content, {
-    ...prettierConfig,
-    parser: 'json',
-  })
+  const formatted = JSON.stringify(
+    {
+      OPERATORS: operators,
+      PROFESSIONS: professions,
+    },
+    null,
+    2,
+  )
 
   console.info('Writing to operators.json...')
   await writeFile('src/models/generated/operators.json', formatted)

@@ -6,28 +6,17 @@ import { i18n } from '../../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../../models/copilot.schema'
 import { SheetProvider } from '../../../editor/operator/sheet/SheetProvider'
 import { OperatorFilterProvider } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorFilterProvider'
-import {
-  EditorGroup,
-  EditorOperation,
-  EditorOperator,
-  editorAtoms,
-  useEdit,
-} from '../../editor-state'
+import { EditorGroup, EditorOperation, EditorOperator, editorAtoms, useEdit } from '../../editor-state'
 import { createGroup, createOperator } from '../../reconciliation'
 import { SheetList } from './SheetList'
 
 // TODO: 兼容性处理，以后要去掉
-const ensureEditorOperator = (
-  operation: EditorOperation,
-  operator: CopilotDocV1.Operator,
-): EditorOperator => {
+const ensureEditorOperator = (operation: EditorOperation, operator: CopilotDocV1.Operator): EditorOperator => {
   if (operator._id) {
     const { _id, ...rest } = operator
     return { ...rest, id: uniqueId() }
   }
-  const matchedOperator = operation.opers.find(
-    (op) => op.name === operator.name,
-  )
+  const matchedOperator = operation.opers.find((op) => op.name === operator.name)
   if (matchedOperator) {
     return matchedOperator
   }
@@ -40,10 +29,7 @@ const ensureEditorOperator = (
   return { ...operator, id: uniqueId() }
 }
 
-const ensureEditorGroup = (
-  operation: EditorOperation,
-  group: CopilotDocV1.Group,
-): EditorGroup => {
+const ensureEditorGroup = (operation: EditorOperation, group: CopilotDocV1.Group): EditorGroup => {
   if (group._id) {
     const { _id, ...rest } = group
     return {

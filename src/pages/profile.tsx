@@ -28,9 +28,7 @@ const _ProfilePage: ComponentType = () => {
 
   const [authState] = useAtom(authAtom)
 
-  const [listMode, setListMode] = useState<'operation' | 'operationSet'>(
-    'operation',
-  )
+  const [listMode, setListMode] = useState<'operation' | 'operationSet'>('operation')
   const [operationCount, setOperationCount] = useState(-1)
   const [operationSetCount, setOperationSetCount] = useState(-1)
 
@@ -41,8 +39,7 @@ const _ProfilePage: ComponentType = () => {
           ...userInfo,
           relation: newRelation,
           fansCount:
-            newRelation === MaaUserInfoRelationEnum.Following ||
-            newRelation === MaaUserInfoRelationEnum.Mutual
+            newRelation === MaaUserInfoRelationEnum.Following || newRelation === MaaUserInfoRelationEnum.Mutual
               ? (userInfo.fansCount ?? 0) + 1
               : Math.max((userInfo.fansCount ?? 0) - 1, 0),
         },
@@ -56,11 +53,7 @@ const _ProfilePage: ComponentType = () => {
       <div className="md:w-2/3 order-2 md:order-1 mr-0 md:mr-8">
         <div className="mb-4 flex flex-wrap">
           <ButtonGroup className="mr-2">
-            <Button
-              icon="document"
-              active={listMode === 'operation'}
-              onClick={() => setListMode('operation')}
-            >
+            <Button icon="document" active={listMode === 'operation'} onClick={() => setListMode('operation')}>
               {t.pages.profile.tasks}
               {operationCount === -1 ? '' : ` (${operationCount})`}
             </Button>
@@ -80,15 +73,12 @@ const _ProfilePage: ComponentType = () => {
             <OperationList
               limit={10}
               orderBy="id"
-              uploaderId={authState.userId == id ? 'me' : id}
+              uploaderId={authState.userId === id ? 'me' : id}
               onUpdate={({ total }) => setOperationCount(total)}
             />
           )}
           {listMode === 'operationSet' && (
-            <OperationSetList
-              creatorId={id}
-              onUpdate={({ total }) => setOperationSetCount(total)}
-            />
+            <OperationSetList creatorId={id} onUpdate={({ total }) => setOperationSetCount(total)} />
           )}
         </div>
       </div>
@@ -96,10 +86,7 @@ const _ProfilePage: ComponentType = () => {
         <div className="sticky top-20">
           {userInfo && (
             <>
-              <UserProfileHeader
-                user={userInfo}
-                onFollowChange={handleFollowChange}
-              />
+              <UserProfileHeader user={userInfo} onFollowChange={handleFollowChange} />
               <UserStatsCard
                 key={userInfo.id}
                 user={userInfo}
@@ -119,7 +106,7 @@ _ProfilePage.displayName = 'ProfilePage'
 export const ProfilePage = withSuspensable(_ProfilePage, {
   errorFallback: ({ error }) => {
     if (error instanceof NotFoundError) {
-      return <Navigate to='/404' replace />
+      return <Navigate to="/404" replace />
     }
     return undefined
   },

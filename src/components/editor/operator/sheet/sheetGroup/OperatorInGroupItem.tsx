@@ -21,15 +21,10 @@ export const OperatorInGroupItem: FC<OperatorInGroupItemProp> = ({
     <>
       <div className="flex items-center">
         <OperatorAvatar name={name} size="large" />
-        <p className="font-bold leading-none text-center truncate ml-2 mr-auto">
-          {useLocalizedOperatorName(name)}
-        </p>
+        <p className="font-bold leading-none text-center truncate ml-2 mr-auto">{useLocalizedOperatorName(name)}</p>
       </div>
       {!!onOperatorSkillChange && (
-        <SkillAboutTrigger
-          operator={{ name, ...restField }}
-          onSkillChange={onOperatorSkillChange}
-        />
+        <SkillAboutTrigger operator={{ name, ...restField }} onSkillChange={onOperatorSkillChange} />
       )}
     </>
   </Card>

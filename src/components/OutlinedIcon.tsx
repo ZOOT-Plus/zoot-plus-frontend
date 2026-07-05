@@ -12,9 +12,6 @@ export const OutlinedIcon = ({
 }) => (
   <Icon
     {...iconProps}
-    className={clsx(
-      className,
-      (outlined ?? true) && '[&_path]:fill-transparent [&_path]:stroke-current',
-    )}
+    className={clsx(className, (outlined ?? true) && '[&_path]:fill-transparent [&_path]:stroke-current')}
   />
 )

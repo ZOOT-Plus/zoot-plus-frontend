@@ -8,11 +8,7 @@ import { CopilotDocV1 } from 'models/copilot.schema'
 import { findActionType } from 'models/types'
 
 import { languageAtom, useTranslation } from '../i18n/i18n'
-import {
-  findOperatorDirection,
-  getLocalizedOperatorName,
-  getSkillUsageTitle,
-} from '../models/operator'
+import { findOperatorDirection, getLocalizedOperatorName, getSkillUsageTitle } from '../models/operator'
 import { formatDuration } from '../utils/times'
 import { OperatorAvatar } from './OperatorAvatar'
 
@@ -97,12 +93,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
           )}
         >
           {/* Colored top accent bar */}
-          <div
-            className={clsx(
-              'absolute top-0 left-0 right-0 h-[3px]',
-              type.accentBg,
-            )}
-          />
+          <div className={clsx('absolute top-0 left-0 right-0 h-[3px]', type.accentBg)} />
 
           {/* Step number — top right corner */}
           <div
@@ -120,16 +111,9 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
             {/* Left: main info */}
             <div className="flex-1 min-w-0">
               {/* Action type */}
-              <div
-                className={clsx(
-                  'flex items-center gap-1.5 mb-2',
-                  type.accentText,
-                )}
-              >
+              <div className={clsx('flex items-center gap-1.5 mb-2', type.accentText)}>
                 {type.icon && <Icon icon={type.icon} size={12} />}
-                <span className="text-[11px] font-semibold tracking-wide uppercase opacity-90">
-                  {type.title()}
-                </span>
+                <span className="text-[11px] font-semibold tracking-wide uppercase opacity-90">{type.title()}</span>
               </div>
 
               {/* Avatar + name */}
@@ -171,14 +155,8 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                   {'location' in action && action.location && (
                     <span className="flex items-center gap-1 text-[11px]">
-                      <Icon
-                        icon="map-marker"
-                        size={10}
-                        className="text-zinc-400 dark:text-white/30"
-                      />
-                      <span className="text-zinc-400 dark:text-white/30">
-                        {t.components.ActionCard.coordinates}
-                      </span>
+                      <Icon icon="map-marker" size={10} className="text-zinc-400 dark:text-white/30" />
+                      <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.coordinates}</span>
                       <span className="font-mono text-zinc-600 dark:text-white/60 bg-zinc-100 dark:bg-white/[0.06] px-1 rounded">
                         {action.location.join(', ')}
                       </span>
@@ -186,14 +164,8 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                   )}
                   {'direction' in action && (
                     <span className="flex items-center gap-1 text-[11px]">
-                      <Icon
-                        icon="compass"
-                        size={10}
-                        className="text-zinc-400 dark:text-white/30"
-                      />
-                      <span className="text-zinc-400 dark:text-white/30">
-                        {t.components.ActionCard.direction}
-                      </span>
+                      <Icon icon="compass" size={10} className="text-zinc-400 dark:text-white/30" />
+                      <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.direction}</span>
                       <span className="font-mono text-zinc-600 dark:text-white/60">
                         {findOperatorDirection(action.direction).title()}
                       </span>
@@ -201,17 +173,9 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                   )}
                   {'distance' in action && action.distance && (
                     <span className="flex items-center gap-1 text-[11px]">
-                      <Icon
-                        icon="camera"
-                        size={10}
-                        className="text-zinc-400 dark:text-white/30"
-                      />
-                      <span className="text-zinc-400 dark:text-white/30">
-                        {t.components.ActionCard.distance}
-                      </span>
-                      <span className="font-mono text-zinc-600 dark:text-white/60">
-                        {action.distance.join(', ')}
-                      </span>
+                      <Icon icon="camera" size={10} className="text-zinc-400 dark:text-white/30" />
+                      <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.distance}</span>
+                      <span className="font-mono text-zinc-600 dark:text-white/60">{action.distance.join(', ')}</span>
                     </span>
                   )}
                 </div>
@@ -233,9 +197,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                 },
                 {
                   label: t.components.ActionCard.pre_delay,
-                  value: action.preDelay
-                    ? formatDuration(action.preDelay)
-                    : undefined,
+                  value: action.preDelay ? formatDuration(action.preDelay) : undefined,
                 },
                 {
                   label: t.components.ActionCard.rear_delay,
@@ -249,16 +211,12 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                   <span
                     className={clsx(
                       'font-mono text-[12px] font-bold tabular-nums leading-tight',
-                      value
-                        ? 'text-zinc-800 dark:text-white/80'
-                        : 'text-zinc-300 dark:text-white/20',
+                      value ? 'text-zinc-800 dark:text-white/80' : 'text-zinc-300 dark:text-white/20',
                     )}
                   >
                     {value ?? '-'}
                   </span>
-                  <span className="text-[9px] text-zinc-500 dark:text-white/25 leading-tight">
-                    {label}
-                  </span>
+                  <span className="text-[9px] text-zinc-500 dark:text-white/25 leading-tight">{label}</span>
                 </div>
               ))}
             </div>
@@ -276,12 +234,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
             )}
           >
             <div className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-[#1a1f2e] border border-zinc-300 dark:border-white/10 flex items-center justify-center shadow-md">
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                className="text-zinc-500 dark:text-white/40"
-              >
+              <svg width="10" height="10" viewBox="0 0 10 10" className="text-zinc-500 dark:text-white/40">
                 <path
                   d="M1 5 L7 5 M5 2 L9 5 L5 8"
                   stroke="currentColor"
@@ -302,15 +255,8 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
   return (
     <div className="flex gap-3">
       <div className="flex flex-col items-center flex-shrink-0 w-4">
-        <div
-          className={clsx(
-            'w-3 h-3 rounded-full mt-1 flex-shrink-0',
-            type.accentBg,
-          )}
-        />
-        {!isLast && (
-          <div className="w-px flex-1 mt-1 bg-gray-300 dark:bg-gray-600" />
-        )}
+        <div className={clsx('w-3 h-3 rounded-full mt-1 flex-shrink-0', type.accentBg)} />
+        {!isLast && <div className="w-px flex-1 mt-1 bg-gray-300 dark:bg-gray-600" />}
       </div>
 
       <div
@@ -320,12 +266,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
         )}
       >
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-          <span
-            className={clsx(
-              'inline-flex items-center gap-1 text-xs font-semibold',
-              type.accentText,
-            )}
-          >
+          <span className={clsx('inline-flex items-center gap-1 text-xs font-semibold', type.accentText)}>
             {type.icon && <Icon icon={type.icon} size={11} />}
             <span>{type.title()}</span>
           </span>
@@ -355,9 +296,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
           )}
 
           {'distance' in action && action.distance && (
-            <span className="font-mono text-xs text-gray-400 dark:text-gray-500">
-              {action.distance.join(', ')}
-            </span>
+            <span className="font-mono text-xs text-gray-400 dark:text-gray-500">{action.distance.join(', ')}</span>
           )}
         </div>
 
@@ -368,9 +307,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                 key={label}
                 className="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded"
               >
-                <span className="text-gray-400 dark:text-gray-500">
-                  {label}
-                </span>
+                <span className="text-gray-400 dark:text-gray-500">{label}</span>
                 <span className="font-mono font-medium">{value}</span>
               </span>
             ))}

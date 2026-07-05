@@ -1,5 +1,5 @@
 import { Button, Icon, MenuItem } from '@blueprintjs/core'
-import { Select2 } from '@blueprintjs/select'
+import { Select } from '@blueprintjs/select'
 
 import { useController } from 'react-hook-form'
 import { SetOptional } from 'type-fest'
@@ -11,14 +11,9 @@ import { actionDocColors } from 'models/operator'
 
 import { useTranslation } from '../../../i18n/i18n'
 
-interface EditorActionDocColorProps
-  extends SetOptional<EditorFieldProps<CopilotDocV1.Action, string>, 'name'> {}
+interface EditorActionDocColorProps extends SetOptional<EditorFieldProps<CopilotDocV1.Action, string>, 'name'> {}
 
-export const EditorActionDocColor = ({
-  name = 'docColor',
-  control,
-  ...controllerProps
-}: EditorActionDocColorProps) => {
+export const EditorActionDocColor = ({ name = 'docColor', control, ...controllerProps }: EditorActionDocColorProps) => {
   const t = useTranslation()
 
   const {
@@ -38,11 +33,9 @@ export const EditorActionDocColor = ({
       label={t.components.editor.action.EditorActionDocColor.description_color}
       field={name}
       error={errors[name]}
-      description={
-        t.components.editor.action.EditorActionDocColor.color_description
-      }
+      description={t.components.editor.action.EditorActionDocColor.color_description}
     >
-      <Select2
+      <Select
         filterable={false}
         items={actionDocColors}
         itemRenderer={(color, { handleClick, handleFocus, modifiers }) => (
@@ -53,11 +46,7 @@ export const EditorActionDocColor = ({
             onFocus={handleFocus}
             text={
               <span>
-                <Icon
-                  icon="full-circle"
-                  color={color?.value}
-                  className="mr-2"
-                />
+                <Icon icon="full-circle" color={color?.value} className="mr-2" />
                 <span style={{ color: color?.value }}>{color?.title()}</span>
               </span>
             }
@@ -72,7 +61,7 @@ export const EditorActionDocColor = ({
           <Icon icon="full-circle" color={selected?.value} />
           <span style={{ color: selected?.value }}>{selected?.title()}</span>
         </Button>
-      </Select2>
+      </Select>
     </FormField2>
   )
 }

@@ -5,10 +5,7 @@ export function useEditableFields<T>(fields: T[]) {
   const editingIndex = useRef<number>(-1)
   const updatedListener = useRef<(fields: T[]) => void>()
 
-  const reserveEditingField = (
-    index: number,
-    onceUpdated?: (fields: T[]) => void,
-  ) => {
+  const reserveEditingField = (index: number, onceUpdated?: (fields: T[]) => void) => {
     // we cannot directly update editingField using the field because its ID
     // as well as the object reference will be changed. The only thing we can do
     // is keep track of the index and retrieve the field after fields have been

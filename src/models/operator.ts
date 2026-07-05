@@ -5,10 +5,7 @@ import { clamp, defaults, mapValues } from 'lodash-es'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
-import {
-  DetailedSelectChoice,
-  isChoice,
-} from '../components/editor/DetailedSelect'
+import { DetailedSelectChoice, isChoice } from '../components/editor/DetailedSelect'
 import { Language, i18n, i18nDefer, languageAtom } from '../i18n/i18n'
 import { OPERATORS, PROFESSIONS } from '../models/generated/operators.json'
 
@@ -17,16 +14,12 @@ export { OPERATORS, PROFESSIONS }
 export type OperatorInfo = (typeof OPERATORS)[number]
 export type Profession = (typeof PROFESSIONS)[number]
 
-const OPERATORS_BY_ID = Object.fromEntries(
-  OPERATORS.map((operator) => [operator.id, operator]),
-)
+const OPERATORS_BY_ID = Object.fromEntries(OPERATORS.map((operator) => [operator.id, operator]))
 export function findOperatorById(id: string): OperatorInfo | undefined {
   return OPERATORS_BY_ID[id]
 }
 
-const OPERATORS_BY_NAME = Object.fromEntries(
-  OPERATORS.map((operator) => [operator.name, operator]),
-)
+const OPERATORS_BY_NAME = Object.fromEntries(OPERATORS.map((operator) => [operator.name, operator]))
 export function findOperatorByName(name: string): OperatorInfo | undefined {
   return OPERATORS_BY_NAME[name]
 }
@@ -90,10 +83,7 @@ export function getSkillCount({ id, rarity }: OperatorInfo): number {
   return 0
 }
 
-const defaultRequirementsByRarity: Record<
-  number,
-  Required<CopilotDocV1.Requirements>
-> = mapValues(
+const defaultRequirementsByRarity: Record<number, Required<CopilotDocV1.Requirements>> = mapValues(
   {
     0: { elite: 0, level: 1, skillLevel: 1 },
     1: { elite: 0, level: 30, skillLevel: 1 },
@@ -171,32 +161,20 @@ export function adjustOperatorLevel({
   ;(() => {
     // 特殊处理：把精英1满级和精英2 1级当成两个边界点，从任何方向尝试跨越时都只能落到这两个点上
     if (elite2 !== 0) {
-      if (
-        (level > elite2 + 1 && level + delta <= elite2 + 1) ||
-        (level === elite2 && delta > 0)
-      ) {
+      if ((level > elite2 + 1 && level + delta <= elite2 + 1) || (level === elite2 && delta > 0)) {
         level = elite2 + 1
         return
-      } else if (
-        (level < elite2 && level + delta >= elite2) ||
-        (level === elite2 + 1 && delta < 0)
-      ) {
+      } else if ((level < elite2 && level + delta >= elite2) || (level === elite2 + 1 && delta < 0)) {
         level = elite2
         return
       }
     }
     // 同上，处理精英0满级和精英1 1级
     if (elite1 !== 0) {
-      if (
-        (level > elite1 + 1 && level + delta <= elite1 + 1) ||
-        (level === elite1 && delta > 0)
-      ) {
+      if ((level > elite1 + 1 && level + delta <= elite1 + 1) || (level === elite1 && delta > 0)) {
         level = elite1 + 1
         return
-      } else if (
-        (level < elite1 && level + delta >= elite1) ||
-        (level === elite1 + 1 && delta < 0)
-      ) {
+      } else if ((level < elite1 && level + delta >= elite1) || (level === elite1 + 1 && delta < 0)) {
         level = elite1
         return
       }
@@ -240,11 +218,9 @@ export const operatorSkillUsages: DetailedOperatorSkillUsage[] = [
     type: 'choice',
     icon: 'circle',
     title: i18nDefer.models.operator.skill_usage.ready_to_use_times.title,
-    altTitle:
-      i18nDefer.models.operator.skill_usage.ready_to_use_times.alt_title,
+    altTitle: i18nDefer.models.operator.skill_usage.ready_to_use_times.alt_title,
     value: CopilotDocV1.SkillUsageType.ReadyToUseTimes,
-    description:
-      i18nDefer.models.operator.skill_usage.ready_to_use_times.description,
+    description: i18nDefer.models.operator.skill_usage.ready_to_use_times.description,
   },
   {
     type: 'choice',
@@ -252,17 +228,15 @@ export const operatorSkillUsages: DetailedOperatorSkillUsage[] = [
     title: i18nDefer.models.operator.skill_usage.automatically.title,
     altTitle: i18nDefer.models.operator.skill_usage.automatically.alt_title,
     value: CopilotDocV1.SkillUsageType.Automatically,
-    description:
-      i18nDefer.models.operator.skill_usage.automatically.description,
+    description: i18nDefer.models.operator.skill_usage.automatically.description,
     disabled: true,
   },
 ]
 
-export const alternativeOperatorSkillUsages: DetailedOperatorSkillUsage[] =
-  operatorSkillUsages.map((item) => ({
-    ...item,
-    title: item.altTitle,
-  }))
+export const alternativeOperatorSkillUsages: DetailedOperatorSkillUsage[] = operatorSkillUsages.map((item) => ({
+  ...item,
+  title: item.altTitle,
+}))
 
 const unknownSkillUsage: DetailedOperatorSkillUsage = {
   type: 'choice',
@@ -273,23 +247,12 @@ const unknownSkillUsage: DetailedOperatorSkillUsage = {
   description: () => '',
 }
 
-export function findOperatorSkillUsage(
-  value: number = defaultSkillUsage,
-): DetailedOperatorSkillUsage {
-  return (
-    operatorSkillUsages.filter(isChoice).find((item) => item.value === value) ||
-    unknownSkillUsage
-  )
+export function findOperatorSkillUsage(value: number = defaultSkillUsage): DetailedOperatorSkillUsage {
+  return operatorSkillUsages.filter(isChoice).find((item) => item.value === value) || unknownSkillUsage
 }
 
-export function getSkillUsageTitle(
-  skillUsage: CopilotDocV1.SkillUsageType,
-  skillTimes?: CopilotDocV1.SkillTimes,
-) {
-  if (
-    skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes &&
-    skillTimes !== undefined
-  ) {
+export function getSkillUsageTitle(skillUsage: CopilotDocV1.SkillUsageType, skillTimes?: CopilotDocV1.SkillTimes) {
+  if (skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes && skillTimes !== undefined) {
     return i18n.models.operator.skill_usage.ready_to_use_times.format({
       count: skillTimes,
       times: skillTimes,
@@ -298,10 +261,7 @@ export function getSkillUsageTitle(
   return findOperatorSkillUsage(skillUsage).title()
 }
 
-export function getSkillUsageAltTitle(
-  skillUsage: CopilotDocV1.SkillUsageType,
-  skillTimes?: CopilotDocV1.SkillTimes,
-) {
+export function getSkillUsageAltTitle(skillUsage: CopilotDocV1.SkillUsageType, skillTimes?: CopilotDocV1.SkillTimes) {
   if (skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes) {
     return i18n.models.operator.skill_usage.ready_to_use_times.alt_format({
       times: skillTimes ?? 1,
@@ -316,8 +276,7 @@ export interface OperatorDirection {
   value: CopilotDocV1.Direction | null
 }
 
-const defaultDirection: CopilotDocV1.Direction =
-  'None' as CopilotDocV1.Direction.None
+const defaultDirection: CopilotDocV1.Direction = 'None' as CopilotDocV1.Direction.None
 
 export const operatorDirections: OperatorDirection[] = [
   // TODO: remove these string literals when CopilotDocV1 can be imported
@@ -354,12 +313,8 @@ const unknownDirection: OperatorDirection = {
   value: null,
 }
 
-export function findOperatorDirection(
-  value: CopilotDocV1.Direction = defaultDirection,
-): OperatorDirection {
-  return (
-    operatorDirections.find((item) => item.value === value) || unknownDirection
-  )
+export function findOperatorDirection(value: CopilotDocV1.Direction = defaultDirection): OperatorDirection {
+  return operatorDirections.find((item) => item.value === value) || unknownDirection
 }
 
 export interface ActionDocColor {

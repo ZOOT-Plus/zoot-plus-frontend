@@ -1,22 +1,9 @@
-import {
-  Fragment,
-  ReactNode,
-  useCallback,
-  useInsertionEffect,
-  useRef,
-} from 'react'
+import { Fragment, ReactNode, useCallback, useInsertionEffect, useRef } from 'react'
 
-export function joinJSX(
-  elements: ReactNode[],
-  separator: ReactNode,
-): ReactNode[] {
+export function joinJSX(elements: ReactNode[], separator: ReactNode): ReactNode[] {
   return elements.reduce((acc: ReactNode[], element, index) => {
     if (index === 0) return [element]
-    return [
-      ...acc,
-      <Fragment key={'sep' + index}>{separator}</Fragment>,
-      element,
-    ]
+    return [...acc, <Fragment key={'sep' + index}>{separator}</Fragment>, element]
   }, [])
 }
 

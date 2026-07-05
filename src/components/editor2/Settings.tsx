@@ -1,11 +1,4 @@
-import {
-  Button,
-  ButtonProps,
-  Dialog,
-  DialogBody,
-  FormGroup,
-  Switch,
-} from '@blueprintjs/core'
+import { Button, ButtonProps, Dialog, DialogBody, FormGroup, Switch } from '@blueprintjs/core'
 
 import { useAtom } from 'jotai'
 import { useState } from 'react'
@@ -23,39 +16,24 @@ export const Settings = (props: SettingsProps) => {
 
   return (
     <>
-      <Button
-        icon="cog"
-        {...props}
-        onClick={() => setIsOpen(true)}
-        title={t.components.editor2.Settings.title}
-      />
+      <Button icon="cog" {...props} onClick={() => setIsOpen(true)} title={t.components.editor2.Settings.title} />
 
-      <Dialog
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title={t.components.editor2.Settings.title}
-      >
+      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} title={t.components.editor2.Settings.title}>
         <DialogBody>
           <Switch
             checked={config.showLinkerButtons}
             label={t.components.editor2.Settings.show_linker_buttons}
-            onChange={(e) =>
-              setConfig({ showLinkerButtons: e.currentTarget.checked })
-            }
+            onChange={(e) => setConfig({ showLinkerButtons: e.currentTarget.checked })}
           />
           <Switch
             checked={config.toggleSelectorPanel}
             label={t.components.editor2.Settings.auto_toggle_selector_panel}
-            onChange={(e) =>
-              setConfig({ toggleSelectorPanel: e.currentTarget.checked })
-            }
+            onChange={(e) => setConfig({ toggleSelectorPanel: e.currentTarget.checked })}
           />
           <Switch
             checked={config.showErrorsByDefault}
             label={t.components.editor2.Settings.show_errors_by_default}
-            onChange={(e) =>
-              setConfig({ showErrorsByDefault: e.currentTarget.checked })
-            }
+            onChange={(e) => setConfig({ showErrorsByDefault: e.currentTarget.checked })}
           />
 
           <FormGroup
@@ -66,9 +44,7 @@ export const Settings = (props: SettingsProps) => {
               intOnly
               clampValueOnBlur
               value={config.historyLimit}
-              onValueChange={(value) =>
-                setConfig({ historyLimit: Math.max(value, 5) })
-              }
+              onValueChange={(value) => setConfig({ historyLimit: Math.max(value, 5) })}
               min={5}
               stepSize={5}
             />

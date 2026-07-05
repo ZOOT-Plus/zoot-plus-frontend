@@ -4,13 +4,7 @@ import { noop } from 'lodash-es'
 import { Suspense, useEffect } from 'react'
 import useSWR from 'swr'
 
-import {
-  Language,
-  RawTranslations,
-  i18n,
-  languageAtom,
-  rawTranslationsAtom,
-} from './i18n'
+import { Language, RawTranslations, i18n, languageAtom, rawTranslationsAtom } from './i18n'
 
 let refresh: () => void = noop
 
@@ -59,8 +53,7 @@ const I18NProviderInner = ({ children }: { children: JSX.Element }) => {
   return children
 }
 
-const hotReloadedModules: Partial<Record<Language, Record<string, unknown>>> =
-  {}
+const hotReloadedModules: Partial<Record<Language, Record<string, unknown>>> = {}
 
 async function loadTranslations(language: Language) {
   if (import.meta.hot) {
@@ -82,16 +75,13 @@ async function loadTranslations(language: Language) {
 
 // handle HMR
 if (import.meta.hot) {
-  import.meta.hot.accept(
-    ['./generated/cn', './generated/en'],
-    ([cnModule, enModule]) => {
-      if (cnModule?.default) {
-        hotReloadedModules['cn'] = cnModule?.default
-      }
-      if (enModule?.default) {
-        hotReloadedModules['en'] = enModule?.default
-      }
-      refresh()
-    },
-  )
+  import.meta.hot.accept(['./generated/cn', './generated/en'], ([cnModule, enModule]) => {
+    if (cnModule?.default) {
+      hotReloadedModules['cn'] = cnModule?.default
+    }
+    if (enModule?.default) {
+      hotReloadedModules['en'] = enModule?.default
+    }
+    refresh()
+  })
 }

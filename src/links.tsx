@@ -35,16 +35,12 @@ export const SOCIAL_CONFIG = [
     labelKey: i18nDefer.links.feedback,
   },
   {
-    icon: (
-      <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />
-    ),
+    icon: <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />,
     href: 'https://github.com/ZOOT-Plus/zoot-plus-frontend',
     labelKey: i18nDefer.links.frontend_repo,
   },
   {
-    icon: (
-      <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />
-    ),
+    icon: <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />,
     href: 'https://github.com/ZOOT-Plus/ZootPlusBackend',
     labelKey: i18nDefer.links.backend_repo,
   },
@@ -67,9 +63,7 @@ export const FRIENDLY_LINKS_CONFIG = [
     labelKey: i18nDefer.links.official_site,
   },
   {
-    icon: (
-      <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />
-    ),
+    icon: <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />,
     href: 'https://github.com/MaaAssistantArknights/MaaAssistantArknights',
     labelKey: i18nDefer.links.maa_repo,
   },

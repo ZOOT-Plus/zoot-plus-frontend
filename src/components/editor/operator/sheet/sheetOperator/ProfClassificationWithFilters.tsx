@@ -1,5 +1,4 @@
-import { Button, Divider, H4, H5 } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Divider, H4, H5, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
@@ -22,9 +21,7 @@ export interface ProfClassificationWithFiltersProp {
   toTop: () => void
 }
 
-export const ProfClassificationWithFilters: FC<
-  ProfClassificationWithFiltersProp
-> = ({ toTop }) => {
+export const ProfClassificationWithFilters: FC<ProfClassificationWithFiltersProp> = ({ toTop }) => {
   const t = useTranslation()
   const language = useAtomValue(languageAtom)
   const {
@@ -36,20 +33,14 @@ export const ProfClassificationWithFilters: FC<
     () => [
       {
         id: DEFAULTPROFID.ALL,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.all,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.all,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
         sub: [],
       },
       {
         id: DEFAULTPROFID.FAV,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.favorites,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.favorites,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.favorites,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.favorites,
         sub: [],
       },
       ...PROFESSIONS.map((profession) => ({
@@ -58,11 +49,8 @@ export const ProfClassificationWithFilters: FC<
       })),
       {
         id: DEFAULTPROFID.OTHERS,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.others,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.others,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.others,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.others,
         sub: [],
       },
     ],
@@ -72,22 +60,15 @@ export const ProfClassificationWithFilters: FC<
     return [
       {
         id: DEFAULTSUBPROFID.ALL,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.all,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.all,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.all,
       },
       {
         id: DEFAULTSUBPROFID.SELECTED,
-        name: t.components.editor.operator.sheet.sheetOperator
-          .ProfClassificationWithFilters.selected,
-        name_en:
-          t.components.editor.operator.sheet.sheetOperator
-            .ProfClassificationWithFilters.selected,
+        name: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.selected,
+        name_en: t.components.editor.operator.sheet.sheetOperator.ProfClassificationWithFilters.selected,
       },
-      ...(formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub ||
-        []),
+      ...(formattedProfessions.find(({ id }) => id === selectedProf[0])?.sub || []),
     ]
   }, [selectedProf, formattedProfessions, t])
 
@@ -98,7 +79,7 @@ export const ProfClassificationWithFilters: FC<
 
   const ToolBox = (
     <div className="flex flex-col absolute bottom-0">
-      <Popover2
+      <PopoverNext
         content={
           <>
             <OperatorRaritySelect />
@@ -106,7 +87,7 @@ export const ProfClassificationWithFilters: FC<
         }
       >
         <Button minimal icon="filter-list" />
-      </Popover2>
+      </PopoverNext>
       <OperatorMutipleSelect />
       <OperatorBackToTop {...{ toTop }} />
     </div>
@@ -139,10 +120,7 @@ export const ProfClassificationWithFilters: FC<
                 className={clsx(
                   'truncate cursor-pointer my-3 opacity-50 hover:underline hover:opacity-90',
                   selectedProf.includes(subProf.id) && '!opacity-100 underline',
-                  (language === 'en' && subProf.name_en
-                    ? subProf.name_en
-                    : subProf.name
-                  ).length > 3 && '!text-base',
+                  (language === 'en' && subProf.name_en ? subProf.name_en : subProf.name).length > 3 && '!text-base',
                 )}
                 onClick={() =>
                   setProfFilter(({ selectedProf, ...rest }) => ({
@@ -151,9 +129,7 @@ export const ProfClassificationWithFilters: FC<
                   }))
                 }
               >
-                {language === 'en' && subProf.name_en
-                  ? subProf.name_en
-                  : subProf.name}
+                {language === 'en' && subProf.name_en ? subProf.name_en : subProf.name}
               </H4>
             </li>
           ))}
@@ -171,13 +147,7 @@ interface ProfIconProp extends ImgHTMLAttributes<HTMLImageElement> {
   onProfClick: () => void
 }
 
-const ProfIcon: FC<ProfIconProp> = ({
-  name,
-  profId,
-  selected,
-  onProfClick,
-  ...restImgProps
-}) => {
+const ProfIcon: FC<ProfIconProp> = ({ name, profId, selected, onProfClick, ...restImgProps }) => {
   return (
     <li
       className="grow cursor-pointer relative flex justify-center items-center"
@@ -196,9 +166,7 @@ const ProfIcon: FC<ProfIconProp> = ({
           title={name}
         />
       )}
-      {selected && (
-        <div className="h-full w-1 bg-black dark:bg-white absolute top-0 right-full rounded" />
-      )}
+      {selected && <div className="h-full w-1 bg-black dark:bg-white absolute top-0 right-full rounded" />}
     </li>
   )
 }

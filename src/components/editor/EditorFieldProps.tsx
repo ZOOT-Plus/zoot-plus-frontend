@@ -1,11 +1,4 @@
-import {
-  ArrayPath,
-  FieldPath,
-  FieldValues,
-  Path,
-  PathValue,
-  UseControllerProps,
-} from 'react-hook-form'
+import { ArrayPath, FieldPath, FieldValues, Path, PathValue, UseControllerProps } from 'react-hook-form'
 
 import { Cast } from '../../types'
 
@@ -48,22 +41,21 @@ type PathOfType<T, P extends Path<T> | ArrayPath<T>, U> = P extends any
  * }
  * ```
  */
-export interface EditorFieldProps<TFieldValues extends FieldValues, TType = any>
-  extends UseControllerProps<
-    TFieldValues,
-    // the Cast here is a workaround for the fact that TS cannot correctly recognize
-    // that the result of PathOfType is assignable to FieldPath<TFieldValues>
-    // refer to: https://github.com/microsoft/TypeScript/issues/46855#issuecomment-974484444
-    Cast<
-      PathOfType<
-        // wrap in Require to prevent optional keys from being stripped
-        Required<TFieldValues>,
-        FieldPath<Required<TFieldValues>>,
-        TType
-      >,
-      FieldPath<TFieldValues>
-    >
-  > {}
+export interface EditorFieldProps<TFieldValues extends FieldValues, TType = any> extends UseControllerProps<
+  TFieldValues,
+  // the Cast here is a workaround for the fact that TS cannot correctly recognize
+  // that the result of PathOfType is assignable to FieldPath<TFieldValues>
+  // refer to: https://github.com/microsoft/TypeScript/issues/46855#issuecomment-974484444
+  Cast<
+    PathOfType<
+      // wrap in Require to prevent optional keys from being stripped
+      Required<TFieldValues>,
+      FieldPath<Required<TFieldValues>>,
+      TType
+    >,
+    FieldPath<TFieldValues>
+  >
+> {}
 
 export interface EditorFieldPropsByName<
   TFieldValues extends FieldValues = FieldValues,

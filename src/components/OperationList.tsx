@@ -1,5 +1,4 @@
-import { Button, Callout, NonIdealState } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Callout, NonIdealState, Tooltip } from '@blueprintjs/core'
 
 import { UseOperationsParams, useOperations } from 'apis/operation'
 import { useAtomValue } from 'jotai'
@@ -23,11 +22,10 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
     const t = useTranslation()
     const neoLayout = useAtomValue(neoLayoutAtom)
 
-    const { operations, total, setSize, isValidating, isReachingEnd } =
-      useOperations({
-        ...params,
-        suspense: true,
-      })
+    const { operations, total, setSize, isValidating, isReachingEnd } = useOperations({
+      ...params,
+      suspense: true,
+    })
 
     // make TS happy: we got Suspense out there
     if (!operations) throw new Error('unreachable')
@@ -36,9 +34,7 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
       onUpdate?.({ total })
     }, [total, onUpdate])
 
-    const [selectedOperations, setSelectedOperations] = useState<Operation[]>(
-      [],
-    )
+    const [selectedOperations, setSelectedOperations] = useState<Operation[]>([])
     const updateSelection = (add: Operation[], remove: Operation[]) => {
       setSelectedOperations((old) => {
         return [
@@ -106,24 +102,12 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
               </div>
             </details>
             <div className="absolute top-2 right-2 flex">
-              <Tooltip2
-                content={t.components.OperationList.only_loaded_items}
-                placement="top"
-              >
-                <Button
-                  minimal
-                  icon="tick"
-                  onClick={() => updateSelection(operations, [])}
-                >
+              <Tooltip content={t.components.OperationList.only_loaded_items} placement="top">
+                <Button minimal icon="tick" onClick={() => updateSelection(operations, [])}>
                   {t.components.OperationList.select_all}
                 </Button>
-              </Tooltip2>
-              <Button
-                minimal
-                intent="danger"
-                icon="trash"
-                onClick={() => setSelectedOperations([])}
-              >
+              </Tooltip>
+              <Button minimal intent="danger" icon="trash" onClick={() => setSelectedOperations([])}>
                 {t.components.OperationList.clear}
               </Button>
               <AddToOperationSetButton

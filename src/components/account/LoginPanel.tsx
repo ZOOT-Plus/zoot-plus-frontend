@@ -58,11 +58,7 @@ export const LoginPanel: FC<{
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <AuthFormEmailField
-          control={control}
-          error={errors.email}
-          field="email"
-        />
+        <AuthFormEmailField control={control} error={errors.email} field="email" />
 
         <AuthFormPasswordField<LoginFormValues>
           control={control}
@@ -70,12 +66,7 @@ export const LoginPanel: FC<{
           field="password"
           inputGroupProps={() => ({
             rightElement: (
-              <Button
-                minimal
-                small
-                icon="key"
-                onClick={() => setResetPasswordDialogOpen(true)}
-              >
+              <Button minimal small icon="key" onClick={() => setResetPasswordDialogOpen(true)}>
                 {t.components.account.LoginPanel.forgot_password}
               </Button>
             ),
@@ -83,9 +74,7 @@ export const LoginPanel: FC<{
         />
 
         <div className="mt-6 flex items-center">
-          <span className="text-zinc-500">
-            {t.components.account.LoginPanel.no_account}
-          </span>
+          <span className="text-zinc-500">{t.components.account.LoginPanel.no_account}</span>
           <Button minimal onClick={onNavigateRegisterPanel}>
             {t.components.account.LoginPanel.go_register}
           </Button>
@@ -105,10 +94,7 @@ export const LoginPanel: FC<{
         </div>
       </form>
 
-      <ResetPasswordDialog
-        isOpen={resetPasswordDialogOpen}
-        onClose={() => setResetPasswordDialogOpen(false)}
-      />
+      <ResetPasswordDialog isOpen={resetPasswordDialogOpen} onClose={() => setResetPasswordDialogOpen(false)} />
     </>
   )
 }

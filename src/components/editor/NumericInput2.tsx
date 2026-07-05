@@ -1,20 +1,12 @@
-import {
-  HTMLInputProps,
-  NumericInput,
-  NumericInputProps,
-} from '@blueprintjs/core'
+import { HTMLInputProps, NumericInput, NumericInputProps } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { clamp, noop } from 'lodash-es'
-import {
-  WheelEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { WheelEventHandler, useCallback, useEffect, useRef, useState } from 'react'
 
-type MixedNumericInputProps = HTMLInputProps & NumericInputProps
+// v6 起 NumericInputProps.size 是 Blueprint 的 Size 变体，与 HTMLInputProps.size(number) 冲突，
+// 交叉后会塌成 never，这里从 HTML props 中剔除 size，保留 Blueprint 的 size 语义。
+type MixedNumericInputProps = Omit<HTMLInputProps, 'size'> & NumericInputProps
 
 export interface NumericInput2Props extends MixedNumericInputProps {
   intOnly?: boolean
@@ -42,8 +34,7 @@ export const NumericInput2 = ({
 
   if (minorStepSize && minorStepSize < 0.001) {
     // not yet fixed in current version: https://github.com/palantir/blueprint/issues/4497
-    process.env.NODE_ENV === 'development' &&
-      console.warn('minorStepSize cannot be smaller than 0.001')
+    process.env.NODE_ENV === 'development' && console.warn('minorStepSize cannot be smaller than 0.001')
 
     minorStepSize = 0.001
   }
@@ -82,18 +73,14 @@ export const NumericInput2 = ({
       max={max}
       minorStepSize={minorStepSize}
       inputClassName={clsx(
-        (wheelStepSize !== undefined || onWheelFocused !== undefined) &&
-          'focus:cursor-ns-resize',
+        (wheelStepSize !== undefined || onWheelFocused !== undefined) && 'focus:cursor-ns-resize',
         inputClassName,
       )}
       inputRef={inputRef}
       value={endsWithDot ? value + '.' : value}
       onFocus={(e) => {
         onFocus?.(e)
-        if (
-          (onWheelFocused || wheelStepSize !== undefined) &&
-          !handleWheelRegistered.current
-        ) {
+        if ((onWheelFocused || wheelStepSize !== undefined) && !handleWheelRegistered.current) {
           handleWheelRegistered.current = true
           e.currentTarget.addEventListener('wheel', handleWheel as any, {
             passive: false,

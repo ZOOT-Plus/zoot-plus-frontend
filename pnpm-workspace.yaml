@@ -1,0 +1,19 @@
+allowBuilds:
+  esbuild: true
+  maa-copilot-client: true
+  nodejieba: true
+  sharp: true
+  unrs-resolver: true
+
+# Rolldown(Vite 8）无法解析 @popperjs/core 经 export* 重导出的 placements，
+# 这里给 Blueprint v6 legacy Popover 依赖的 popper 打补丁绕过（详见 vite.config.ts TODO）。
+patchedDependencies:
+  '@popperjs/core@2.11.8': patches/@popperjs__core@2.11.8.patch
+
+overrides:
+  react-rating>@types/react: ^18.0.0
+  # Pin two transitive deps to releases that predate the CI minimumReleaseAge
+  # cutoff. Newer patches were pulled in by a local pnpm 10 update (which does
+  # not enforce the supply-chain policy) and got rejected by CI.
+  electron-to-chromium: 1.5.364
+  postcss: 8.5.15

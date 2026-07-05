@@ -1,5 +1,4 @@
-import { Button, Icon, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import { FC, useState } from 'react'
 
@@ -14,10 +13,7 @@ interface SourceEditorHeaderProps {
   onChange: (text: string) => void
 }
 
-export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
-  text,
-  onChange,
-}) => {
+export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange }) => {
   const t = useTranslation()
   const [importDropdownOpen, setImportDropdownOpen] = useState(false)
 
@@ -54,8 +50,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
     URL.revokeObjectURL(url)
 
     AppToaster.show({
-      message:
-        t.components.editor.source.SourceEditorHeader.job_json_downloaded,
+      message: t.components.editor.source.SourceEditorHeader.job_json_downloaded,
       intent: 'success',
     })
   }
@@ -63,15 +58,14 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
   return (
     <>
       <Icon icon="manually-entered-data" />
-      <span className="ml-2">
-        {t.components.editor.source.SourceEditorHeader.edit_json}
-      </span>
+      <span className="ml-2">{t.components.editor.source.SourceEditorHeader.edit_json}</span>
 
       <div className="flex-1" />
 
-      <Popover2
-        minimal
-        position="bottom-left"
+      <PopoverNext
+        animation="minimal"
+        arrow={false}
+        placement="bottom-start"
         isOpen={importDropdownOpen}
         onClose={() => setImportDropdownOpen(false)}
         content={
@@ -88,18 +82,15 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
           rightIcon="caret-down"
           onClick={() => setImportDropdownOpen(!importDropdownOpen)}
         />
-      </Popover2>
+      </PopoverNext>
 
-      <Popover2
-        minimal
-        position="bottom-left"
+      <PopoverNext
+        animation="minimal"
+        arrow={false}
+        placement="bottom-start"
         content={
           <Menu>
-            <MenuItem
-              icon="clipboard"
-              text={t.components.editor.source.SourceEditorHeader.copy}
-              onClick={handleCopy}
-            />
+            <MenuItem icon="clipboard" text={t.components.editor.source.SourceEditorHeader.copy} onClick={handleCopy} />
             <MenuItem
               icon="download"
               text={t.components.editor.source.SourceEditorHeader.download}
@@ -114,7 +105,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({
           text={t.components.editor.source.SourceEditorHeader.export}
           rightIcon="caret-down"
         />
-      </Popover2>
+      </PopoverNext>
     </>
   )
 }

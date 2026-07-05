@@ -22,16 +22,13 @@ export function useLazyStorage<T>(
       console.warn(e)
     }
 
-    return reviver
-      ? reviver(savedValue, defaultValue)
-      : savedValue ?? defaultValue
+    return reviver ? reviver(savedValue, defaultValue) : (savedValue ?? defaultValue)
   })
 
   const latestValue = useLatest(value)
 
   useEffect(() => {
-    const onUnload = () =>
-      localStorage.setItem(storageKey, JSON.stringify(latestValue.current))
+    const onUnload = () => localStorage.setItem(storageKey, JSON.stringify(latestValue.current))
 
     window.addEventListener('beforeunload', onUnload)
 

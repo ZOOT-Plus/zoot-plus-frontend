@@ -1,12 +1,5 @@
 import { Button, Icon } from '@blueprintjs/core'
-import {
-  DndContext,
-  DragEndEvent,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
+import { DndContext, DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 
 import clsx from 'clsx'
@@ -83,8 +76,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
       onMouseDownCapture={() => toggleSelectorPanel && setSelectorMode('map')}
     >
       <h3 className="text-lg font-bold">
-        {t.components.editor2.ActionEditor.action_sequence} (
-        {actionAtoms.length})
+        {t.components.editor2.ActionEditor.action_sequence} ({actionAtoms.length})
       </h3>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext items={actionIds}>
@@ -95,9 +87,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
                 atom={actionAtom}
                 render={(action) => (
                   <Sortable id={action.id} key={action.id}>
-                    {(attrs) => (
-                      <ActionItem actionAtom={actionAtom} {...attrs} />
-                    )}
+                    {(attrs) => <ActionItem actionAtom={actionAtom} {...attrs} />}
                   </Sortable>
                 )}
               />
@@ -120,10 +110,7 @@ export const ActionEditor: FC<ActionEditorProps> = ({ className }) => {
       <CreateActionMenu
         ref={createActionMenuRef}
         renderTarget={({ ref, locatorRef, onClick }) => (
-          <div
-            className="fixed top-0 right-0 bottom-0 left-0 pointer-events-none"
-            ref={ref}
-          >
+          <div className="fixed top-0 right-0 bottom-0 left-0 pointer-events-none" ref={ref}>
             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <span className="absolute" ref={locatorRef} onClick={onClick} />
           </div>

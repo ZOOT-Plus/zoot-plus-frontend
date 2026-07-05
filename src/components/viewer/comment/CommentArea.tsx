@@ -4,21 +4,9 @@ import { useOperation } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom, useAtomValue } from 'jotai'
 import { find } from 'lodash-es'
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-import {
-  deleteComment,
-  rateComment,
-  topComment,
-  useComments,
-} from '../../../apis/comment'
+import { deleteComment, rateComment, topComment, useComments } from '../../../apis/comment'
 import { useTranslation } from '../../../i18n/i18n'
 import {
   AUTHOR_MAX_COMMENT_LENGTH,
@@ -55,37 +43,25 @@ interface CommentAreaContext {
 
 export const CommentAreaContext = createContext<CommentAreaContext>({} as any)
 
-export const CommentArea = withSuspensable(function ViewerComments({
-  operationId,
-}: CommentAreaProps) {
+export const CommentArea = withSuspensable(function ViewerComments({ operationId }: CommentAreaProps) {
   const t = useTranslation()
-  const { comments, isValidating, isReachingEnd, setSize, mutate } =
-    useComments({
-      operationId,
-      suspense: true,
-    })
+  const { comments, isValidating, isReachingEnd, setSize, mutate } = useComments({
+    operationId,
+    suspense: true,
+  })
 
   const auth = useAtomValue(authAtom)
   const operation = useOperation({ id: operationId }).data
 
-  const operationOwned = !!(
-    operation &&
-    auth.userId &&
-    operation.uploaderId === auth.userId
-  )
+  const operationOwned = !!(operation && auth.userId && operation.uploaderId === auth.userId)
 
-  const maxLength = operationOwned
-    ? AUTHOR_MAX_COMMENT_LENGTH
-    : MAX_COMMENT_LENGTH
+  const maxLength = operationOwned ? AUTHOR_MAX_COMMENT_LENGTH : MAX_COMMENT_LENGTH
 
   const [replyTo, setReplyTo] = useState<CommentInfo>()
 
   // clear replyTo if it's not in comments
   useEffect(() => {
-    if (
-      replyTo &&
-      (!comments || !traverseComments(comments, (c) => c === replyTo))
-    ) {
+    if (replyTo && (!comments || !traverseComments(comments, (c) => c === replyTo))) {
       setReplyTo(undefined)
     }
   }, [replyTo, comments])
@@ -106,11 +82,7 @@ export const CommentArea = withSuspensable(function ViewerComments({
       <div>
         <CommentForm primary className="mb-6" maxLength={maxLength} />
         {comments?.map((comment) => (
-          <MainComment
-            key={comment.commentId}
-            className="mt-3"
-            comment={comment}
-          >
+          <MainComment key={comment.commentId} className="mt-3" comment={comment}>
             {comment.subCommentsInfos.map((sub) => (
               <SubComment
                 key={sub.commentId}
@@ -167,12 +139,7 @@ const MainComment = ({
   children?: ReactNode
 }) => {
   return (
-    <Card
-      className={clsx(
-        className,
-        comment.topping && 'shadow-[0_0_0_1px_#2d72d2]',
-      )}
-    >
+    <Card className={clsx(className, comment.topping && 'shadow-[0_0_0_1px_#2d72d2]')}>
       <div>
         <CommentHeader comment={comment} />
         <CommentContent comment={comment} />
@@ -198,9 +165,7 @@ const SubComment = ({
     <div className={clsx(className, 'pl-8')}>
       <CommentHeader comment={comment} />
       {comment.deleted ? (
-        <div className="italic text-gray-500">
-          {t.components.viewer.comment.deleted}
-        </div>
+        <div className="italic text-gray-500">{t.components.viewer.comment.deleted}</div>
       ) : (
         <div>
           <div className="flex items-center text-base">
@@ -208,9 +173,7 @@ const SubComment = ({
               <>
                 <Tag minimal className="mr-px">
                   {t.components.viewer.comment.reply}
-                  <UserName userId={fromComment.uploaderId}>
-                    @{fromComment.uploader}
-                  </UserName>
+                  <UserName userId={fromComment.uploaderId}>@{fromComment.uploader}</UserName>
                 </Tag>
                 :&nbsp;
               </>
@@ -224,13 +187,7 @@ const SubComment = ({
   )
 }
 
-const CommentHeader = ({
-  className,
-  comment,
-}: {
-  className?: string
-  comment: CommentInfo
-}) => {
+const CommentHeader = ({ className, comment }: { className?: string; comment: CommentInfo }) => {
   const t = useTranslation()
   const { uploader, uploaderId, uploadTime } = comment
   const topping = isMainComment(comment) ? comment.topping : false
@@ -259,30 +216,15 @@ const CommentHeader = ({
   )
 }
 
-const CommentContent = ({
-  className,
-  comment: { message },
-}: {
-  className?: string
-  comment: CommentInfo
-}) => {
+const CommentContent = ({ className, comment: { message } }: { className?: string; comment: CommentInfo }) => {
   return <Markdown className={clsx(className)}>{message}</Markdown>
 }
 
-const CommentActions = ({
-  className,
-  comment,
-}: {
-  className?: string
-  comment: CommentInfo
-}) => {
+const CommentActions = ({ className, comment }: { className?: string; comment: CommentInfo }) => {
   const t = useTranslation()
   const [{ userId }] = useAtom(authAtom)
-  const { operationOwned, replyTo, setReplyTo, reload } =
-    useContext(CommentAreaContext)
-  const maxLength = operationOwned
-    ? AUTHOR_MAX_COMMENT_LENGTH
-    : MAX_COMMENT_LENGTH
+  const { operationOwned, replyTo, setReplyTo, reload } = useContext(CommentAreaContext)
+  const maxLength = operationOwned ? AUTHOR_MAX_COMMENT_LENGTH : MAX_COMMENT_LENGTH
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [pending, setPending] = useState(false)
@@ -295,8 +237,7 @@ const CommentActions = ({
     setPending(true)
 
     await wrapErrorMessage(
-      (e) =>
-        t.components.viewer.comment.rating_failed({ error: formatError(e) }),
+      (e) => t.components.viewer.comment.rating_failed({ error: formatError(e) }),
       deleteComment({ commentId: comment.commentId }),
     ).catch(console.warn)
 
@@ -306,12 +247,7 @@ const CommentActions = ({
 
   return (
     <div>
-      <div
-        className={clsx(
-          className,
-          'mt-2 -ml-1.5 flex items-center space-x-2 [&_*]:!text-slate-400',
-        )}
-      >
+      <div className={clsx(className, 'mt-2 -ml-1.5 flex items-center space-x-2 [&_*]:!text-slate-400')}>
         <CommentRatingButtons comment={comment} />
         <Button
           minimal
@@ -322,16 +258,9 @@ const CommentActions = ({
         >
           {t.components.viewer.comment.reply}
         </Button>
-        {operationOwned && isMainComment(comment) && (
-          <CommentTopButton comment={comment} />
-        )}
+        {operationOwned && isMainComment(comment) && <CommentTopButton comment={comment} />}
         {(operationOwned || userId === comment.uploaderId) && (
-          <Button
-            minimal
-            small
-            className="!font-normal !text-[13px]"
-            onClick={() => setDeleteDialogOpen(true)}
-          >
+          <Button minimal small className="!font-normal !text-[13px]" onClick={() => setDeleteDialogOpen(true)}>
             {t.components.viewer.comment.delete}
           </Button>
         )}
@@ -350,14 +279,11 @@ const CommentActions = ({
           <H4>{t.components.viewer.comment.delete_comment}</H4>
           <p>
             {t.components.viewer.comment.confirm_delete}
-            {isMainComment(comment) &&
-              t.components.viewer.comment.all_subcomments_deleted}
+            {isMainComment(comment) && t.components.viewer.comment.all_subcomments_deleted}
           </p>
         </Alert>
       </div>
-      {replyTo === comment && (
-        <CommentForm inputAutoFocus className="mt-4" maxLength={maxLength} />
-      )}
+      {replyTo === comment && <CommentForm inputAutoFocus className="mt-4" maxLength={maxLength} />}
     </div>
   )
 }
@@ -377,8 +303,7 @@ const CommentRatingButtons = ({ comment }: { comment: CommentInfo }) => {
     setPending(true)
 
     await wrapErrorMessage(
-      (e) =>
-        t.components.viewer.comment.rating_failed({ error: formatError(e) }),
+      (e) => t.components.viewer.comment.rating_failed({ error: formatError(e) }),
       rateComment({ commentId, rating }),
     ).catch(console.warn)
 
@@ -391,7 +316,7 @@ const CommentRatingButtons = ({ comment }: { comment: CommentInfo }) => {
       <Button
         minimal
         small
-        className="[&_.bp4-button-text]:-ml-0.5 "
+        className="[&_.bp6-button-text]:-ml-0.5 "
         icon={<OutlinedIcon icon="thumbs-up" size={14} />}
         onClick={() => rate(CommentRating.Like)}
       >
@@ -432,9 +357,7 @@ const CommentTopButton = ({ comment }: { comment: MainCommentInfo }) => {
 
   return (
     <Button minimal small className="!font-normal !text-[13px]" onClick={top}>
-      {topping
-        ? t.components.viewer.comment.unpin
-        : t.components.viewer.comment.pin}
+      {topping ? t.components.viewer.comment.unpin : t.components.viewer.comment.pin}
     </Button>
   )
 }

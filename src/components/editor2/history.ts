@@ -1,11 +1,4 @@
-import {
-  Getter,
-  PrimitiveAtom,
-  Setter,
-  atom,
-  useAtomValue,
-  useSetAtom,
-} from 'jotai'
+import { Getter, PrimitiveAtom, Setter, atom, useAtomValue, useSetAtom } from 'jotai'
 import { useAtomCallback } from 'jotai/utils'
 import { SetStateAction, useCallback } from 'react'
 
@@ -34,9 +27,7 @@ interface HistoryTracker<T extends {}> {
   _current?: HistoryRecord<T>
 }
 
-function createInitialTrackerState<T extends {}>(
-  limit: number,
-): InternalHistoryTracker<T> {
+function createInitialTrackerState<T extends {}>(limit: number): InternalHistoryTracker<T> {
   const record = {
     state: null,
     action: 'init',
@@ -50,38 +41,25 @@ function createInitialTrackerState<T extends {}>(
   }
 }
 
-export function createHistoryAtom<T extends {}>(
-  stateAtom: PrimitiveAtom<T>,
-  limit: number,
-) {
+export function createHistoryAtom<T extends {}>(stateAtom: PrimitiveAtom<T>, limit: number) {
   const historyTrackerAtom = atom(createInitialTrackerState<T>(limit))
 
-  const fromInternal = <T extends {}>(
-    tracker: InternalHistoryTracker<T>,
-    currentState: T,
-  ) => {
+  const fromInternal = <T extends {}>(tracker: InternalHistoryTracker<T>, currentState: T) => {
     let current = tracker.stack[tracker.index]
     if (current.state !== null) {
       if (process.env.NODE_ENV === 'development') {
-        console.error(
-          'historyAtom: state of the "current" record is not null',
-          current,
-        )
+        console.error('historyAtom: state of the "current" record is not null', current)
       }
     }
     current = { ...current, state: currentState }
     return {
       ...tracker,
-      stack: tracker.stack.map((record, i) =>
-        i === tracker.index ? current : record,
-      ) as HistoryRecord<T>[],
+      stack: tracker.stack.map((record, i) => (i === tracker.index ? current : record)) as HistoryRecord<T>[],
       _current: current as HistoryRecord<T>,
     } satisfies HistoryTracker<T>
   }
 
-  const toInternal = <T extends {}>(
-    tracker: HistoryTracker<T>,
-  ): InternalHistoryTracker<T> => {
+  const toInternal = <T extends {}>(tracker: HistoryTracker<T>): InternalHistoryTracker<T> => {
     return {
       ...tracker,
       stack: tracker.stack.map((record, i) => ({
@@ -97,16 +75,10 @@ export function createHistoryAtom<T extends {}>(
       const internalTracker = get(historyTrackerAtom)
 
       if (update === 'RESET') {
-        set(
-          historyTrackerAtom,
-          createInitialTrackerState<T>(internalTracker.limit),
-        )
+        set(historyTrackerAtom, createInitialTrackerState<T>(internalTracker.limit))
         return
       }
-      const { _current, ...tracker } = fromInternal(
-        internalTracker,
-        get(stateAtom),
-      )
+      const { _current, ...tracker } = fromInternal(internalTracker, get(stateAtom))
       if (typeof update === 'function') {
         update = update(tracker)
       }
@@ -117,9 +89,7 @@ export function createHistoryAtom<T extends {}>(
   )
 }
 
-export function useHistoryValue<T extends {}>(
-  atom: PrimitiveAtom<HistoryTracker<T>>,
-) {
+export function useHistoryValue<T extends {}>(atom: PrimitiveAtom<HistoryTracker<T>>) {
   const history = useAtomValue(atom)
   return {
     history,
@@ -129,9 +99,7 @@ export function useHistoryValue<T extends {}>(
   }
 }
 
-export function useHistoryControls<T extends {}>(
-  historyAtom: PrimitiveAtom<HistoryTracker<T>>,
-) {
+export function useHistoryControls<T extends {}>(historyAtom: PrimitiveAtom<HistoryTracker<T>>) {
   const setHistory = useSetAtom(historyAtom)
   const undo = () => {
     setHistory((prev) => {
@@ -165,11 +133,7 @@ export function useHistoryControls<T extends {}>(
   }
 }
 
-type HistoryEditFn = ((
-  get: Getter,
-  set: Setter,
-  skip: Checkpoint,
-) => Checkpoint) & {}
+type HistoryEditFn = ((get: Getter, set: Setter, skip: Checkpoint) => Checkpoint) & {}
 
 // skips the history change
 const skipCheckpoint: Checkpoint = {
@@ -184,9 +148,7 @@ const softCheckpoint: Checkpoint = {
   desc: 'Soft checkpoint',
 }
 
-export function useHistoryEdit<T extends {}>(
-  historyAtom: PrimitiveAtom<HistoryTracker<T>>,
-) {
+export function useHistoryEdit<T extends {}>(historyAtom: PrimitiveAtom<HistoryTracker<T>>) {
   return useAtomCallback(
     useCallback(
       (get, set, editFn?: HistoryEditFn) => {
@@ -228,8 +190,7 @@ export function useHistoryEdit<T extends {}>(
         if (
           !shouldSquash &&
           current.state === snapshottedCurrent.state &&
-          JSON.stringify(current.state) ===
-            JSON.stringify(snapshottedCurrent.state)
+          JSON.stringify(current.state) === JSON.stringify(snapshottedCurrent.state)
         ) {
           checkpoint = softCheckpoint
         }
@@ -263,11 +224,7 @@ export function useHistoryEdit<T extends {}>(
             stack: newStack,
           })
         } else {
-          const newStack = [
-            ...history.stack.slice(-(history.limit - 2), history.index),
-            snapshottedCurrent,
-            newCurrent,
-          ]
+          const newStack = [...history.stack.slice(-(history.limit - 2), history.index), snapshottedCurrent, newCurrent]
           // 永远保留第一条记录
           if (history.index >= history.limit - 2) {
             newStack.unshift(snapshot.stack[0])

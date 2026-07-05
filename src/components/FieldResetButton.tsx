@@ -7,11 +7,7 @@ interface FieldResetButtonProps extends ButtonProps {
   onReset: () => void
 }
 
-export const FieldResetButton = ({
-  disabled,
-  onReset,
-  ...buttonProps
-}: FieldResetButtonProps) => {
+export const FieldResetButton = ({ disabled, onReset, ...buttonProps }: FieldResetButtonProps) => {
   return (
     <Button
       small
@@ -19,7 +15,7 @@ export const FieldResetButton = ({
       disabled={disabled}
       className={clsx(
         'invisible pointer-events-none',
-        !disabled && '[.bp4-input-group:hover_&]:visible pointer-events-auto',
+        !disabled && '[.bp6-input-group:hover_&]:visible pointer-events-auto',
       )}
       icon="cross"
       onClick={() => onReset()}

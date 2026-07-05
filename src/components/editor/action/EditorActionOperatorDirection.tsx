@@ -1,5 +1,5 @@
 import { Button, MenuItem } from '@blueprintjs/core'
-import { Select2 } from '@blueprintjs/select'
+import { Select } from '@blueprintjs/select'
 
 import { useController } from 'react-hook-form'
 import { SetOptional } from 'type-fest'
@@ -11,11 +11,10 @@ import { useTranslation } from '../../../i18n/i18n'
 import { OperatorDirection, operatorDirections } from '../../../models/operator'
 import { FormField2 } from '../../FormField'
 
-interface EditorActionOperatorDirectionProps
-  extends SetOptional<
-    EditorFieldProps<CopilotDocV1.Action, CopilotDocV1.Direction>,
-    'name'
-  > {}
+interface EditorActionOperatorDirectionProps extends SetOptional<
+  EditorFieldProps<CopilotDocV1.Action, CopilotDocV1.Direction>,
+  'name'
+> {}
 
 export const EditorActionOperatorDirection = ({
   name = 'direction',
@@ -30,9 +29,7 @@ export const EditorActionOperatorDirection = ({
     name,
     control,
     rules: {
-      required:
-        t.components.editor.action.EditorActionOperatorDirection
-          .direction_required,
+      required: t.components.editor.action.EditorActionOperatorDirection.direction_required,
     },
     defaultValue: 'None' as CopilotDocV1.Direction.None,
     ...controllerProps,
@@ -42,18 +39,12 @@ export const EditorActionOperatorDirection = ({
 
   return (
     <FormField2
-      label={
-        t.components.editor.action.EditorActionOperatorDirection
-          .operator_direction
-      }
+      label={t.components.editor.action.EditorActionOperatorDirection.operator_direction}
       field={name}
       error={errors[name]}
-      description={
-        t.components.editor.action.EditorActionOperatorDirection
-          .direction_description
-      }
+      description={t.components.editor.action.EditorActionOperatorDirection.direction_description}
     >
-      <Select2<OperatorDirection>
+      <Select<OperatorDirection>
         filterable={false}
         resetOnSelect={true}
         items={operatorDirections}
@@ -78,7 +69,7 @@ export const EditorActionOperatorDirection = ({
           onBlur={onBlur}
           ref={ref}
         />
-      </Select2>
+      </Select>
     </FormField2>
   )
 }

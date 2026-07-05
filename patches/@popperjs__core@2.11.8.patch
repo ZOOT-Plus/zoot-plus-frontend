@@ -1,0 +1,19 @@
+diff --git a/lib/index.js b/lib/index.js
+index c0c8b52db9f339e17fbf68c8e2aa36862776fe0a..5fb20e8ef294fa019322219c685d8193993dc419 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -1,6 +1,14 @@
++import * as enums from "./enums.js";
++
+ export * from "./enums.js";
+ export * from "./modifiers/index.js"; // eslint-disable-next-line import/no-unused-modules
+ 
++// Rolldown(Vite 8 的打包器）会把通过 `export *` 链路重导出、且带有 `/*#__PURE__*/`
++// 注解的 `placements` 当作纯重导出在 link 阶段提前剔除，导致下游
++// `@blueprintjs/core` 的 `export { placements as PopperPlacements }` 解析失败
++// （rolldown/rolldown#9122）。这里用本地绑定显式重导出，规避该优化。
++export const placements = enums.placements;
++
+ export { popperGenerator, detectOverflow, createPopper as createPopperBase } from "./createPopper.js"; // eslint-disable-next-line import/no-unused-modules
+ 
+ export { createPopper } from "./popper.js"; // eslint-disable-next-line import/no-unused-modules

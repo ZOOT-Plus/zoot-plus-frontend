@@ -1,7 +1,4 @@
-import {
-  CommentsAreaInfo,
-  QueriesCommentsAreaRequest,
-} from 'maa-copilot-client'
+import { CommentsAreaInfo, QueriesCommentsAreaRequest } from 'maa-copilot-client'
 import useSWRInfinite from 'swr/infinite'
 
 import { CommentApi } from 'utils/maa-copilot-client'
@@ -18,12 +15,7 @@ export interface UseCommentsParams {
   suspense?: boolean
 }
 
-export function useComments({
-  operationId,
-  descending = true,
-  orderBy,
-  suspense,
-}: UseCommentsParams) {
+export function useComments({ operationId, descending = true, orderBy, suspense }: UseCommentsParams) {
   const {
     data: pages,
     setSize,
@@ -76,11 +68,7 @@ export function useComments({
   }
 }
 
-export async function sendComment(req: {
-  message: string
-  operationId: number
-  fromCommentId?: string
-}) {
+export async function sendComment(req: { message: string; operationId: number; fromCommentId?: number }) {
   await new CommentApi().sendComments({
     commentsAddDTO: {
       message: req.message,
@@ -92,17 +80,14 @@ export async function sendComment(req: {
   })
 }
 
-export async function deleteComment(req: { commentId: string }) {
+export async function deleteComment(req: { commentId: number }) {
   await new CommentApi().deleteComments({ commentsDeleteDTO: req })
 }
 
-export async function rateComment(req: {
-  commentId: string
-  rating: CommentRating
-}) {
+export async function rateComment(req: { commentId: number; rating: CommentRating }) {
   await new CommentApi().ratesComments({ commentsRatingDTO: req })
 }
 
-export async function topComment(req: { commentId: string; topping: boolean }) {
+export async function topComment(req: { commentId: number; topping: boolean }) {
   await new CommentApi().toppingComments({ commentsToppingDTO: req })
 }

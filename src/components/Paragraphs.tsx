@@ -40,7 +40,9 @@ export const Paragraphs: FC<{
       }}
     >
       <div ref={paragraphElementRef}>
-        {paragraphs?.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+        {paragraphs?.map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
       </div>
     </div>
   )
@@ -54,8 +56,7 @@ export const Paragraphs: FC<{
         },
         className: 'break-all',
         format: {
-          url: (value) =>
-            value.length > 50 ? value.slice(0, 50) + '…' : value,
+          url: (value) => (value.length > 50 ? value.slice(0, 50) + '…' : value),
         },
       }}
     >

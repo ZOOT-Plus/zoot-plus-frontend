@@ -1,5 +1,4 @@
-import { Callout } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Callout, Tooltip } from '@blueprintjs/core'
 
 import camelcaseKeys from 'camelcase-keys'
 import { FC, useMemo, useState } from 'react'
@@ -96,10 +95,10 @@ export const SourceEditor: FC<SourceEditorProps> = ({
               intent={jsonError ? 'warning' : 'success'}
             />
           </div>
-          <Tooltip2
+          <Tooltip
             className="flex-1"
             content={t.components.editor.source.SourceEditor.see_errors_in_form}
-            position="bottom"
+            placement="bottom"
             disabled={!hasValidationErrors}
           >
             <Callout
@@ -110,7 +109,7 @@ export const SourceEditor: FC<SourceEditorProps> = ({
               })}
               intent={hasValidationErrors ? 'warning' : 'success'}
             />
-          </Tooltip2>
+          </Tooltip>
         </div>
         <textarea
           className="mt-4 p-1 flex-grow bg-white text-xm font-mono resize-none focus:outline focus:outline-2 focus:outline-blue-300 dark:bg-slate-900 dark:text-white"

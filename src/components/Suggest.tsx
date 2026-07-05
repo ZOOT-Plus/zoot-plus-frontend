@@ -1,18 +1,13 @@
-import { Suggest2, Suggest2Props } from '@blueprintjs/select'
+import { Suggest as BlueprintSuggest, SuggestProps as BlueprintSuggestProps } from '@blueprintjs/select'
 
 import { noop } from 'lodash-es'
 import { useEffect, useRef } from 'react'
 import { ControllerFieldState } from 'react-hook-form'
 
-import {
-  UseDebouncedQueryParams,
-  useDebouncedQuery,
-} from '../utils/useDebouncedQuery'
+import { UseDebouncedQueryParams, useDebouncedQuery } from '../utils/useDebouncedQuery'
 import { FieldResetButton } from './FieldResetButton'
 
-interface SuggestProps<T>
-  extends Omit<Suggest2Props<T>, 'onQueryChange'>,
-    UseDebouncedQueryParams {
+interface SuggestProps<T> extends Omit<BlueprintSuggestProps<T>, 'onQueryChange'>, UseDebouncedQueryParams {
   query?: string // controlled query, optional
   fieldState?: ControllerFieldState
   onReset?: () => void
@@ -29,11 +24,11 @@ export const Suggest = <T,>({
   itemListPredicate,
   selectedItem,
   inputProps,
-  ...suggest2Props
+  ...suggestProps
 }: SuggestProps<T>) => {
   // 禁用掉 focus 自动选中输入框文字的功能
   // https://github.com/palantir/blueprint/blob/b41f668461e63e2c20caf54a3248181fe01161c4/packages/select/src/components/suggest/suggest2.tsx#L229
-  const ref = useRef<Suggest2<T>>(null)
+  const ref = useRef<BlueprintSuggest<T>>(null)
   if (ref.current && ref.current['selectText'] !== noop) {
     ref.current['selectText'] = noop
   }
@@ -52,16 +47,12 @@ export const Suggest = <T,>({
   }, [fieldState, updateQuery])
 
   return (
-    <Suggest2<T>
+    <BlueprintSuggest<T>
       ref={ref}
       query={query}
       onQueryChange={(query) => updateQuery(query, false)}
       selectedItem={selectedItem}
-      itemListPredicate={
-        itemListPredicate
-          ? (query, items) => itemListPredicate(debouncedQuery, items)
-          : undefined
-      }
+      itemListPredicate={itemListPredicate ? (query, items) => itemListPredicate(debouncedQuery, items) : undefined}
       inputProps={{
         onKeyDown: (event) => {
           // prevent form submission
@@ -74,11 +65,7 @@ export const Suggest = <T,>({
             disabled={
               !(
                 // enabled =
-                (fieldState
-                  ? fieldState.isDirty
-                  : onReset
-                    ? query || selectedItem !== null
-                    : false)
+                (fieldState ? fieldState.isDirty : onReset ? query || selectedItem !== null : false)
               )
             }
             onReset={() => {
@@ -92,7 +79,7 @@ export const Suggest = <T,>({
       popoverProps={{
         placement: 'bottom-start',
       }}
-      {...suggest2Props}
+      {...suggestProps}
     />
   )
 }

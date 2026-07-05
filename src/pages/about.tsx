@@ -12,12 +12,8 @@ export const AboutPage = () => {
       <div className="mt-8 flex flex-col items-center">
         <div className="text-[2rem] md:text-[3.75rem]">
           <div className="bg-rainbow relative !text-transparent !bg-clip-text font-bold italic leading-[1.2]">
-            <div className="ml-[3.2em] mr-[0.2em] !text-inherit">
-              {t.pages.about.slogan_line1}
-            </div>
-            <div className="text-[1.2em] !text-inherit">
-              {t.pages.about.slogan_line2}
-            </div>
+            <div className="ml-[3.2em] mr-[0.2em] !text-inherit">{t.pages.about.slogan_line1}</div>
+            <div className="text-[1.2em] !text-inherit">{t.pages.about.slogan_line2}</div>
           </div>
           <div className="bg-rainbow !bg-clip-content h-[0.1em] pr-[1em]" />
         </div>
