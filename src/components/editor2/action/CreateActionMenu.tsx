@@ -1,5 +1,14 @@
-import { Icon, Menu, MenuDivider, MenuItem, mergeRefs } from '@blueprintjs/core'
-import { Popover2, Popover2Props, PopperCustomModifer, Tooltip2 } from '@blueprintjs/popover2'
+import {
+  Icon,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  PopoverNext,
+  PopoverNextProps,
+  PopoverNextRef,
+  Tooltip,
+  mergeRefs,
+} from '@blueprintjs/core'
 
 import { PrimitiveAtom, useSetAtom } from 'jotai'
 import { clamp } from 'lodash-es'
@@ -14,7 +23,7 @@ import { createAction } from '../reconciliation'
 interface CreateActionMenuProps {
   actionAtom?: PrimitiveAtom<EditorAction>
   renderTarget?: (
-    props: { locatorRef: Ref<HTMLElement> } & Parameters<NonNullable<Popover2Props['renderTarget']>>[0],
+    props: { locatorRef: Ref<HTMLElement> } & Parameters<NonNullable<PopoverNextProps['renderTarget']>>[0],
   ) => JSX.Element
   children?: ReactNode
 }
@@ -29,7 +38,7 @@ export const CreateActionMenu = forwardRef<CreateActionMenuRef, CreateActionMenu
     const dispatchActions = useSetAtom(editorAtoms.actionAtoms)
     const containerRef = useRef<HTMLElement>(null)
     const locatorRef = useRef<HTMLElement>(null)
-    const popperRef = useRef<Parameters<NonNullable<PopperCustomModifer['fn']>>[0]['instance']>()
+    const popoverRef = useRef<PopoverNextRef>(null)
     const [isOpen, setIsOpen] = useState(false)
     const t = useTranslation()
 
@@ -49,9 +58,9 @@ export const CreateActionMenu = forwardRef<CreateActionMenuRef, CreateActionMenu
           locator.style.left = `${left}px`
           setIsOpen((wasOpen) => {
             if (wasOpen) {
-              // 如果在 Popover 已经是打开状态时再次点击，会关闭并立刻再打开，而由于 Popover 内部的动画机制，
-              // 在关闭后 300ms 内打开会导致 Popper 不更新位置，所以这里必须手动更新
-              popperRef.current?.update()
+              // 已打开时再次点击会关闭并立刻重开，浮层动画期间位置不会自动跟随 locator，
+              // 所以这里手动让 Floating UI 重新计算位置
+              popoverRef.current?.reposition()
             }
             return true
           })
@@ -61,10 +70,12 @@ export const CreateActionMenu = forwardRef<CreateActionMenuRef, CreateActionMenu
     )
 
     return (
-      <Popover2
-        minimal
+      <PopoverNext
+        ref={popoverRef}
+        animation="minimal"
+        arrow={false}
         placement="right-start"
-        popoverClassName="[&>.bp4-popover2-content]:!p-0 overflow-hidden"
+        popoverClassName="[&>.bp6-popover-content]:!p-0 overflow-hidden"
         isOpen={isOpen}
         onInteraction={setIsOpen}
         content={
@@ -77,9 +88,9 @@ export const CreateActionMenu = forwardRef<CreateActionMenuRef, CreateActionMenu
                     icon={icon}
                     text={title()}
                     labelElement={
-                      <Tooltip2 content={description()}>
+                      <Tooltip content={description()}>
                         <Icon className="!text-gray-300 dark:!text-gray-500" icon="info-sign" />
-                      </Tooltip2>
+                      </Tooltip>
                     }
                     onClick={() => {
                       edit(() => {
@@ -101,18 +112,6 @@ export const CreateActionMenu = forwardRef<CreateActionMenuRef, CreateActionMenu
             ).flat()}
           </Menu>
         }
-        modifiersCustom={
-          renderTarget
-            ? [
-                {
-                  name: 'getPopperInstance',
-                  enabled: true,
-                  phase: 'main',
-                  fn: ({ instance }) => void (popperRef.current = instance),
-                },
-              ]
-            : undefined
-        }
         renderTarget={
           renderTarget &&
           (({ ref, ...props }) =>
@@ -124,7 +123,7 @@ export const CreateActionMenu = forwardRef<CreateActionMenuRef, CreateActionMenu
         }
       >
         {children}
-      </Popover2>
+      </PopoverNext>
     )
   },
 )

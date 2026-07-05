@@ -1,5 +1,4 @@
-import { Button, Callout, Card, Classes, Dialog, Icon, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Callout, Card, Classes, Dialog, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 import { SortableContext } from '@dnd-kit/sortable'
 
 import clsx from 'clsx'
@@ -75,7 +74,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
     >
       <div className="flex">
         <GroupTitle baseGroupAtom={baseGroupAtom} />
-        <Popover2
+        <PopoverNext
           placement="bottom"
           content={
             <Menu>
@@ -137,7 +136,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           }
         >
           <Button minimal icon={<Icon icon="more" className="rotate-90" />} className="h-full !p-0 !border-0" />
-        </Popover2>
+        </PopoverNext>
       </div>
       {errors && (
         <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
@@ -398,7 +397,6 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
         inputProps={{
           inputClassName:
             '!p-4 !pr-0 !border-0 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-600 dark:focus:bg-gray-600 !shadow-none font-bold text-gray-800',
-          size: 10,
           placeholder: t.components.editor2.GroupItem.group_name + '*',
           inputRef: titleInputRef,
         }}

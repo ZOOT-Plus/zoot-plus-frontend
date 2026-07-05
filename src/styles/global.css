@@ -63,13 +63,13 @@ body,
     0 0 3px 1px #0001,
     0 2px 3px #0001;
 
-  &.bp4-interactive:hover {
+  &.bp6-interactive:hover {
     box-shadow:
       0 2px 4px #0002,
       0 8px 24px #0003;
   }
 
-  &.bp4-interactive:active {
+  &.bp6-interactive:active {
     box-shadow:
       0 0 3px 1px #0001,
       0 2px 3px #0001;

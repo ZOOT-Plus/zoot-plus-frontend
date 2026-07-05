@@ -1,5 +1,15 @@
-import { Button, ButtonProps, Callout, H2, Icon, Menu, MenuDivider, MenuItem, Tag } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import {
+  Button,
+  ButtonProps,
+  Callout,
+  H2,
+  Icon,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Tag,
+  PopoverNext,
+} from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -32,7 +42,7 @@ export const EditorToolbar: FC<EditorToolbarProps> = ({ subtitle, submitAction, 
   } satisfies ButtonProps
 
   return (
-    <div className="px-4 md:px-8 flex items-center flex-wrap [&_.bp4-button-text]:leading-none bg-white dark:bg-[#383e47]">
+    <div className="px-4 md:px-8 flex items-center flex-wrap [&_.bp6-button-text]:leading-none bg-white dark:bg-[#383e47]">
       <Icon icon="properties" />
       <div className="ml-2 flex items-baseline">
         <H2 className="!text-base mb-0">{t.components.editor2.EditorToolbar.title}</H2>
@@ -109,7 +119,7 @@ const AutoSaveButton = (buttonProps: ButtonProps) => {
   const setEditorState = useSetAtom(editorAtoms.editor)
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <Popover2
+    <PopoverNext
       content={
         isOpen ? (
           <>
@@ -171,7 +181,7 @@ const AutoSaveButton = (buttonProps: ButtonProps) => {
       onClosed={() => setIsOpen(false)}
     >
       <Button {...buttonProps} icon="projects" title={t.components.editor2.EditorToolbar.auto_save} />
-    </Popover2>
+    </PopoverNext>
   )
 }
 
@@ -196,7 +206,7 @@ const HistoryButtons = (buttonProps: ButtonProps) => {
         disabled={!canRedo}
         onClick={redo}
       />
-      <Popover2
+      <PopoverNext
         content={
           isOpen ? (
             <Menu>
@@ -234,7 +244,7 @@ const HistoryButtons = (buttonProps: ButtonProps) => {
           title={t.components.editor2.EditorToolbar.undo_history}
           text={history.index + 1 + '/' + history.stack.length}
         />
-      </Popover2>
+      </PopoverNext>
     </>
   )
 }
@@ -246,7 +256,7 @@ const ErrorButton = (buttonProps: ButtonProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const allErrors = globalErrors.concat(Object.values(entityErrors).flat())
   return (
-    <Popover2
+    <PopoverNext
       content={
         isOpen ? (
           <>
@@ -280,7 +290,7 @@ const ErrorButton = (buttonProps: ButtonProps) => {
         }
         text={allErrors.length || <Icon className="!-ml-px" icon="small-tick" />}
       />
-    </Popover2>
+    </PopoverNext>
   )
 }
 

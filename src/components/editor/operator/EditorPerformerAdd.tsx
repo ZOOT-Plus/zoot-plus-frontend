@@ -1,5 +1,5 @@
 import { Button, Card, MenuItem } from '@blueprintjs/core'
-import { Select2 } from '@blueprintjs/select'
+import { Select } from '@blueprintjs/select'
 
 import { FC, useMemo } from 'react'
 
@@ -59,7 +59,7 @@ export const EditorPerformerAdd: FC<EditorPerformerAddProps> = ({
     () => (
       <>
         {t.components.editor.operator.EditorPerformerAdd.add}
-        <Select2<PerformerSelectItem>
+        <Select<PerformerSelectItem>
           filterable={false}
           items={performerSelectItems}
           className="ml-1"
@@ -75,7 +75,7 @@ export const EditorPerformerAdd: FC<EditorPerformerAddProps> = ({
           )}
         >
           <Button large text={selectedItem.label} rightIcon="double-caret-vertical" />
-        </Select2>
+        </Select>
       </>
     ),
     [mode, onModeChange, selectedItem, performerSelectItems, t],

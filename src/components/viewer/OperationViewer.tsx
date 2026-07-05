@@ -15,8 +15,9 @@ import {
   NonIdealState,
   Switch,
   Tag,
+  PopoverNext,
+  Tooltip,
 } from '@blueprintjs/core'
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
 import { ErrorBoundary } from '@sentry/react'
 
 import { banComments, deleteOperation, rateOperation, useOperation, useRefreshOperations } from 'apis/operation'
@@ -304,7 +305,7 @@ export const OperationViewer: ComponentType<{
 
             <div className="flex flex-wrap items-center gap-2 md:gap-4">
               {operation.uploaderId === auth.userId && (
-                <Popover2
+                <PopoverNext
                   content={
                     <ManageMenu
                       operation={operation}
@@ -314,7 +315,7 @@ export const OperationViewer: ComponentType<{
                   }
                 >
                   <Button icon="wrench" text={t.components.viewer.OperationViewer.manage} rightIcon="caret-down" />
-                </Popover2>
+                </PopoverNext>
               )}
 
               <Button
@@ -490,7 +491,7 @@ function OperationViewerInner({
             <OperationRating operation={operation} className="mr-2" />
 
             <ButtonGroup className="flex items-center ml-2">
-              <Tooltip2 content="o(*≧▽≦)ツ" placement="bottom">
+              <Tooltip content="o(*≧▽≦)ツ" placement="bottom">
                 <Button
                   icon="thumbs-up"
                   intent={operation.ratingType === OpRatingType.Like ? 'success' : 'none'}
@@ -498,15 +499,15 @@ function OperationViewerInner({
                   active={operation.ratingType === OpRatingType.Like}
                   onClick={() => handleRating(OpRatingType.Like)}
                 />
-              </Tooltip2>
-              <Tooltip2 content=" ヽ(。>д<)ｐ" placement="bottom">
+              </Tooltip>
+              <Tooltip content=" ヽ(。>д<)ｐ" placement="bottom">
                 <Button
                   icon="thumbs-down"
                   intent={operation.ratingType === OpRatingType.Dislike ? 'danger' : 'none'}
                   active={operation.ratingType === OpRatingType.Dislike}
                   onClick={() => handleRating(OpRatingType.Dislike)}
                 />
-              </Tooltip2>
+              </Tooltip>
             </ButtonGroup>
           </FactItem>
         </div>

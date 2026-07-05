@@ -15,7 +15,7 @@ export const FieldResetButton = ({ disabled, onReset, ...buttonProps }: FieldRes
       disabled={disabled}
       className={clsx(
         'invisible pointer-events-none',
-        !disabled && '[.bp4-input-group:hover_&]:visible pointer-events-auto',
+        !disabled && '[.bp6-input-group:hover_&]:visible pointer-events-auto',
       )}
       icon="cross"
       onClick={() => onReset()}

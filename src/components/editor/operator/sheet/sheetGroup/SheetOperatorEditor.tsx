@@ -1,5 +1,4 @@
-import { Button, Card, Classes, Collapse, H6, Icon, Intent, Position } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Card, Classes, Collapse, H6, Icon, Intent, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
@@ -21,10 +20,10 @@ export const SheetOperatorEditor: FC<SheetOperatorEditorProp> = ({ ...SheetOpera
   const t = useTranslation()
 
   return (
-    <Popover2
+    <PopoverNext
       className="w-full"
       content={<SheetOperatorEditorForm {...SheetOperatorEditorFormProps} />}
-      position={Position.TOP}
+      placement="top"
     >
       <Card
         className="flex items-center justify-center"
@@ -33,7 +32,7 @@ export const SheetOperatorEditor: FC<SheetOperatorEditorProp> = ({ ...SheetOpera
       >
         <Icon icon="plus" size={30} />
       </Card>
-    </Popover2>
+    </PopoverNext>
   )
 }
 
@@ -178,7 +177,7 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({ name, opers 
             className={Classes.POPOVER_DISMISS}
             type="submit"
           />
-          <Popover2
+          <PopoverNext
             captureDismiss
             content={
               <div className="flex items-center">
@@ -195,14 +194,14 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({ name, opers 
                 />
               </div>
             }
-            position={Position.TOP}
+            placement="top"
           >
             <Button
               intent={Intent.DANGER}
               className="ml-1"
               text={t.components.editor.operator.sheet.sheetGroup.SheetOperatorEditor.reset}
             />
-          </Popover2>
+          </PopoverNext>
         </div>
       </form>
     </SheetContainerSkeleton>

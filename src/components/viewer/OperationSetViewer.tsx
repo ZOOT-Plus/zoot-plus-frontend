@@ -1,5 +1,4 @@
-import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState, PopoverNext } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
@@ -148,14 +147,14 @@ export const OperationSetViewer: ComponentType<{
             <div className="flex-1" />
 
             {operationSet.creatorId === auth.userId && (
-              <Popover2 content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
+              <PopoverNext content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
                 <Button
                   className="ml-4"
                   icon="wrench"
                   text={t.components.viewer.OperationSetViewer.manage}
                   rightIcon="caret-down"
                 />
-              </Popover2>
+              </PopoverNext>
             )}
 
             <Button

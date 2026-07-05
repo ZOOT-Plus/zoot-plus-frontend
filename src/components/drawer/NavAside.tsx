@@ -1,5 +1,4 @@
-import { Drawer, Menu, MenuDivider } from '@blueprintjs/core'
-import { MenuItem2 } from '@blueprintjs/popover2'
+import { Drawer, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
 
 import { useLinks } from 'hooks/useLinks'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -32,7 +31,7 @@ export const NavAside = () => {
         onClose={() => toggleNav()}
         position="left"
         size="100%"
-        portalClassName="[&>.bp4-overlay-container]:z-10"
+        portalClassName="[&>.bp6-overlay-container]:z-10"
         backdropClassName="bg-transparent"
         className="bg-transparent backdrop-blur-lg overflow-y-auto mt-14 p-2"
       >
@@ -40,7 +39,7 @@ export const NavAside = () => {
           {NAV_LINKS.map((link) => (
             <NavLink key={link.to} to={link.to} className="block !no-underline">
               {({ isActive }) => (
-                <MenuItem2
+                <MenuItem
                   key={link.to}
                   icon={link.icon}
                   active={isActive}
@@ -53,7 +52,7 @@ export const NavAside = () => {
             </NavLink>
           ))}
           <MenuDivider />
-          <MenuItem2
+          <MenuItem
             icon="folder-new"
             text={t.components.drawer.NavAside.create_job_set}
             className="p-2 rounded-md"
@@ -64,7 +63,7 @@ export const NavAside = () => {
           />
           <AnnPanel
             trigger={({ handleClick }) => (
-              <MenuItem2
+              <MenuItem
                 icon="info-sign"
                 text={t.components.drawer.NavAside.announcement}
                 className="p-2 rounded-md"

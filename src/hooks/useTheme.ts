@@ -28,13 +28,13 @@ export const THEME_CONFIG: ThemeDefinition[] = [
     id: 'dark',
     i18nKey: 'dark',
     icon: 'moon',
-    classList: ['bp4-dark', 'dark'],
+    classList: ['bp6-dark', 'dark'],
   },
   {
     id: 'high-contrast',
     i18nKey: 'highContrast',
     icon: 'contrast',
-    classList: ['bp4-dark', 'dark', 'high-contrast-theme'],
+    classList: ['bp6-dark', 'dark', 'high-contrast-theme'],
   },
 ]
 

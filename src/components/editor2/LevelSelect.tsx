@@ -1,5 +1,4 @@
-import { AnchorButton, Classes, MenuDivider, MenuItem } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { AnchorButton, Classes, MenuDivider, MenuItem, Tooltip } from '@blueprintjs/core'
 import { getCreateNewItem } from '@blueprintjs/select'
 
 import clsx from 'clsx'
@@ -142,7 +141,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
         onQueryChange={(query) => updateQuery(query, false)}
         onReset={() => onChange('')}
         disabled={isLoading}
-        className={clsx('items-stretch', isLoading && 'bp4-skeleton', className)}
+        className={clsx('items-stretch', isLoading && 'bp6-skeleton', className)}
         itemsEqual={(a, b) => a.stageId === b.stageId}
         itemDisabled={(item) => item.stageId === 'header'} // 避免 header 被选中为 active
         itemRenderer={(item, { handleClick, handleFocus, modifiers }) =>
@@ -201,7 +200,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           },
         }}
       />
-      <Tooltip2 placement="top" content={t.components.editor2.LevelSelect.view_external}>
+      <Tooltip placement="top" content={t.components.editor2.LevelSelect.view_external}>
         <AnchorButton
           minimal
           large
@@ -211,7 +210,7 @@ export const LevelSelect: FC<LevelSelectProps> = ({
           href={prtsMapUrl}
           disabled={!prtsMapUrl}
         />
-      </Tooltip2>
+      </Tooltip>
       {fetchError && (
         <span className="text-xs opacity-50">
           {t.components.editor2.LevelSelect.load_error({

@@ -1,19 +1,19 @@
-import { IToastProps } from '@blueprintjs/core'
+import { ToastProps } from '@blueprintjs/core'
 
 import { AppToaster } from 'components/Toaster'
 
 export type MessageFormatter = (error: unknown) => string
 
-const defaultMessageProps: Partial<IToastProps> = {
+const defaultMessageProps: Partial<ToastProps> = {
   intent: 'danger',
 }
 
 export const wrapErrorMessage = <T>(
-  options: string | MessageFormatter | Omit<IToastProps, 'intent'>,
+  options: string | MessageFormatter | Omit<ToastProps, 'intent'>,
   promise: Promise<T>,
 ): Promise<T> => {
   return promise.catch((error) => {
-    const config: IToastProps = (() => {
+    const config: ToastProps = (() => {
       switch (typeof options) {
         case 'string':
           return {

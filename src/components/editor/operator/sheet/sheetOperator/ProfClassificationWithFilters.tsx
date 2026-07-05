@@ -1,5 +1,4 @@
-import { Button, Divider, H4, H5 } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Button, Divider, H4, H5, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
@@ -80,7 +79,7 @@ export const ProfClassificationWithFilters: FC<ProfClassificationWithFiltersProp
 
   const ToolBox = (
     <div className="flex flex-col absolute bottom-0">
-      <Popover2
+      <PopoverNext
         content={
           <>
             <OperatorRaritySelect />
@@ -88,7 +87,7 @@ export const ProfClassificationWithFilters: FC<ProfClassificationWithFiltersProp
         }
       >
         <Button minimal icon="filter-list" />
-      </Popover2>
+      </PopoverNext>
       <OperatorMutipleSelect />
       <OperatorBackToTop {...{ toTop }} />
     </div>

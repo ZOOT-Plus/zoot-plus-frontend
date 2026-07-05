@@ -1,6 +1,5 @@
 import { Classes, MenuItem } from '@blueprintjs/core'
-import { MenuItem2 } from '@blueprintjs/popover2'
-import { MultiSelect2 } from '@blueprintjs/select'
+import { MultiSelect } from '@blueprintjs/select'
 
 import clsx from 'clsx'
 import Fuse from 'fuse.js'
@@ -55,13 +54,13 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({ className, operators, 
   }
 
   return (
-    <MultiSelect2<OperatorInfo>
+    <MultiSelect<OperatorInfo>
       className={clsx('', className)}
       query={query}
       onQueryChange={(query) => updateQuery(query, false)}
       items={OPERATORS}
       itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
-        <MenuItem2
+        <MenuItem
           roleStructure="listoption"
           className={clsx(
             'py-0 items-center',
@@ -115,7 +114,7 @@ export const OperatorSelect: FC<OperatorSelectProps> = ({ className, operators, 
         </div>
       )}
       popoverProps={{
-        popoverClassName: trimmedDebouncedQuery ? undefined : '[&_.bp4-popover2-content]:!p-0',
+        popoverClassName: trimmedDebouncedQuery ? undefined : '[&_.bp6-popover-content]:!p-0',
         placement: 'bottom-start',
         minimal: true,
         matchTargetWidth: true,

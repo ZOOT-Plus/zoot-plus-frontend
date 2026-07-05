@@ -1,5 +1,4 @@
-import { Alert, Button, ButtonProps, Callout, H4, Menu, MenuItem } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Alert, Button, ButtonProps, Callout, H4, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import { first, isEqual } from 'lodash-es'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
@@ -144,7 +143,7 @@ export const AutosaveSheet = <T,>({
 
   return (
     <>
-      <Popover2
+      <PopoverNext
         content={
           <>
             <Callout intent="primary">
@@ -186,7 +185,7 @@ export const AutosaveSheet = <T,>({
           }
           {...buttonProps}
         />
-      </Popover2>
+      </PopoverNext>
 
       <Alert
         isOpen={restoreDialogOpen}

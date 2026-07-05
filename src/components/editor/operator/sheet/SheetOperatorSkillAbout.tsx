@@ -1,5 +1,4 @@
-import { Button, Classes, Icon } from '@blueprintjs/core'
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Classes, Icon, PopoverNext, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useForm } from 'react-hook-form'
@@ -87,12 +86,12 @@ export const SkillAboutTrigger = ({ operator, onSkillChange }: SkillAboutProps) 
           type="submit"
           className={Classes.POPOVER_DISMISS}
         />
-        <Tooltip2
+        <Tooltip
           content={t.components.editor.operator.sheet.SheetOperatorSkillAbout.default_settings_tooltip}
           className="ml-1"
         >
           <Icon icon="help" />
-        </Tooltip2>
+        </Tooltip>
       </div>
     </form>
   )
@@ -124,9 +123,9 @@ export const SkillAboutTrigger = ({ operator, onSkillChange }: SkillAboutProps) 
       role="presentation"
       className="cursor-pointer"
     >
-      <Popover2 content={SkillAboutForm} disabled={!operator}>
+      <PopoverNext content={SkillAboutForm} disabled={!operator}>
         {SkillAboutTrigger}
-      </Popover2>
+      </PopoverNext>
     </div>
   )
 }

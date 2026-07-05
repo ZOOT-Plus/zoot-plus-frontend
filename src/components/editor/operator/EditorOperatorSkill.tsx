@@ -1,5 +1,5 @@
 import { Button, IconName, MenuItem } from '@blueprintjs/core'
-import { Select2 } from '@blueprintjs/select'
+import { Select } from '@blueprintjs/select'
 
 import { useMemo } from 'react'
 import { useController } from 'react-hook-form'
@@ -64,7 +64,7 @@ export const EditorOperatorSkill = ({ name, control }: EditorOperatorSkillProps)
   const selected = items.find((item) => item.value === (value ?? 0))
 
   return (
-    <Select2<EditorOperatorSkillChoice>
+    <Select<EditorOperatorSkillChoice>
       filterable={false}
       resetOnSelect={true}
       items={items}
@@ -89,6 +89,6 @@ export const EditorOperatorSkill = ({ name, control }: EditorOperatorSkillProps)
         onBlur={onBlur}
         ref={ref}
       />
-    </Select2>
+    </Select>
   )
 }

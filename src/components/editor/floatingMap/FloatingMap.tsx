@@ -185,7 +185,7 @@ export function FloatingMap() {
                 {mapStatus === MapStatus.Loading && (
                   <NonIdealState
                     className="absolute inset-0 bg-gray-900/50 [&_*]:!text-white"
-                    icon={<Spinner className="[&_.bp4-spinner-head]:stroke-current" />}
+                    icon={<Spinner className="[&_.bp6-spinner-head]:stroke-current" />}
                     description={
                       iframeWindow ? undefined : t.components.editor.floatingMap.FloatingMap.waiting_connection
                     }

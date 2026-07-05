@@ -1,7 +1,7 @@
 import '@blueprintjs/core/lib/css/blueprint.css'
 import '@blueprintjs/icons/lib/css/blueprint-icons.css'
-import '@blueprintjs/popover2/lib/css/blueprint-popover2.css'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
+import { Icons } from '@blueprintjs/icons'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
@@ -50,6 +50,12 @@ if (navigator.userAgent.includes('Win')) {
 }
 
 clearOutdatedSwrCache()
+
+// v6 起 Blueprint 图标改为按需异步加载（dynamic import）。这里改用 'all' loader 并尽早
+// 触发一次性全量加载，尽量缩短图标缺失窗口。注意：与 v4 的同步内联不同，加载仍是异步的，
+// 首帧若早于图标 chunk 到达，可能短暂渲染空图标——这是 v6 的设计取舍，此处不阻塞首帧。
+Icons.setLoaderOptions({ loader: 'all' })
+void Icons.loadAll()
 
 const CreatePageLazy = withSuspensable(lazy(() => import('./pages/create').then((m) => ({ default: m.CreatePage }))))
 const EditorPageLazy = withSuspensable(lazy(() => import('./pages/editor').then((m) => ({ default: m.EditorPage }))))

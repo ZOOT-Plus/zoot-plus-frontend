@@ -86,7 +86,7 @@ const SourceEditor = withSuspensable(({ onUnsavedChanges }: SourceEditorProps) =
           intent={hasUnsavedChanges ? 'primary' : 'success'}
           icon={
             pending ? (
-              <Spinner size={IconSize.STANDARD} className="bp4-icon" />
+              <Spinner size={IconSize.STANDARD} className="bp6-icon" />
             ) : hasUnsavedChanges ? (
               'warning-sign'
             ) : (

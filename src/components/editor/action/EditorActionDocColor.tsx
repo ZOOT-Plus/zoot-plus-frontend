@@ -1,5 +1,5 @@
 import { Button, Icon, MenuItem } from '@blueprintjs/core'
-import { Select2 } from '@blueprintjs/select'
+import { Select } from '@blueprintjs/select'
 
 import { useController } from 'react-hook-form'
 import { SetOptional } from 'type-fest'
@@ -35,7 +35,7 @@ export const EditorActionDocColor = ({ name = 'docColor', control, ...controller
       error={errors[name]}
       description={t.components.editor.action.EditorActionDocColor.color_description}
     >
-      <Select2
+      <Select
         filterable={false}
         items={actionDocColors}
         itemRenderer={(color, { handleClick, handleFocus, modifiers }) => (
@@ -61,7 +61,7 @@ export const EditorActionDocColor = ({ name = 'docColor', control, ...controller
           <Icon icon="full-circle" color={selected?.value} />
           <span style={{ color: selected?.value }}>{selected?.title()}</span>
         </Button>
-      </Select2>
+      </Select>
     </FormField2>
   )
 }

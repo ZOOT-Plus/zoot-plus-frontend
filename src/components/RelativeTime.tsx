@@ -1,4 +1,4 @@
-import { Tooltip2, Tooltip2Props } from '@blueprintjs/popover2'
+import { Tooltip, TooltipProps } from '@blueprintjs/core'
 
 import { FC, useEffect, useState } from 'react'
 
@@ -7,10 +7,10 @@ import { formatDateTime, formatRelativeTime } from '../utils/times'
 interface RelativeTimeProps {
   moment: string | number | Date
   className?: string
-  Tooltip2Props?: Omit<Tooltip2Props, 'content'>
+  TooltipProps?: Omit<TooltipProps, 'content'>
 }
 
-export const RelativeTime: FC<RelativeTimeProps> = ({ moment, className, Tooltip2Props }) => {
+export const RelativeTime: FC<RelativeTimeProps> = ({ moment, className, TooltipProps }) => {
   // Convert to timestamp if needed
   const timestamp = typeof moment === 'string' || moment instanceof Date ? new Date(moment).getTime() : moment
 
@@ -24,8 +24,8 @@ export const RelativeTime: FC<RelativeTimeProps> = ({ moment, className, Tooltip
   }, [timestamp])
 
   return (
-    <Tooltip2 content={formattedDate} {...Tooltip2Props} disabled={!formattedDate}>
+    <Tooltip content={formattedDate} {...TooltipProps} disabled={!formattedDate}>
       <span className={className}>{relativeTime}</span>
-    </Tooltip2>
+    </Tooltip>
   )
 }

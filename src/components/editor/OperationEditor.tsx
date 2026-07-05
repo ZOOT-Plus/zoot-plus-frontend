@@ -1,5 +1,15 @@
-import { AnchorButton, Button, ButtonGroup, Callout, H4, Icon, InputGroup, MenuItem, TextArea } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import {
+  AnchorButton,
+  Button,
+  ButtonGroup,
+  Callout,
+  H4,
+  Icon,
+  InputGroup,
+  MenuItem,
+  TextArea,
+  Tooltip,
+} from '@blueprintjs/core'
 
 import { useLevels } from 'apis/level'
 import clsx from 'clsx'
@@ -111,7 +121,7 @@ export const StageNameInput: FC<{
           itemListPredicate={(query) => (query ? fuse.search(query).map((el) => el.item) : levels)}
           fieldState={fieldState}
           onReset={() => onChange('')}
-          className={clsx('flex-grow mr-2', isLoading && 'bp4-skeleton')}
+          className={clsx('flex-grow mr-2', isLoading && 'bp6-skeleton')}
           disabled={isLoading}
           itemRenderer={(item, { handleClick, handleFocus, modifiers }) => (
             <MenuItem
@@ -149,9 +159,9 @@ export const StageNameInput: FC<{
             onBlur,
           }}
         />
-        <Tooltip2 placement="top" content={t.components.editor.OperationEditor.view_in_prts_map}>
+        <Tooltip placement="top" content={t.components.editor.OperationEditor.view_in_prts_map}>
           <AnchorButton large icon="share" target="_blank" href={prtsMapUrl} disabled={!prtsMapUrl} />
-        </Tooltip2>
+        </Tooltip>
       </div>
     </FormField2>
   )
@@ -323,7 +333,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
                     <TextArea
                       fill
                       rows={4}
-                      growVertically
+                      autoResize
                       large
                       id="doc.details"
                       placeholder={t.components.editor.OperationEditor.description_placeholder}

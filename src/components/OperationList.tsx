@@ -1,5 +1,4 @@
-import { Button, Callout, NonIdealState } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, Callout, NonIdealState, Tooltip } from '@blueprintjs/core'
 
 import { UseOperationsParams, useOperations } from 'apis/operation'
 import { useAtomValue } from 'jotai'
@@ -103,11 +102,11 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
               </div>
             </details>
             <div className="absolute top-2 right-2 flex">
-              <Tooltip2 content={t.components.OperationList.only_loaded_items} placement="top">
+              <Tooltip content={t.components.OperationList.only_loaded_items} placement="top">
                 <Button minimal icon="tick" onClick={() => updateSelection(operations, [])}>
                   {t.components.OperationList.select_all}
                 </Button>
-              </Tooltip2>
+              </Tooltip>
               <Button minimal intent="danger" icon="trash" onClick={() => setSelectedOperations([])}>
                 {t.components.OperationList.clear}
               </Button>
