@@ -3592,6 +3592,20 @@
       ]
     },
     {
+      "id": "char_4229_aphris",
+      "prof": "CASTER",
+      "subProf": "blastcaster",
+      "name_en": "Aphrissa",
+      "name": "谬因",
+      "alias": "miuyin my 謬因",
+      "rarity": 6,
+      "alt_name": "Aphrissa",
+      "modules": [
+        "",
+        "Y"
+      ]
+    },
+    {
       "id": "char_154_morgan",
       "prof": "WARRIOR",
       "subProf": "fearless",
@@ -3914,6 +3928,16 @@
       "alias": "paopuka paopuqia ppk ppq 泡普卡",
       "rarity": 3,
       "alt_name": "Popukar"
+    },
+    {
+      "id": "char_4234_pedro",
+      "prof": "SUPPORT",
+      "subProf": "supportiveranger",
+      "name_en": "Pedro",
+      "name": "佩德洛",
+      "alias": "peideluo pdl 佩德洛",
+      "rarity": 5,
+      "alt_name": "Pedro"
     },
     {
       "id": "char_4058_pepe",
@@ -5864,7 +5888,8 @@
       "alt_name": "Reed The Flame Shadow",
       "modules": [
         "",
-        "X"
+        "X",
+        "Y"
       ]
     },
     {
@@ -6693,6 +6718,16 @@
       "alt_name": "Reconstruct"
     },
     {
+      "id": "token_10070_aphris_pc",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Repeater",
+      "name": "中继器",
+      "alias": "zhongjiqi zjq 中繼器",
+      "rarity": 0,
+      "alt_name": "Repeater"
+    },
+    {
       "id": "char_2024_chyue",
       "prof": "WARRIOR",
       "subProf": "fighter",
@@ -6718,7 +6753,8 @@
       "alt_name": "Blaze the Igniting Spark",
       "modules": [
         "",
-        "X"
+        "X",
+        "Y"
       ]
     },
     {
@@ -7166,6 +7202,11 @@
           "id": "ritualist",
           "name": "巫役",
           "name_en": "Ritualist"
+        },
+        {
+          "id": "supportiveranger",
+          "name": "游击手",
+          "name_en": "Supportiveranger"
         }
       ]
     },
