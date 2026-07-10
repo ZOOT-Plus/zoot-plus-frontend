@@ -240,8 +240,8 @@
             "en": "Stage Name"
           },
           "minimum_required": {
-            "cn": "最低要求 MAA 版本",
-            "en": "Minimum Required MAA Version"
+            "cn": "最低要求客户端版本",
+            "en": "Minimum Required Client Version"
           },
           "difficulty": {
             "cn": "难度",
@@ -693,8 +693,8 @@
           "en": "Delete"
         },
         "doc_placeholder": {
-          "cn": "MAA 执行此动作时显示的文字",
-          "en": "Text displayed when MAA executes this action"
+          "cn": "客户端执行此动作时显示的文字",
+          "en": "Text displayed when the client executes this action"
         }
       },
       "ActionLinker": {
@@ -1250,8 +1250,8 @@
             "en": "Description Color"
           },
           "color_description": {
-            "cn": "在 MAA 中打印描述时的颜色",
-            "en": "Color used when printing descriptions in MAA"
+            "cn": "在客户端中打印描述时的颜色",
+            "en": "Color used when printing descriptions in the client"
           }
         },
         "EditorActionExecPredicate": {
@@ -3025,8 +3025,8 @@
           "en": "Operators and Operator Groups"
         },
         "operators_and_groups_note": {
-          "cn": "{{operators(干员)}}\n作业必需的干员。\n干员练度（等级、模组）仅供参考，MAA 的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(干员组)}}\n一系列可替换干员的编组。\n组内干员可以任选其一，MAA 自动编队时按最高练度来选择。",
-          "en": "{{operators(Operators)}}\nOperators required for this Job. \nThe requirements (level and module) are for reference only. MAA's auto-formation only supports skill selection, and other information is not yet supported.\n\n{{groups(Operator Groups)}}\nGroups of interchangeable operators. \nYou can choose any operator in a group. MAA's auto-formation selects the one with the highest level."
+          "cn": "{{operators(干员)}}\n作业必需的干员。\n干员练度（等级、模组）仅供参考，客户端的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(干员组)}}\n一系列可替换干员的编组。\n组内干员可以任选其一，客户端自动编队时按最高练度来选择。",
+          "en": "{{operators(Operators)}}\nOperators required for this Job. \nThe requirements (level and module) are for reference only. The client's auto-formation only supports skill selection, and other information is not yet supported.\n\n{{groups(Operator Groups)}}\nGroups of interchangeable operators. \nYou can choose any operator in a group. The client's auto-formation selects the one with the highest level."
         },
         "no_operators": {
           "cn": "暂无干员",
@@ -3572,8 +3572,8 @@
             "en": "Manual Activation"
           },
           "description": {
-            "cn": "不由 MAA 自动开启技能、或干员技能并不需要操作开启（自动触发）。若需要手动开启技能，请添加「使用技能」动作",
-            "en": "Skills won't be activated automatically by MAA, or for operators whose skills don't need manual activation (auto-trigger). If you need to manually activate a skill, add a 'Use Skill' action"
+            "cn": "不由客户端自动开启技能、或干员技能并不需要操作开启（自动触发）。若需要手动开启技能，请添加「使用技能」动作",
+            "en": "Skills won't be activated automatically by the client, or for operators whose skills don't need manual activation (auto-trigger). If you need to manually activate a skill, add a 'Use Skill' action"
           }
         },
         "ready_to_use": {
@@ -3919,8 +3919,8 @@
             "en": "Pre-Delay"
           },
           "description": {
-            "cn": "延迟一定时间后，开始检查其他条件。注意：这里的含义和旧版编辑器以及 MAA 作业协议里的前置延迟是相反的",
-            "en": "Delay for a certain time before checking other conditions. Note: The meaning here is opposite to the pre-delay in the old editor and MAA Job Protocol."
+            "cn": "延迟一定时间后，开始检查其他条件。注意：这里的含义和旧版编辑器以及作业协议里的前置延迟是相反的",
+            "en": "Delay for a certain time before checking other conditions. Note: The meaning here is opposite to the pre-delay in the old editor and the Job Protocol."
           }
         },
         "intermediate_post_delay": {
@@ -3929,8 +3929,8 @@
             "en": "Post-Delay"
           },
           "description": {
-            "cn": "所有条件全部满足后，延迟一定时间。注意：这里的含义和旧版编辑器以及 MAA 作业协议里的后置延迟是相反的",
-            "en": "Delay for a certain time after all conditions are met. Note: The meaning here is opposite to the post-delay in the old editor and MAA Job Protocol."
+            "cn": "所有条件全部满足后，延迟一定时间。注意：这里的含义和旧版编辑器以及作业协议里的后置延迟是相反的",
+            "en": "Delay for a certain time after all conditions are met. Note: The meaning here is opposite to the post-delay in the old editor and the Job Protocol."
           }
         },
         "costs": {
@@ -4163,8 +4163,8 @@
   "services": {
     "operation": {
       "json_downloaded": {
-        "cn": "已下载作业 JSON 文件，前往 MAA 选择即可使用~",
-        "en": "Job JSON file downloaded, go to MAA to use it~"
+        "cn": "已下载作业 JSON 文件，导入客户端即可使用~",
+        "en": "Job JSON file downloaded, import it into the client to use it~"
       },
       "json_download_failed": {
         "cn": "JSON下载失败：{{error}}",
@@ -4175,8 +4175,8 @@
         "en": "JSON data error, please contact the developer"
       },
       "shortcode_copied": {
-        "cn": "已复制神秘代码，前往 MAA 粘贴即可使用~",
-        "en": "Secret code copied, paste it in MAA to use it~"
+        "cn": "已复制神秘代码，在客户端粘贴即可使用~",
+        "en": "Secret code copied, paste it in the client to use it~"
       },
       "shortcode_copy_failed": {
         "cn": "复制神秘代码失败：{{error}}",
@@ -4248,8 +4248,8 @@
       "en": "About"
     },
     "official_site": {
-      "cn": "MAA 官网",
-      "en": "MAA Official Site"
+      "cn": "相关项目",
+      "en": "Related Project"
     },
     "map_site": {
       "cn": "明日方舟地图站",
@@ -4260,16 +4260,16 @@
       "en": "Theresa"
     },
     "maafw_site": {
-      "cn": "MaaFramework",
-      "en": "MaaFramework"
+      "cn": "黑盒测试框架",
+      "en": "Black-box Framework"
     },
     "feedback": {
       "cn": "意见与反馈",
       "en": "Feedback"
     },
     "maa_repo": {
-      "cn": "MAA Repo",
-      "en": "MAA Repo"
+      "cn": "小工具",
+      "en": "Assistant Tool"
     },
     "frontend_repo": {
       "cn": "前端 GitHub Repo",
