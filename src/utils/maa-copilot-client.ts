@@ -159,7 +159,7 @@ function createConfiguration(options?: ApiOptions) {
               // ignore
             }
 
-            throw new ApiError(message)
+            throw new ApiError(message, response.status)
           }
 
           ;(response as ExtendedResponse).config = config

@@ -115,16 +115,16 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
   }
 
   // 按短码查单个作业集时，后端在作业集不存在时返回 400 {"message":"作业集不存在"}。
-  // 把这种 not-found 当作空结果而不是加载失败，与作业列表的体验一致。
-  // ponytail: 仅按 id 取单个作业集，唯一预期的非成功响应就是 not-found；
-  // 其它错误（网络/鉴权）抛的是 NetworkError/UnauthorizedError 等子类，不会被吞掉
+  // getSet 的 id 始终来自 parseShortCode（必为数字），唯一可能的 400 就是 not-found，
+  // 把它当空结果而不是加载失败，与作业列表体验一致。其它 ApiError（5xx 等）带
+  // status，不属 400，原样抛给错误边界，不再被静默吞掉。
   const { data: operationSet } = useSWR(
     id ? ['operationSet', id, 'search'] : null,
     async () => {
       try {
         return await getOperationSet({ id: id! })
       } catch (e) {
-        if (e instanceof ApiError) return null
+        if (e instanceof ApiError && e.status === 400) return null
         throw e
       }
     },
