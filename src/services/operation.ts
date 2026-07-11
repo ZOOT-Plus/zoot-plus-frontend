@@ -67,13 +67,9 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
 /**
  * @param target - Either an operation or an operation set
  */
-export const copyShortCode = async (target: { id: number }) => {
+export const copyShortCode = async (target: ShortCodeContent) => {
   try {
-    const content: ShortCodeContent = {
-      id: target.id,
-    }
-
-    const shortCode = toShortCode(content)
+    const shortCode = toShortCode(target)
     navigator.clipboard.writeText(shortCode)
 
     AppToaster.show({

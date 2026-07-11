@@ -43,7 +43,7 @@ export const ShortCodeImporter: FC<{
 
       const shortCodeContent = parseShortCode(code)
 
-      if (!shortCodeContent) {
+      if (!shortCodeContent || shortCodeContent.type !== 'operation') {
         throw new Error(t.components.editor.source.ShortCodeImporter.invalid_shortcode)
       }
 
@@ -98,7 +98,7 @@ export const ShortCodeImporter: FC<{
             description={t.components.editor.source.ShortCodeImporter.shortcode_description}
             error={errors.code}
           >
-            <InputGroup large placeholder="maa://..." value={value || ''} onChange={onChange} />
+            <InputGroup large placeholder="prts://..." value={value || ''} onChange={onChange} />
           </FormField2>
 
           <Button disabled={!isValid && !isDirty} intent="primary" loading={pending} type="submit" icon="import" large>

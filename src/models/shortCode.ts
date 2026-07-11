@@ -1,29 +1,29 @@
 /*
- * Format: maa://123456
- * Note that operations and operation sets share the same ID space
- * and currently there is no way to distinguish them.
+ * Format: prts://123456 (operation), prts://s123456 (operation set)
+ * The `s` prefix lets clients distinguish operation sets from operations
+ * without an extra round-trip.
  */
 
-const shortCodeScheme = 'maa://'
+const operationScheme = 'prts://'
+const operationSetScheme = 'prts://s'
+
+export type ShortCodeType = 'operation' | 'operation-set'
 
 export interface ShortCodeContent {
   id: number
+  type: ShortCodeType
 }
 
-export function toShortCode({ id }: ShortCodeContent) {
-  return shortCodeScheme + id
+export function toShortCode({ id, type }: ShortCodeContent) {
+  return (type === 'operation-set' ? operationSetScheme : operationScheme) + id
 }
 
 export function parseShortCode(code: string): ShortCodeContent | null {
-  if (code.startsWith(shortCodeScheme)) {
-    const idStr = code.slice(shortCodeScheme.length)
-    const content: ShortCodeContent = {
-      id: +idStr,
-    }
-
-    if (!isNaN(content.id)) {
-      return content
-    }
-  }
+  // check the longer prefix first: `prts://s` is a superset start of `prts://`
+  const isSet = code.startsWith(operationSetScheme)
+  if (!isSet && !code.startsWith(operationScheme)) return null
+  const idStr = code.slice(isSet ? operationSetScheme.length : operationScheme.length)
+  const id = +idStr
+  if (idStr !== '' && !isNaN(id)) return { id, type: isSet ? 'operation-set' : 'operation' }
   return null
 }

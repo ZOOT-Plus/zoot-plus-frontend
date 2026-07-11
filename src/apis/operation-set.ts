@@ -9,6 +9,7 @@ import { useSWRRefresh } from 'utils/swr'
 
 import { parseShortCode } from '../models/shortCode'
 import { authAtom } from '../store/auth'
+import { ApiError } from 'utils/error'
 
 export type OrderBy = 'views' | 'hot' | 'id'
 
@@ -104,12 +105,27 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
   if (keyword) {
     const shortCodeContent = parseShortCode(keyword)
 
-    if (shortCodeContent) {
+    if (shortCodeContent && shortCodeContent.type === 'operation-set') {
       id = shortCodeContent.id
     }
   }
 
-  const { data: operationSet } = useOperationSet({ id, suspense })
+  // 按短码查单个作业集时，后端在作业集不存在时返回 400 {"message":"作业集不存在"}。
+  // 把这种 not-found 当作空结果而不是加载失败，与作业列表的体验一致。
+  // ponytail: 仅按 id 取单个作业集，唯一预期的非成功响应就是 not-found；
+  // 其它错误（网络/鉴权）抛的是 NetworkError/UnauthorizedError 等子类，不会被吞掉
+  const { data: operationSet } = useSWR(
+    id ? ['operationSet', id, 'search'] : null,
+    async () => {
+      try {
+        return await getOperationSet({ id: id! })
+      } catch (e) {
+        if (e instanceof ApiError) return null
+        throw e
+      }
+    },
+    { suspense },
+  )
 
   const listResponse = useOperationSets({
     keyword,
@@ -122,7 +138,7 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
 
   if (id) {
     return {
-      operationSets: [operationSet],
+      operationSets: operationSet ? [operationSet] : [],
       total: operationSet ? 1 : 0,
       isReachingEnd: true,
       setSize: noop,
