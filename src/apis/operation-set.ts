@@ -7,7 +7,7 @@ import useSWRInfinite from 'swr/infinite'
 import { OperationSetApi } from 'utils/maa-copilot-client'
 import { useSWRRefresh } from 'utils/swr'
 
-import { parseShortCode } from '../models/shortCode'
+import { parseShortCode, useNewShortCodeProtocol } from '../models/shortCode'
 import { authAtom } from '../store/auth'
 import { ApiError } from 'utils/error'
 
@@ -105,7 +105,8 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
   if (keyword) {
     const shortCodeContent = parseShortCode(keyword)
 
-    if (shortCodeContent && shortCodeContent.type === 'operation-set') {
+    // 旧协议下 maa:// 不带类型标记，作业集搜索按 id 直取（与旧行为一致）
+    if (shortCodeContent && (!useNewShortCodeProtocol() || shortCodeContent.type === 'operation-set')) {
       id = shortCodeContent.id
     }
   }
