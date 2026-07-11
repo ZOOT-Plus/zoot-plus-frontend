@@ -106,7 +106,7 @@ export const allEssentials = Object.fromEntries(
   ]),
 ) as Record<Language, I18NEssentials>
 
-const languageStorageKey = 'maa-copilot-lang'
+const languageStorageKey = 'zoot-plus-lang'
 
 let currentLanguage: Language
 let currentTranslations: I18NTranslations | undefined

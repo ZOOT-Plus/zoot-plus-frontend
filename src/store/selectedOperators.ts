@@ -15,14 +15,8 @@ export const DEFAULT_OPERATOR_FILTER: OperatorFilterData = {
 }
 
 export const operatorFilterAtom = atomWithStorage<OperatorFilterData>(
-  'maa-copilot-operatorFilter',
+  'zoot-plus-operatorFilter',
   DEFAULT_OPERATOR_FILTER,
   undefined,
   { getOnInit: true },
 )
-
-// 删除旧版数据
-if (localStorage.getItem('maa-copilot-selectedOperators')) {
-  localStorage.removeItem('maa-copilot-selectedOperators')
-  localStorage.removeItem('maa-copilot-saveSelectedOperators')
-}

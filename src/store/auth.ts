@@ -13,7 +13,7 @@ export interface AuthState {
   username?: string
 }
 
-export const authAtom = atomWithStorage<AuthState>('maa-copilot-auth', {}, undefined, {
+export const authAtom = atomWithStorage<AuthState>('zoot-plus-auth', {}, undefined, {
   getOnInit: true,
 })
 

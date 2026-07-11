@@ -28,6 +28,7 @@ import { ComponentType, FC, useEffect, useState } from 'react'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
+import { HelperText } from 'components/HelperText'
 import { Paragraphs } from 'components/Paragraphs'
 import { RelativeTime } from 'components/RelativeTime'
 import { withSuspensable } from 'components/Suspensable'
@@ -299,7 +300,7 @@ export const OperationViewer: ComponentType<{
         title={
           <>
             <Icon icon="document" />
-            <span className="ml-2">{t.components.viewer.OperationViewer.maa_copilot_task}</span>
+            <span className="ml-2">{t.components.viewer.OperationViewer.task}</span>
 
             <div className="flex-1" />
 
@@ -652,6 +653,9 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
       <Collapse isOpen={showActions}>
         {operation.parsedContent.actions?.length ? (
           <>
+            <HelperText className="mt-2 [&_a]:inline">
+              <span dangerouslySetInnerHTML={{ __html: t.components.viewer.OperationViewer.coordinate_hint }} />
+            </HelperText>
             {gridMode ? (
               <GridTimeline actions={operation.parsedContent.actions} groups={operation.parsedContent.groups} />
             ) : (

@@ -324,6 +324,7 @@ export interface ActionDocColor {
 
 // Colors from
 // https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/50f5f94dfcc2ec175556bbaa55d0ffec74128a8e/src/MeoAsstGui/Helper/LogColor.cs
+// 上游协议规范的日志颜色定义
 export const actionDocColors: ActionDocColor[] = [
   {
     title: i18nDefer.models.operator.color.gray,
