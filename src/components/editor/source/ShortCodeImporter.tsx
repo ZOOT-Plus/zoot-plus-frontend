@@ -43,7 +43,8 @@ export const ShortCodeImporter: FC<{
 
       const shortCodeContent = parseShortCode(code)
 
-      if (!shortCodeContent || shortCodeContent.type !== 'operation') {
+      // 导入只处理作业：拒绝作业集代码（prts://s），兼容旧 maa:// 与 prts://
+      if (!shortCodeContent || shortCodeContent.type === 'operation-set') {
         throw new Error(t.components.editor.source.ShortCodeImporter.invalid_shortcode)
       }
 
