@@ -20,9 +20,3 @@ export const operatorFilterAtom = atomWithStorage<OperatorFilterData>(
   undefined,
   { getOnInit: true },
 )
-
-// 删除旧版数据
-if (localStorage.getItem('zoot-plus-selectedOperators')) {
-  localStorage.removeItem('zoot-plus-selectedOperators')
-  localStorage.removeItem('zoot-plus-saveSelectedOperators')
-}
