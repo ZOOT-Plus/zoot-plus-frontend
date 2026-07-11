@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom'
 
 import { withGlobalErrorBoundary } from 'components/GlobalErrorBoundary'
 import { OperationEditor } from 'components/editor/OperationEditor'
+import { TypeSwitchConfirmAlert, useTypeSwitchConfirm } from 'components/editor/CopilotTypePicker'
 import type { CopilotDocV1 } from 'models/copilot.schema'
 
 import { createOperation, updateOperation, useOperation } from '../apis/operation'
@@ -19,7 +20,7 @@ import { AutosaveOptions, AutosaveSheet, isChangedSinceLastSave, useAutosave } f
 import { validateOperation } from '../components/editor/validation'
 import { useTranslation } from '../i18n/i18n'
 import { toCopilotOperation } from '../models/converter'
-import { MinimumRequired, Operation } from '../models/operation'
+import { CopilotType, MinimumRequired, Operation } from '../models/operation'
 import { NetworkError, formatError } from '../utils/error'
 
 const defaultOperation: CopilotDocV1.Operation = {
@@ -52,7 +53,29 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
       // set form values by fetched data, or an empty operation by default
       defaultValues: apiOperation ? toCopilotOperation(apiOperation) : defaultOperation,
     })
-    const { handleSubmit, getValues, trigger, reset, setError, clearErrors } = form
+    const { handleSubmit, getValues, trigger, reset, setValue, setError, clearErrors } = form
+
+    // 作业类型：创建时可选，编辑时锁定为已保存的类型。videoUrl 仅 VIDEO 类型使用。
+    const [type, setType] = useState<CopilotType>(apiOperation?.type ?? CopilotType.PRTS)
+    const [videoUrl, setVideoUrl] = useState<string>(apiOperation?.videoUrl ?? '')
+
+    // 切换类型时如有会丢失的数据，先弹窗确认后再应用
+    const applyTypeChange = (next: CopilotType) => {
+      if (next === CopilotType.VIDEO) {
+        // PRTS → VIDEO：清空动作序列
+        setValue('actions', [])
+      } else {
+        // VIDEO → PRTS：清空视频链接
+        setVideoUrl('')
+      }
+      setType(next)
+    }
+    const { pendingType, requestChange: handleTypeChange, cancel, confirm } = useTypeSwitchConfirm({
+      currentType: type,
+      hasActions: () => (getValues('actions')?.length ?? 0) > 0,
+      hasVideoUrl: () => !!videoUrl,
+      apply: applyTypeChange,
+    })
 
     const autosaveOptions: AutosaveOptions<CopilotDocV1.Operation> = useMemo(
       () => ({
@@ -87,6 +110,13 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
       try {
         setUploading(true)
 
+        if (type === CopilotType.VIDEO && !videoUrl.trim()) {
+          setError('global' as any, {
+            message: t.pages.create.video_url_required,
+          })
+          return
+        }
+
         const operation = toMaaOperation(raw)
 
         patchOperation(operation)
@@ -95,17 +125,25 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
           return
         }
 
+        // VIDEO 类型把视频链接写进 content；PRTS 类型不带该字段
+        const content =
+          type === CopilotType.VIDEO
+            ? JSON.stringify({ ...operation, video_url: videoUrl.trim() })
+            : JSON.stringify(operation)
+
         try {
           if (isNew) {
             await createOperation({
-              content: JSON.stringify(operation),
+              content,
               status: operationStatus,
+              type,
             })
           } else {
             await updateOperation({
               id,
-              content: JSON.stringify(operation),
+              content,
               status: operationStatus,
+              type,
             })
           }
         } catch (e) {
@@ -145,9 +183,15 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
     })
 
     return (
-      <OperationEditor
-        form={form}
-        toolbar={
+      <>
+        <OperationEditor
+          form={form}
+          type={type}
+          typeLocked={!isNew}
+          videoUrl={videoUrl}
+          onChangeType={handleTypeChange}
+          onChangeVideoUrl={setVideoUrl}
+          toolbar={
           <>
             <AutosaveSheet
               minimal
@@ -196,6 +240,8 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
           </>
         }
       />
+        <TypeSwitchConfirmAlert pendingType={pendingType} onCancel={cancel} onConfirm={confirm} />
+      </>
     )
   }),
 )

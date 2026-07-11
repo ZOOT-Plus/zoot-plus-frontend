@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { SetRequired, Simplify } from 'type-fest'
 
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import { CopilotType } from '../../models/operation'
 import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
 import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
@@ -24,11 +25,20 @@ export const defaultEditorState: EditorState = {
   operation: toEditorOperation(defaultOperation),
   metadata: {
     visibility: 'public',
+    type: CopilotType.PRTS,
+    typeLocked: false,
+    videoUrl: '',
   },
 }
 
 interface EditorMetadata {
   visibility: 'public' | 'private'
+  /** 作业类型，创建后不可更改 */
+  type: CopilotType
+  /** 编辑已有作业时锁定类型切换 */
+  typeLocked: boolean
+  /** 视频链接，仅 type=VIDEO 使用 */
+  videoUrl: string
 }
 
 type EditorOperationBase = Simplify<
@@ -141,7 +151,7 @@ const operationAtom = atom(
     set(actionsAtom, actions)
   },
 )
-const metadataAtom = atom<EditorMetadata>({ visibility: 'public' })
+const metadataAtom = atom<EditorMetadata>({ visibility: 'public', type: CopilotType.PRTS, typeLocked: false, videoUrl: '' })
 const editorAtom = atom(
   (get): EditorState => ({
     operation: get(operationAtom),

@@ -3,11 +3,13 @@ import { Button, Icon } from '@blueprintjs/core'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
 import { useAtomCallback } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { throttle } from 'lodash-es'
 import { FC, memo, useCallback, useEffect } from 'react'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 
 import { useCurrentSize } from '../../utils/useCurrenSize'
+import { CopilotType } from '../../models/operation'
 import { EditorToolbar } from './EditorToolbar'
 import { InfoEditor } from './InfoEditor'
 import { ActionEditor } from './action/ActionEditor'
@@ -29,6 +31,8 @@ export const OperationEditor: FC<OperationEditorProps> = memo(({ subtitle, submi
   useAutosave()
   const { isMD } = useCurrentSize()
   const { undo, redo } = useHistoryControls(historyAtom)
+  const metadata = useAtomValue(editorAtoms.metadata)
+  const isVideo = metadata.type === CopilotType.VIDEO
 
   const handleUndoRedo = useAtomCallback(
     useCallback(
@@ -86,7 +90,7 @@ export const OperationEditor: FC<OperationEditorProps> = memo(({ subtitle, submi
           <div className="panel-shadow">
             <InfoEditor />
             <OperatorEditor />
-            <ActionEditor />
+            {!isVideo && <ActionEditor />}
           </div>
         ) : (
           <PanelGroup autoSaveId="editor-h" direction="horizontal">
@@ -106,7 +110,7 @@ export const OperationEditor: FC<OperationEditorProps> = memo(({ subtitle, submi
               {/* we need a wrapper here because the panel cannot be scrollable, or else the shadow will scroll as well */}
               <div className="h-full overflow-auto">
                 <InfoEditor />
-                <ActionEditor />
+                {!isVideo && <ActionEditor />}
               </div>
             </Panel>
           </PanelGroup>

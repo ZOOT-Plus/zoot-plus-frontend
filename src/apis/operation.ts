@@ -4,7 +4,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
 import { toCopilotOperation } from 'models/converter'
-import { OpRatingType, Operation } from 'models/operation'
+import { CopilotType, OpRatingType, Operation } from 'models/operation'
 import { ShortCodeContent, parseShortCode } from 'models/shortCode'
 import { OperationApi } from 'utils/zoot-plus-client'
 import { useSWRRefresh } from 'utils/swr'
@@ -26,6 +26,8 @@ export interface UseOperationsParams {
   operationIds?: number[]
   uploaderId?: string
   onlyFollowing?: boolean
+  /** 仅查询指定类型的作业；不传则返回全部 */
+  type?: CopilotType
 
   disabled?: boolean
   suspense?: boolean
@@ -42,6 +44,7 @@ export function useOperations({
   operationIds,
   uploaderId,
   onlyFollowing,
+  type,
   disabled,
   suspense,
   revalidateFirstPage,
@@ -95,6 +98,7 @@ export function useOperations({
           copilotIds: operationIds,
           uploaderId,
           onlyFollowing,
+          type,
         } satisfies QueriesCopilotRequest,
       ]
     },
@@ -180,12 +184,21 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   }
 }
 
-export async function createOperation(req: { content: string; status: CopilotSetStatus }) {
-  return (await new OperationApi().uploadCopilot({ uploadCopilotRequest: { ...req, type: 'PRTS' } })).data
+export async function createOperation(req: {
+  content: string
+  status: CopilotSetStatus
+  type: CopilotType
+}) {
+  return (await new OperationApi().uploadCopilot({ uploadCopilotRequest: { ...req } })).data
 }
 
-export async function updateOperation(req: { id: number; content: string; status: CopilotSetStatus }) {
-  await new OperationApi().updateCopilot({ uploadCopilotRequest: { ...req, type: 'PRTS' } })
+export async function updateOperation(req: {
+  id: number
+  content: string
+  status: CopilotSetStatus
+  type: CopilotType
+}) {
+  await new OperationApi().updateCopilot({ uploadCopilotRequest: { ...req } })
 }
 
 export async function deleteOperation(req: { id: number }) {

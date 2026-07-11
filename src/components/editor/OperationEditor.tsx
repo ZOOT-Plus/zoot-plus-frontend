@@ -20,7 +20,7 @@ import { Control, FieldErrors, UseFormReturn, useController, useWatch } from 're
 import { FormField, FormField2 } from 'components/FormField'
 import { HelperText } from 'components/HelperText'
 import type { CopilotDocV1 } from 'models/copilot.schema'
-import { Level, OpDifficulty, OpDifficultyBitFlag } from 'models/operation'
+import { CopilotType, Level, OpDifficulty, OpDifficultyBitFlag } from 'models/operation'
 
 import { useTranslation } from '../../i18n/i18n'
 import {
@@ -36,6 +36,7 @@ import {
 import { useBreakpoint } from '../../utils/device'
 import { formatError } from '../../utils/error'
 import { Suggest } from '../Suggest'
+import { CopilotTypePicker, VideoUrlField } from './CopilotTypePicker'
 import { EditorActions } from './action/EditorActions'
 import { FloatingMap } from './floatingMap/FloatingMap'
 import { FloatingMapContext, useFloatingMap } from './floatingMap/FloatingMapContext'
@@ -237,6 +238,13 @@ const DifficultyPicker: FC<{
 export interface OperationEditorProps {
   form: UseFormReturn<CopilotDocV1.Operation>
   toolbar: ReactNode
+  /** 作业类型（创建后不可更改） */
+  type: CopilotType
+  /** 编辑已有作业时为 true，锁定类型切换 */
+  typeLocked?: boolean
+  videoUrl: string
+  onChangeType: (type: CopilotType) => void
+  onChangeVideoUrl: (value: string) => void
 }
 
 export const OperationEditor: FC<OperationEditorProps> = ({
@@ -248,6 +256,11 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     formState: { errors },
   },
   toolbar,
+  type,
+  typeLocked,
+  videoUrl,
+  onChangeType,
+  onChangeVideoUrl,
 }) => {
   const t = useTranslation()
   const { data: levels } = useLevels()
@@ -290,6 +303,12 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
         <div className="px-8 mr-0.5">
           <H4>{t.components.editor.OperationEditor.job_metadata}</H4>
+          <CopilotTypePicker type={type} locked={typeLocked} onChange={onChangeType} />
+          {type === CopilotType.VIDEO && (
+            <div className="mb-4">
+              <VideoUrlField value={videoUrl} onChange={onChangeVideoUrl} />
+            </div>
+          )}
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/4 md:mr-8">
               <StageNameInput control={control} />
@@ -352,13 +371,15 @@ export const OperationEditor: FC<OperationEditorProps> = ({
             <div className="w-full flex flex-col pb-8">
               <EditorPerformerPanel control={control} />
             </div>
-            <div className="w-full pb-8">
-              <H4>{t.components.editor.OperationEditor.action_sequence}</H4>
-              <HelperText className="mb-4">
-                <span>{t.components.editor.OperationEditor.drag_to_reorder}</span>
-              </HelperText>
-              <EditorActions control={control} />
-            </div>
+            {type === CopilotType.PRTS && (
+              <div className="w-full pb-8">
+                <H4>{t.components.editor.OperationEditor.action_sequence}</H4>
+                <HelperText className="mb-4">
+                  <span>{t.components.editor.OperationEditor.drag_to_reorder}</span>
+                </HelperText>
+                <EditorActions control={control} />
+              </div>
+            )}
           </div>
         </div>
 

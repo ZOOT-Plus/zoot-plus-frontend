@@ -13,6 +13,7 @@ import { OperationSetList } from 'components/OperationSetList'
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
+import { CopilotType } from '../models/operation'
 import { LevelSelect } from './LevelSelect'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
 import { withSuspensable } from './Suspensable'
@@ -116,6 +117,24 @@ export const Operations: ComponentType = withSuspensable(() => {
                     }))
                   }}
                 />
+                <ButtonGroup className="flex-wrap">
+                  {(
+                    [
+                      { type: undefined, text: t.components.Operations.type_all },
+                      { type: CopilotType.PRTS, text: t.components.Operations.type_prts },
+                      { type: CopilotType.VIDEO, text: t.components.Operations.type_video },
+                    ] as const
+                  ).map(({ type, text }) => (
+                    <Button
+                      key={type ?? 'all'}
+                      active={queryParams.type === type}
+                      intent={queryParams.type === type ? 'primary' : 'none'}
+                      onClick={() => setQueryParams((old) => ({ ...old, type }))}
+                    >
+                      {text}
+                    </Button>
+                  ))}
+                </ButtonGroup>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-4 mt-2">

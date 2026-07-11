@@ -17,6 +17,7 @@ import {
   Tag,
   PopoverNext,
   Tooltip,
+  AnchorButton,
 } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
@@ -36,7 +37,7 @@ import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { EDifficultyLevel } from 'components/entity/ELevel'
 import { OperationRating } from 'components/viewer/OperationRating'
-import { OpRatingType, Operation } from 'models/operation'
+import { CopilotType, OpRatingType, Operation } from 'models/operation'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
@@ -465,6 +466,16 @@ function OperationViewerInner({
     <div className="h-full overflow-auto p-4 md:p-8">
       <H3>
         {operation.parsedContent.doc.title}
+        {operation.type === CopilotType.VIDEO && (
+          <Tag minimal intent="success" className="ml-2 font-normal">
+            {t.components.viewer.OperationViewer.type_video}
+          </Tag>
+        )}
+        {operation.type === CopilotType.PRTS && (
+          <Tag minimal className="ml-2 font-normal opacity-75">
+            {t.components.viewer.OperationViewer.type_prts}
+          </Tag>
+        )}
         {operation.status === CopilotSetStatus.Private && (
           <Tag minimal className="ml-2 font-normal opacity-75">
             {t.components.viewer.OperationViewer.private}
@@ -576,6 +587,8 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const [showActions, setShowActions] = useState(false)
   const [gridMode, setGridMode] = useAtom(gridModeAtom)
 
+  const isVideo = operation.type === CopilotType.VIDEO
+
   return (
     <div>
       <H4
@@ -632,50 +645,79 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
       </Collapse>
 
       <div className="mt-6 flex items-center gap-4">
-        <H4
-          className="inline-flex items-center cursor-pointer hover:opacity-80 mb-0"
-          onClick={() => setShowActions((v) => !v)}
-        >
-          {t.components.viewer.OperationViewer.action_sequence}
-          <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showActions && 'rotate-180')} />
-        </H4>
-        {showActions && (
-          <Switch
-            checked={gridMode}
-            onChange={(e) => setGridMode(e.currentTarget.checked)}
-            label={t.components.viewer.OperationViewer.grid_mode}
-            className="mb-0"
-            innerLabel={t.components.viewer.OperationViewer.grid_off}
-            innerLabelChecked={t.components.viewer.OperationViewer.grid_on}
-          />
-        )}
-      </div>
-      <Collapse isOpen={showActions}>
-        {operation.parsedContent.actions?.length ? (
+        {isVideo ? (
+          <H4 className="inline-flex items-center mb-0">{t.components.viewer.OperationViewer.video_guide}</H4>
+        ) : (
           <>
-            <HelperText className="mt-2 [&_a]:inline">
-              <span dangerouslySetInnerHTML={{ __html: t.components.viewer.OperationViewer.coordinate_hint }} />
-            </HelperText>
-            {gridMode ? (
-              <GridTimeline actions={operation.parsedContent.actions} groups={operation.parsedContent.groups} />
-            ) : (
-              <div className="mt-2 flex flex-col pb-8">
-                {operation.parsedContent.actions.map((action, i) => (
-                  <ActionCard action={action} key={i} />
-                ))}
-              </div>
+            <H4
+              className="inline-flex items-center cursor-pointer hover:opacity-80 mb-0"
+              onClick={() => setShowActions((v) => !v)}
+            >
+              {t.components.viewer.OperationViewer.action_sequence}
+              <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showActions && 'rotate-180')} />
+            </H4>
+            {showActions && (
+              <Switch
+                checked={gridMode}
+                onChange={(e) => setGridMode(e.currentTarget.checked)}
+                label={t.components.viewer.OperationViewer.grid_mode}
+                className="mb-0"
+                innerLabel={t.components.viewer.OperationViewer.grid_off}
+                innerLabelChecked={t.components.viewer.OperationViewer.grid_on}
+              />
             )}
           </>
-        ) : (
-          <NonIdealState
-            className="my-2"
-            title={t.components.viewer.OperationViewer.no_actions}
-            description={t.components.viewer.OperationViewer.no_actions_defined}
-            icon="slash"
-            layout="horizontal"
-          />
         )}
-      </Collapse>
+      </div>
+      {isVideo ? (
+        <div className="mt-2">
+          {operation.videoUrl ? (
+            <AnchorButton
+              large
+              intent="primary"
+              icon="video"
+              href={operation.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              text={t.components.viewer.OperationViewer.watch_video}
+            />
+          ) : (
+            <NonIdealState
+              className="my-2"
+              title={t.components.viewer.OperationViewer.no_video}
+              icon="slash"
+              layout="horizontal"
+            />
+          )}
+        </div>
+      ) : (
+        <Collapse isOpen={showActions}>
+          {operation.parsedContent.actions?.length ? (
+            <>
+              <HelperText className="mt-2 [&_a]:inline">
+                <span dangerouslySetInnerHTML={{ __html: t.components.viewer.OperationViewer.coordinate_hint }} />
+              </HelperText>
+              {gridMode ? (
+                <GridTimeline actions={operation.parsedContent.actions} groups={operation.parsedContent.groups} />
+              ) : (
+                <div className="mt-2 flex flex-col pb-8">
+                  {operation.parsedContent.actions.map((action, i) => (
+                    <ActionCard action={action} key={i} />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <NonIdealState
+              className="my-2"
+              title={t.components.viewer.OperationViewer.no_actions}
+              description={t.components.viewer.OperationViewer.no_actions_defined}
+              icon="slash"
+              layout="horizontal"
+            />
+          )}
+        </Collapse>
+      )}
     </div>
   )
 }

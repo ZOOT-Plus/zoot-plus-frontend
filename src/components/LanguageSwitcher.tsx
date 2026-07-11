@@ -21,9 +21,16 @@ export const LanguageSwitcher: ComponentType = withGlobalErrorBoundary(() => {
   const shrinked = useCurrentSize().isLG
   const [language, setLanguage] = useAtom(languageAtom)
 
+  // 当前语言对应的选项。作为 DetailedSelect 的 value（显示选中标记）和
+  // Select 的 activeItem（ popover 打开时的键盘焦点高亮），避免高亮总是落在
+  // 排序后的第一项 English 上、被误认为「当前选中项」。
+  const activeOption = options.find((option) => option.value === language)
+
   return (
     <DetailedSelect
       items={options}
+      value={language}
+      activeItem={activeOption}
       onItemSelect={(item) => setLanguage(item.value as (typeof options)[number]['value'])}
       popoverProps={{
         matchTargetWidth: !shrinked,

@@ -1,12 +1,14 @@
 import { Callout, FormGroup, InputGroup, Radio, RadioGroup, TextArea } from '@blueprintjs/core'
 
 import clsx from 'clsx'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
 import { memo } from 'react'
 import { Paths } from 'type-fest'
 
+import { CopilotTypePicker, TypeSwitchConfirmAlert, VideoUrlField, useTypeSwitchConfirm } from '../editor/CopilotTypePicker'
 import { i18n, useTranslation } from '../../i18n/i18n'
+import { CopilotType } from '../../models/operation'
 import { isCustomLevel } from '../../models/level'
 import { DifficultyPicker } from './DifficultyPicker'
 import { LevelSelect } from './LevelSelect'
@@ -20,8 +22,34 @@ interface InfoEditorProps {
 export const InfoEditor = memo(({ className }: InfoEditorProps) => {
   const [info, setInfo] = useImmerAtom(editorAtoms.operationBase)
   const [metadata, setMetadata] = useImmerAtom(editorAtoms.metadata)
+  const actions = useAtomValue(editorAtoms.actions)
+  const setActions = useSetAtom(editorAtoms.actions)
   const edit = useEdit()
   const t = useTranslation()
+
+  const applyTypeChange = (next: CopilotType) => {
+    edit(() => {
+      setMetadata((prev) => {
+        prev.type = next
+        if (next === CopilotType.PRTS) {
+          prev.videoUrl = ''
+        }
+      })
+      if (next === CopilotType.VIDEO) {
+        setActions([])
+      }
+      return {
+        action: 'update-type',
+        desc: i18n.components.CopilotTypePicker.type_label,
+      }
+    })
+  }
+  const { pendingType, requestChange: handleTypeChange, cancel, confirm } = useTypeSwitchConfirm({
+    currentType: metadata.type,
+    hasActions: () => actions.length > 0,
+    hasVideoUrl: () => !!metadata.videoUrl,
+    apply: applyTypeChange,
+  })
 
   return (
     <div
@@ -32,6 +60,19 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
       )}
     >
       <h3 className="mb-2 text-lg font-bold">{t.components.editor2.InfoEditor.job_info}</h3>
+      <CopilotTypePicker type={metadata.type} locked={metadata.typeLocked} onChange={handleTypeChange} />
+      {metadata.type === CopilotType.VIDEO && (
+        <div className="mb-2">
+          <VideoUrlField value={metadata.videoUrl} onChange={(value) => {
+            edit(() => {
+              setMetadata((prev) => {
+                prev.videoUrl = value
+              })
+              return { action: 'update-video-url', desc: i18n.components.CopilotTypePicker.video_url, squashBy: '' }
+            })
+          }} />
+        </div>
+      )}
       <FormGroup contentClassName="grow" label={t.components.editor2.InfoEditor.stage} labelInfo="*">
         <LevelSelect
           difficulty={info.difficulty}
@@ -150,6 +191,7 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
           </Radio>
         </RadioGroup>
       </FormGroup>
+      <TypeSwitchConfirmAlert pendingType={pendingType} onCancel={cancel} onConfirm={confirm} />
     </div>
   )
 })
