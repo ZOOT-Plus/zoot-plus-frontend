@@ -97,7 +97,7 @@ export const AccountAuthDialog: ComponentType<{
   const [activeTab, setActiveTab] = useState<TabId>('login')
 
   return (
-    <Dialog title={t.components.AccountManager.maa_account} icon="user" isOpen={open} onClose={onClose}>
+    <Dialog title={t.components.AccountManager.account} icon="user" isOpen={open} onClose={onClose}>
       <div className="flex flex-col p-4 pt-2">
         <GlobalErrorBoundary>
           <Tabs

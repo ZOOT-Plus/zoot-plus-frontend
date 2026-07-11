@@ -30,7 +30,7 @@ export class NotChangedError extends Error {
 
 const defaultEditorStateStringified = JSON.stringify(defaultEditorState)
 
-export const editorArchiveAtom = atomWithStorage('maa-copilot-editor2-autosave', [] as Archive)
+export const editorArchiveAtom = atomWithStorage('zoot-plus-editor2-autosave', [] as Archive)
 export const editorSaveAtom = atom(noop, (get, set) => {
   const state = get(editorAtoms.editor)
   const dehydratedState = {

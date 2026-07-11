@@ -2838,7 +2838,7 @@
           "cn": "刷新作业集失败：{{error}}",
           "en": "Failed to refresh Job set: {{error}}"
         },
-        "maa_copilot_task_set": {
+        "task_set": {
           "cn": "PRTS Plus 作业集",
           "en": "PRTS Plus Job Set"
         },
@@ -2944,7 +2944,7 @@
           "cn": "提交评分失败：{{error}}",
           "en": "Failed to submit rating: {{error}}"
         },
-        "maa_copilot_task": {
+        "task": {
           "cn": "PRTS Plus 作业",
           "en": "PRTS Plus Job"
         },
@@ -3058,6 +3058,10 @@
           "cn": "动作序列",
           "en": "Action Sequence"
         },
+        "coordinate_hint": {
+          "cn": "坐标可在地图站（<a href=\"https://map.ark-nights.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-500 hover:underline\">PRTS.Map</a>）中查看，需在设置中将坐标展示改为 MAA 体系",
+          "en": "Coordinates can be viewed on <a href=\"https://map.ark-nights.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-500 hover:underline\">PRTS.Map</a>; change coordinate display to MAA in settings"
+        },
         "no_actions": {
           "cn": "暂无动作",
           "en": "No Actions"
@@ -3109,7 +3113,7 @@
         "cn": "修改信息...",
         "en": "Edit Information"
       },
-      "maa_account": {
+      "account": {
         "cn": "PRTS Plus 账户",
         "en": "PRTS Plus Account"
       },
@@ -4175,8 +4179,8 @@
         "en": "JSON data error, please contact the developer"
       },
       "shortcode_copied": {
-        "cn": "已复制神秘代码，在客户端粘贴即可使用~",
-        "en": "Secret code copied, paste it in the client to use it~"
+        "cn": "已复制神秘代码~",
+        "en": "Secret code copied~"
       },
       "shortcode_copy_failed": {
         "cn": "复制神秘代码失败：{{error}}",
@@ -4215,7 +4219,7 @@
         "en": "Request error"
       }
     },
-    "maa_copilot_client": {
+    "api_client": {
       "invalid_response": {
         "cn": "返回值无效",
         "en": "Invalid response"
@@ -4247,10 +4251,6 @@
       "cn": "关于",
       "en": "About"
     },
-    "official_site": {
-      "cn": "相关项目",
-      "en": "Related Project"
-    },
     "map_site": {
       "cn": "明日方舟地图站",
       "en": "Arknights PRTS.Map"
@@ -4259,17 +4259,13 @@
       "cn": "特蕾西娅",
       "en": "Theresa"
     },
-    "maafw_site": {
-      "cn": "黑盒测试框架",
-      "en": "Black-box Framework"
+    "yituliu_site": {
+      "cn": "一图流",
+      "en": "Yituliu"
     },
     "feedback": {
       "cn": "意见与反馈",
       "en": "Feedback"
-    },
-    "maa_repo": {
-      "cn": "小工具",
-      "en": "Assistant Tool"
     },
     "frontend_repo": {
       "cn": "前端 GitHub Repo",
@@ -4282,10 +4278,6 @@
     "creator_group": {
       "cn": "作业制作者交流群：{{groupNumber}}",
       "en": "Creator Community Group: {{groupNumber}}"
-    },
-    "sharing_group": {
-      "cn": "作业分享群",
-      "en": "Job Sharing Group"
     },
     "friendly_links": {
       "cn": "友情链接",

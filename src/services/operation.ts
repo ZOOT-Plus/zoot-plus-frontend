@@ -29,7 +29,7 @@ export const handleDownloadJSON = (operationDoc: CopilotDocV1.Operation) => {
     2,
   )
 
-  doTriggerDownloadJSON(json, `MAACopilot_${operationDoc.doc.title}.json`)
+  doTriggerDownloadJSON(json, `PRTSPlus_${operationDoc.doc.title}.json`)
 
   AppToaster.show({
     message: i18n.services.operation.json_downloaded,
@@ -50,7 +50,7 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
 
   try {
     const json = JSON.stringify(snakeCaseKeysUnicode(JSON.parse(resp.data!.content) as any), null, 2)
-    doTriggerDownloadJSON(json, `MAACopilot_${title}.json`)
+    doTriggerDownloadJSON(json, `PRTSPlus_${title}.json`)
     AppToaster.show({
       message: i18n.services.operation.json_downloaded,
       intent: 'success',

@@ -49,24 +49,9 @@ export const SOCIAL_CONFIG = [
     href: 'https://jq.qq.com/?_wv=1027&k=ElimpMzQ',
     labelKey: () => i18n.links.creator_group({ groupNumber: '1169188429' }),
   },
-  {
-    icon: <IconifyIcon icon={simpleIconsQQ} className="mr-2" fontSize="12px" />,
-    href: 'https://api.maa.plus/MaaAssistantArknights/api/qqgroup/index.html',
-    labelKey: i18nDefer.links.sharing_group,
-  },
 ]
 
 export const FRIENDLY_LINKS_CONFIG = [
-  {
-    icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
-    href: 'https://maa.plus',
-    labelKey: i18nDefer.links.official_site,
-  },
-  {
-    icon: <IconifyIcon icon={simpleIconsGitHub} className="mr-2" fontSize="12px" />,
-    href: 'https://github.com/MaaAssistantArknights/MaaAssistantArknights',
-    labelKey: i18nDefer.links.maa_repo,
-  },
   {
     icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
     href: 'https://map.ark-nights.com/',
@@ -79,7 +64,7 @@ export const FRIENDLY_LINKS_CONFIG = [
   },
   {
     icon: <BlueprintIcon icon="globe" className="mr-2" size={12} />,
-    href: 'https://maafw.xyz/',
-    labelKey: i18nDefer.links.maafw_site,
+    href: 'https://ark.yituliu.cn/',
+    labelKey: i18nDefer.links.yituliu_site,
   },
 ]

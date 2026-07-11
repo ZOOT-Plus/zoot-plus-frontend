@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "Maa Copilot Operation",
+  "title": "Copilot Operation",
   "properties": {
     "stage_name": {
       "$ref": "#/definitions/stage_name"
