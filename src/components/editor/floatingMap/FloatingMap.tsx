@@ -24,7 +24,7 @@ interface FloatingMapConfig {
 }
 
 const UID = 'floating-map'
-const STORAGE_KEY = `copilot-${UID}`
+const STORAGE_KEY = `zoot-plus-${UID}`
 
 const HEADER_CLASS = 'floating-map-header'
 

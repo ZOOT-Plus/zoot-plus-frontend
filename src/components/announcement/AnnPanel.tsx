@@ -20,7 +20,7 @@ export const AnnPanel: FC<AnnPanelProps> = ({ className, trigger }) => {
   const t = useTranslation()
   const { data, error } = useAnnouncement()
   const announcement = useMemo(() => (data ? parseAnnouncement(data) : undefined), [data])
-  const [lastNoticed, setLastNoticed] = useLazyStorage('copilot-last-noticed', 0)
+  const [lastNoticed, setLastNoticed] = useLazyStorage('zoot-plus-last-noticed', 0)
   const [displaySections, setDisplaySections] = useState<AnnouncementSection[]>()
 
   const [isOpen, setIsOpen] = useState<{ yes: boolean; manually: boolean }>()

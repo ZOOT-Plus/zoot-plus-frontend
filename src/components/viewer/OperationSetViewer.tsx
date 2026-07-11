@@ -142,7 +142,7 @@ export const OperationSetViewer: ComponentType<{
         title={
           <>
             <Icon icon="document" />
-            <span className="ml-2">{t.components.viewer.OperationSetViewer.maa_copilot_task_set}</span>
+            <span className="ml-2">{t.components.viewer.OperationSetViewer.task_set}</span>
 
             <div className="flex-1" />
 
@@ -162,7 +162,7 @@ export const OperationSetViewer: ComponentType<{
               icon="clipboard"
               text={t.components.viewer.OperationSetViewer.copy_secret_code}
               intent="primary"
-              onClick={() => copyShortCode(operationSet)}
+              onClick={() => copyShortCode({ id: operationSet.id, type: 'operation-set' })}
             />
           </>
         }

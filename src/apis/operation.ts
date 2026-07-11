@@ -70,7 +70,7 @@ export function useOperations({
           console.warn(e)
         }
 
-        if (content) {
+        if (content && (content.type === 'operation' || content.type === 'legacy')) {
           return [
             'operations',
             {

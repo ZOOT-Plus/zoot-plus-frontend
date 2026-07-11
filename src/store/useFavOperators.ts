@@ -9,7 +9,7 @@ export type FavOperator = Omit<Operator, (typeof operatorIgnoreKeyDic)[number]>
 
 export const operatorIgnoreKeyDic = ['id', '_id'] as const
 
-const favOperatorCoreAtom = atomWithStorage<FavOperator[]>('maa-copilot-fav-operator', [])
+const favOperatorCoreAtom = atomWithStorage<FavOperator[]>('zoot-plus-fav-operator', [])
 
 export const favOperatorAtom = atom(
   (get) => get(favOperatorCoreAtom),

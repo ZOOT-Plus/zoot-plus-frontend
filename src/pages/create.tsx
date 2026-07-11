@@ -56,7 +56,7 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
 
     const autosaveOptions: AutosaveOptions<CopilotDocV1.Operation> = useMemo(
       () => ({
-        key: 'maa-copilot-editor',
+        key: 'zoot-plus-editor',
         interval: 1000 * 60,
         limit: 20,
         shouldSave: (operation, archive) => isChangedSinceLastSave(operation, archive) && isDirty(operation),

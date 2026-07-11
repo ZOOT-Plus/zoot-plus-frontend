@@ -9,6 +9,7 @@ import { useSWRRefresh } from 'utils/swr'
 
 import { parseShortCode } from '../models/shortCode'
 import { authAtom } from '../store/auth'
+import { ApiError } from 'utils/error'
 
 export type OrderBy = 'views' | 'hot' | 'id'
 
@@ -104,12 +105,31 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
   if (keyword) {
     const shortCodeContent = parseShortCode(keyword)
 
-    if (shortCodeContent) {
+    // maa:// 旧代码无类型标记，作业集搜索按 id 直取（与旧行为一致）
+    if (
+      shortCodeContent &&
+      (shortCodeContent.type === 'operation-set' || shortCodeContent.type === 'legacy')
+    ) {
       id = shortCodeContent.id
     }
   }
 
-  const { data: operationSet } = useOperationSet({ id, suspense })
+  // 按短码查单个作业集时，后端在作业集不存在时返回 400 {"message":"作业集不存在"}。
+  // getSet 的 id 始终来自 parseShortCode（必为数字），唯一可能的 400 就是 not-found，
+  // 把它当空结果而不是加载失败，与作业列表体验一致。其它 ApiError（5xx 等）带
+  // status，不属 400，原样抛给错误边界，不再被静默吞掉。
+  const { data: operationSet } = useSWR(
+    id ? ['operationSet', id, 'search'] : null,
+    async () => {
+      try {
+        return await getOperationSet({ id: id! })
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 400) return null
+        throw e
+      }
+    },
+    { suspense },
+  )
 
   const listResponse = useOperationSets({
     keyword,
@@ -122,7 +142,7 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
 
   if (id) {
     return {
-      operationSets: [operationSet],
+      operationSets: operationSet ? [operationSet] : [],
       total: operationSet ? 1 : 0,
       isReachingEnd: true,
       setSize: noop,

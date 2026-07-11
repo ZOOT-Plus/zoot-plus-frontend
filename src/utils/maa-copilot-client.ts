@@ -159,7 +159,7 @@ function createConfiguration(options?: ApiOptions) {
               // ignore
             }
 
-            throw new ApiError(message)
+            throw new ApiError(message, response.status)
           }
 
           ;(response as ExtendedResponse).config = config
@@ -217,20 +217,20 @@ JSONApiResponse.prototype.value = async function value() {
   if (validateStatusCode === 'always' || requireData) {
     if (!isObject(result)) {
       console.error('response is not an object', result)
-      throw new ApiError(i18n.utils.maa_copilot_client.invalid_response)
+      throw new ApiError(i18n.utils.api_client.invalid_response)
     }
   }
 
   if (validateStatusCode === 'always' || (validateStatusCode === 'if-object' && isObject(result))) {
     if (result.statusCode !== 200) {
       console.error('response.statusCode is not 200', result)
-      throw new ApiError(result.message || i18n.utils.maa_copilot_client.server_error)
+      throw new ApiError(result.message || i18n.utils.api_client.server_error)
     }
   }
 
   if (requireData && (result.data === undefined || result.data === null)) {
     console.error('response.data is missing', result)
-    throw new ApiError(result.message || i18n.utils.maa_copilot_client.invalid_response)
+    throw new ApiError(result.message || i18n.utils.api_client.invalid_response)
   }
 
   return result

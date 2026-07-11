@@ -51,6 +51,21 @@ if (navigator.userAgent.includes('Win')) {
 
 clearOutdatedSwrCache()
 
+// 将 maa-copilot-* / copilot-* 的 localStorage 数据迁移到 zoot-plus-* 前缀
+;(function migrateStorageKeys() {
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i)
+    if (!key) continue
+    const newKey = key
+      .replace(/^maa-copilot-/, 'zoot-plus-')
+      .replace(/^copilot-/, 'zoot-plus-')
+    if (newKey !== key && localStorage.getItem(newKey) === null) {
+      localStorage.setItem(newKey, localStorage.getItem(key)!)
+      localStorage.removeItem(key)
+    }
+  }
+})()
+
 // v6 起 Blueprint 图标改为按需异步加载（dynamic import）。这里改用 'all' loader 并尽早
 // 触发一次性全量加载，尽量缩短图标缺失窗口。注意：与 v4 的同步内联不同，加载仍是异步的，
 // 首帧若早于图标 chunk 到达，可能短暂渲染空图标——这是 v6 的设计取舍，此处不阻塞首帧。

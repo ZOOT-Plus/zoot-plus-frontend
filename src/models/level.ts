@@ -6,7 +6,7 @@
  * 2. act1bossrush_01 / act1bossrush_tm01
  * 3. ro1_e_1_1 / ro1_n_1_1
  *
- * Only the first two kinds are supported in MAA Copilot.
+ * Only the first two kinds are supported in PRTS Plus.
  */
 import { i18n } from '../i18n/i18n'
 import { Level, OpDifficulty } from './operation'

@@ -5,7 +5,7 @@ import { FC, useState } from 'react'
 import { useController, useForm } from 'react-hook-form'
 
 import { useTranslation } from '../../../i18n/i18n'
-import { parseShortCode } from '../../../models/shortCode'
+import { parseShortCode, useNewShortCodeProtocol } from '../../../models/shortCode'
 import { formatError } from '../../../utils/error'
 import { FormField2 } from '../../FormField'
 
@@ -43,7 +43,8 @@ export const ShortCodeImporter: FC<{
 
       const shortCodeContent = parseShortCode(code)
 
-      if (!shortCodeContent) {
+      // 导入只处理作业：拒绝作业集代码（prts://s），兼容旧 maa:// 与 prts://
+      if (!shortCodeContent || shortCodeContent.type === 'operation-set') {
         throw new Error(t.components.editor.source.ShortCodeImporter.invalid_shortcode)
       }
 
@@ -98,7 +99,7 @@ export const ShortCodeImporter: FC<{
             description={t.components.editor.source.ShortCodeImporter.shortcode_description}
             error={errors.code}
           >
-            <InputGroup large placeholder="maa://..." value={value || ''} onChange={onChange} />
+            <InputGroup large placeholder={useNewShortCodeProtocol() ? 'prts://...' : 'maa://...'} value={value || ''} onChange={onChange} />
           </FormField2>
 
           <Button disabled={!isValid && !isDirty} intent="primary" loading={pending} type="submit" icon="import" large>
