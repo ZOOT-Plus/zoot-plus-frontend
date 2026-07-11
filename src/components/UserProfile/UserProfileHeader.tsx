@@ -2,7 +2,7 @@
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
+import { MaaUserInfo, MaaUserInfoRelationEnum } from 'zoot-plus-client'
 import { FC } from 'react'
 
 import { useFollowToggle } from '../../hooks/useFollowToggle'

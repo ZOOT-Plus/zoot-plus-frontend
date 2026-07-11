@@ -4,7 +4,7 @@ import { UseOperationsParams } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
 import { debounce } from 'lodash-es'
-import { MaaUserInfo } from 'maa-copilot-client'
+import { MaaUserInfo } from 'zoot-plus-client'
 import { ComponentType, useMemo, useState } from 'react'
 
 import { CardTitle } from 'components/CardTitle'

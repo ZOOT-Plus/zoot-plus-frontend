@@ -1,7 +1,7 @@
 import { Button, Checkbox, Tooltip } from '@blueprintjs/core'
 
 import { isEqual } from 'lodash-es'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { ComponentType, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useParams } from 'react-router-dom'

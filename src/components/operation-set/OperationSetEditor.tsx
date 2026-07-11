@@ -23,7 +23,7 @@ import {
   useRefreshOperationSets,
 } from 'apis/operation-set'
 import clsx from 'clsx'
-import { UpdateCopilotSetRequest } from 'maa-copilot-client'
+import { UpdateCopilotSetRequest } from 'zoot-plus-client'
 import { Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Controller, UseFormSetError, useForm } from 'react-hook-form'
 

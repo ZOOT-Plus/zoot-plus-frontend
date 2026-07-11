@@ -1,7 +1,7 @@
-﻿import { MaaUserInfo, MaaUserInfoRelationEnum, PagedDTOMaaUserInfo } from 'maa-copilot-client'
+﻿import { MaaUserInfo, MaaUserInfoRelationEnum, PagedDTOMaaUserInfo } from 'zoot-plus-client'
 import useSWRInfinite from 'swr/infinite'
 
-import { FollowApi } from '../utils/maa-copilot-client'
+import { FollowApi } from '../utils/zoot-plus-client'
 
 // ── Follow API Service ───────────────────────────────────────
 

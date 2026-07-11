@@ -2,7 +2,7 @@ import { Button, Card, Elevation, H4, H5, Icon, Tag, Tooltip } from '@blueprintj
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'

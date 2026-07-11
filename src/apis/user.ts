@@ -1,8 +1,8 @@
 ﻿import useSWR from 'swr'
 
-import { MaaUserInfo } from 'maa-copilot-client'
+import { MaaUserInfo } from 'zoot-plus-client'
 
-import { UserApi } from '../utils/maa-copilot-client'
+import { UserApi } from '../utils/zoot-plus-client'
 
 // ── User API Service ────────────────────────────────────────
 

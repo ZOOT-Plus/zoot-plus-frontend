@@ -1,12 +1,12 @@
 import { uniqBy } from 'lodash-es'
-import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'maa-copilot-client'
+import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'zoot-plus-client'
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
 import { toCopilotOperation } from 'models/converter'
 import { OpRatingType, Operation } from 'models/operation'
 import { ShortCodeContent, parseShortCode } from 'models/shortCode'
-import { OperationApi } from 'utils/maa-copilot-client'
+import { OperationApi } from 'utils/zoot-plus-client'
 import { useSWRRefresh } from 'utils/swr'
 
 export type OrderBy = 'views' | 'hot' | 'id'
@@ -181,20 +181,16 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
 }
 
 export async function createOperation(req: { content: string; status: CopilotSetStatus }) {
-  return (await new OperationApi().uploadCopilot({ copilotCUDRequest: req })).data
+  return (await new OperationApi().uploadCopilot({ uploadCopilotRequest: { ...req, type: 'PRTS' } })).data
 }
 
 export async function updateOperation(req: { id: number; content: string; status: CopilotSetStatus }) {
-  await new OperationApi().updateCopilot({ copilotCUDRequest: req })
+  await new OperationApi().updateCopilot({ uploadCopilotRequest: { ...req, type: 'PRTS' } })
 }
 
 export async function deleteOperation(req: { id: number }) {
   await new OperationApi().deleteCopilot({
-    copilotCUDRequest: {
-      content: '',
-      status: CopilotSetStatus.Public,
-      ...req,
-    },
+    copilotDeleteRequest: { id: req.id },
   })
 }
 

@@ -1,4 +1,4 @@
-import { UserApi } from 'utils/maa-copilot-client'
+import { UserApi } from 'utils/zoot-plus-client'
 
 export async function sendRegistrationEmail(req: { email: string }) {
   await new UserApi({ sendToken: 'never' }).sendRegistrationToken({

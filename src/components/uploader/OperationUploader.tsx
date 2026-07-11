@@ -13,7 +13,7 @@ import {
 
 import { useLevels } from 'apis/level'
 import { createOperation } from 'apis/operation'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { ComponentType, useState } from 'react'
 import { useList } from 'react-use'
 

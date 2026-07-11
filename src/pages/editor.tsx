@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { useCallback, useLayoutEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 

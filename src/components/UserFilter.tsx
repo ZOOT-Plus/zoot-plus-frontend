@@ -2,7 +2,7 @@ import { Button, Classes, IconSize, MenuItem, Spinner } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import { MaaUserInfo } from 'maa-copilot-client'
+import { MaaUserInfo } from 'zoot-plus-client'
 import { FC, useEffect } from 'react'
 
 import { useUserSearch } from '../apis/user'

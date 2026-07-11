@@ -23,7 +23,7 @@ import { ErrorBoundary } from '@sentry/react'
 import { banComments, deleteOperation, rateOperation, useOperation, useRefreshOperations } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
-import { BanCommentsStatusEnum, CopilotSetStatus } from 'maa-copilot-client'
+import { BanCommentsStatusEnum, CopilotSetStatus } from 'zoot-plus-client'
 import { ComponentType, FC, useEffect, useState } from 'react'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
 

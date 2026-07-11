@@ -1,4 +1,4 @@
-import { ArkLevelInfo, CopilotInfo } from 'maa-copilot-client'
+import { ArkLevelInfo, CopilotInfo } from 'zoot-plus-client'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 

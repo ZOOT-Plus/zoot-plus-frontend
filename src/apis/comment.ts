@@ -1,7 +1,7 @@
-import { CommentsAreaInfo, QueriesCommentsAreaRequest } from 'maa-copilot-client'
+import { CommentsAreaInfo, QueriesCommentsAreaRequest } from 'zoot-plus-client'
 import useSWRInfinite from 'swr/infinite'
 
-import { CommentApi } from 'utils/maa-copilot-client'
+import { CommentApi } from 'utils/zoot-plus-client'
 
 import { i18n } from '../i18n/i18n'
 import { CommentRating } from '../models/comment'
