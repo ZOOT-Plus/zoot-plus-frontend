@@ -120,7 +120,7 @@ const CardActions = ({ className, operationSet }: { className?: string; operatio
           icon="clipboard"
           onClick={(e) => {
             e.stopPropagation()
-            copyShortCode(operationSet)
+            copyShortCode({ id: operationSet.id, type: 'operation-set' })
           }}
         />
       </Tooltip>

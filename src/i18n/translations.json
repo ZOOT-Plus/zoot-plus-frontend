@@ -3059,8 +3059,8 @@
           "en": "Action Sequence"
         },
         "coordinate_hint": {
-          "cn": "坐标可在地图站（<a href=\"https://map.ark-nights.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-500 hover:underline\">PRTS.Map</a>）中查看，需在设置中将坐标展示改为 MAA 体系",
-          "en": "Coordinates can be viewed on <a href=\"https://map.ark-nights.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-500 hover:underline\">PRTS.Map</a>; change coordinate display to MAA in settings"
+          "cn": "坐标可在地图站（<a href=\"https://map.ark-nights.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-500 hover:underline\">PRTS.Map</a>）中查看，需在设置中将坐标展示改为客户端体系",
+          "en": "Coordinates can be viewed on <a href=\"https://map.ark-nights.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-500 hover:underline\">PRTS.Map</a>; change coordinate display to client system in settings"
         },
         "no_actions": {
           "cn": "暂无动作",

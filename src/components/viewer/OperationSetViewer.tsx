@@ -162,7 +162,7 @@ export const OperationSetViewer: ComponentType<{
               icon="clipboard"
               text={t.components.viewer.OperationSetViewer.copy_secret_code}
               intent="primary"
-              onClick={() => copyShortCode(operationSet)}
+              onClick={() => copyShortCode({ id: operationSet.id, type: 'operation-set' })}
             />
           </>
         }

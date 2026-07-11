@@ -329,7 +329,7 @@ export const OperationViewer: ComponentType<{
                 icon="clipboard"
                 text={t.components.viewer.OperationViewer.copy_secret_code}
                 intent="primary"
-                onClick={() => copyShortCode(operation)}
+                onClick={() => copyShortCode({ id: operation.id, type: 'operation' })}
               />
             </div>
           </>

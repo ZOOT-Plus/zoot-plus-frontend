@@ -290,7 +290,7 @@ const CardActions = ({
         placement="bottom"
         content={<div className="max-w-sm dark:text-slate-900">{t.components.OperationCard.copy_secret_code}</div>}
       >
-        <Button small icon="clipboard" onClick={() => copyShortCode(operation)} />
+        <Button small icon="clipboard" onClick={() => copyShortCode({ id: operation.id, type: 'operation' })} />
       </Tooltip>
       <Tooltip
         placement="bottom"
