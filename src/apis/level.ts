@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 
-import { LevelApi } from 'utils/maa-copilot-client'
+import { LevelApi } from 'utils/zoot-plus-client'
 
 const ONE_DAY = 1000 * 60 * 60 * 24
 const emptyArray = []

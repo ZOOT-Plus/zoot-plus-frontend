@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { useCallback, useLayoutEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -15,6 +15,7 @@ import { toEditorOperation } from '../components/editor2/reconciliation'
 import { operationLooseSchema } from '../components/editor2/validation/schema'
 import { editorValidationAtom } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
+import { CopilotType } from '../models/operation'
 import { formatError } from '../utils/error'
 import { wrapErrorMessage } from '../utils/wrapErrorMessage'
 
@@ -44,6 +45,9 @@ export const EditorPage = withSuspensable(() => {
         operation: toEditorOperation(operationLooseSchema.parse(JSON.parse(apiOperation.content))),
         metadata: {
           visibility: apiOperation.status === CopilotSetStatus.Public ? 'public' : 'private',
+          type: (apiOperation.type as CopilotType) ?? CopilotType.PRTS,
+          typeLocked: true,
+          videoUrl: apiOperation.videoUrl ?? '',
         },
       })
     } else {
@@ -64,15 +68,33 @@ export const EditorPage = withSuspensable(() => {
           return false
         }
         const operation = result.data
+        const metadata = get(editorAtoms.metadata)
+        const type = metadata.type
+
+        if (type === CopilotType.VIDEO && !metadata.videoUrl.trim()) {
+          AppToaster.show({
+            message: i18n.pages.editor.video_url_required,
+            intent: 'danger',
+          })
+          return false
+        }
+
         const status =
-          get(editorAtoms.metadata).visibility === 'public' ? CopilotSetStatus.Public : CopilotSetStatus.Private
+          metadata.visibility === 'public' ? CopilotSetStatus.Public : CopilotSetStatus.Private
+
+        // VIDEO 类型把视频链接写进 content；PRTS 类型不带该字段
+        const content =
+          type === CopilotType.VIDEO
+            ? JSON.stringify({ ...operation, video_url: metadata.videoUrl.trim() })
+            : JSON.stringify(operation)
 
         const upload = async () => {
           if (id) {
             await updateOperation({
               id,
-              content: JSON.stringify(operation),
+              content,
               status,
+              type,
             })
             AppToaster.show({
               message: i18n.pages.editor.edit.success,
@@ -81,8 +103,9 @@ export const EditorPage = withSuspensable(() => {
             navigate(`/?op=${id}`)
           } else {
             const newId = await createOperation({
-              content: JSON.stringify(operation),
+              content,
               status,
+              type,
             })
             AppToaster.show({
               message: i18n.pages.editor.create.success,

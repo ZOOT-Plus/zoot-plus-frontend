@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { noop } from 'lodash-es'
-import { CopilotSetQuery, CopilotSetStatus, CopilotSetUpdateReq, PagedDTOCopilotSetListRes } from 'maa-copilot-client'
+import { CopilotSetQuery, CopilotSetStatus, CopilotSetUpdateReq, PagedDTOCopilotSetListRes } from 'zoot-plus-client'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
-import { OperationSetApi } from 'utils/maa-copilot-client'
+import { OperationSetApi } from 'utils/zoot-plus-client'
 import { useSWRRefresh } from 'utils/swr'
 
 import { parseShortCode } from '../models/shortCode'

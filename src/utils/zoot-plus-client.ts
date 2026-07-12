@@ -9,7 +9,7 @@ import {
   JSONApiResponse,
   UserFollowApi,
   querystring,
-} from 'maa-copilot-client'
+} from 'zoot-plus-client'
 
 import { ApiError, InvalidTokenError, NetworkError, TokenExpiredError, UnauthorizedError } from 'utils/error'
 import { getDefaultStore } from 'jotai'
@@ -19,7 +19,7 @@ import { AppToaster } from '../components/Toaster'
 import { i18n } from '../i18n/i18n'
 import { authAtom } from '../store/auth'
 
-declare module 'maa-copilot-client' {
+declare module 'zoot-plus-client' {
   interface Configuration {
     options?: ApiOptions
   }

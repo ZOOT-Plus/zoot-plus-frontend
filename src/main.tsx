@@ -1,7 +1,6 @@
 import '@blueprintjs/core/lib/css/blueprint.css'
-import '@blueprintjs/icons/lib/css/blueprint-icons.css'
+import './styles/blueprint-icons.css'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
-import { Icons } from '@blueprintjs/icons'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
@@ -66,11 +65,15 @@ clearOutdatedSwrCache()
   }
 })()
 
-// v6 起 Blueprint 图标改为按需异步加载（dynamic import）。这里改用 'all' loader 并尽早
-// 触发一次性全量加载，尽量缩短图标缺失窗口。注意：与 v4 的同步内联不同，加载仍是异步的，
-// 首帧若早于图标 chunk 到达，可能短暂渲染空图标——这是 v6 的设计取舍，此处不阻塞首帧。
-Icons.setLoaderOptions({ loader: 'all' })
-void Icons.loadAll()
+// v6 起 Blueprint 图标改为按需异步加载（dynamic import）。这里不再在启动期 loadAll，
+// 改用默认 split-by-size loader：不在 boot 阶段预取整组 path 数据，而是首个 16px 图标
+// 渲染时才拉 16px chunk、首个 20px 图标渲染时才拉 20px chunk。不用大图标的页面可省掉
+// ~305KB 的 20px path 数据。首帧若早于对应 chunk 到达，由 blueprint-icons.css 的 woff2
+// 字体兜底渲染字形，加载完成后 Icon 组件自动切到内联 SVG——不阻塞首帧。
+// 注意：Rolldown 对带运行时变量的 dynamic import(`paths/${name}.js`) 不做按图标 tree-shaking，
+// 会把整组同尺寸图标合并进一个 chunk，故无法只下载用到的图标——要达到该效果需手维护静态
+// 图标注册表，但本仓库多处图标名是数据驱动（icon={icon}/{type.icon}），静态注册脆弱，
+// 取舍后选择当前的「按尺寸懒加载」方案。
 
 const CreatePageLazy = withSuspensable(lazy(() => import('./pages/create').then((m) => ({ default: m.CreatePage }))))
 const EditorPageLazy = withSuspensable(lazy(() => import('./pages/editor').then((m) => ({ default: m.EditorPage }))))

@@ -1,7 +1,7 @@
 ﻿import { Card, H4 } from '@blueprintjs/core'
 
 import { useAtomValue } from 'jotai'
-import { MaaUserInfo } from 'maa-copilot-client'
+import { MaaUserInfo } from 'zoot-plus-client'
 import { FC, useState } from 'react'
 
 import { useTranslation } from '../../i18n/i18n'

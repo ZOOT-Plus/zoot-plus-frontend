@@ -2,13 +2,13 @@ import { Button, Card, Elevation, H4, H5, Icon, Tag, Tooltip } from '@blueprintj
 
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { copyShortCode, handleLazyDownloadJSON } from 'services/operation'
 
 import { RelativeTime } from 'components/RelativeTime'
 import { AddToOperationSetButton } from 'components/operation-set/AddToOperationSet'
 import { OperationRating } from 'components/viewer/OperationRating'
-import { OpDifficulty, Operation } from 'models/operation'
+import { CopilotType, OpDifficulty, Operation } from 'models/operation'
 
 import { useLevels } from '../apis/level'
 import { languageAtom, useTranslation } from '../i18n/i18n'
@@ -55,6 +55,16 @@ export const NeoOperationCard = ({
                 <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                   {operation.parsedContent.doc.title}
                 </span>
+                {operation.type === CopilotType.VIDEO && (
+                  <Tag minimal intent="success" className="ml-2 shrink-0 font-normal">
+                    {t.components.OperationCard.type_video}
+                  </Tag>
+                )}
+                {operation.type === CopilotType.PRTS && (
+                  <Tag minimal className="ml-2 shrink-0 font-normal opacity-75">
+                    {t.components.OperationCard.type_prts}
+                  </Tag>
+                )}
                 {operation.status === CopilotSetStatus.Private && (
                   <Tag minimal className="ml-2 shrink-0 font-normal opacity-75">
                     {t.components.OperationCard.private}
@@ -147,6 +157,16 @@ export const OperationCard = ({ operation }: { operation: Operation }) => {
                 <div className="flex gap-2">
                   <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
                     {operation.parsedContent.doc.title}
+                    {operation.type === CopilotType.VIDEO && (
+                      <Tag minimal intent="success" className="ml-2 font-normal">
+                        {t.components.OperationCard.type_video}
+                      </Tag>
+                    )}
+                    {operation.type === CopilotType.PRTS && (
+                      <Tag minimal className="ml-2 font-normal opacity-75">
+                        {t.components.OperationCard.type_prts}
+                      </Tag>
+                    )}
                     {operation.status === CopilotSetStatus.Private && (
                       <Tag minimal className="ml-2 font-normal opacity-75">
                         {t.components.OperationCard.private}

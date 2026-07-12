@@ -1,7 +1,7 @@
 ﻿import { Button, ButtonGroup } from '@blueprintjs/core'
 
 import { useAtom } from 'jotai'
-import { MaaUserInfoRelationEnum } from 'maa-copilot-client'
+import { MaaUserInfoRelationEnum } from 'zoot-plus-client'
 import { ComponentType, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 

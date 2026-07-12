@@ -1,5 +1,5 @@
 import { atomWithStorage } from 'jotai/utils'
-import { MaaLoginRsp } from 'maa-copilot-client'
+import { MaaLoginRsp } from 'zoot-plus-client'
 
 export interface AuthState {
   token?: string

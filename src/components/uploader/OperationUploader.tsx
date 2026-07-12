@@ -13,7 +13,7 @@ import {
 
 import { useLevels } from 'apis/level'
 import { createOperation } from 'apis/operation'
-import { CopilotSetStatus } from 'maa-copilot-client'
+import { CopilotSetStatus } from 'zoot-plus-client'
 import { ComponentType, useState } from 'react'
 import { useList } from 'react-use'
 
@@ -23,6 +23,7 @@ import { DrawerLayout } from 'components/drawer/DrawerLayout'
 
 import { useTranslation } from '../../i18n/i18n'
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import { CopilotType } from '../../models/operation'
 import { formatError } from '../../utils/error'
 import { parseOperationFile, patchOperation, validateOperation } from './utils'
 
@@ -106,6 +107,7 @@ export const OperationUploader: ComponentType = withSuspensable(() => {
           createOperation({
             content: JSON.stringify(file.operation),
             status: operationStatus,
+            type: CopilotType.PRTS,
           })
             .then(() => {
               successCount++

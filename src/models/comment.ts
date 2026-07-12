@@ -1,4 +1,4 @@
-import { CommentsInfo, SubCommentsInfo } from 'maa-copilot-client'
+import { CommentsInfo, SubCommentsInfo } from 'zoot-plus-client'
 
 export type CommentInfo = MainCommentInfo | SubCommentInfo
 export type MainCommentInfo = CommentsInfo

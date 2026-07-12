@@ -3081,6 +3081,26 @@
         "grid_off": {
           "cn": "关",
           "en": "Off"
+        },
+        "type_video": {
+          "cn": "视频",
+          "en": "Video"
+        },
+        "video_guide": {
+          "cn": "攻略视频",
+          "en": "Video Guide"
+        },
+        "watch_video": {
+          "cn": "观看视频",
+          "en": "Watch Video"
+        },
+        "no_video": {
+          "cn": "暂无视频链接",
+          "en": "No Video Link"
+        },
+        "type_prts": {
+          "cn": "PRTS",
+          "en": "PRTS"
         }
       }
     },
@@ -3236,6 +3256,14 @@
       "add_to_job_set": {
         "cn": "添加到作业集",
         "en": "Add to Job Set"
+      },
+      "type_video": {
+        "cn": "视频",
+        "en": "Video"
+      },
+      "type_prts": {
+        "cn": "PRTS",
+        "en": "PRTS"
       }
     },
     "OperationList": {
@@ -3308,6 +3336,18 @@
       "views": {
         "cn": "访问量",
         "en": "Views"
+      },
+      "type_all": {
+        "cn": "全部",
+        "en": "All"
+      },
+      "type_prts": {
+        "cn": "PRTS",
+        "en": "PRTS"
+      },
+      "type_video": {
+        "cn": "视频",
+        "en": "Videos"
       }
     },
     "OperationSetCard": {
@@ -3510,6 +3550,40 @@
       "operations": {
         "cn": "作业",
         "en": "Jobs"
+      }
+    },
+    "CopilotTypePicker": {
+      "type_label": {
+        "cn": "作业类型",
+        "en": "Job Type"
+      },
+      "type_prts": {
+        "cn": "动作序列",
+        "en": "Action Sequence"
+      },
+      "type_video": {
+        "cn": "攻略视频",
+        "en": "Video Guide"
+      },
+      "immutable_hint": {
+        "cn": "类型创建后不可更改，切换会清除对应的动作序列 / 视频链接。",
+        "en": "Type cannot be changed after creation. Switching will clear the corresponding action sequence / video link."
+      },
+      "immutable_locked": {
+        "cn": "类型创建后不可更改。",
+        "en": "Type cannot be changed after creation."
+      },
+      "video_url": {
+        "cn": "视频链接",
+        "en": "Video URL"
+      },
+      "video_url_placeholder": {
+        "cn": "如 https://www.bilibili.com/video/...",
+        "en": "e.g. https://www.bilibili.com/video/..."
+      },
+      "video_url_helper": {
+        "cn": "玩家可通过此链接观看攻略视频。",
+        "en": "Players can watch the guide via this link."
       }
     }
   },
@@ -4063,6 +4137,18 @@
       "private_task_description": {
         "cn": "私有作业：其他人无法在列表中看见，但可以通过神秘代码访问",
         "en": "Private Job: Others won't see it in lists, but can be accessed via secret code"
+      },
+      "video_url_required": {
+        "cn": "请填写视频链接",
+        "en": "Please fill in the video link"
+      },
+      "switch_to_video_warning": {
+        "cn": "切换为攻略视频将清除已添加的动作序列，确定继续吗？",
+        "en": "Switching to Video Guide will clear the added action sequence. Continue?"
+      },
+      "switch_to_prts_warning": {
+        "cn": "切换为动作序列将清除视频链接，确定继续吗？",
+        "en": "Switching to Action Sequence will clear the video link. Continue?"
       }
     },
     "editor": {
@@ -4101,6 +4187,10 @@
       "validation_error": {
         "cn": "作业内容存在错误，请检查",
         "en": "Job content has errors, please check"
+      },
+      "video_url_required": {
+        "cn": "请填写视频链接",
+        "en": "Please fill in the video link"
       }
     },
     "about": {

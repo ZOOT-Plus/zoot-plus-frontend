@@ -1,5 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
-import { CopilotInfo } from 'maa-copilot-client'
+import { CopilotInfo } from 'zoot-plus-client'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 

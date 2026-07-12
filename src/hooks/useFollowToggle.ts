@@ -1,7 +1,7 @@
 import { Intent } from '@blueprintjs/core'
 
 import { useAtomValue } from 'jotai'
-import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
+import { MaaUserInfo, MaaUserInfoRelationEnum } from 'zoot-plus-client'
 import { useCallback, useEffect, useState } from 'react'
 import { useSWRConfig } from 'swr'
 

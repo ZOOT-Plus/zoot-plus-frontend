@@ -1,6 +1,6 @@
 import { Button, Card } from '@blueprintjs/core'
 
-import { MaaUserInfo, MaaUserInfoRelationEnum } from 'maa-copilot-client'
+import { MaaUserInfo, MaaUserInfoRelationEnum } from 'zoot-plus-client'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 

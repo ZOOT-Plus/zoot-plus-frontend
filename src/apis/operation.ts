@@ -1,12 +1,12 @@
 import { uniqBy } from 'lodash-es'
-import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'maa-copilot-client'
+import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'zoot-plus-client'
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
 
 import { toCopilotOperation } from 'models/converter'
-import { OpRatingType, Operation } from 'models/operation'
+import { CopilotType, OpRatingType, Operation } from 'models/operation'
 import { ShortCodeContent, parseShortCode } from 'models/shortCode'
-import { OperationApi } from 'utils/maa-copilot-client'
+import { OperationApi } from 'utils/zoot-plus-client'
 import { useSWRRefresh } from 'utils/swr'
 
 export type OrderBy = 'views' | 'hot' | 'id'
@@ -26,6 +26,8 @@ export interface UseOperationsParams {
   operationIds?: number[]
   uploaderId?: string
   onlyFollowing?: boolean
+  /** 仅查询指定类型的作业；不传则返回全部 */
+  type?: CopilotType
 
   disabled?: boolean
   suspense?: boolean
@@ -42,6 +44,7 @@ export function useOperations({
   operationIds,
   uploaderId,
   onlyFollowing,
+  type,
   disabled,
   suspense,
   revalidateFirstPage,
@@ -95,6 +98,7 @@ export function useOperations({
           copilotIds: operationIds,
           uploaderId,
           onlyFollowing,
+          type,
         } satisfies QueriesCopilotRequest,
       ]
     },
@@ -180,21 +184,26 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   }
 }
 
-export async function createOperation(req: { content: string; status: CopilotSetStatus }) {
-  return (await new OperationApi().uploadCopilot({ copilotCUDRequest: req })).data
+export async function createOperation(req: {
+  content: string
+  status: CopilotSetStatus
+  type: CopilotType
+}) {
+  return (await new OperationApi().uploadCopilot({ uploadCopilotRequest: { ...req } })).data
 }
 
-export async function updateOperation(req: { id: number; content: string; status: CopilotSetStatus }) {
-  await new OperationApi().updateCopilot({ copilotCUDRequest: req })
+export async function updateOperation(req: {
+  id: number
+  content: string
+  status: CopilotSetStatus
+  type: CopilotType
+}) {
+  await new OperationApi().updateCopilot({ uploadCopilotRequest: { ...req } })
 }
 
 export async function deleteOperation(req: { id: number }) {
   await new OperationApi().deleteCopilot({
-    copilotCUDRequest: {
-      content: '',
-      status: CopilotSetStatus.Public,
-      ...req,
-    },
+    copilotDeleteRequest: { id: req.id },
   })
 }
 

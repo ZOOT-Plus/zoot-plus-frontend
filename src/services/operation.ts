@@ -4,7 +4,7 @@ import { i18n } from '../i18n/i18n'
 import { CopilotDocV1 } from '../models/copilot.schema'
 import { ShortCodeContent, toShortCode } from '../models/shortCode'
 import { formatError } from '../utils/error'
-import { OperationApi } from '../utils/maa-copilot-client'
+import { OperationApi } from '../utils/zoot-plus-client'
 import { snakeCaseKeysUnicode } from '../utils/object'
 import { wrapErrorMessage } from '../utils/wrapErrorMessage'
 
