@@ -7,6 +7,7 @@ import { CopilotDocV1 } from '../../../models/copilot.schema'
 import { AppToaster } from '../../Toaster'
 import { FileImporter } from './FileImporter'
 import { ShortCodeImporter } from './ShortCodeImporter'
+import { writeTextToClipboard } from 'utils/clipboard'
 
 interface SourceEditorHeaderProps {
   text: string
@@ -23,7 +24,7 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange
   }
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(text)
+    writeTextToClipboard(text)
 
     AppToaster.show({
       message: t.components.editor.source.SourceEditorHeader.json_copied,

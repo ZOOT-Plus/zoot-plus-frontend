@@ -7,6 +7,7 @@ import { formatError } from '../utils/error'
 import { OperationApi } from '../utils/zoot-plus-client'
 import { snakeCaseKeysUnicode } from '../utils/object'
 import { wrapErrorMessage } from '../utils/wrapErrorMessage'
+import { writeTextToClipboard } from 'utils/clipboard'
 
 const doTriggerDownloadJSON = (content: string, filename: string) => {
   const blob = new Blob([content], {
@@ -70,7 +71,7 @@ export const handleLazyDownloadJSON = async (id: number, title: string) => {
 export const copyShortCode = async (target: ShortCodeContent) => {
   try {
     const shortCode = toShortCode(target)
-    navigator.clipboard.writeText(shortCode)
+    writeTextToClipboard(shortCode)
 
     AppToaster.show({
       message: i18n.services.operation.shortcode_copied,
