@@ -2199,6 +2199,20 @@
       ]
     },
     {
+      "id": "char_4230_mcnist",
+      "prof": "TANK",
+      "subProf": "shotprotector",
+      "name_en": "Mechanist",
+      "name": "机械师",
+      "alias": "jixieshi jxs 機械師",
+      "rarity": 6,
+      "alt_name": "Mechanist",
+      "modules": [
+        "",
+        "A"
+      ]
+    },
+    {
       "id": "token_10004_otter_motter",
       "prof": "TOKEN",
       "subProf": "notchar1",
@@ -2350,6 +2364,16 @@
         "",
         "X"
       ]
+    },
+    {
+      "id": "token_10069_mcnist_mcgraf",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Structural Principle",
+      "name": "结构性原理",
+      "alias": "jiegouxingyuanli jgxyl 結構性原理",
+      "rarity": 0,
+      "alt_name": "Structural Principle"
     },
     {
       "id": "char_347_jaksel",
@@ -4049,7 +4073,7 @@
       "id": "token_10064_wang_stone1",
       "prof": "TOKEN",
       "subProf": "notchar1",
-      "name_en": "stones",
+      "name_en": "Stone",
       "name": "棋子",
       "alias": "qizi qz 棋子",
       "rarity": 0,
