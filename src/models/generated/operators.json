@@ -81,6 +81,16 @@
       "alt_name": "Blazing Sun"
     },
     {
+      "id": "token_10071_aglna2_agairp",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "\"See you soon!\"",
+      "name": "“一会儿见！”",
+      "alias": "yihuierjian！ yihuierxian！ yikuaierjian！ yikuaierxian！ yhej！ yhex！ ykej！ ykex！ “一會兒見！” 一會兒見！",
+      "rarity": 0,
+      "alt_name": "\"See you soon!\""
+    },
+    {
       "id": "token_10061_nasti_nstbld",
       "prof": "TOKEN",
       "subProf": "notchar1",
@@ -458,7 +468,8 @@
       "modules": [
         "",
         "X",
-        "Y"
+        "Y",
+        "A"
       ]
     },
     {
@@ -1347,7 +1358,8 @@
       "modules": [
         "",
         "X",
-        "Y"
+        "Y",
+        "A"
       ]
     },
     {
@@ -2277,6 +2289,20 @@
       "modules": [
         "",
         "Y"
+      ]
+    },
+    {
+      "id": "char_4237_jcinta",
+      "prof": "PIONEER",
+      "subProf": "bearer",
+      "name_en": "Jacinta",
+      "name": "嘉辛塔",
+      "alias": "jiaxinta jxt 嘉辛塔",
+      "rarity": 5,
+      "alt_name": "Jacinta",
+      "modules": [
+        "",
+        "X"
       ]
     },
     {
@@ -4356,6 +4382,20 @@
       ]
     },
     {
+      "id": "char_4235_thumpy",
+      "prof": "TANK",
+      "subProf": "primprotector",
+      "name_en": "Thumpy",
+      "name": "珊比",
+      "alias": "shanbi sb 珊比",
+      "rarity": 6,
+      "alt_name": "Thumpy",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
       "id": "char_457_blitz",
       "prof": "TANK",
       "subProf": "shotprotector",
@@ -4615,6 +4655,20 @@
       "modules": [
         "",
         "Y"
+      ]
+    },
+    {
+      "id": "char_4236_tmslot",
+      "prof": "CASTER",
+      "subProf": "funnel",
+      "name_en": "Timeslot",
+      "name": "时隙",
+      "alias": "shixi sx 時隙",
+      "rarity": 5,
+      "alt_name": "Timeslot",
+      "modules": [
+        "",
+        "X"
       ]
     },
     {
@@ -6471,6 +6525,16 @@
         "",
         "X"
       ]
+    },
+    {
+      "id": "char_1015_aglna2",
+      "prof": "SPECIAL",
+      "subProf": "skywalker",
+      "name_en": "Angelina the Mellow Wish",
+      "name": "予愿安洁莉娜",
+      "alias": "yuyuananjielina yuyuananjielinuo yyajln 予願安潔莉娜",
+      "rarity": 6,
+      "alt_name": "Angelina the Mellow Wish"
     },
     {
       "id": "char_109_fmout",
