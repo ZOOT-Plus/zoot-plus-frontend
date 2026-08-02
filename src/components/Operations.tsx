@@ -185,9 +185,6 @@ export const Operations: ComponentType = withSuspensable(() => {
                 </ButtonGroup>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 mt-2">
-              <OperatorMatcher onChange={setOperatorMatcher} />
-            </div>
           </>
         )}
 
@@ -230,6 +227,9 @@ export const Operations: ComponentType = withSuspensable(() => {
             />
           </div>
         )}
+        <div className="flex flex-wrap items-center gap-2 mt-2">
+          <OperatorMatcher onChange={setOperatorMatcher} />
+        </div>
       </Card>
 
       <div className="tabular-nums">
@@ -243,7 +243,9 @@ export const Operations: ComponentType = withSuspensable(() => {
             revalidateFirstPage={queryParams.orderBy !== 'hot'}
           />
         )}
-        {tab === 'operationSet' && <OperationSetList {...queryParams} creatorId={queryParams.uploaderId} />}
+        {tab === 'operationSet' && (
+          <OperationSetList {...queryParams} creatorId={queryParams.uploaderId} operatorMatcher={operatorMatcher} />
+        )}
       </div>
     </>
   )
