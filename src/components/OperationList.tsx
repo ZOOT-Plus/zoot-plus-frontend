@@ -2,11 +2,12 @@ import { Button, Callout, NonIdealState, Tooltip } from '@blueprintjs/core'
 
 import { UseOperationsParams, useOperations } from 'apis/operation'
 import { useAtomValue } from 'jotai'
-import { ComponentType, ReactNode, useEffect, useState } from 'react'
+import { ComponentType, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
+import { OperatorMatcherFilter, getOperationMatchResult } from '../models/operatorMatcher'
 import { Operation } from '../models/operation'
 import { NeoOperationCard, OperationCard } from './OperationCard'
 import { withSuspensable } from './Suspensable'
@@ -15,10 +16,11 @@ import { AddToOperationSetButton } from './operation-set/AddToOperationSet'
 interface OperationListProps extends UseOperationsParams {
   multiselect?: boolean
   onUpdate?: (params: { total: number }) => void
+  operatorMatcher?: OperatorMatcherFilter
 }
 
 export const OperationList: ComponentType<OperationListProps> = withSuspensable(
-  ({ multiselect, onUpdate, ...params }) => {
+  ({ multiselect, onUpdate, operatorMatcher, ...params }) => {
     const t = useTranslation()
     const neoLayout = useAtomValue(neoLayoutAtom)
 
@@ -30,9 +32,45 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
     // make TS happy: we got Suspense out there
     if (!operations) throw new Error('unreachable')
 
+    const resolvedOperations = useMemo(
+      () =>
+        operations.map((operation) => ({
+          operation,
+          match: operatorMatcher ? getOperationMatchResult(operation, operatorMatcher.ownedOperators) : undefined,
+        })),
+      [operations, operatorMatcher],
+    )
+    const visibleOperations = useMemo(
+      () =>
+        operatorMatcher
+          ? resolvedOperations.filter(({ match }) => match && operatorMatcher.modes.includes(match.mode))
+          : resolvedOperations,
+      [operatorMatcher, resolvedOperations],
+    )
+    const autoLoadCount = useRef(0)
+
     useEffect(() => {
       onUpdate?.({ total })
     }, [total, onUpdate])
+
+    useEffect(() => {
+      autoLoadCount.current = 0
+    }, [operatorMatcher])
+
+    useEffect(() => {
+      if (
+        !operatorMatcher ||
+        visibleOperations.length > 0 ||
+        isReachingEnd ||
+        isValidating ||
+        autoLoadCount.current >= 2
+      ) {
+        return
+      }
+
+      autoLoadCount.current += 1
+      void setSize((size) => size + 1)
+    }, [isReachingEnd, isValidating, operatorMatcher, setSize, visibleOperations.length])
 
     const [selectedOperations, setSelectedOperations] = useState<Operation[]>([])
     const updateSelection = (add: Operation[], remove: Operation[]) => {
@@ -58,7 +96,7 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
           gridTemplateColumns: 'repeat(auto-fill, minmax(20rem, 1fr)',
         }}
       >
-        {operations.map((operation) => (
+        {visibleOperations.map(({ operation }) => (
           <NeoOperationCard
             operation={operation}
             key={operation.id}
@@ -70,7 +108,7 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
       </ul>
     ) : (
       <ul>
-        {operations.map((operation) => (
+        {visibleOperations.map(({ operation }) => (
           <OperationCard operation={operation} key={operation.id} />
         ))}
       </ul>
@@ -103,7 +141,11 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
             </details>
             <div className="absolute top-2 right-2 flex">
               <Tooltip content={t.components.OperationList.only_loaded_items} placement="top">
-                <Button minimal icon="tick" onClick={() => updateSelection(operations, [])}>
+                <Button
+                  minimal
+                  icon="tick"
+                  onClick={() => updateSelection(visibleOperations.map(({ operation }) => operation), [])}
+                >
                   {t.components.OperationList.select_all}
                 </Button>
               </Tooltip>
@@ -127,7 +169,7 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
 
         {items}
 
-        {isReachingEnd && operations.length === 0 && (
+        {isReachingEnd && visibleOperations.length === 0 && (
           <NonIdealState
             icon="slash"
             title={t.components.OperationList.no_jobs_found}
@@ -135,7 +177,7 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
           />
         )}
 
-        {isReachingEnd && operations.length !== 0 && (
+        {isReachingEnd && visibleOperations.length !== 0 && (
           <div className="mt-8 w-full tracking-wider text-center select-none text-slate-500">
             {t.components.OperationList.reached_bottom}
           </div>
@@ -156,6 +198,6 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
     )
   },
   {
-    retryOnChange: ['orderBy', 'keyword', 'levelKeyword', 'operator'],
+    retryOnChange: ['orderBy', 'keyword', 'levelKeyword', 'operator', 'operatorMatcher'],
   },
 )

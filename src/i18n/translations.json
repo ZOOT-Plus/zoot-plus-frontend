@@ -3420,6 +3420,92 @@
         "en": "Remember Selection"
       }
     },
+    "OperatorMatcher": {
+      "match_operators": {
+        "cn": "干员匹配设置",
+        "en": "Operator Match Settings"
+      },
+      "dialog_title": {
+        "cn": "干员匹配设置",
+        "en": "Operator Match Settings"
+      },
+      "token_help": {
+        "cn": "Token 会保存到当前浏览器的本地存储，仅用于直接向{{yituliu}}请求干员数据，不会发送至作业站。",
+        "en": "The token is stored in this browser and used only for direct operator-data requests to {{yituliu}}. It is not sent to PRTS Plus."
+      },
+      "token_placeholder": {
+        "cn": "输入一图流第三方 API Token",
+        "en": "Enter your Yituliu OpenAPI token"
+      },
+      "token_required": {
+        "cn": "请输入 Token",
+        "en": "Enter a token first"
+      },
+      "fetch_failed": {
+        "cn": "获取干员数据失败",
+        "en": "Failed to fetch operator data"
+      },
+      "no_operators": {
+        "cn": "未读取到可用于匹配的干员数据",
+        "en": "No usable operator data was returned"
+      },
+      "imported": {
+        "cn": "已导入 {{count}} 名干员",
+        "en": "Imported {{count}} operators"
+      },
+      "imported_count": {
+        "cn": "已导入{{count}}名干员数据",
+        "en": "Imported data for {{count}} operators"
+      },
+      "ready": {
+        "cn": "可以直接打",
+        "en": "Ready"
+      },
+      "borrow": {
+        "cn": "需要借干员",
+        "en": "Borrow"
+      },
+      "train": {
+        "cn": "需要提升练度",
+        "en": "Train"
+      },
+      "blocked": {
+        "cn": "干员不满足要求",
+        "en": "Blocked"
+      },
+      "enabled": {
+        "cn": "启用干员匹配",
+        "en": "Enable operator matching"
+      },
+      "clear": {
+        "cn": "清除本地数据",
+        "en": "Clear local data"
+      },
+      "clear_title": {
+        "cn": "清除干员匹配数据？",
+        "en": "Clear operator matching data?"
+      },
+      "clear_message": {
+        "cn": "这将删除本地保存的 Token、干员数据和匹配设置。",
+        "en": "This will delete the locally saved token, operator data, and matching settings."
+      },
+      "clear_confirm": {
+        "cn": "清除",
+        "en": "Clear"
+      },
+      "sync": {
+        "cn": "同步干员数据",
+        "en": "Sync operator data"
+      },
+      "stale_reminder": {
+        "cn": "干员数据超过 33 天未变动，建议确认一图流数据是否为最新。",
+        "en": "Operator data has not changed in over 33 days. Confirm that it is up to date in Yituliu."
+      },
+      "import": {
+        "cn": "导入",
+        "en": "Import"
+      }
+    },
     "OperatorSelect": {
       "no_matching_operators": {
         "cn": "没有匹配的干员",
@@ -3618,6 +3704,10 @@
       "operator_group": {
         "cn": "干员组",
         "en": "Operator Group"
+      },
+      "unnamed_group": {
+        "cn": "未命名分组",
+        "en": "Unnamed Group"
       },
       "skill_number": {
         "cn": {
@@ -4350,7 +4440,7 @@
       "en": "Theresa"
     },
     "yituliu_site": {
-      "cn": "一图流",
+      "cn": "明日方舟一图流",
       "en": "Yituliu"
     },
     "feedback": {
