@@ -3705,6 +3705,10 @@
         "cn": "干员组",
         "en": "Operator Group"
       },
+      "unnamed_group": {
+        "cn": "未命名分组",
+        "en": "Unnamed Group"
+      },
       "skill_number": {
         "cn": {
           "0": "不指定技能",

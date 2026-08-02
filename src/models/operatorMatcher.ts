@@ -1,3 +1,5 @@
+import { i18n } from '../i18n/i18n'
+
 import { CopilotDocV1 } from './copilot.schema'
 import { Operation } from './operation'
 import { findOperatorById } from './operator'
@@ -198,6 +200,14 @@ function isRequirementMet(requirement: CopilotDocV1.Operator, ownedOperator: Own
   return true
 }
 
+function getGroupDisplayName(group: CopilotDocV1.Group) {
+  return (
+    group.name ||
+    group.opers?.map((operator) => operator.name).join(' / ') ||
+    i18n.models.operator.unnamed_group
+  )
+}
+
 function evaluateGroup(group: CopilotDocV1.Group, ownedOperators: Map<string, OwnedOperator>) {
   const candidates = group.opers ?? []
   const ownedCandidates = candidates.filter((candidate) => ownedOperators.has(normalizeName(candidate.name)))
@@ -234,9 +244,9 @@ export function getOperationMatchResult(
     const readiness = evaluateGroup(group, ownedOperators)
 
     if (readiness === 'missing') {
-      missingSlots.push(group.name || group.opers?.map((operator) => operator.name).join(' / ') || '未命名分组')
+      missingSlots.push(getGroupDisplayName(group))
     } else if (readiness === 'train') {
-      trainingSlots.push(group.name || group.opers?.map((operator) => operator.name).join(' / ') || '未命名分组')
+      trainingSlots.push(getGroupDisplayName(group))
     }
   }
 
