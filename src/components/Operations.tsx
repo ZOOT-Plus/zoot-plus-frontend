@@ -16,8 +16,10 @@ import { useTranslation } from '../i18n/i18n'
 import { CopilotType } from '../models/operation'
 import { LevelSelect } from './LevelSelect'
 import { OperatorFilter, useOperatorFilter } from './OperatorFilter'
+import { OperatorMatcher } from './OperatorMatcher'
 import { withSuspensable } from './Suspensable'
 import { UserFilter } from './UserFilter'
+import { OperatorMatcherFilter } from '../models/operatorMatcher'
 
 export const Operations: ComponentType = withSuspensable(() => {
   const t = useTranslation()
@@ -32,6 +34,7 @@ export const Operations: ComponentType = withSuspensable(() => {
   const [neoLayout, setNeoLayout] = useAtom(neoLayoutAtom)
   const [tab, setTab] = useState<'operation' | 'operationSet'>('operation')
   const [multiselect, setMultiselect] = useState(false)
+  const [operatorMatcher, setOperatorMatcher] = useState<OperatorMatcherFilter>()
 
   return (
     <>
@@ -182,6 +185,9 @@ export const Operations: ComponentType = withSuspensable(() => {
                 </ButtonGroup>
               </div>
             </div>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <OperatorMatcher onChange={setOperatorMatcher} />
+            </div>
           </>
         )}
 
@@ -232,6 +238,7 @@ export const Operations: ComponentType = withSuspensable(() => {
             {...queryParams}
             multiselect={multiselect}
             operator={operatorFilter.enabled ? operatorFilter : undefined}
+            operatorMatcher={operatorMatcher}
             // 按热度排序时列表前几页的变化不会太频繁，可以不刷新第一页，节省点流量
             revalidateFirstPage={queryParams.orderBy !== 'hot'}
           />
