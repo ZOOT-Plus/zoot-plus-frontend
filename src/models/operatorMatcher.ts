@@ -41,6 +41,17 @@ export interface OperationMatchResult {
   trainingSlots: string[]
 }
 
+export interface OperationSetMatchResult {
+  mode: OperatorMatchMode
+}
+
+const MATCH_MODE_PRIORITY: Record<OperatorMatchMode, number> = {
+  ready: 0,
+  borrow: 1,
+  train: 2,
+  blocked: 3,
+}
+
 type UnknownRecord = Record<string, unknown>
 
 function toNonNegativeInteger(value: unknown): number | undefined {
@@ -280,4 +291,27 @@ export function getOperationMatchResult(
     trainingSlots,
     totalSlots,
   }
+}
+
+export function getOperationSetMatchResult(
+  operationIds: number[],
+  operationsById: Map<number, Operation>,
+  ownedOperators: Map<string, OwnedOperator>,
+): OperationSetMatchResult {
+  if (operationIds.length === 0) {
+    return { mode: 'blocked' }
+  }
+
+  let mode: OperatorMatchMode = 'ready'
+
+  for (const operationId of operationIds) {
+    const operation = operationsById.get(operationId)
+    const operationMode = operation ? getOperationMatchResult(operation, ownedOperators).mode : 'blocked'
+
+    if (MATCH_MODE_PRIORITY[operationMode] > MATCH_MODE_PRIORITY[mode]) {
+      mode = operationMode
+    }
+  }
+
+  return { mode }
 }

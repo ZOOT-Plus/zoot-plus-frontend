@@ -11,6 +11,10 @@ import { useSWRRefresh } from 'utils/swr'
 
 export type OrderBy = 'views' | 'hot' | 'id'
 
+const OPERATION_DETAILS_BATCH_SIZE = 50
+const OPERATION_DETAILS_CONCURRENCY = 3
+const operationDetailsCache = new Map<number, Operation | null>()
+
 export interface OperatorFilterParams {
   included: string[]
   excluded: string[]
@@ -184,11 +188,50 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   }
 }
 
-export async function createOperation(req: {
-  content: string
-  status: CopilotSetStatus
-  type: CopilotType
-}) {
+export async function getOperationsByIds(operationIds: number[]): Promise<Operation[]> {
+  const uniqueIds = Array.from(new Set(operationIds))
+  const missingIds = uniqueIds.filter((id) => !operationDetailsCache.has(id))
+  const batches = Array.from({ length: Math.ceil(missingIds.length / OPERATION_DETAILS_BATCH_SIZE) }, (_, index) =>
+    missingIds.slice(index * OPERATION_DETAILS_BATCH_SIZE, (index + 1) * OPERATION_DETAILS_BATCH_SIZE),
+  )
+  let nextBatchIndex = 0
+
+  await Promise.all(
+    Array.from({ length: Math.min(OPERATION_DETAILS_CONCURRENCY, batches.length) }, async () => {
+      while (nextBatchIndex < batches.length) {
+        const batch = batches[nextBatchIndex++]
+        const res = await new OperationApi({
+          sendToken: 'optional',
+          requireData: true,
+        }).queriesCopilot({
+          page: 1,
+          limit: batch.length,
+          copilotIds: batch,
+        })
+        const operations = res.data.data.map((operation) => ({
+          ...operation,
+          parsedContent: toCopilotOperation(operation),
+        }))
+
+        for (const operation of operations) {
+          operationDetailsCache.set(operation.id, operation)
+        }
+        for (const id of batch) {
+          if (!operationDetailsCache.has(id)) {
+            operationDetailsCache.set(id, null)
+          }
+        }
+      }
+    }),
+  )
+
+  return uniqueIds.flatMap((id) => {
+    const operation = operationDetailsCache.get(id)
+    return operation ? [operation] : []
+  })
+}
+
+export async function createOperation(req: { content: string; status: CopilotSetStatus; type: CopilotType }) {
   return (await new OperationApi().uploadCopilot({ uploadCopilotRequest: { ...req } })).data
 }
 
