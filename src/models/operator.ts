@@ -381,5 +381,21 @@ export function useLocalizedOperatorName(name: string): string {
 }
 
 export function getEliteIconUrl(elite: number) {
-  return new URL(`/src/assets/icons/elite_${elite}.png`, import.meta.url).href
+  return new URL(`/src/assets/icons/elite_${elite}.webp`, import.meta.url).href
+}
+
+let eliteIconsPreloaded = false
+
+/**
+ * Preloads all elite icons. Images requested by a later <img> will then
+ * resolve from the browser cache instead of issuing a new network request.
+ */
+export function preloadEliteIcons() {
+  if (eliteIconsPreloaded) return
+  eliteIconsPreloaded = true
+
+  for (let elite = 0; elite <= 2; elite++) {
+    const image = new Image()
+    image.src = getEliteIconUrl(elite)
+  }
 }

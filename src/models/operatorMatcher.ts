@@ -201,11 +201,7 @@ function isRequirementMet(requirement: CopilotDocV1.Operator, ownedOperator: Own
 }
 
 function getGroupDisplayName(group: CopilotDocV1.Group) {
-  return (
-    group.name ||
-    group.opers?.map((operator) => operator.name).join(' / ') ||
-    i18n.models.operator.unnamed_group
-  )
+  return group.name || group.opers?.map((operator) => operator.name).join(' / ') || i18n.models.operator.unnamed_group
 }
 
 function evaluateGroup(group: CopilotDocV1.Group, ownedOperators: Map<string, OwnedOperator>) {

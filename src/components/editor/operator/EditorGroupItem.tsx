@@ -7,7 +7,7 @@ import { clsx } from 'clsx'
 import type { CopilotDocV1 } from 'models/copilot.schema'
 
 import { useTranslation } from '../../../i18n/i18n'
-import { Sortable, SortableItemProps } from '../../dnd'
+import { Sortable, SortableItemProps, useStableArray } from '../../dnd'
 import { CardDeleteOption, CardEditOption } from '../CardOptions'
 import { EditorOperatorItem } from './EditorOperatorItem'
 
@@ -23,7 +23,7 @@ interface EditorGroupItemProps extends Partial<SortableItemProps> {
   getOperatorId: (operator: CopilotDocV1.Operator) => UniqueIdentifier
   isOperatorEditing?: (operator: CopilotDocV1.Operator) => boolean
   onOperatorEdit?: (operator: CopilotDocV1.Operator) => void
-  onOperatorRemove?: (index: number) => void
+  onOperatorRemove?: (index: number, operator: CopilotDocV1.Operator) => void
 }
 
 export const EditorGroupItem = ({
@@ -40,6 +40,7 @@ export const EditorGroupItem = ({
   listeners,
 }: EditorGroupItemProps) => {
   const t = useTranslation()
+  const operatorIds = useStableArray(group.opers?.map(getOperatorId) || [])
 
   return (
     <Card
@@ -47,7 +48,7 @@ export const EditorGroupItem = ({
       className={clsx(editing && 'bg-gray-100', isDragging && 'invisible')}
       style={{ width: 'fit-content' }}
     >
-      <SortableContext items={group.opers?.map(getOperatorId) || []} strategy={verticalListSortingStrategy}>
+      <SortableContext items={operatorIds} strategy={verticalListSortingStrategy}>
         <div className="flex items-start mb-2">
           <Icon
             className="cursor-grab active:cursor-grabbing p-1 -mt-1 -ml-2 rounded-[1px]"
@@ -75,7 +76,7 @@ export const EditorGroupItem = ({
                   operator={operator}
                   editing={isOperatorEditing?.(operator)}
                   onEdit={() => onOperatorEdit?.(operator)}
-                  onRemove={() => onOperatorRemove?.(i)}
+                  onRemove={() => onOperatorRemove?.(i, operator)}
                   {...attrs}
                 />
               )}

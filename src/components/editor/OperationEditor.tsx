@@ -369,7 +369,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
           <div className="flex flex-col min-h-[calc(100vh-6rem)]">
             <div className="w-full flex flex-col pb-8">
-              <EditorPerformerPanel control={control} />
+              <EditorPerformerPanel control={control} getValues={getValues} />
             </div>
             {type === CopilotType.PRTS && (
               <div className="w-full pb-8">

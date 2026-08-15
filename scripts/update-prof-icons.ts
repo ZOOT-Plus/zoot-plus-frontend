@@ -27,10 +27,13 @@ async function main() {
 
   console.info('all metadata fetched.')
 
+  const failedIcons: string[] = []
+
   for (const { id, name } of professions) {
     const url = files.find((el) => el.name === `图标_职业_透明_${name}.png`)?.url
     if (!url) {
       console.error(`${name}: cannot found icon`)
+      failedIcons.push(`${name}: icon not found`)
       continue
     }
     const expectFileAt = `${outDir}/${id}.png`
@@ -42,6 +45,7 @@ async function main() {
     const resp = await fetch(url)
     if (!resp.ok) {
       console.error(`${name} failed to download`)
+      failedIcons.push(`${name}: download failed`)
       continue
     }
 
@@ -49,15 +53,18 @@ async function main() {
     await writeFile(expectFileAt, Buffer.from(buffer))
     console.info(`${name}: downloaded`)
   }
+
+  if (failedIcons.length > 0) {
+    throw new Error(`Failed to update ${failedIcons.length} profession icon(s):\n${failedIcons.join('\n')}`)
+  }
 }
 
 main()
   .then(() => {
     console.log('Done')
+    process.exit(0)
   })
   .catch((e) => {
     console.error(e)
-  })
-  .finally(() => {
-    process.exit(0)
+    process.exit(1)
   })

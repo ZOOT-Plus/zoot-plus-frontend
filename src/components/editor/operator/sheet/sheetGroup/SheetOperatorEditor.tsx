@@ -8,7 +8,7 @@ import { getLocalizedOperatorName } from 'models/operator'
 
 import { languageAtom, useTranslation } from '../../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../../OperatorAvatar'
-import { Group } from '../../EditorSheet'
+import { Group, Operator } from '../../EditorSheet'
 import { SheetContainerSkeleton, SheetContainerSkeletonProps } from '../SheetContainerSkeleton'
 import { OperatorNoData } from '../SheetNoneData'
 import { useSheet } from '../SheetProvider'
@@ -50,10 +50,12 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({ name, opers 
   const t = useTranslation()
   const { existedOperators, existedGroups, removeOperator, submitGroupInSheet } = useSheet()
   const [selectedOperators, setSelectedOperators] = useState<OperatorInSheetOperatorEditor[]>(
-    opers.map(({ name: operName }) => ({
-      groupName: name,
-      operName,
-    })),
+    opers
+      .filter((operator): operator is Operator => !!operator)
+      .map(({ name: operName }) => ({
+        groupName: name,
+        operName,
+      })),
   )
   const otherGroups = useMemo(
     () => existedGroups.filter(({ name: existedName, opers }) => existedName !== name && !!opers?.length),
@@ -71,43 +73,58 @@ const SheetOperatorEditorForm: FC<SheetOperatorEditorFormProp> = ({ name, opers 
       },
       {} as Record<Group['name'], OperatorInSheetOperatorEditor['operName'][]>,
     )
-    let newOpers: Group['opers'] = []
-    Object.entries(needModifyGroups).forEach(([key, value]) => {
+    const newOpers: Operator[] = []
+    for (const [key, value] of Object.entries(needModifyGroups)) {
       if (key === 'noneGrouped') {
-        removeOperator(
-          value.map((name) => {
-            const index = existedOperators.findIndex(({ name: existedName }) => existedName === name)
-            newOpers?.push(existedOperators[index])
-            return index
-          }),
-        )
-      } else {
-        const { opers: otherGroupOpers, ...groupRestField } = existedGroups.find(
-          ({ name: existedGroups }) => existedGroups === key,
-        )!
-        newOpers = newOpers?.concat(
-          value.map((name) => otherGroupOpers?.find(({ name: existedName }) => existedName === name)!),
-        )
-        if (key !== name)
-          submitGroupInSheet({
-            ...groupRestField,
-            opers: otherGroupOpers?.filter(({ name }) => !value.includes(name)),
-          })
+        const topLevelIndices: number[] = []
+        for (const operName of value) {
+          const index = existedOperators.findIndex(({ name: existedName }) => existedName === operName)
+          if (index === -1) continue
+          topLevelIndices.push(index)
+          newOpers.push(existedOperators[index])
+        }
+        if (topLevelIndices.length) {
+          removeOperator(topLevelIndices)
+        }
+        continue
       }
-    })
+
+      const sourceGroup = existedGroups.find(({ name: existedName }) => existedName === key)
+      if (!sourceGroup) continue
+
+      const { opers: otherGroupOpers = [], ...groupRestField } = sourceGroup
+      newOpers.push(
+        ...value.flatMap((operName) => {
+          const operator = otherGroupOpers.find(({ name: existedName }) => existedName === operName)
+          return operator ? [operator] : []
+        }),
+      )
+
+      if (key !== name) {
+        submitGroupInSheet({
+          ...groupRestField,
+          opers: otherGroupOpers.filter(({ name: existedName }) => !value.includes(existedName)),
+        })
+      }
+    }
+
+    const currentGroup = existedGroups.find(({ name: existedName }) => existedName === name)
+    if (!currentGroup) return
 
     submitGroupInSheet({
-      ...existedGroups.find(({ name: existedName }) => existedName === name)!,
+      ...currentGroup,
       opers: newOpers,
     })
   }
 
   const onReset = () => {
     setSelectedOperators(
-      opers.map(({ name: operName }) => ({
-        groupName: name,
-        operName,
-      })),
+      opers
+        .filter((operator): operator is Operator => !!operator)
+        .map(({ name: operName }) => ({
+          groupName: name,
+          operName,
+        })),
     )
   }
 

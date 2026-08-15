@@ -16,7 +16,7 @@
       "subProf": "notchar1",
       "name_en": "'Clip'",
       "name": "“夹子”",
-      "alias": "jiazi gazi jz gz “夾子” 夾子",
+      "alias": "jiazi gazi xiazi jz gz xz “夾子” 夾子",
       "rarity": 0,
       "alt_name": "\"Clip\" Charge"
     },
@@ -126,7 +126,7 @@
       "subProf": "geek",
       "name_en": "Aak",
       "name": "阿",
-      "alias": "ae 阿",
+      "alias": "a e 阿",
       "rarity": 6,
       "alt_name": "Aak",
       "modules": [
@@ -560,20 +560,6 @@
       "alt_name": "Spot"
     },
     {
-      "id": "char_230_savage",
-      "prof": "WARRIOR",
-      "subProf": "centurion",
-      "name_en": "Savage",
-      "name": "暴行",
-      "alias": "baohang baoxing puhang puxing bh bx ph px 暴行",
-      "rarity": 5,
-      "alt_name": "Savage",
-      "modules": [
-        "",
-        "X"
-      ]
-    },
-    {
       "id": "token_10058_sbell2_icetgt",
       "prof": "TOKEN",
       "subProf": "notchar1",
@@ -592,6 +578,20 @@
       "alias": "baolv baolu bolv bolu bl 薄綠",
       "rarity": 5,
       "alt_name": "Mint",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
+      "id": "char_230_savage",
+      "prof": "WARRIOR",
+      "subProf": "centurion",
+      "name_en": "Savage",
+      "name": "暴行",
+      "alias": "baoxing baohang baoheng puxing puhang puheng bx bh px ph 暴行",
+      "rarity": 5,
+      "alt_name": "Savage",
       "modules": [
         "",
         "X"
@@ -693,7 +693,7 @@
       "subProf": "ritualist",
       "name_en": "Bobbing",
       "name": "波卜",
-      "alias": "bobu bobo bb 波卜",
+      "alias": "bobu bobo bopu bb bp 波卜",
       "rarity": 5,
       "alt_name": "Bobbing",
       "modules": [
@@ -721,7 +721,7 @@
       "subProf": "ritualist",
       "name_en": "Ботани",
       "name": "伯塔尼",
-      "alias": "botani baitani batani btn 伯塔尼",
+      "alias": "botani baitani btn 伯塔尼",
       "rarity": 5,
       "alt_name": "Ботани",
       "modules": [
@@ -1017,7 +1017,7 @@
       "subProf": "notchar1",
       "name_en": "Undeviating Course",
       "name": "从不混淆的方向",
-      "alias": "congbuhunxiaodefangxiang congbuhunxiaodifangxiang congfouhunxiaodefangxiang congfouhunxiaodifangxiang zongbuhunxiaodefangxiang zongbuhunxiaodifangxiang zongfouhunxiaodefangxiang zongfouhunxiaodifangxiang cbhxdfx cfhxdfx zbhxdfx zfhxdfx 從不混淆的方向",
+      "alias": "congbuhunxiaodefangxiang congbuhunxiaodifangxiang congfouhunxiaodefangxiang congfouhunxiaodifangxiang cbhxdfx cfhxdfx 從不混淆的方向 zongbuhunxiaodefangxiang zongbuhunxiaodifangxiang zongfouhunxiaodefangxiang zongfouhunxiaodifangxiang zbhxdfx zfhxdfx",
       "rarity": 0,
       "alt_name": "Undeviating Course"
     },
@@ -1729,20 +1729,6 @@
       ]
     },
     {
-      "id": "char_4172_xingzh",
-      "prof": "SUPPORT",
-      "subProf": "blessing",
-      "name_en": "Xingzhu",
-      "name": "行箸",
-      "alias": "hangzhu xingzhu hz xz 行箸",
-      "rarity": 5,
-      "alt_name": "Xingzhu",
-      "modules": [
-        "",
-        "X"
-      ]
-    },
-    {
       "id": "char_4039_horn",
       "prof": "TANK",
       "subProf": "fortress",
@@ -1885,12 +1871,26 @@
       ]
     },
     {
+      "id": "char_226_hmau",
+      "prof": "TANK",
+      "subProf": "guardian",
+      "name_en": "Hung",
+      "name": "吽",
+      "alias": "hong hou ou h o 吽",
+      "rarity": 5,
+      "alt_name": "Hung",
+      "modules": [
+        "",
+        "Y"
+      ]
+    },
+    {
       "id": "char_144_red",
       "prof": "SPECIAL",
       "subProf": "executor",
       "name_en": "Projekt Red",
       "name": "红",
-      "alias": "honggong hg 紅",
+      "alias": "hong gong h g 紅",
       "rarity": 5,
       "alt_name": "Projekt Red",
       "modules": [
@@ -1953,20 +1953,6 @@
       "modules": [
         "",
         "X"
-      ]
-    },
-    {
-      "id": "char_226_hmau",
-      "prof": "TANK",
-      "subProf": "guardian",
-      "name_en": "Hung",
-      "name": "吽",
-      "alias": "houhongou ho 吽",
-      "rarity": 5,
-      "alt_name": "Hung",
-      "modules": [
-        "",
-        "Y"
       ]
     },
     {
@@ -2321,20 +2307,6 @@
       ]
     },
     {
-      "id": "char_4036_forcer",
-      "prof": "SPECIAL",
-      "subProf": "pusher",
-      "name_en": "Enforcer",
-      "name": "见行者",
-      "alias": "jianhangzhe jianxingzhe xianhangzhe xianxingzhe jhz jxz xhz xxz 見行者",
-      "rarity": 5,
-      "alt_name": "Enforcer",
-      "modules": [
-        "",
-        "X"
-      ]
-    },
-    {
       "id": "char_260_durnar",
       "prof": "TANK",
       "subProf": "artsprotector",
@@ -2361,6 +2333,20 @@
         "",
         "X",
         "Y"
+      ]
+    },
+    {
+      "id": "char_4036_forcer",
+      "prof": "SPECIAL",
+      "subProf": "pusher",
+      "name_en": "Enforcer",
+      "name": "见行者",
+      "alias": "jianxingzhe jianhangzhe jianhengzhe xianxingzhe xianhangzhe xianhengzhe jxz jhz xxz xhz 見行者",
+      "rarity": 5,
+      "alt_name": "Enforcer",
+      "modules": [
+        "",
+        "X"
       ]
     },
     {
@@ -2483,7 +2469,7 @@
       "subProf": "blessing",
       "name_en": "Nine-Colored Deer",
       "name": "九色鹿",
-      "alias": "jiuselu jsl 九色鹿",
+      "alias": "jiuselu jiushailu jsl 九色鹿",
       "rarity": 5,
       "alt_name": "Nine-Colored Deer",
       "modules": [
@@ -2657,7 +2643,7 @@
       "subProf": "tactician",
       "name_en": "Closure",
       "name": "可露希尔",
-      "alias": "kelouxier keluxier klxe 可露希爾",
+      "alias": "keluxier kelouxier klxe 可露希爾",
       "rarity": 6,
       "alt_name": "Closure",
       "modules": [
@@ -2919,7 +2905,7 @@
       "subProf": "longrange",
       "name_en": "Lemuen",
       "name": "蕾缪安",
-      "alias": "leimouan leimiuan leimiaoan leimuan leiliaoan lma lla 蕾繆安",
+      "alias": "leimiuan leimouan leiliaoan leimiaoan leimuan lma lla 蕾繆安",
       "rarity": 6,
       "alt_name": "Lemuen",
       "modules": [
@@ -3272,7 +3258,7 @@
       "subProf": "unyield",
       "name_en": "Lutonada",
       "name": "露托",
-      "alias": "loutuo lutuo lt 露托",
+      "alias": "lutuo loutuo lt 露托",
       "rarity": 4,
       "alt_name": "Lutonada",
       "modules": [
@@ -3409,7 +3395,7 @@
       "subProf": "splashcaster",
       "name_en": "Marcille",
       "name": "玛露西尔",
-      "alias": "malouxier maluxier mlxe 瑪露西爾",
+      "alias": "maluxier malouxier mlxe 瑪露西爾",
       "rarity": 6,
       "alt_name": "Marcille",
       "modules": [
@@ -3494,7 +3480,7 @@
       "subProf": "fearless",
       "name_en": "Melantha",
       "name": "玫兰莎",
-      "alias": "meilansuo meilansha mls 玫蘭莎",
+      "alias": "meilansha meilansuo mls 玫蘭莎",
       "rarity": 3,
       "alt_name": "Melantha"
     },
@@ -3553,7 +3539,7 @@
       "subProf": "phalanx",
       "name_en": "Beeswax",
       "name": "蜜蜡",
-      "alias": "mila ml 蜜蠟",
+      "alias": "mila mizha ml mz 蜜蠟",
       "rarity": 5,
       "alt_name": "Beeswax",
       "modules": [
@@ -3581,7 +3567,7 @@
       "subProf": "agent",
       "name_en": "Puzzle",
       "name": "谜图",
-      "alias": "mitu mt 謎圖",
+      "alias": "mitu meitu mt 謎圖",
       "rarity": 5,
       "alt_name": "Puzzle",
       "modules": [
@@ -3639,6 +3625,21 @@
       "modules": [
         "",
         "X"
+      ]
+    },
+    {
+      "id": "char_249_mlyss",
+      "prof": "PIONEER",
+      "subProf": "tactician",
+      "name_en": "Muelsyse",
+      "name": "缪尔赛思",
+      "alias": "miuersaisi miuersaisai mouersaisi mouersaisai liaoersaisi liaoersaisai miaoersaisi miaoersaisai muersaisi muersaisai mess less 繆爾賽思",
+      "rarity": 6,
+      "alt_name": "Muelsyse",
+      "modules": [
+        "",
+        "X",
+        "Y"
       ]
     },
     {
@@ -3735,21 +3736,6 @@
       "alias": "Mon3tr",
       "rarity": 0,
       "alt_name": "Mon3tr"
-    },
-    {
-      "id": "char_249_mlyss",
-      "prof": "PIONEER",
-      "subProf": "tactician",
-      "name_en": "Muelsyse",
-      "name": "缪尔赛思",
-      "alias": "mouersaisi mouersaisai miuersaisi miuersaisai miaoersaisi miaoersaisai muersaisi muersaisai liaoersaisi liaoersaisai mess less 繆爾賽思",
-      "rarity": 6,
-      "alt_name": "Muelsyse",
-      "modules": [
-        "",
-        "X",
-        "Y"
-      ]
     },
     {
       "id": "char_4025_aprot2",
@@ -3926,7 +3912,7 @@
       "subProf": "notchar1",
       "name_en": "Crawler Protection Unit",
       "name": "爬行号·防护单元",
-      "alias": "pahanghao·fanghudanyuan pahanghao·fanghushanyuan pahanghao·fanghuchanyuan paxinghao·fanghudanyuan paxinghao·fanghushanyuan paxinghao·fanghuchanyuan phh·fhdy phh·fhsy phh·fhcy pxh·fhdy pxh·fhsy pxh·fhcy 爬行號·防護單元",
+      "alias": "paxinghao·fanghudanyuan paxinghao·fanghushanyuan paxinghao·fanghuchanyuan pahanghao·fanghudanyuan pahanghao·fanghushanyuan pahanghao·fanghuchanyuan pahenghao·fanghudanyuan pahenghao·fanghushanyuan pahenghao·fanghuchanyuan pxh·fhdy pxh·fhsy pxh·fhcy phh·fhdy phh·fhsy phh·fhcy 爬行號·防護單元",
       "rarity": 0,
       "alt_name": "Crawler Protection Unit"
     },
@@ -4298,7 +4284,7 @@
       "subProf": "wandermedic",
       "name_en": "Mulberry",
       "name": "桑葚",
-      "alias": "sangshen ss 桑葚",
+      "alias": "sangshen sangren ss sr 桑葚",
       "rarity": 5,
       "alt_name": "Mulberry",
       "modules": [
@@ -4496,7 +4482,7 @@
       "subProf": "summoner",
       "name_en": "Deepcolor",
       "name": "深海色",
-      "alias": "shenhaise shs 深海色",
+      "alias": "shenhaise shenhaishai shs 深海色",
       "rarity": 4,
       "alt_name": "Deepcolor",
       "modules": [
@@ -4567,7 +4553,7 @@
       "subProf": "corecaster",
       "name_en": "Steward",
       "name": "史都华德",
-      "alias": "shiduhuade shidouhuade sdhd 史都華德",
+      "alias": "shidouhuade shiduhuade sdhd 史都華德",
       "rarity": 3,
       "alt_name": "Steward"
     },
@@ -5020,7 +5006,7 @@
       "subProf": "chainhealer",
       "name_en": "Papyrus",
       "name": "莎草",
-      "alias": "suocao shacao sc 莎草",
+      "alias": "shacao suocao sc 莎草",
       "rarity": 5,
       "alt_name": "Papyrus",
       "modules": [
@@ -5034,7 +5020,7 @@
       "subProf": "bombarder",
       "name_en": "Terra Research Commission",
       "name": "泰拉大陆调查团",
-      "alias": "tailadalutiaochatuan tailadalutiaozhatuan tailadaludiaochatuan tailadaludiaozhatuan tailadaluzhouchatuan tailadaluzhouzhatuan tailadailutiaochatuan tailadailutiaozhatuan tailadailudiaochatuan tailadailudiaozhatuan tailadailuzhouchatuan tailadailuzhouzhatuan tailatailutiaochatuan tailatailutiaozhatuan tailatailudiaochatuan tailatailudiaozhatuan tailatailuzhouchatuan tailatailuzhouzhatuan tldltct tldltzt tldldct tldldzt tldlzct tldlzzt tltltct tltltzt tltldct tltldzt tltlzct tltlzzt 泰拉大陸調查團",
+      "alias": "tailadalutiaochatuan tailadalutiaozhatuan tailadaludiaochatuan tailadaludiaozhatuan tailadaluzhouchatuan tailadaluzhouzhatuan tailadaliutiaochatuan tailadaliutiaozhatuan tailadaliudiaochatuan tailadaliudiaozhatuan tailadaliuzhouchatuan tailadaliuzhouzhatuan tailadailutiaochatuan tailadailutiaozhatuan tailadailudiaochatuan tailadailudiaozhatuan tailadailuzhouchatuan tailadailuzhouzhatuan tailadailiutiaochatuan tailadailiutiaozhatuan tailadailiudiaochatuan tailadailiudiaozhatuan tailadailiuzhouchatuan tailadailiuzhouzhatuan tldltct tldltzt tldldct tldldzt tldlzct tldlzzt 泰拉大陸調查團",
       "rarity": 1,
       "alt_name": "Terra Research Commission"
     },
@@ -5347,7 +5333,7 @@
       "subProf": "bombarder",
       "name_en": "Wiš'adel",
       "name": "维什戴尔",
-      "alias": "weishidaier weishendaier wsde 維什戴爾",
+      "alias": "weishendaier weishidaier wsde 維什戴爾",
       "rarity": 6,
       "alt_name": "Wiš'adel",
       "modules": [
@@ -5562,7 +5548,7 @@
       "subProf": "notchar1",
       "name_en": "Champagne Bomb",
       "name": "香槟炸弹",
-      "alias": "xiangbinzhadan xiangbinzhatan xiangbingzhadan xiangbingzhatan xbzd xbzt 香檳炸彈",
+      "alias": "xiangbinzhatan xiangbinzhadan xiangbingzhatan xiangbingzhadan xbzt xbzd 香檳炸彈",
       "rarity": 0,
       "alt_name": "Champagne Bomb"
     },
@@ -5740,6 +5726,20 @@
       "modules": [
         "",
         "Y"
+      ]
+    },
+    {
+      "id": "char_4172_xingzh",
+      "prof": "SUPPORT",
+      "subProf": "blessing",
+      "name_en": "Xingzhu",
+      "name": "行箸",
+      "alias": "xingzhu hangzhu hengzhu xz hz 行箸",
+      "rarity": 5,
+      "alt_name": "Xingzhu",
+      "modules": [
+        "",
+        "X"
       ]
     },
     {
@@ -6633,7 +6633,7 @@
       "subProf": "siegesniper",
       "name_en": "Rosa",
       "name": "早露",
-      "alias": "zaolou zaolu zl 早露",
+      "alias": "zaolu zaolou zl 早露",
       "rarity": 6,
       "alt_name": "Роса",
       "modules": [
