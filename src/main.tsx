@@ -7,7 +7,7 @@ import { BrowserTracing } from '@sentry/tracing'
 import 'normalize.css'
 import React, { lazy } from 'react'
 import ReactDOM from 'react-dom/client'
-import ReactGA from 'react-ga-neo'
+import { ReactGA } from 'utils/react-ga'
 import { Route, Routes } from 'react-router-dom'
 
 import { withSuspensable } from 'components/Suspensable'
@@ -55,9 +55,7 @@ clearOutdatedSwrCache()
   for (let i = localStorage.length - 1; i >= 0; i--) {
     const key = localStorage.key(i)
     if (!key) continue
-    const newKey = key
-      .replace(/^maa-copilot-/, 'zoot-plus-')
-      .replace(/^copilot-/, 'zoot-plus-')
+    const newKey = key.replace(/^maa-copilot-/, 'zoot-plus-').replace(/^copilot-/, 'zoot-plus-')
     if (newKey !== key && localStorage.getItem(newKey) === null) {
       localStorage.setItem(newKey, localStorage.getItem(key)!)
       localStorage.removeItem(key)

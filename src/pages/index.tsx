@@ -3,7 +3,7 @@ import { Card } from '@blueprintjs/core'
 import dayjs from 'dayjs'
 import { useLinks } from 'hooks/useLinks'
 import { ComponentType } from 'react'
-import ReactGA from 'react-ga-neo'
+import { ReactGA } from 'utils/react-ga'
 
 import { CardTitle } from 'components/CardTitle'
 import { withGlobalErrorBoundary } from 'components/GlobalErrorBoundary'

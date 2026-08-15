@@ -1,9 +1,11 @@
 allowBuilds:
   esbuild: true
   zoot-plus-client: true
-  nodejieba: true
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - pinyin-pro@3.29.2
 
 overrides:
   react-rating>@types/react: ^18.0.0

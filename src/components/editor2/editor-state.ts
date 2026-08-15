@@ -151,7 +151,12 @@ const operationAtom = atom(
     set(actionsAtom, actions)
   },
 )
-const metadataAtom = atom<EditorMetadata>({ visibility: 'public', type: CopilotType.PRTS, typeLocked: false, videoUrl: '' })
+const metadataAtom = atom<EditorMetadata>({
+  visibility: 'public',
+  type: CopilotType.PRTS,
+  typeLocked: false,
+  videoUrl: '',
+})
 const editorAtom = atom(
   (get): EditorState => ({
     operation: get(operationAtom),

@@ -184,11 +184,7 @@ export async function getOperation(req: { id: number }): Promise<Operation> {
   }
 }
 
-export async function createOperation(req: {
-  content: string
-  status: CopilotSetStatus
-  type: CopilotType
-}) {
+export async function createOperation(req: { content: string; status: CopilotSetStatus; type: CopilotType }) {
   return (await new OperationApi().uploadCopilot({ uploadCopilotRequest: { ...req } })).data
 }
 

@@ -6,5 +6,5 @@
   "singleQuote": true,
   "trailingComma": "all",
   "arrowParens": "always",
-  "ignorePatterns": ["build", "coverage"]
+  "ignorePatterns": ["build", "coverage", "src/i18n/generated", "src/models/generated"]
 }

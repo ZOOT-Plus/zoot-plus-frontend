@@ -88,9 +88,7 @@ export const OperationSetCard = ({ operationSet }: { operationSet: OperationSetL
             {/* title */}
             <div className="flex flex-col gap-3">
               <div className="flex gap-2">
-                <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">
-                  {operationSet.name}
-                </H4>
+                <H4 className="inline-block pb-1 border-b-2 border-zinc-200 border-solid mb-2">{operationSet.name}</H4>
               </div>
             </div>
 

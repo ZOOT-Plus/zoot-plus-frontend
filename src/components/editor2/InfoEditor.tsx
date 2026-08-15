@@ -6,7 +6,12 @@ import { useImmerAtom } from 'jotai-immer'
 import { memo } from 'react'
 import { Paths } from 'type-fest'
 
-import { CopilotTypePicker, TypeSwitchConfirmAlert, VideoUrlField, useTypeSwitchConfirm } from '../editor/CopilotTypePicker'
+import {
+  CopilotTypePicker,
+  TypeSwitchConfirmAlert,
+  VideoUrlField,
+  useTypeSwitchConfirm,
+} from '../editor/CopilotTypePicker'
 import { i18n, useTranslation } from '../../i18n/i18n'
 import { CopilotType } from '../../models/operation'
 import { isCustomLevel } from '../../models/level'
@@ -44,7 +49,12 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
       }
     })
   }
-  const { pendingType, requestChange: handleTypeChange, cancel, confirm } = useTypeSwitchConfirm({
+  const {
+    pendingType,
+    requestChange: handleTypeChange,
+    cancel,
+    confirm,
+  } = useTypeSwitchConfirm({
     currentType: metadata.type,
     hasActions: () => actions.length > 0,
     hasVideoUrl: () => !!metadata.videoUrl,
@@ -63,14 +73,17 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
       <CopilotTypePicker type={metadata.type} locked={metadata.typeLocked} onChange={handleTypeChange} />
       {metadata.type === CopilotType.VIDEO && (
         <div className="mb-2">
-          <VideoUrlField value={metadata.videoUrl} onChange={(value) => {
-            edit(() => {
-              setMetadata((prev) => {
-                prev.videoUrl = value
+          <VideoUrlField
+            value={metadata.videoUrl}
+            onChange={(value) => {
+              edit(() => {
+                setMetadata((prev) => {
+                  prev.videoUrl = value
+                })
+                return { action: 'update-video-url', desc: i18n.components.CopilotTypePicker.video_url, squashBy: '' }
               })
-              return { action: 'update-video-url', desc: i18n.components.CopilotTypePicker.video_url, squashBy: '' }
-            })
-          }} />
+            }}
+          />
         </div>
       )}
       <FormGroup contentClassName="grow" label={t.components.editor2.InfoEditor.stage} labelInfo="*">

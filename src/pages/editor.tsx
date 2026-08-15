@@ -79,8 +79,7 @@ export const EditorPage = withSuspensable(() => {
           return false
         }
 
-        const status =
-          metadata.visibility === 'public' ? CopilotSetStatus.Public : CopilotSetStatus.Private
+        const status = metadata.visibility === 'public' ? CopilotSetStatus.Public : CopilotSetStatus.Private
 
         // VIDEO 类型把视频链接写进 content；PRTS 类型不带该字段
         const content =

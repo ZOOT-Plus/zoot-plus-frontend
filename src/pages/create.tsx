@@ -70,7 +70,12 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
       }
       setType(next)
     }
-    const { pendingType, requestChange: handleTypeChange, cancel, confirm } = useTypeSwitchConfirm({
+    const {
+      pendingType,
+      requestChange: handleTypeChange,
+      cancel,
+      confirm,
+    } = useTypeSwitchConfirm({
       currentType: type,
       hasActions: () => (getValues('actions')?.length ?? 0) > 0,
       hasVideoUrl: () => !!videoUrl,
@@ -192,54 +197,54 @@ export const CreatePage: ComponentType = withGlobalErrorBoundary(
           onChangeType={handleTypeChange}
           onChangeVideoUrl={setVideoUrl}
           toolbar={
-          <>
-            <AutosaveSheet
-              minimal
-              className="!text-xs opacity-75"
-              archive={archive}
-              options={autosaveOptions}
-              itemTitle={(record) => record.v.doc?.title || t.pages.create.untitled}
-              onRestore={(value) => reset(value, { keepDefaultValues: true })}
-            />
-            <SourceEditorButton className="ml-4" form={form} triggerValidation={triggerValidation} />
-            <Button
-              intent="primary"
-              className="ml-4"
-              icon="upload"
-              text={submitAction}
-              loading={uploading}
-              onClick={() => {
-                // manually clear the `global` error or else the submission will be blocked
-                clearErrors()
-                onSubmit()
-              }}
-            />
-            <div className="flex-[100%_0_0]" />
-            <div className="ml-auto mt-2">
-              <Tooltip
-                placement="bottom"
-                content={
-                  <>
-                    {t.pages.create.public_task_description}
-                    <br />
-                    {t.pages.create.private_task_description}
-                  </>
-                }
-              >
-                <Checkbox
-                  className="text-sm"
-                  checked={operationStatus === CopilotSetStatus.Public}
-                  onChange={(e) =>
-                    setOperationStatus(e.currentTarget.checked ? CopilotSetStatus.Public : CopilotSetStatus.Private)
+            <>
+              <AutosaveSheet
+                minimal
+                className="!text-xs opacity-75"
+                archive={archive}
+                options={autosaveOptions}
+                itemTitle={(record) => record.v.doc?.title || t.pages.create.untitled}
+                onRestore={(value) => reset(value, { keepDefaultValues: true })}
+              />
+              <SourceEditorButton className="ml-4" form={form} triggerValidation={triggerValidation} />
+              <Button
+                intent="primary"
+                className="ml-4"
+                icon="upload"
+                text={submitAction}
+                loading={uploading}
+                onClick={() => {
+                  // manually clear the `global` error or else the submission will be blocked
+                  clearErrors()
+                  onSubmit()
+                }}
+              />
+              <div className="flex-[100%_0_0]" />
+              <div className="ml-auto mt-2">
+                <Tooltip
+                  placement="bottom"
+                  content={
+                    <>
+                      {t.pages.create.public_task_description}
+                      <br />
+                      {t.pages.create.private_task_description}
+                    </>
                   }
                 >
-                  <span className="-ml-1 opacity-75">{t.pages.create.public}</span>
-                </Checkbox>
-              </Tooltip>
-            </div>
-          </>
-        }
-      />
+                  <Checkbox
+                    className="text-sm"
+                    checked={operationStatus === CopilotSetStatus.Public}
+                    onChange={(e) =>
+                      setOperationStatus(e.currentTarget.checked ? CopilotSetStatus.Public : CopilotSetStatus.Private)
+                    }
+                  >
+                    <span className="-ml-1 opacity-75">{t.pages.create.public}</span>
+                  </Checkbox>
+                </Tooltip>
+              </div>
+            </>
+          }
+        />
         <TypeSwitchConfirmAlert pendingType={pendingType} onCancel={cancel} onConfirm={confirm} />
       </>
     )

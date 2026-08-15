@@ -183,17 +183,18 @@ const useSheetGroupItemController = ({
         onGroupNameChange: (name: string) => submitGroupInSheet({ opers, ...rest, name }),
         defaultOperatorCollapseOpen: true,
         onOperatorSkillChange: (operator: Operator) => {
-          opers.splice(
-            opers.findIndex(({ name: nameInExist }) => nameInExist === operator.name),
-            1,
-            operator,
-          )
-          submitGroupInSheet({ opers, name, ...rest })
+          const nextOpers = opers.map((item) => (item.name === operator.name ? operator : item))
+          submitGroupInSheet({ opers: nextOpers, name, ...rest })
         },
         ActionList: (
           <>
             <CardDeleteOption
-              onClick={() => removeGroup(existedGroups.findIndex(({ name: nameInExist }) => nameInExist === name))}
+              onClick={() => {
+                const groupIndex = existedGroups.findIndex(({ name: nameInExist }) => nameInExist === name)
+                if (groupIndex !== -1) {
+                  removeGroup(groupIndex)
+                }
+              }}
             />
             <GroupPinOption pinned={pinned} onPinChange={onPinChange} isDuplicate={!!findFavByName} />
           </>
@@ -231,17 +232,8 @@ const useSheetGroupItemController = ({
           setFavGroup([...favGroup.filter(({ name: favName }) => favName !== name), { opers, name, ...rest }]),
         defaultOperatorCollapseOpen: false,
         onOperatorSkillChange: (operator: Operator) => {
-          opers.splice(
-            opers.findIndex(({ name: nameInExist }) => nameInExist === operator.name),
-            1,
-            operator,
-          )
-          favGroup.splice(
-            favGroup.findIndex(({ name: nameInFav }) => nameInFav === operator.name),
-            1,
-            { name, opers, ...rest },
-          )
-          setFavGroup(favGroup)
+          const nextOpers = opers.map((item) => (item.name === operator.name ? operator : item))
+          setFavGroup(favGroup.map((group) => (group.name === name ? { name, opers: nextOpers, ...rest } : group)))
         },
         ActionList: (
           <>

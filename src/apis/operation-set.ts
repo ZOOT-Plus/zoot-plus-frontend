@@ -106,10 +106,7 @@ export function useOperationSetSearch({ keyword, suspense, disabled, ...params }
     const shortCodeContent = parseShortCode(keyword)
 
     // maa:// 旧代码无类型标记，作业集搜索按 id 直取（与旧行为一致）
-    if (
-      shortCodeContent &&
-      (shortCodeContent.type === 'operation-set' || shortCodeContent.type === 'legacy')
-    ) {
+    if (shortCodeContent && (shortCodeContent.type === 'operation-set' || shortCodeContent.type === 'legacy')) {
       id = shortCodeContent.id
     }
   }

@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 
 import { defineConfig, loadEnv } from 'vite'
 
-import { generateTranslations } from './scripts/generate-translations'
+import { generateTranslations } from './scripts/generate-translations.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -18,6 +18,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react(), generateTranslations()],
     server: {
+      host: '127.0.0.1',
       port: +env.PORT || undefined,
     },
     resolve: {
