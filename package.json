@@ -16,7 +16,7 @@
     "fmt": "oxfmt",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "scripts:update": "pnpm install && pnpm scripts:update-operators & pnpm scripts:update-operator-avatars & pnpm scripts:update-prof-icons & wait",
+    "scripts:update": "pnpm install && sh scripts/update.sh",
     "scripts:update-operators": "tsx scripts/update-operators.ts",
     "scripts:update-operator-avatars": "tsx scripts/update-operator-avatars.ts",
     "scripts:update-prof-icons": "pnpm install && tsx scripts/update-prof-icons.ts"

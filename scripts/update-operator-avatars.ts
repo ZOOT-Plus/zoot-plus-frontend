@@ -1,10 +1,12 @@
 import { mkdir } from 'fs/promises'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
 import sharp from 'sharp'
 
 import { fileExists, getOperators } from './shared'
 
-const avatarsDir = path.resolve(__dirname, '../public/assets/operator-avatars')
+const avatarsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public/assets/operator-avatars')
 
 async function getAllAvatarsFromPrtsWiki() {
   console.info('fetching all avatars from prts wiki...')
@@ -112,10 +114,9 @@ async function main() {
 main()
   .then(() => {
     console.log('Done')
+    process.exit(0)
   })
   .catch((e) => {
     console.error(e)
-  })
-  .finally(() => {
-    process.exit(0)
+    process.exit(1)
   })
