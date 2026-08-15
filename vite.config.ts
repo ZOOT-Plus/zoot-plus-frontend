@@ -18,6 +18,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react(), generateTranslations()],
     server: {
+      host: '127.0.0.1',
       port: +env.PORT || undefined,
     },
     resolve: {
