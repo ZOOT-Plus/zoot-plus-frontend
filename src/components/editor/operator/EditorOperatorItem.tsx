@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai'
 import type { CopilotDocV1 } from 'models/copilot.schema'
 
 import { languageAtom, useTranslation } from '../../../i18n/i18n'
-import { OPERATORS, getLocalizedOperatorName, getSkillUsageTitle } from '../../../models/operator'
+import { findOperatorByName, getLocalizedOperatorName, getSkillUsageTitle } from '../../../models/operator'
 import { OperatorAvatar } from '../../OperatorAvatar'
 import { SortableItemProps } from '../../dnd'
 import { CardDeleteOption, CardEditOption } from '../CardOptions'
@@ -29,7 +29,7 @@ export const EditorOperatorItem = ({
 }: EditorOperatorItemProps) => {
   const t = useTranslation()
   const language = useAtomValue(languageAtom)
-  const id = OPERATORS.find(({ name }) => name === operator.name)?.id
+  const id = findOperatorByName(operator.name)?.id
   const skillUsage = getSkillUsageTitle(operator.skillUsage as CopilotDocV1.SkillUsageType, operator.skillTimes)
 
   return (

@@ -16,10 +16,10 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { produce } from 'immer'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom, useAtomCallback } from 'jotai/utils'
-import { FC, memo, useCallback, useMemo } from 'react'
+import { FC, memo, useCallback, useEffect, useMemo } from 'react'
 
 import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
-import { getLocalizedOperatorName } from '../../../models/operator'
+import { getLocalizedOperatorName, preloadEliteIcons } from '../../../models/operator'
 import { Droppable, Sortable } from '../../dnd'
 import { AtomRenderer } from '../AtomRenderer'
 import { EditorOperator, editorAtoms, traverseOperators, useEdit } from '../editor-state'
@@ -39,6 +39,10 @@ const operatorIdsAtom = selectAtom(
 )
 
 export const OperatorEditor: FC = memo(() => {
+  useEffect(() => {
+    preloadEliteIcons()
+  }, [])
+
   const operatorIds = useAtomValue(operatorIdsAtom)
   const edit = useEdit()
   const t = useTranslation()
