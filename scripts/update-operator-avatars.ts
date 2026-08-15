@@ -41,11 +41,14 @@ async function main() {
 
   console.info('all metadata fetched.')
 
+  const failedAvatars: string[] = []
+
   for (const { id, name } of operators) {
     const withTokenName = id.startsWith('token_') ? `召唤物_${name}` : name
     const avatarUrl = files.find((el) => el.name === `头像_${withTokenName}.png`)?.url
     if (!avatarUrl) {
       console.error(`${id}: cannot found avatar file`)
+      failedAvatars.push(`${id}: avatar file not found`)
       continue
     }
 
@@ -92,6 +95,7 @@ async function main() {
         return
       } catch (e) {
         console.error(`${id}: failed to generate ${format} of size ${size}`, e)
+        failedAvatars.push(`${id}: failed to generate avatar`)
         return
       }
     }
@@ -108,6 +112,10 @@ async function main() {
         options: { preset: 'icon', quality: 80 },
       }),
     ])
+  }
+
+  if (failedAvatars.length > 0) {
+    throw new Error(`Failed to update ${failedAvatars.length} avatar image(s):\n${failedAvatars.join('\n')}`)
   }
 }
 
