@@ -144,7 +144,12 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
                 <Button
                   minimal
                   icon="tick"
-                  onClick={() => updateSelection(visibleOperations.map(({ operation }) => operation), [])}
+                  onClick={() =>
+                    updateSelection(
+                      visibleOperations.map(({ operation }) => operation),
+                      [],
+                    )
+                  }
                 >
                   {t.components.OperationList.select_all}
                 </Button>

@@ -1,6 +1,6 @@
 import { access } from 'fs/promises'
 import { capitalize, uniq, uniqBy } from 'lodash-es'
-import { pinyin } from 'pinyin'
+import { pinyin, polyphonic } from 'pinyin-pro'
 import simplebig from 'simplebig'
 
 type Profession = { id: string; name: string; name_en?: string }
@@ -15,19 +15,22 @@ export async function fileExists(file: string) {
   }
 }
 
+function cartesianProduct(groups: string[][]): string[] {
+  return groups.reduce<string[]>(
+    (combinations, variants) => combinations.flatMap((prefix) => variants.map((variant) => prefix + variant)),
+    [''],
+  )
+}
+
 function pinyinify(name: string) {
-  return [
-    pinyin(name, {
-      compact: true,
-      heteronym: true,
-      style: pinyin.STYLE_NORMAL,
-    }),
-    pinyin(name, {
-      compact: true,
-      heteronym: true,
-      style: pinyin.STYLE_FIRST_LETTER,
-    }),
-  ].flatMap((py) => py.map((el) => el.join('')))
+  const base = {
+    toneType: 'none',
+    type: 'array',
+    v: true,
+    nonZh: 'consecutive',
+  } as const
+
+  return [polyphonic(name, base), polyphonic(name, { ...base, pattern: 'first' })].flatMap(cartesianProduct)
 }
 
 function transformOperatorName(name: string) {
@@ -174,11 +177,11 @@ export async function getOperators() {
     }),
     (el) => el.id,
   ).sort((a, b) => {
-    // 默认的 pinyin.compare() 没有传入 locale 参数，导致在不同的系统上有不同的排序结果，
-    // 所以这里手动实现一下，并带上 locale
+    // pinyin-pro 没有直接提供带 locale 的 compare，所以这里先转成拼音字符串，
+    // 再手动用 localeCompare('zh') 排序，避免不同系统默认 locale 导致排序结果不一致。
     // https://github.com/ZOOT-Plus/zoot-plus-frontend/pull/265
-    const pinyinA = String(pinyin(a.name))
-    const pinyinB = String(pinyin(b.name))
+    const pinyinA = pinyin(a.name, { type: 'array', nonZh: 'consecutive' }).join(',')
+    const pinyinB = pinyin(b.name, { type: 'array', nonZh: 'consecutive' }).join(',')
     return pinyinA.localeCompare(pinyinB, 'zh') || a.id.localeCompare(b.id, 'en')
   })
   return {

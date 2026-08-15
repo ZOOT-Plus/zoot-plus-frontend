@@ -99,7 +99,12 @@ export const ShortCodeImporter: FC<{
             description={t.components.editor.source.ShortCodeImporter.shortcode_description}
             error={errors.code}
           >
-            <InputGroup large placeholder={useNewShortCodeProtocol() ? 'prts://...' : 'maa://...'} value={value || ''} onChange={onChange} />
+            <InputGroup
+              large
+              placeholder={useNewShortCodeProtocol() ? 'prts://...' : 'maa://...'}
+              value={value || ''}
+              onChange={onChange}
+            />
           </FormField2>
 
           <Button disabled={!isValid && !isDirty} intent="primary" loading={pending} type="submit" icon="import" large>
