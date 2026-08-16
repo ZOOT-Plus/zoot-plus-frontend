@@ -2866,6 +2866,14 @@
           "cn": "作者",
           "en": "Author"
         },
+        "operators": {
+          "cn": "所需干员",
+          "en": "Operators"
+        },
+        "no_operators": {
+          "cn": "无干员",
+          "en": "No operators"
+        },
         "render_preview_problem": {
           "cn": "渲染此作业集的预览时出现了问题 Σ(っ °Д °;)っ",
           "en": "There was a problem rendering the preview of this Job set Σ(っ °Д °;)っ"

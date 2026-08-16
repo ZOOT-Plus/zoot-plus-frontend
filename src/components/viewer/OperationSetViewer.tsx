@@ -1,19 +1,23 @@
 import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState, PopoverNext } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
+import { useOperations } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
 import { useAtom } from 'jotai'
-import { ComponentType, FC, useEffect, useState } from 'react'
+import { ComponentType, FC, useEffect, useMemo, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
-import { OperationList } from 'components/OperationList'
+import { OperationListView, type OperationsData } from 'components/OperationList'
 import { Paragraphs } from 'components/Paragraphs'
 import { RelativeTime } from 'components/RelativeTime'
 import { withSuspensable } from 'components/Suspensable'
 import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { OperationSetEditorDialog } from 'components/operation-set/OperationSetEditor'
+import { OperatorAvatar } from 'components/OperatorAvatar'
+import { Operation } from 'models/operation'
+import { findOperatorByName } from 'models/operator'
 import { OperationSet } from 'models/operation-set'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
@@ -152,7 +156,7 @@ export const OperationSetViewer: ComponentType<{
                   className="ml-4"
                   icon="wrench"
                   text={t.components.viewer.OperationSetViewer.manage}
-                  rightIcon="caret-down"
+                  endIcon="caret-down"
                 />
               </PopoverNext>
             )}
@@ -187,51 +191,116 @@ export const OperationSetViewer: ComponentType<{
 )
 
 function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet }) {
-  const t = useTranslation()
-
   return (
     <div className="h-full overflow-auto py-4 px-8 pt-8">
       <H3>{operationSet.name}</H3>
 
-      <div className="grid grid-rows-1 grid-cols-3 gap-8">
-        <div className="flex flex-col">
-          <Paragraphs content={operationSet.description} linkify />
-        </div>
-
-        <div className="flex flex-col items-start select-none tabular-nums">
-          <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
-            <span className="text-gray-800 dark:text-slate-100 font-bold">
-              <RelativeTime moment={operationSet.createTime} />
-            </span>
-          </FactItem>
-
-          <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
-            <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
-              {operationSet.creator}
-            </UserName>
-          </FactItem>
-        </div>
-      </div>
-
-      <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
-
-      <ErrorBoundary
-        fallback={
-          <NonIdealState
-            icon="issue"
-            title={t.components.viewer.OperationSetViewer.render_error}
-            description={t.components.viewer.OperationSetViewer.render_preview_problem}
-            className="h-96 bg-stripe rounded"
-          />
-        }
-      >
-        <OperationSetViewerInnerDetails operationSet={operationSet} />
-      </ErrorBoundary>
+      <OperationSetViewerBody operationSet={operationSet} />
     </div>
   )
 }
 
-function OperationSetViewerInnerDetails({ operationSet }: { operationSet: OperationSet }) {
+const OperationSetViewerBody = withSuspensable(
+  function OperationSetViewerBody({ operationSet }: { operationSet: OperationSet }) {
+    const t = useTranslation()
+
+    const data = useOperations({
+      operationIds: operationSet.copilotIds,
+      suspense: true,
+    })
+
+    return (
+      <>
+        <div className="grid grid-rows-1 grid-cols-3 gap-8">
+          <div className="flex flex-col">
+            <Paragraphs content={operationSet.description} linkify />
+          </div>
+
+          <div className="flex flex-col items-start select-none tabular-nums">
+            <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
+              <span className="text-gray-800 dark:text-slate-100 font-bold">
+                <RelativeTime moment={operationSet.createTime} />
+              </span>
+            </FactItem>
+
+            <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
+              <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
+                {operationSet.creator}
+              </UserName>
+            </FactItem>
+          </div>
+
+          <OperationSetViewerOperators operations={data.operations} />
+        </div>
+
+        <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
+
+        <ErrorBoundary
+          fallback={
+            <NonIdealState
+              icon="issue"
+              title={t.components.viewer.OperationSetViewer.render_error}
+              description={t.components.viewer.OperationSetViewer.render_preview_problem}
+              className="h-96 bg-stripe rounded"
+            />
+          }
+        >
+          <OperationSetViewerInnerDetails operationSet={operationSet} data={data} />
+        </ErrorBoundary>
+      </>
+    )
+  },
+  {
+    pendingTitle: i18nDefer.components.viewer.OperationSetViewer.loading_task_set,
+  },
+)
+
+function OperationSetViewerOperators({ operations }: { operations: Operation[] }) {
+  const t = useTranslation()
+
+  const operatorNames = useMemo(() => {
+    const rarityByName = new Map<string, number>()
+    const push = (name: string) => {
+      if (rarityByName.has(name)) return
+      rarityByName.set(name, findOperatorByName(name)?.rarity ?? 0)
+    }
+
+    for (const operation of operations) {
+      // 干员组（groups[].opers）是“任选其一”的可替换干员，非确定使用，故头像区只展示明确指定的 opers
+      operation.parsedContent.opers?.forEach(({ name }) => push(name))
+    }
+
+    return Array.from(rarityByName.entries())
+      .sort(([, a], [, b]) => b - a)
+      .map(([name]) => name)
+  }, [operations])
+
+  return (
+    <div className="flex flex-col items-start select-none tabular-nums">
+      <FactItem title={t.components.viewer.OperationSetViewer.operators} icon="people">
+        {operatorNames.length === 0 ? (
+          <span className="text-gray-800 dark:text-slate-100 font-bold">
+            {t.components.viewer.OperationSetViewer.no_operators}
+          </span>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {operatorNames.map((name) => (
+              <OperatorAvatar key={name} name={name} className="w-10 h-10" sourceSize={96} />
+            ))}
+          </div>
+        )}
+      </FactItem>
+    </div>
+  )
+}
+
+function OperationSetViewerInnerDetails({
+  operationSet,
+  data,
+}: {
+  operationSet: OperationSet
+  data: OperationsData
+}) {
   const t = useTranslation()
 
   return (
@@ -240,7 +309,7 @@ function OperationSetViewerInnerDetails({ operationSet }: { operationSet: Operat
         {t.components.viewer.OperationSetViewer.task_list}({operationSet.copilotIds.length})
       </H5>
       <div className="flex flex-col mb-4 max-w-screen-2xl">
-        <OperationList operationIds={operationSet.copilotIds} />
+        <OperationListView data={data} />
       </div>
     </div>
   )
