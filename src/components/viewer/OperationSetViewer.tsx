@@ -156,7 +156,7 @@ export const OperationSetViewer: ComponentType<{
                   className="ml-4"
                   icon="wrench"
                   text={t.components.viewer.OperationSetViewer.manage}
-                  endIcon="caret-down"
+                  rightIcon="caret-down"
                 />
               </PopoverNext>
             )}
