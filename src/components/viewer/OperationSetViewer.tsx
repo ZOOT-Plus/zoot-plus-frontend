@@ -150,24 +150,20 @@ export const OperationSetViewer: ComponentType<{
 
             <div className="flex-1" />
 
-            {operationSet.creatorId === auth.userId && (
-              <PopoverNext content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
-                <Button
-                  className="ml-4"
-                  icon="wrench"
-                  text={t.components.viewer.OperationSetViewer.manage}
-                  rightIcon="caret-down"
-                />
-              </PopoverNext>
-            )}
+            <div className="flex flex-wrap items-center gap-2 md:gap-4">
+              {operationSet.creatorId === auth.userId && (
+                <PopoverNext content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
+                  <Button icon="wrench" text={t.components.viewer.OperationSetViewer.manage} rightIcon="caret-down" />
+                </PopoverNext>
+              )}
 
-            <Button
-              className="ml-4"
-              icon="clipboard"
-              text={t.components.viewer.OperationSetViewer.copy_secret_code}
-              intent="primary"
-              onClick={() => copyShortCode({ id: operationSet.id, type: 'operation-set' })}
-            />
+              <Button
+                icon="clipboard"
+                text={t.components.viewer.OperationSetViewer.copy_secret_code}
+                intent="primary"
+                onClick={() => copyShortCode({ id: operationSet.id, type: 'operation-set' })}
+              />
+            </div>
           </>
         }
       >
@@ -192,7 +188,7 @@ export const OperationSetViewer: ComponentType<{
 
 function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet }) {
   return (
-    <div className="h-full overflow-auto py-4 px-8 pt-8">
+    <div className="h-full overflow-auto p-4 md:p-8">
       <H3>{operationSet.name}</H3>
 
       <OperationSetViewerBody operationSet={operationSet} />
@@ -208,15 +204,18 @@ const OperationSetViewerBody = withSuspensable(
       operationIds: operationSet.copilotIds,
       suspense: true,
     })
+    const hasDescription = Boolean(operationSet.description?.trim())
 
     return (
       <>
-        <div className="grid grid-rows-1 grid-cols-3 gap-8">
-          <div className="flex flex-col">
-            <Paragraphs content={operationSet.description} linkify />
-          </div>
-
-          <div className="flex flex-col items-start select-none tabular-nums">
+        <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-x-8">
+          <div
+            className={
+              hasDescription
+                ? 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-2 md:row-start-1'
+                : 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-1 md:row-start-1'
+            }
+          >
             <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
               <span className="text-gray-800 dark:text-slate-100 font-bold">
                 <RelativeTime moment={operationSet.createTime} />
@@ -230,7 +229,15 @@ const OperationSetViewerBody = withSuspensable(
             </FactItem>
           </div>
 
-          <OperationSetViewerOperators operations={data.operations} />
+          {hasDescription && (
+            <div className="flex flex-col md:col-start-1 md:row-start-1 md:row-span-2">
+              <Paragraphs content={operationSet.description} linkify />
+            </div>
+          )}
+
+          <div className={hasDescription ? 'md:col-start-2 md:row-start-2' : 'md:col-start-2 md:row-start-1'}>
+            <OperationSetViewerOperators operations={data.operations} />
+          </div>
         </div>
 
         <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
@@ -294,13 +301,7 @@ function OperationSetViewerOperators({ operations }: { operations: Operation[] }
   )
 }
 
-function OperationSetViewerInnerDetails({
-  operationSet,
-  data,
-}: {
-  operationSet: OperationSet
-  data: OperationsData
-}) {
+function OperationSetViewerInnerDetails({ operationSet, data }: { operationSet: OperationSet; data: OperationsData }) {
   const t = useTranslation()
 
   return (
