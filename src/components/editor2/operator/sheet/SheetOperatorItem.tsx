@@ -79,8 +79,8 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
         'flex items-center w-full h-full relative cursor-pointer flex-col',
         selectedInView && 'scale-90 bg-gray-200',
       )}
-      elevation={grouped ? 0 : 2}
-      interactive={!selectedInView}
+      elevation={0}
+      interactive={false}
       onClick={onOperatorSelect}
     >
       <div className="flex min-h-0 grow w-full flex-col items-center justify-center gap-2 px-2 py-3">
