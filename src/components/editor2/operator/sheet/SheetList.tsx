@@ -3,7 +3,6 @@ import { Button, PopoverNext } from '@blueprintjs/core'
 import { FC, useCallback, useEffect, useRef } from 'react'
 
 import { OperatorBackToTop } from 'components/editor/operator/sheet/sheetOperator/toolBox/OperatorBackToTop'
-import { OperatorMutipleSelect } from 'components/editor/operator/sheet/sheetOperator/toolBox/OperatorMutipleSelect'
 import { OperatorRaritySelect } from 'components/editor/operator/sheet/sheetOperator/toolBox/OperatorRaritySelect'
 
 import { OperatorNoData } from '../../../editor/operator/sheet/SheetNoneData'
@@ -14,6 +13,8 @@ import {
 import { ShowMore } from '../../../editor/operator/sheet/sheetOperator/ShowMore'
 import { ProfClassification } from './ProfClassification'
 import { SheetOperatorItem } from './SheetOperatorItem'
+import { OperatorNameSearch } from './toolBox/OperatorNameSearch'
+import { OperatorMutipleSelect } from './toolBox/OperatorMutipleSelect'
 
 interface SheetListProps {}
 
@@ -33,13 +34,14 @@ export const SheetList: FC<SheetListProps> = () => {
   const {
     operatorFiltered: { data: operatorFilteredData },
     useProfFilterState: [{ selectedProf }],
+    useNameFilterState: [{ query }],
     usePaginationFilterState: [_, setPaginationFilter],
   } = useOperatorFilterProvider()
 
   useEffect(() => {
     toTop()
     setPaginationFilter(defaultPagination)
-  }, [selectedProf, setPaginationFilter, toTop])
+  }, [query, selectedProf, setPaginationFilter, toTop])
 
   return (
     <div className="flex flex-col h-full">
@@ -49,7 +51,7 @@ export const SheetList: FC<SheetListProps> = () => {
             <>
               <div
                 key="operatorContainer"
-                className="grid auto-rows-auto grid-cols-[repeat(auto-fill,minmax(128px,128px))]"
+                className="grid auto-rows-auto grid-cols-[repeat(auto-fill,minmax(128px,128px))] gap-[1px]"
                 ref={operatorScrollRef}
               >
                 {operatorFilteredData.map(({ name }, index) => (
@@ -67,9 +69,10 @@ export const SheetList: FC<SheetListProps> = () => {
         <div className="h-full sticky top-0 self-start shrink-0 z-10 flex flex-col items-center justify-center">
           <PopoverNext
             content={
-              <>
+              <div className="min-w-52">
+                <OperatorNameSearch />
                 <OperatorRaritySelect />
-              </>
+              </div>
             }
           >
             <Button minimal icon="filter-list" />

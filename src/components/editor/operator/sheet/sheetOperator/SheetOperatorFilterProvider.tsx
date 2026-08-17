@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+import Fuse from 'fuse.js'
 import { Dispatch, FC, ReactNode, SetStateAction, createContext, useContext, useMemo, useState } from 'react'
 
 import { OperatorInfo as ModelsOperator, OPERATORS } from 'models/operator'
@@ -37,6 +38,13 @@ export const defaultRarityFilter: RarityFilter = {
   reverse: false,
 }
 
+export interface NameFilter {
+  query: string
+}
+export const defaultNameFilter: NameFilter = {
+  query: '',
+}
+
 export interface PaginationFilter {
   size: number
   current: number
@@ -56,6 +64,7 @@ type OperatorFilterProviderData = {
   usePaginationFilterState: UseState<PaginationFilter>
   useProfFilterState: UseState<ProfFilter>
   useRarityFilterState: UseState<RarityFilter>
+  useNameFilterState: UseState<NameFilter>
   operatorFiltered: {
     data: OperatorInfo[]
     meta: {
@@ -70,6 +79,7 @@ export const OperatorFilterProvider: FC<OperatorFilterProviderProp> = ({ childre
   const [paginationFilter, setPaginationFilter] = useState<PaginationFilter>(defaultPagination)
   const [profFilter, setProfFilter] = useState<ProfFilter>(defaultProfFilter)
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>(defaultRarityFilter)
+  const [nameFilter, setNameFilter] = useState<NameFilter>(defaultNameFilter)
 
   return (
     <OperatorFilterContext.Provider
@@ -77,7 +87,8 @@ export const OperatorFilterProvider: FC<OperatorFilterProviderProp> = ({ childre
         usePaginationFilterState: [paginationFilter, setPaginationFilter],
         useProfFilterState: [profFilter, setProfFilter],
         useRarityFilterState: [rarityFilter, setRarityFilter],
-        operatorFiltered: useOperatorFiltered(profFilter, paginationFilter, rarityFilter),
+        useNameFilterState: [nameFilter, setNameFilter],
+        operatorFiltered: useOperatorFiltered(profFilter, paginationFilter, rarityFilter, nameFilter),
       }}
     >
       {children}
@@ -102,21 +113,24 @@ const useOperatorFiltered = (
   profFilter: ProfFilter,
   paginationFilter: PaginationFilter,
   rarityFilter: RarityFilter,
+  nameFilter: NameFilter,
 ) => {
   // Priority: prof > sub prof > rarity/rarityReverse
   // filterResult init and prof filter about
   const profFilterResult = useProfFilterHandle(profFilter)
   //   rarity about
   const rarityFilterResult = rarityFilterHandle(rarityFilter, profFilterResult)
+  //   name search about
+  const nameFilterResult = nameFilterHandle(nameFilter, rarityFilterResult)
   //   pagination about
   //   filterResult
-  const filterResult = paginationFilterHandle(paginationFilter, rarityFilterResult)
+  const filterResult = paginationFilterHandle(paginationFilter, nameFilterResult)
 
   return {
     // return data after being paginated
     data: filterResult,
     meta: {
-      dataTotal: profFilterResult.length,
+      dataTotal: nameFilterResult.length,
     },
   }
 }
@@ -193,3 +207,15 @@ const rarityFilterHandle = ({ selectedRarity, reverse }: RarityFilter, originDat
   originData
     .filter(({ rarity }) => selectedRarity.includes(rarity))
     .sort(({ rarity: rarityA }, { rarity: rarityB }) => (reverse ? rarityA - rarityB : rarityB - rarityA))
+
+const nameFilterHandle = ({ query }: NameFilter, originData: OperatorInfo[] = OPERATORS) => {
+  const trimmedQuery = query.trim()
+  if (!trimmedQuery) return originData
+
+  return new Fuse(originData, {
+    keys: ['name', 'name_en', 'alias', 'alt_name'],
+    threshold: 0.3,
+  })
+    .search(trimmedQuery)
+    .map((el) => el.item)
+}
