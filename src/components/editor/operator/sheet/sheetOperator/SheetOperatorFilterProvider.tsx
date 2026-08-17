@@ -1,4 +1,3 @@
-import Fuse from 'fuse.js'
 import { useAtomValue } from 'jotai'
 import { Dispatch, FC, ReactNode, SetStateAction, createContext, useContext, useMemo, useState } from 'react'
 
@@ -8,6 +7,7 @@ import { favOperatorAtom } from 'store/useFavOperators'
 import { useSheet } from '../SheetProvider'
 
 type OperatorInfo = ModelsOperator
+const operatorInfoByName = new Map(OPERATORS.map((operator) => [operator.name, operator]))
 
 export enum DEFAULTPROFID {
   ALL = 'allProf',
@@ -38,13 +38,6 @@ export const defaultRarityFilter: RarityFilter = {
   reverse: false,
 }
 
-export interface NameFilter {
-  query: string
-}
-export const defaultNameFilter: NameFilter = {
-  query: '',
-}
-
 export interface PaginationFilter {
   size: number
   current: number
@@ -64,7 +57,6 @@ type OperatorFilterProviderData = {
   usePaginationFilterState: UseState<PaginationFilter>
   useProfFilterState: UseState<ProfFilter>
   useRarityFilterState: UseState<RarityFilter>
-  useNameFilterState: UseState<NameFilter>
   operatorFiltered: {
     data: OperatorInfo[]
     meta: {
@@ -79,7 +71,6 @@ export const OperatorFilterProvider: FC<OperatorFilterProviderProp> = ({ childre
   const [paginationFilter, setPaginationFilter] = useState<PaginationFilter>(defaultPagination)
   const [profFilter, setProfFilter] = useState<ProfFilter>(defaultProfFilter)
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>(defaultRarityFilter)
-  const [nameFilter, setNameFilter] = useState<NameFilter>(defaultNameFilter)
 
   return (
     <OperatorFilterContext.Provider
@@ -87,8 +78,7 @@ export const OperatorFilterProvider: FC<OperatorFilterProviderProp> = ({ childre
         usePaginationFilterState: [paginationFilter, setPaginationFilter],
         useProfFilterState: [profFilter, setProfFilter],
         useRarityFilterState: [rarityFilter, setRarityFilter],
-        useNameFilterState: [nameFilter, setNameFilter],
-        operatorFiltered: useOperatorFiltered(profFilter, paginationFilter, rarityFilter, nameFilter),
+        operatorFiltered: useOperatorFiltered(profFilter, paginationFilter, rarityFilter),
       }}
     >
       {children}
@@ -113,18 +103,15 @@ const useOperatorFiltered = (
   profFilter: ProfFilter,
   paginationFilter: PaginationFilter,
   rarityFilter: RarityFilter,
-  nameFilter: NameFilter,
 ) => {
   const { allOperators, favOperatorsInfo, selectedOperatorNames } = useOperatorFilterSource()
 
   const filterResult = useMemo(() => {
     const sourceOperators =
       profFilter.selectedProf[0] === DEFAULTPROFID.FAV ? favOperatorsInfo : allOperators
-    // do fuse search first, then filter by prof and rarity
-    const fuseFilteredOperators = fuseFilterHandle(createFuseFilterPayload({ nameFilter }), sourceOperators)
     const filteredOperators: OperatorInfo[] = []
 
-    for (const operator of fuseFilteredOperators) {
+    for (const operator of sourceOperators) {
       if (
         matchProfFilter(operator, profFilter, selectedOperatorNames) &&
         matchRarityFilter(operator, rarityFilter)
@@ -138,7 +125,7 @@ const useOperatorFiltered = (
     )
 
     return filteredOperators
-  }, [allOperators, favOperatorsInfo, nameFilter, profFilter, rarityFilter, selectedOperatorNames])
+  }, [allOperators, favOperatorsInfo, profFilter, rarityFilter, selectedOperatorNames])
 
   return {
     // return data after being paginated
@@ -150,61 +137,41 @@ const useOperatorFiltered = (
 }
 
 const useOperatorFilterSource = () => {
-  const { existedOperators } = useSheet()
+  const { existedOperators, existedGroups } = useSheet()
   const favOperators = useAtomValue(favOperatorAtom)
+  const existedSheetOperators = useMemo(
+    () => [...existedOperators, ...existedGroups.flatMap(({ opers }) => opers ?? [])],
+    [existedGroups, existedOperators],
+  )
 
   const customizedOperatorsInfo = useMemo<OperatorInfo[]>(
-    () =>
-      existedOperators
-        .map(({ name }) =>
-          OPERATORS.find(({ name: OPERName }) => OPERName === name) ? undefined : generateCustomizedOperInfo(name),
-        )
-        .filter((item) => !!item) as OperatorInfo[],
-    [existedOperators],
+    () => {
+      const customizedOperators = new Map<string, OperatorInfo>()
+
+      existedSheetOperators.forEach(({ name }) => {
+        if (!operatorInfoByName.has(name)) {
+          customizedOperators.set(name, generateCustomizedOperInfo(name))
+        }
+      })
+
+      return [...customizedOperators.values()]
+    },
+    [existedSheetOperators],
   )
   const allOperators = useMemo(() => [...OPERATORS, ...customizedOperatorsInfo], [customizedOperatorsInfo])
   const favOperatorsInfo = useMemo<OperatorInfo[]>(
     () =>
       favOperators.map(
-        ({ name }) => OPERATORS.find(({ name: OPERName }) => OPERName === name) || generateCustomizedOperInfo(name),
+        ({ name }) => operatorInfoByName.get(name) || generateCustomizedOperInfo(name),
       ),
     [favOperators],
   )
   const selectedOperatorNames = useMemo(
-    () => new Set(existedOperators.map(({ name }) => name)),
-    [existedOperators],
+    () => new Set(existedSheetOperators.map(({ name }) => name)),
+    [existedSheetOperators],
   )
 
   return { allOperators, favOperatorsInfo, selectedOperatorNames }
-}
-
-interface FuseFilterPayload {
-  query: string
-  keys: string[]
-}
-
-const createFuseFilterPayload = ({ nameFilter }: { nameFilter: NameFilter }): FuseFilterPayload | undefined => {
-  const query = nameFilter.query.trim()
-  if (!query) return undefined
-
-  return {
-    query,
-    keys: ['name', 'name_en', 'alias', 'alt_name'],
-  }
-}
-
-const fuseFilterHandle = (
-  payload: FuseFilterPayload | undefined,
-  originData: OperatorInfo[] = OPERATORS,
-) => {
-  if (!payload) return originData
-
-  return new Fuse(originData, {
-    keys: payload.keys,
-    threshold: 0.3,
-  })
-    .search(payload.query)
-    .map((el) => el.item)
 }
 
 const matchProfFilter = (

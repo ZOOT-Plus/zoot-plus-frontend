@@ -14,7 +14,6 @@ import { ShowMore } from '../../../editor/operator/sheet/sheetOperator/ShowMore'
 import { OperatorFilterSummary } from './OperatorFilterSummary'
 import { ProfClassification } from './ProfClassification'
 import { SheetOperatorItem } from './SheetOperatorItem'
-import { OperatorNameSearch } from './toolBox/OperatorNameSearch'
 import { OperatorMutipleSelect } from './toolBox/OperatorMutipleSelect'
 
 interface SheetListProps {}
@@ -35,7 +34,6 @@ export const SheetList: FC<SheetListProps> = () => {
   const {
     operatorFiltered: { data: operatorFilteredData },
     useProfFilterState: [{ selectedProf }],
-    useNameFilterState: [{ query }],
     useRarityFilterState: [{ selectedRarity, reverse }],
     usePaginationFilterState: [_, setPaginationFilter],
   } = useOperatorFilterProvider()
@@ -43,7 +41,7 @@ export const SheetList: FC<SheetListProps> = () => {
   useEffect(() => {
     toTop()
     setPaginationFilter(defaultPagination)
-  }, [query, reverse, selectedProf, selectedRarity, setPaginationFilter, toTop])
+  }, [reverse, selectedProf, selectedRarity, setPaginationFilter, toTop])
 
   return (
     <div className="flex flex-col h-full">
@@ -73,7 +71,6 @@ export const SheetList: FC<SheetListProps> = () => {
           <PopoverNext
             content={
               <div className="min-w-52">
-                <OperatorNameSearch />
                 <OperatorRaritySelect />
               </div>
             }

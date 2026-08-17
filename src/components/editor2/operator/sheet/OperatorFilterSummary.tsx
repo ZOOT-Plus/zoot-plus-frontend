@@ -7,7 +7,6 @@ import { PROFESSIONS } from '../../../../models/operator'
 import {
   DEFAULTPROFID,
   DEFAULTSUBPROFID,
-  defaultNameFilter,
   defaultPagination,
   defaultProfFilter,
   defaultRarityFilter,
@@ -19,7 +18,6 @@ export const OperatorFilterSummary = () => {
   const language = useAtomValue(languageAtom)
   const {
     useProfFilterState: [{ selectedProf }, setProfFilter],
-    useNameFilterState: [{ query }, setNameFilter],
     useRarityFilterState: [{ selectedRarity, reverse }, setRarityFilter],
     usePaginationFilterState: [_, setPaginationFilter],
   } = useOperatorFilterProvider()
@@ -64,18 +62,6 @@ export const OperatorFilterSummary = () => {
   const subProfName = getSubProfName(selectedProf[0], selectedProf[1])
 
   const filters = [
-    query.trim()
-      ? {
-          key: 'search',
-          label: t.components.editor2.OperatorFilterSummary.search({
-            query: query.trim(),
-          }),
-          onRemove: () => {
-            setNameFilter(defaultNameFilter)
-            resetPagination()
-          },
-        }
-      : undefined,
     profName
       ? {
           key: 'profession',

@@ -902,10 +902,6 @@
           "cn": "当前筛选",
           "en": "Active filters"
         },
-        "search": {
-          "cn": "搜索：{{query}}",
-          "en": "Search: {{query}}"
-        },
         "profession": {
           "cn": "职业：{{name}}",
           "en": "Class: {{name}}"
