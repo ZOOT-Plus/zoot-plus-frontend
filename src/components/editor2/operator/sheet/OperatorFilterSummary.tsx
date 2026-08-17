@@ -125,12 +125,12 @@ export const OperatorFilterSummary = () => {
   }
 
   return (
-    <div className="sticky -top-4 z-20 mb-2 flex min-h-8 flex-wrap items-center justify-end gap-1 border-y border-gray-200 bg-zinc-50 py-4 dark:border-gray-700 dark:bg-[#383e47]">
+    <div className="operator-filter-summary sticky -top-4 z-20 mb-2 flex min-h-8 flex-wrap items-center justify-end gap-1 border-y border-gray-200 bg-zinc-50 py-4 dark:border-gray-700 dark:bg-[#2f343c]">
       <span className="text-xs font-semibold text-gray-500">
         {t.components.editor2.OperatorFilterSummary.current}
       </span>
       {filters.map(({ key, label, onRemove }) => (
-        <Tag key={key} minimal onRemove={onRemove}>
+        <Tag key={key} className="dark:!bg-slate-700 dark:!text-slate-100" minimal onRemove={onRemove}>
           {label}
         </Tag>
       ))}
