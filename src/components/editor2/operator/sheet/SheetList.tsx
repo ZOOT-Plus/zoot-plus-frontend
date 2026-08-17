@@ -11,6 +11,7 @@ import {
   useOperatorFilterProvider,
 } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorFilterProvider'
 import { ShowMore } from '../../../editor/operator/sheet/sheetOperator/ShowMore'
+import { OperatorFilterSummary } from './OperatorFilterSummary'
 import { ProfClassification } from './ProfClassification'
 import { SheetOperatorItem } from './SheetOperatorItem'
 import { OperatorNameSearch } from './toolBox/OperatorNameSearch'
@@ -35,24 +36,26 @@ export const SheetList: FC<SheetListProps> = () => {
     operatorFiltered: { data: operatorFilteredData },
     useProfFilterState: [{ selectedProf }],
     useNameFilterState: [{ query }],
+    useRarityFilterState: [{ selectedRarity, reverse }],
     usePaginationFilterState: [_, setPaginationFilter],
   } = useOperatorFilterProvider()
 
   useEffect(() => {
     toTop()
     setPaginationFilter(defaultPagination)
-  }, [query, selectedProf, setPaginationFilter, toTop])
+  }, [query, reverse, selectedProf, selectedRarity, setPaginationFilter, toTop])
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex h-full w-full overflow-auto">
-        <div className="grow px-1 py-4">
+      <div className="flex h-full w-full overflow-hidden">
+        <div className="grow min-w-0 overflow-auto px-1 py-4">
+          <div ref={operatorScrollRef} />
+          <OperatorFilterSummary />
           {operatorFilteredData.length ? (
             <>
               <div
                 key="operatorContainer"
                 className="grid auto-rows-auto grid-cols-[repeat(auto-fill,minmax(128px,128px))] gap-[1px]"
-                ref={operatorScrollRef}
               >
                 {operatorFilteredData.map(({ name }, index) => (
                   <div className="flex items-center flex-0 w-full h-32" key={index}>
@@ -66,7 +69,7 @@ export const SheetList: FC<SheetListProps> = () => {
             <OperatorNoData />
           )}
         </div>
-        <div className="h-full sticky top-0 self-start shrink-0 z-10 flex flex-col items-center justify-center">
+        <div className="h-full self-start shrink-0 z-10 flex flex-col items-center justify-center">
           <PopoverNext
             content={
               <div className="min-w-52">

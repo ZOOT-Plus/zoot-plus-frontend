@@ -897,6 +897,36 @@
           "en": "Use Custom Name \"{{name}}\""
         }
       },
+      "OperatorFilterSummary": {
+        "current": {
+          "cn": "当前筛选",
+          "en": "Active filters"
+        },
+        "search": {
+          "cn": "搜索：{{query}}",
+          "en": "Search: {{query}}"
+        },
+        "profession": {
+          "cn": "职业：{{name}}",
+          "en": "Class: {{name}}"
+        },
+        "sub_profession": {
+          "cn": "分支：{{name}}",
+          "en": "Branch: {{name}}"
+        },
+        "rarity": {
+          "cn": "星级：{{rarities}}（{{order}}）",
+          "en": "Rarity: {{rarities}} ({{order}})"
+        },
+        "ascending": {
+          "cn": "升序",
+          "en": "ascending"
+        },
+        "descending": {
+          "cn": "降序",
+          "en": "descending"
+        }
+      },
       "misc": {
         "already_exists": {
           "cn": "干员 \"{{name}}\" 已存在",
