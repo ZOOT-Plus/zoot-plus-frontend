@@ -11,9 +11,9 @@ import {
   defaultPagination,
   useOperatorFilterProvider,
 } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorFilterProvider'
-import { SheetOperatorItem } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorItem'
 import { ShowMore } from '../../../editor/operator/sheet/sheetOperator/ShowMore'
 import { ProfClassification } from './ProfClassification'
+import { SheetOperatorItem } from './SheetOperatorItem'
 
 interface SheetListProps {}
 
@@ -49,7 +49,7 @@ export const SheetList: FC<SheetListProps> = () => {
             <>
               <div
                 key="operatorContainer"
-                className="grid auto-rows-auto grid-cols-[repeat(auto-fit,minmax(128px,1fr))]"
+                className="grid auto-rows-auto grid-cols-[repeat(auto-fill,minmax(128px,128px))]"
                 ref={operatorScrollRef}
               >
                 {operatorFilteredData.map(({ name }, index) => (
