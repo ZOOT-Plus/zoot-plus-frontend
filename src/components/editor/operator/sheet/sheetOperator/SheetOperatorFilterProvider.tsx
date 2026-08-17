@@ -1,5 +1,5 @@
-import { useAtomValue } from 'jotai'
 import Fuse from 'fuse.js'
+import { useAtomValue } from 'jotai'
 import { Dispatch, FC, ReactNode, SetStateAction, createContext, useContext, useMemo, useState } from 'react'
 
 import { OperatorInfo as ModelsOperator, OPERATORS } from 'models/operator'
@@ -115,37 +115,44 @@ const useOperatorFiltered = (
   rarityFilter: RarityFilter,
   nameFilter: NameFilter,
 ) => {
-  // Priority: prof > sub prof > rarity/rarityReverse
-  // filterResult init and prof filter about
-  const profFilterResult = useProfFilterHandle(profFilter)
-  //   rarity about
-  const rarityFilterResult = rarityFilterHandle(rarityFilter, profFilterResult)
-  //   name search about
-  const nameFilterResult = nameFilterHandle(nameFilter, rarityFilterResult)
-  //   pagination about
-  //   filterResult
-  const filterResult = paginationFilterHandle(paginationFilter, nameFilterResult)
+  const { allOperators, favOperatorsInfo, selectedOperatorNames } = useOperatorFilterSource()
+
+  const filterResult = useMemo(() => {
+    const sourceOperators =
+      profFilter.selectedProf[0] === DEFAULTPROFID.FAV ? favOperatorsInfo : allOperators
+    // do fuse search first, then filter by prof and rarity
+    const fuseFilteredOperators = fuseFilterHandle(createFuseFilterPayload({ nameFilter }), sourceOperators)
+    const filteredOperators: OperatorInfo[] = []
+
+    for (const operator of fuseFilteredOperators) {
+      if (
+        matchProfFilter(operator, profFilter, selectedOperatorNames) &&
+        matchRarityFilter(operator, rarityFilter)
+      ) {
+        filteredOperators.push(operator)
+      }
+    }
+
+    filteredOperators.sort(({ rarity: rarityA }, { rarity: rarityB }) =>
+      rarityFilter.reverse ? rarityA - rarityB : rarityB - rarityA,
+    )
+
+    return filteredOperators
+  }, [allOperators, favOperatorsInfo, nameFilter, profFilter, rarityFilter, selectedOperatorNames])
 
   return {
     // return data after being paginated
-    data: filterResult,
+    data: filterResult.slice(0, paginationFilter.current * paginationFilter.size),
     meta: {
-      dataTotal: nameFilterResult.length,
+      dataTotal: filterResult.length,
     },
   }
 }
 
-const useProfFilterHandle = (
-  profFilter: ProfFilter = {
-    selectedProf: [DEFAULTPROFID.ALL, DEFAULTSUBPROFID.ALL],
-  },
-) => {
-  const {
-    selectedProf: [prof, subProf],
-  } = profFilter
+const useOperatorFilterSource = () => {
   const { existedOperators } = useSheet()
-
   const favOperators = useAtomValue(favOperatorAtom)
+
   const customizedOperatorsInfo = useMemo<OperatorInfo[]>(
     () =>
       existedOperators
@@ -155,6 +162,7 @@ const useProfFilterHandle = (
         .filter((item) => !!item) as OperatorInfo[],
     [existedOperators],
   )
+  const allOperators = useMemo(() => [...OPERATORS, ...customizedOperatorsInfo], [customizedOperatorsInfo])
   const favOperatorsInfo = useMemo<OperatorInfo[]>(
     () =>
       favOperators.map(
@@ -162,60 +170,67 @@ const useProfFilterHandle = (
       ),
     [favOperators],
   )
+  const selectedOperatorNames = useMemo(
+    () => new Set(existedOperators.map(({ name }) => name)),
+    [existedOperators],
+  )
 
-  let operatorsFilteredByProf: OperatorInfo[] = []
-  const OPERATORSWITHINCUSTOMIZED = [...OPERATORS, ...customizedOperatorsInfo]
-  switch (prof) {
-    case DEFAULTPROFID.ALL: {
-      operatorsFilteredByProf = OPERATORSWITHINCUSTOMIZED
-      break
-    }
-    case DEFAULTPROFID.FAV: {
-      operatorsFilteredByProf = favOperatorsInfo
-      break
-    }
-    case DEFAULTPROFID.OTHERS: {
-      operatorsFilteredByProf = OPERATORSWITHINCUSTOMIZED.filter(({ prof }) => prof === 'TOKEN')
-      break
-    }
+  return { allOperators, favOperatorsInfo, selectedOperatorNames }
+}
 
-    default: {
-      operatorsFilteredByProf = OPERATORSWITHINCUSTOMIZED.filter(({ prof: OPERProf }) => OPERProf === prof)
-      break
-    }
-  }
+interface FuseFilterPayload {
+  query: string
+  keys: string[]
+}
 
-  switch (subProf) {
-    case DEFAULTSUBPROFID.ALL: {
-      return operatorsFilteredByProf
-    }
-    case DEFAULTSUBPROFID.SELECTED: {
-      return operatorsFilteredByProf.filter(
-        ({ name }) => !!existedOperators.find(({ name: existedName }) => existedName === name),
-      )
-    }
-    default: {
-      return operatorsFilteredByProf.filter(({ subProf: operatorSubProf }) => operatorSubProf === subProf)
-    }
+const createFuseFilterPayload = ({ nameFilter }: { nameFilter: NameFilter }): FuseFilterPayload | undefined => {
+  const query = nameFilter.query.trim()
+  if (!query) return undefined
+
+  return {
+    query,
+    keys: ['name', 'name_en', 'alias', 'alt_name'],
   }
 }
 
-const paginationFilterHandle = ({ current, size }: PaginationFilter, originData: OperatorInfo[] = OPERATORS) =>
-  originData.slice(0, current * size)
-
-const rarityFilterHandle = ({ selectedRarity, reverse }: RarityFilter, originData: OperatorInfo[] = OPERATORS) =>
-  originData
-    .filter(({ rarity }) => selectedRarity.includes(rarity))
-    .sort(({ rarity: rarityA }, { rarity: rarityB }) => (reverse ? rarityA - rarityB : rarityB - rarityA))
-
-const nameFilterHandle = ({ query }: NameFilter, originData: OperatorInfo[] = OPERATORS) => {
-  const trimmedQuery = query.trim()
-  if (!trimmedQuery) return originData
+const fuseFilterHandle = (
+  payload: FuseFilterPayload | undefined,
+  originData: OperatorInfo[] = OPERATORS,
+) => {
+  if (!payload) return originData
 
   return new Fuse(originData, {
-    keys: ['name', 'name_en', 'alias', 'alt_name'],
+    keys: payload.keys,
     threshold: 0.3,
   })
-    .search(trimmedQuery)
+    .search(payload.query)
     .map((el) => el.item)
+}
+
+const matchProfFilter = (
+  operator: OperatorInfo,
+  {
+    selectedProf: [prof, subProf],
+  }: ProfFilter,
+  selectedOperatorNames: Set<string>,
+) => {
+  const profMatched =
+    prof === DEFAULTPROFID.ALL ||
+    prof === DEFAULTPROFID.FAV ||
+    (prof === DEFAULTPROFID.OTHERS ? operator.prof === 'TOKEN' : operator.prof === prof)
+
+  if (!profMatched) return false
+
+  switch (subProf) {
+    case DEFAULTSUBPROFID.ALL:
+      return true
+    case DEFAULTSUBPROFID.SELECTED:
+      return selectedOperatorNames.has(operator.name)
+    default:
+      return operator.subProf === subProf
+  }
+}
+
+const matchRarityFilter = ({ rarity }: OperatorInfo, { selectedRarity }: RarityFilter) => {
+  return selectedRarity.includes(rarity)
 }
