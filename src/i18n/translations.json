@@ -824,6 +824,14 @@
           "cn": "精英{{level}}",
           "en": "Elite {{level}}"
         },
+        "level": {
+          "cn": "等级（可使用鼠标滚轮调整）",
+          "en": "Level (use mouse wheel to adjust)"
+        },
+        "level_unset": {
+          "cn": "未设置等级",
+          "en": "Level not set"
+        },
         "module": {
           "cn": "模组",
           "en": "Module"
@@ -839,6 +847,10 @@
             "0": "Switch to Original Module",
             "other": "Switch to {{name}} Module"
           }
+        },
+        "selected_skill": {
+          "cn": "{{skill}}（可使用鼠标滚轮调整等级）",
+          "en": "{{skill}} (use mouse wheel to adjust level)"
         },
         "skill_not_available": {
           "cn": "当前等级未解锁该技能",
