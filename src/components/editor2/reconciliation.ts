@@ -1,10 +1,11 @@
 import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
-import { defaults, uniqueId } from 'lodash-es'
+import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
 import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
@@ -51,8 +52,18 @@ export function createGroup(initialValues: Partial<Omit<EditorGroup, 'id' | 'ope
   return group
 }
 
-export function createOperator(initialValues: Omit<EditorOperator, 'id'>): EditorOperator {
-  const operator: EditorOperator = defaults({ id: uniqueId() }, initialValues)
+export function createOperator(
+  initialValues: Omit<EditorOperator, 'id'>,
+  applyDefaultRequirements = true,
+): EditorOperator {
+  const info = findOperatorByName(initialValues.name)
+  const shouldApplyDefaultRequirements = applyDefaultRequirements && (!info || info.prof !== 'TOKEN')
+  const defaultRequirements = shouldApplyDefaultRequirements ? getDefaultRequirements(info?.rarity) : undefined
+  const operator: EditorOperator = defaultsDeep(
+    { id: uniqueId() } satisfies Omit<EditorOperator, 'name'>,
+    initialValues,
+    { requirements: defaultRequirements } satisfies Omit<EditorOperator, 'id' | 'name'>,
+  )
   return operator
 }
 
