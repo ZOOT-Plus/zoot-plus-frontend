@@ -577,17 +577,17 @@
           "cn": "默认显示验证错误",
           "en": "Show Validation Errors by Default"
         },
-        "operator_defaults": {
-          "cn": "干员默认值",
-          "en": "Operator Defaults"
+        "operator_presets": {
+          "cn": "干员预设",
+          "en": "Operator Presets"
         },
         "reset_to_default": {
-          "cn": "重置所有数据为默认值",
-          "en": "Reset all the values to default"
+          "cn": "重置所有选项为默认值",
+          "en": "Reset all the options to default"
         },
-        "defaults_when_adding": {
-          "cn": "添加干员时使用的默认值",
-          "en": "Default values when adding an operator"
+        "presets_when_adding": {
+          "cn": "添加干员时使用的预设值",
+          "en": "Presets when adding an operator"
         },
         "rarity": {
           "cn": {

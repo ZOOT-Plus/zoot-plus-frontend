@@ -38,7 +38,7 @@ export const Settings = (props: SettingsProps) => {
               onChange={(e) => setConfig({ showErrorsByDefault: e.currentTarget.checked })}
             />
           </FormGroup>
-          <FormGroup label={t.components.editor2.Settings.operator_defaults}>
+          <FormGroup label={t.components.editor2.Settings.operator_presets}>
             <OperatorPresetSettings />
           </FormGroup>
           <FormGroup

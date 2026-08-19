@@ -23,9 +23,9 @@ export const OperatorPresetSettings = (props: OperatorPresetSettingsProps) => {
         text={t.components.editor2.Settings.edit}
       />
 
-      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} title={t.components.editor2.Settings.operator_defaults}>
+      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} title={t.components.editor2.Settings.operator_presets}>
         <DialogBody>
-          <FormGroup label={t.components.editor2.Settings.defaults_when_adding}>
+          <FormGroup label={t.components.editor2.Settings.presets_when_adding}>
             <div className="grid [grid-template-columns:repeat(2,minmax(0,auto))] gap-2 justify-start items-center">
               {[6, 5, 4, 3, 2, 1, 0].map((rarity) => (
                 <Fragment key={rarity}>
