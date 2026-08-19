@@ -1,4 +1,5 @@
 import {
+  AnchorButton,
   Button,
   ButtonGroup,
   Callout,
@@ -13,20 +14,19 @@ import {
   MenuDivider,
   MenuItem,
   NonIdealState,
+  PopoverNext,
   Switch,
   Tag,
-  PopoverNext,
   Tooltip,
-  AnchorButton,
 } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
 import { banComments, deleteOperation, rateOperation, useOperation, useRefreshOperations } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
-import { BanCommentsStatusEnum, CopilotSetStatus } from 'zoot-plus-client'
 import { ComponentType, FC, useEffect, useState } from 'react'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
+import { BanCommentsStatusEnum, CopilotSetStatus } from 'zoot-plus-client'
 
 import { FactItem } from 'components/FactItem'
 import { HelperText } from 'components/HelperText'
@@ -52,7 +52,6 @@ import {
   getModuleName,
   getSkillCount,
   useLocalizedOperatorName,
-  withDefaultRequirements,
 } from '../../models/operator'
 import { gridModeAtom } from '../../store/pref'
 import { formatError } from '../../utils/error'
@@ -357,12 +356,11 @@ export const OperationViewer: ComponentType<{
 
 const OperatorCard: FC<{
   operator: CopilotDocV1.Operator
-  version?: number
-}> = ({ operator, version = 1 }) => {
+}> = ({ operator }) => {
   const t = useTranslation()
   const displayName = useLocalizedOperatorName(operator.name)
   const info = OPERATORS.find((o) => o.name === operator.name)
-  const { level, elite, skillLevel, module } = withDefaultRequirements(operator.requirements, info?.rarity)
+  const { level, elite, skillLevel, module } = operator.requirements ?? {}
   const skillCount = info ? Math.max(getSkillCount(info), operator.skill ?? 1) : 3
 
   return (
@@ -376,7 +374,7 @@ const OperatorCard: FC<{
             fallback={displayName}
             sourceSize={96}
           />
-          {module !== CopilotDocV1.Module.Default && (
+          {module !== undefined && module !== CopilotDocV1.Module.Default && (
             <div
               title={t.components.viewer.OperationViewer.module_title({
                 count: module,
@@ -397,19 +395,19 @@ const OperatorCard: FC<{
           />
         )}
       </div>
-      {version >= 2 && info?.prof !== 'TOKEN' && (
-        <>
-          <div className="absolute top-1 -left-5 ml-[2px] px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_30%,rgba(0,0,0,0)_45%)] pointer-events-none">
+      {level !== undefined && elite !== undefined && (
+        <div className="absolute -top-2 -left-4 flex items-center flex-col-reverse">
+          <div className="-mt-5 px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)] pointer-events-none">
             <img
-              className="w-7 h-6 object-contain"
+              className="w-7 h-6 object-contain pointer-events-auto"
               src={getEliteIconUrl(elite)}
               alt={t.models.operator.elite({ level: elite })}
             />
           </div>
-          <div className="absolute -top-2 -left-2 w-8 h-8 pr-px leading-7 rounded-full border-2 border-yellow-300 bg-black/50 text-lg text-white font-semibold text-center shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+          <div className="w-8 h-8 leading-7 rounded-full border-2 border-yellow-300 bg-black/50 text-lg text-white font-semibold text-center shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
             {level}
           </div>
-        </>
+        </div>
       )}
 
       <ul className="flex flex-col gap-1 ml-1">
@@ -428,21 +426,18 @@ const OperatorCard: FC<{
               title={t.models.operator.skill_number({ count: skillNumber })}
             >
               <div className="w-6 h-6 flex items-center justify-center font-bold text-xl border-2 border-current">
-                {version >= 2 ? (
-                  selected ? (
-                    skillLevel <= 7 ? (
-                      skillLevel
-                    ) : (
-                      <MasteryIcon
-                        className="w-4 h-4"
-                        mastery={skillLevel - 7}
-                        subClassName="fill-gray-300 dark:fill-gray-500"
-                      />
-                    )
-                  ) : undefined
-                ) : (
-                  skillNumber
-                )}
+                {selected &&
+                  (skillLevel === undefined ? (
+                    <Icon icon="tick" />
+                  ) : skillLevel <= 7 ? (
+                    skillLevel
+                  ) : (
+                    <MasteryIcon
+                      className="w-4 h-4"
+                      mastery={skillLevel - 7}
+                      subClassName="fill-gray-300 dark:fill-gray-500"
+                    />
+                  ))}
               </div>
             </li>
           )
@@ -623,7 +618,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
             />
           )}
           {operation.parsedContent.opers?.map((operator) => (
-            <OperatorCard key={operator.name} operator={operator} version={operation.parsedContent.version} />
+            <OperatorCard key={operator.name} operator={operator} />
           ))}
         </div>
         <div className="flex flex-wrap gap-4 mt-4">
@@ -632,7 +627,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
               <H6 className="mb-3 text-gray-800">{group.name}</H6>
               <div className="flex flex-wrap px-2 gap-6">
                 {group.opers?.filter(Boolean).map((operator) => (
-                  <OperatorCard key={operator.name} operator={operator} version={operation.parsedContent.version} />
+                  <OperatorCard key={operator.name} operator={operator} />
                 ))}
 
                 {group.opers?.filter(Boolean).length === 0 && (

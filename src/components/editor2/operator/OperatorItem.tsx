@@ -179,7 +179,7 @@ export const OperatorLevelEdit: FC<{
       {validLevel && (
         <div
           className={clsx(
-            horizontal ||
+            !horizontal &&
               '-mt-5 px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)]',
           )}
         >
