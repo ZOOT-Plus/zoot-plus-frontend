@@ -9,7 +9,7 @@ import { findOperatorByName, getDefaultRequirements } from '../../models/operato
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
-import { EditorAction, EditorGroup, EditorOperation, EditorOperator } from './editor-state'
+import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
 import { CopilotOperationLoose } from './validation/schema'
 
 export type WithPartialCoordinates<T> = T extends {
@@ -58,7 +58,18 @@ export function createOperator(
 ): EditorOperator {
   const info = findOperatorByName(initialValues.name)
   const shouldApplyDefaultRequirements = applyDefaultRequirements && (!info || info.prof !== 'TOKEN')
-  const defaultRequirements = shouldApplyDefaultRequirements ? getDefaultRequirements(info?.rarity) : undefined
+  let defaultRequirements: CopilotDocV1.Requirements | undefined
+  if (shouldApplyDefaultRequirements) {
+    const rarity = info?.rarity ?? 6
+    const customDefaults = getEditorConfig().operatorDefaults?.byRarity?.[rarity]
+    if (customDefaults) {
+      defaultRequirements = {
+        level: customDefaults.level,
+        elite: customDefaults.elite,
+      }
+    }
+    defaultRequirements = defaults({}, defaultRequirements, getDefaultRequirements(rarity))
+  }
   const operator: EditorOperator = defaultsDeep(
     { id: uniqueId() } satisfies Omit<EditorOperator, 'name'>,
     initialValues,

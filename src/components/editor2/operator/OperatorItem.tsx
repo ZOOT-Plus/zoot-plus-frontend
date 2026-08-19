@@ -10,10 +10,10 @@ import { CopilotDocV1 } from 'models/copilot.schema'
 import { SetRequired } from 'type-fest'
 import { i18n, useTranslation } from '../../../i18n/i18n'
 import {
-  OPERATORS,
   OperatorInfo,
   adjustOperatorLevel,
   alternativeOperatorSkillUsages,
+  findOperatorByName,
   getDefaultRequirements,
   getEliteIconUrl,
   getModuleName,
@@ -50,7 +50,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
     const t = useTranslation()
     const displayName = useLocalizedOperatorName(operator.name)
     const setFavOperators = useSetAtom(editorFavOperatorsAtom)
-    const info = OPERATORS.find(({ name }) => name === operator.name)
+    const info = findOperatorByName(operator.name)
     const controlsEnabled = !onOverlay && !isDragging && !isSorting
 
     return (
@@ -122,28 +122,67 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 )
 OperatorItem.displayName = 'OperatorItem'
 
-const DEFAULT_ELITE = 0
-const DEFAULT_LEVEL = 1
-const LEVEL_PLACEHOLDER = '?'
-
 const OperatorLevel: FC<{
   operator: EditorOperator
   onChange?: (operator: EditorOperator) => void
 }> = memo(({ operator, onChange }) => {
-  const t = useTranslation()
   const edit = useEdit()
-  const info = OPERATORS.find(({ name }) => name === operator.name)
+  const info = findOperatorByName(operator.name)
   const requirements = operator.requirements
-  // 只有当 elite 和 level 都存在时才是合法的等级
-  const validLevel =
-    requirements?.elite !== undefined && requirements?.level !== undefined
-      ? { level: requirements.level, elite: requirements.elite }
-      : undefined
 
   return (
-    <>
+    <div className="absolute -top-2 [left:-1.15rem] pointer-events-none">
+      <OperatorLevelEdit
+        rarity={info?.rarity}
+        level={requirements?.level}
+        elite={requirements?.elite}
+        onChange={({ level, elite }) => {
+          edit(() => {
+            onChange?.({
+              ...operator,
+              requirements: {
+                ...requirements,
+                level,
+                elite,
+              },
+            })
+            return {
+              action: 'set-operator-level',
+              desc: i18n.actions.editor2.set_operator_level,
+              squashBy: operator.id,
+            }
+          })
+        }}
+      />
+    </div>
+  )
+})
+OperatorLevel.displayName = 'OperatorLevel'
+
+const DEFAULT_ELITE = 0
+const DEFAULT_LEVEL = 1
+const LEVEL_PLACEHOLDER = '?'
+
+export const OperatorLevelEdit: FC<{
+  horizontal?: boolean
+  rarity?: number
+  level?: number
+  elite?: number
+  onChange?: (data: { level: number; elite: number }) => void
+}> = memo(({ horizontal, rarity, level, elite, onChange }) => {
+  const t = useTranslation()
+  // 只有当 elite 和 level 都存在时才是合法的等级
+  const validLevel = elite !== undefined && level !== undefined ? { level, elite } : undefined
+
+  return (
+    <div className={clsx('flex items-center', horizontal ? 'gap-2' : 'flex-col-reverse')}>
       {validLevel && (
-        <div className="absolute top-2 -left-5 ml-[2px] px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)] pointer-events-none">
+        <div
+          className={clsx(
+            horizontal ||
+              '-mt-5 px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)]',
+          )}
+        >
           <Button
             small
             minimal
@@ -152,19 +191,9 @@ const OperatorLevel: FC<{
               level: validLevel.elite,
             })}
             onClick={() => {
-              edit(() => {
-                onChange?.({
-                  ...operator,
-                  requirements: {
-                    ...requirements,
-                    elite: (validLevel.elite - 1 + 3) % 3,
-                  },
-                })
-                return {
-                  action: 'set-operator-level',
-                  desc: i18n.actions.editor2.set_operator_level,
-                  squashBy: operator.id,
-                }
+              onChange?.({
+                level: validLevel.level,
+                elite: (validLevel.elite - 1 + 3) % 3,
               })
             }}
           >
@@ -178,67 +207,43 @@ const OperatorLevel: FC<{
           </Button>
         </div>
       )}
-      <div className="absolute -top-2 -left-2 flex flex-col items-center">
-        <NumericInput2
-          intOnly
-          emitNaNString
-          allowNumericCharactersOnly={false}
-          buttonPosition="none"
-          title={validLevel ? t.components.editor2.OperatorItem.level : t.components.editor2.OperatorItem.level_unset}
-          value={validLevel ? validLevel.level : LEVEL_PLACEHOLDER}
-          inputClassName="!w-9 h-9 !p-0 !leading-9 !rounded-full !border-2 !border-yellow-300 !bg-black/50 text-lg text-white font-semibold text-center !shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-          onValueChange={(value, valueStr) => {
+      <NumericInput2
+        intOnly
+        emitNaNString
+        allowNumericCharactersOnly={false}
+        buttonPosition="none"
+        className="pointer-events-auto"
+        title={validLevel ? t.components.editor2.OperatorItem.level : t.components.editor2.OperatorItem.level_unset}
+        value={validLevel ? validLevel.level : LEVEL_PLACEHOLDER}
+        inputClassName="!w-9 h-9 !p-0 !leading-9 !rounded-full !border-2 !border-yellow-300 !bg-black/50 text-lg text-white font-semibold text-center !shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+        onValueChange={(value, valueStr) => {
+          if (Number.isNaN(value)) {
+            // 我们在等级缺失的时候使用 ? 作为占位符，所以这里尝试把 ? 替换掉以处理用户在这种情况下的输入
+            value = parseInt(valueStr.replaceAll(LEVEL_PLACEHOLDER, ''))
             if (Number.isNaN(value)) {
-              // 我们在等级缺失的时候使用 ? 作为占位符，所以这里尝试把 ? 替换掉以处理用户在这种情况下的输入
-              value = parseInt(valueStr.replaceAll(LEVEL_PLACEHOLDER, ''))
-              if (Number.isNaN(value)) {
-                return
-              }
+              return
             }
-            edit(() => {
-              onChange?.({
-                ...operator,
-                requirements: {
-                  ...requirements,
-                  level: value,
-                  elite: validLevel ? validLevel.elite : DEFAULT_ELITE,
-                },
-              })
-              return {
-                action: 'set-operator-level',
-                desc: i18n.actions.editor2.set_operator_level,
-                squashBy: operator.id,
-              }
-            })
-          }}
-          onWheelFocused={(e) => {
-            e.preventDefault()
-            edit(() => {
-              onChange?.({
-                ...operator,
-                requirements: {
-                  ...requirements,
-                  ...adjustOperatorLevel({
-                    rarity: info?.rarity,
-                    level: validLevel ? validLevel.level : DEFAULT_LEVEL,
-                    elite: validLevel ? validLevel.elite : DEFAULT_ELITE,
-                    delta: e.deltaY > 0 ? -10 : 10,
-                  }),
-                },
-              })
-              return {
-                action: 'set-operator-level',
-                desc: i18n.actions.editor2.set_operator_level,
-                squashBy: operator.id,
-              }
-            })
-          }}
-        />
-      </div>
-    </>
+          }
+          onChange?.({
+            level: value,
+            elite: validLevel ? validLevel.elite : DEFAULT_ELITE,
+          })
+        }}
+        onWheelFocused={(e) => {
+          e.preventDefault()
+          onChange?.({
+            ...adjustOperatorLevel({
+              rarity,
+              level: validLevel ? validLevel.level : DEFAULT_LEVEL,
+              elite: validLevel ? validLevel.elite : DEFAULT_ELITE,
+              delta: e.deltaY > 0 ? -10 : 10,
+            }),
+          })
+        }}
+      />
+    </div>
   )
 })
-OperatorLevel.displayName = 'OperatorLevel'
 
 const OperatorSkillUsage: FC<{
   operator: EditorOperator
@@ -328,7 +333,7 @@ const OperatorSkill: FC<{
   const edit = useEdit()
   // 覆盖值：当用户选中了某个技能并设置了等级，这个等级会暂存在这里，以便在切换到其他技能再切换回来时还原出来
   const [skillLevels, setSkillLevels] = useAtom(editorAtoms.skillLevelOverrides(operator.id))
-  const info = OPERATORS.find(({ name }) => name === operator.name)
+  const info = findOperatorByName(operator.name)
   const requirements = operator.requirements
   // 如果没有设置精英化等级，则默认当作精2，也就是允许使用任何技能
   const normalizedElite = requirements?.elite ?? 2

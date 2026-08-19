@@ -8,6 +8,7 @@ import { CopilotDocV1 } from '../../models/copilot.schema'
 import { CopilotType } from '../../models/operation'
 import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
+import type { CustomOperatorDefaults } from './operator/CustomDefaults'
 import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
 import { ZodIssue, operationLooseSchema } from './validation/schema'
 import { EntityIssue } from './validation/validation'
@@ -176,6 +177,7 @@ interface EditorConfig {
   toggleSelectorPanel: boolean
   historyLimit: number
   showErrorsByDefault: boolean
+  operatorDefaults?: CustomOperatorDefaults
 }
 const defaultConfig: EditorConfig = {
   showLinkerButtons: false,
@@ -210,6 +212,9 @@ const configAtom = atom(
     }
   },
 )
+export function getEditorConfig() {
+  return getDefaultStore().get(localConfigAtom)
+}
 
 const editorGlobalErrorsAtom = atom<ZodIssue[]>([])
 const editorEntityErrorsAtom = atom<Record<string, EntityIssue[]>>({})
