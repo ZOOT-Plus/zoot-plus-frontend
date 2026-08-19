@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/core'
 
 import { useAtomValue } from 'jotai'
-import { clamp, defaults, mapValues } from 'lodash-es'
+import { clamp, mapValues } from 'lodash-es'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
