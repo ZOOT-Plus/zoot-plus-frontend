@@ -140,7 +140,7 @@ export const ACTION_TYPES: ActionType[] = [
 
 export const ACTION_TYPES_BY_GROUP = groupBy(ACTION_TYPES, 'group')
 
-export const validTypesFollowingBulletTime = [
+export const validTypesFollowingBulletTime: string[] = [
   CopilotDocV1.Type.Deploy,
   CopilotDocV1.Type.Skill,
   CopilotDocV1.Type.Retreat,

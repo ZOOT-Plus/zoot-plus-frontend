@@ -11,7 +11,7 @@ import type { CopilotDocV1 } from 'models/copilot.schema'
 import { useTranslation } from '../../../i18n/i18n'
 import { ACTION_TYPES, findActionType } from '../../../models/types'
 
-export const EditorActionTypeSelect = (props: EditorFieldProps<CopilotDocV1.Action, CopilotDocV1.Type>) => {
+export const EditorActionTypeSelect = (props: EditorFieldProps<CopilotDocV1.Action, string>) => {
   const t = useTranslation()
   const {
     field: { onChange, onBlur, value, ref },
