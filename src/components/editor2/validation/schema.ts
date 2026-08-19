@@ -220,7 +220,7 @@ const actionStrict = z
   })
 
 export type CopilotOperationLoose = z.infer<typeof operationLooseSchema>
-export const operationLooseSchema = z.object({
+export const operationLooseSchema = z.looseObject({
   version,
   stage_name,
   difficulty,
