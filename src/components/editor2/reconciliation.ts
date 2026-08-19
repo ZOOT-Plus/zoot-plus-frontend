@@ -1,14 +1,15 @@
 import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
-import { defaults, uniqueId } from 'lodash-es'
+import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
 import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
-import { EditorAction, EditorGroup, EditorOperation, EditorOperator } from './editor-state'
+import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
 import { CopilotOperationLoose } from './validation/schema'
 
 export type WithPartialCoordinates<T> = T extends {
@@ -51,8 +52,29 @@ export function createGroup(initialValues: Partial<Omit<EditorGroup, 'id' | 'ope
   return group
 }
 
-export function createOperator(initialValues: Omit<EditorOperator, 'id'>): EditorOperator {
-  const operator: EditorOperator = defaults({ id: uniqueId() }, initialValues)
+export function createOperator(
+  initialValues: Omit<EditorOperator, 'id'>,
+  applyDefaultRequirements = true,
+): EditorOperator {
+  const info = findOperatorByName(initialValues.name)
+  const shouldApplyDefaultRequirements = applyDefaultRequirements && (!info || info.prof !== 'TOKEN')
+  let defaultRequirements: CopilotDocV1.Requirements | undefined
+  if (shouldApplyDefaultRequirements) {
+    const rarity = info?.rarity ?? 6
+    const preset = getEditorConfig().operatorPreset?.byRarity?.[rarity]
+    if (preset) {
+      defaultRequirements = {
+        level: preset.level,
+        elite: preset.elite,
+      }
+    }
+    defaultRequirements = defaults({}, defaultRequirements, getDefaultRequirements(rarity))
+  }
+  const operator: EditorOperator = defaultsDeep(
+    { id: uniqueId() } satisfies Omit<EditorOperator, 'name'>,
+    initialValues,
+    { requirements: defaultRequirements } satisfies Omit<EditorOperator, 'id' | 'name'>,
+  )
   return operator
 }
 

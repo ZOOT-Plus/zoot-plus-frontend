@@ -176,6 +176,14 @@ interface EditorConfig {
   toggleSelectorPanel: boolean
   historyLimit: number
   showErrorsByDefault: boolean
+  operatorPreset?: OperatorPreset
+}
+export interface OperatorPreset {
+  byRarity: Record<number, OperatorPresetPerRarity>
+}
+interface OperatorPresetPerRarity {
+  level: number
+  elite: number
 }
 const defaultConfig: EditorConfig = {
   showLinkerButtons: false,
@@ -210,6 +218,9 @@ const configAtom = atom(
     }
   },
 )
+export function getEditorConfig() {
+  return getDefaultStore().get(localConfigAtom)
+}
 
 const editorGlobalErrorsAtom = atom<ZodIssue[]>([])
 const editorEntityErrorsAtom = atom<Record<string, EntityIssue[]>>({})

@@ -322,7 +322,7 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
         }
         const globalOperators = get(editorAtoms.operators)
         const favOperators = favGroup
-          .opers!.map(createOperator)
+          .opers!.map((o) => createOperator(o))
           // 过滤掉已经存在的全局干员
           .filter((favOperator) => !globalOperators.find((operator) => operator.id === favOperator.id))
         edit(() => {
