@@ -2,7 +2,7 @@ import { Button, Callout, Card, Checkbox, TextArea } from '@blueprintjs/core'
 import { DevTool } from '@hookform/devtools'
 
 import { useEffect, useMemo } from 'react'
-import { Control, Controller, DeepPartial, FieldErrors, UseFormSetError, useForm, useWatch } from 'react-hook-form'
+import { Control, Controller, DeepPartial, UseFormSetError, useForm, useWatch } from 'react-hook-form'
 
 import { CardTitle } from 'components/CardTitle'
 import { FormField, FormField2 } from 'components/FormField'
@@ -44,14 +44,14 @@ const defaultAction: DeepPartial<CopilotDocV1.Action> = {
   type: CopilotDocV1.Type.Deploy,
 }
 
-const defaultMoveCameraAction: DeepPartial<CopilotDocV1.ActionMoveCamera> = {
+const defaultMoveCameraAction: DeepPartial<CopilotDocV1.Action> = {
   type: CopilotDocV1.Type.MoveCamera,
   distance: [4.5, 0],
 }
 
 // 切换动作类型时这些默认值并不会自动注入表单（MoveCamera 的 distance 同样如此，为上游既有行为），
 // 仅作为 required 校验通过前的语义占位，不要为此单独修表单联动
-const defaultSwipeAction: DeepPartial<CopilotDocV1.ActionSwipe> = {
+const defaultSwipeAction: DeepPartial<CopilotDocV1.Action> = {
   type: CopilotDocV1.Type.Swipe,
   begin: [100, 100, 50, 50],
   end: [400, 400, 50, 50],
@@ -158,34 +158,34 @@ export const EditorActionAdd = ({
           setValue('distance', editingAction.distance)
         }
         if ('rect' in editingAction) {
-          setValue('rect', (editingAction as CopilotDocV1.ActionClick).rect)
+          setValue('rect', editingAction.rect)
         }
         if ('begin' in editingAction) {
-          setValue('begin', (editingAction as CopilotDocV1.ActionSwipe).begin)
+          setValue('begin', editingAction.begin)
         }
         if ('end' in editingAction) {
-          setValue('end', (editingAction as CopilotDocV1.ActionSwipe).end)
+          setValue('end', editingAction.end)
         }
         if ('duration' in editingAction) {
-          setValue('duration', (editingAction as CopilotDocV1.ActionSwipe).duration)
+          setValue('duration', editingAction.duration)
         }
         if ('extraSwipe' in editingAction) {
-          setValue('extraSwipe', (editingAction as CopilotDocV1.ActionSwipe).extraSwipe)
+          setValue('extraSwipe', editingAction.extraSwipe)
         }
         if ('slopeIn' in editingAction) {
-          setValue('slopeIn', (editingAction as CopilotDocV1.ActionSwipe).slopeIn)
+          setValue('slopeIn', editingAction.slopeIn)
         }
         if ('slopeOut' in editingAction) {
-          setValue('slopeOut', (editingAction as CopilotDocV1.ActionSwipe).slopeOut)
+          setValue('slopeOut', editingAction.slopeOut)
         }
         if ('withPause' in editingAction) {
-          setValue('withPause', (editingAction as CopilotDocV1.ActionSwipe).withPause)
+          setValue('withPause', editingAction.withPause)
         }
         if ('highResolutionSwipeFix' in editingAction) {
-          setValue('highResolutionSwipeFix', (editingAction as CopilotDocV1.ActionSwipe).highResolutionSwipeFix)
+          setValue('highResolutionSwipeFix', editingAction.highResolutionSwipeFix)
         }
         if ('keepKills' in editingAction) {
-          setValue('keepKills', (editingAction as CopilotDocV1.ActionMoveCamera).keepKills)
+          setValue('keepKills', editingAction.keepKills)
         }
         // role 无对应表单控件，但保存时整条动作被表单值替换，不回填会静默丢失；直接切换编辑目标
         // 不会重置表单，原动作无 role 或值为空串时也要覆盖为 undefined，避免带到下一个动作上
@@ -205,9 +205,7 @@ export const EditorActionAdd = ({
   useEffect(() => {
     setValue(
       'skillTimes',
-      skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-        ? ((editingAction as CopilotDocV1.ActionSkillUsage)?.skillTimes ?? 1)
-        : undefined,
+      skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes ? (editingAction?.skillTimes ?? 1) : undefined,
     )
   }, [skillUsage, editingAction, setValue])
 
@@ -268,13 +266,11 @@ export const EditorActionAdd = ({
           type === 'SkillUsage' ||
           type === 'BulletTime') && (
           <div className="flex">
-            <FormField2<CopilotDocV1.ActionDeploy | CopilotDocV1.ActionSkillOrRetreatOrBulletTime>
+            <FormField2<CopilotDocV1.Action>
               label={t.components.editor.action.EditorActionAdd.operator_group_name}
               description={t.components.editor.action.EditorActionAdd.select_operator_description}
               field="name"
-              error={
-                (errors as FieldErrors<CopilotDocV1.ActionDeploy | CopilotDocV1.ActionSkillOrRetreatOrBulletTime>).name
-              }
+              error={errors.name}
               asterisk={type === 'Deploy'}
               FormGroupProps={{
                 helperText: (
@@ -404,26 +400,18 @@ export const EditorActionAdd = ({
             <FormField2
               label={t.components.editor.action.EditorActionAdd.skill_usage}
               field="skillUsage"
-              error={(errors as FieldErrors<CopilotDocV1.ActionSkillUsage>).skillUsage}
+              error={errors.skillUsage}
             >
-              <EditorOperatorSkillUsage
-                shouldUnregister
-                control={control as Control<CopilotDocV1.ActionSkillUsage>}
-                name="skillUsage"
-                defaultValue={0}
-              />
+              <EditorOperatorSkillUsage shouldUnregister control={control} name="skillUsage" defaultValue={0} />
             </FormField2>
 
             {skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes && (
               <FormField2
                 label={t.components.editor.action.EditorActionAdd.skill_usage_count}
                 field="skillTimes"
-                error={(errors as FieldErrors<CopilotDocV1.ActionSkillUsage>).skillTimes}
+                error={errors.skillTimes}
               >
-                <EditorOperatorSkillTimes
-                  control={control as Control<CopilotDocV1.ActionSkillUsage>}
-                  name="skillTimes"
-                />
+                <EditorOperatorSkillTimes control={control} name="skillTimes" />
               </FormField2>
             )}
           </div>

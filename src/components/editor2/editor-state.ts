@@ -57,16 +57,13 @@ export type EditorGroup = Simplify<
     }
   >
 >
-export type EditorAction = GenerateEditorAction<CopilotDocV1.Action>
-type GenerateEditorAction<T extends CopilotDocV1.Action> = T extends never
-  ? never
-  : Simplify<
-      WithPartialCoordinates<Omit<SetRequired<PartialDeep<T>, 'type'>, 'preDelay' | 'postDelay' | 'rearDelay'>> &
-        WithId<{
-          intermediatePreDelay?: number
-          intermediatePostDelay?: number
-        }>
-    >
+export type EditorAction = Simplify<
+  WithPartialCoordinates<Omit<CopilotDocV1.Action, 'preDelay' | 'postDelay' | 'rearDelay'>> &
+    WithId<{
+      intermediatePreDelay?: number
+      intermediatePostDelay?: number
+    }>
+>
 
 export interface EditorOperation extends EditorOperationBase {
   opers: EditorOperator[]

@@ -12,7 +12,7 @@ import { OperatorDirection, operatorDirections } from '../../../models/operator'
 import { FormField2 } from '../../FormField'
 
 interface EditorActionOperatorDirectionProps extends SetOptional<
-  EditorFieldProps<CopilotDocV1.Action, CopilotDocV1.Direction>,
+  EditorFieldProps<CopilotDocV1.Action, string>,
   'name'
 > {}
 
