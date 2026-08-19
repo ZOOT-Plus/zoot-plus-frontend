@@ -518,7 +518,7 @@ const OperatorModule: FC<{
           })}
           onClick={handleClick}
           onFocus={handleFocus}
-          selected={value === requirements?.module}
+          selected={value === normalizedModule}
         />
       )}
       onItemSelect={(value) => {
