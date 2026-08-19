@@ -1,27 +1,18 @@
 import { Button, ButtonProps, Dialog, DialogBody, FormGroup } from '@blueprintjs/core'
 import { useAtom } from 'jotai'
 import { Fragment, useState } from 'react'
-import { useTranslation } from '../../../i18n/i18n'
-import { getDefaultRequirements } from '../../../models/operator'
-import { editorAtoms } from '../editor-state'
-import { OperatorLevelEdit } from './OperatorItem'
+import { useTranslation } from '../../i18n/i18n'
+import { getDefaultRequirements } from '../../models/operator'
+import { editorAtoms } from './editor-state'
+import { OperatorLevelEdit } from './operator/OperatorItem'
 
-export interface CustomOperatorDefaults {
-  byRarity: Record<number, CustomOperatorDefaultsPerRarity>
-}
+interface OperatorPresetSettingsProps extends ButtonProps {}
 
-interface CustomOperatorDefaultsPerRarity {
-  level: number
-  elite: number
-}
-
-interface OperatorDefaultsSettingsProps extends ButtonProps {}
-
-export const OperatorDefaultsSettings = (props: OperatorDefaultsSettingsProps) => {
+export const OperatorPresetSettings = (props: OperatorPresetSettingsProps) => {
   const t = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [config, setConfig] = useAtom(editorAtoms.config)
-  const byRarity = config.operatorDefaults?.byRarity ?? {}
+  const byRarity = config.operatorPreset?.byRarity ?? {}
 
   return (
     <>
@@ -49,7 +40,7 @@ export const OperatorDefaultsSettings = (props: OperatorDefaultsSettingsProps) =
                     elite={byRarity[rarity]?.elite ?? getDefaultRequirements(rarity).elite}
                     onChange={({ level, elite }) => {
                       setConfig({
-                        operatorDefaults: {
+                        operatorPreset: {
                           byRarity: {
                             ...byRarity,
                             [rarity]: { level, elite },
@@ -68,7 +59,7 @@ export const OperatorDefaultsSettings = (props: OperatorDefaultsSettingsProps) =
             intent="danger"
             text={t.components.editor2.Settings.reset_to_default}
             onClick={() => {
-              setConfig({ operatorDefaults: undefined })
+              setConfig({ operatorPreset: undefined })
             }}
           />
         </DialogBody>

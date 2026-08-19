@@ -61,11 +61,11 @@ export function createOperator(
   let defaultRequirements: CopilotDocV1.Requirements | undefined
   if (shouldApplyDefaultRequirements) {
     const rarity = info?.rarity ?? 6
-    const customDefaults = getEditorConfig().operatorDefaults?.byRarity?.[rarity]
-    if (customDefaults) {
+    const preset = getEditorConfig().operatorPreset?.byRarity?.[rarity]
+    if (preset) {
       defaultRequirements = {
-        level: customDefaults.level,
-        elite: customDefaults.elite,
+        level: preset.level,
+        elite: preset.elite,
       }
     }
     defaultRequirements = defaults({}, defaultRequirements, getDefaultRequirements(rarity))

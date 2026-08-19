@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useTranslation } from '../../i18n/i18n'
 import { NumericInput2 } from '../editor/NumericInput2'
 import { editorAtoms } from './editor-state'
-import { OperatorDefaultsSettings } from './operator/CustomDefaults'
+import { OperatorPresetSettings } from './OperatorPresetSettings'
 
 interface SettingsProps extends ButtonProps {}
 
@@ -39,7 +39,7 @@ export const Settings = (props: SettingsProps) => {
             />
           </FormGroup>
           <FormGroup label={t.components.editor2.Settings.operator_defaults}>
-            <OperatorDefaultsSettings />
+            <OperatorPresetSettings />
           </FormGroup>
           <FormGroup
             label={t.components.editor2.Settings.history_limit}

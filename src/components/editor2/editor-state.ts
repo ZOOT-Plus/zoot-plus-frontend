@@ -8,7 +8,6 @@ import { CopilotDocV1 } from '../../models/copilot.schema'
 import { CopilotType } from '../../models/operation'
 import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
-import type { CustomOperatorDefaults } from './operator/CustomDefaults'
 import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
 import { ZodIssue, operationLooseSchema } from './validation/schema'
 import { EntityIssue } from './validation/validation'
@@ -177,7 +176,14 @@ interface EditorConfig {
   toggleSelectorPanel: boolean
   historyLimit: number
   showErrorsByDefault: boolean
-  operatorDefaults?: CustomOperatorDefaults
+  operatorPreset?: OperatorPreset
+}
+export interface OperatorPreset {
+  byRarity: Record<number, OperatorPresetPerRarity>
+}
+interface OperatorPresetPerRarity {
+  level: number
+  elite: number
 }
 const defaultConfig: EditorConfig = {
   showLinkerButtons: false,
