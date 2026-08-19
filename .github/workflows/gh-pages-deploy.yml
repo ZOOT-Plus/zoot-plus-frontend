@@ -33,9 +33,7 @@ jobs:
           show-progress: false
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11.3.0
+        uses: pnpm/setup@v2
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
