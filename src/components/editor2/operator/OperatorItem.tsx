@@ -176,17 +176,18 @@ export const OperatorLevelEdit: FC<{
 
   return (
     <div className={clsx('flex items-center', horizontal ? 'gap-2' : 'flex-col-reverse')}>
-      {validLevel && (
-        <div
-          className={clsx(
-            !horizontal &&
-              '-mt-5 px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)]',
-          )}
-        >
+      <div
+        className={clsx(
+          horizontal
+            ? 'w-8 h-6'
+            : 'mt-[-1.1rem] w-14 h-14 px-3 py-4 rounded-full bg-[radial-gradient(rgba(0,0,0,0.6)_10%,rgba(0,0,0,0.08)_35%,rgba(0,0,0,0)_50%)]',
+        )}
+      >
+        {validLevel && (
           <Button
             small
             minimal
-            className="!p-0 !border-0 pointer-events-auto hover:opacity-80"
+            className="size-full !p-0 !border-0 pointer-events-auto hover:opacity-80"
             title={t.components.editor2.OperatorItem.elite({
               level: validLevel.elite,
             })}
@@ -198,15 +199,15 @@ export const OperatorLevelEdit: FC<{
             }}
           >
             <img
-              className="w-8 h-7 object-contain"
+              className="size-full object-contain"
               src={getEliteIconUrl(validLevel.elite)}
               alt={t.components.editor2.OperatorItem.elite({
                 level: validLevel.elite,
               })}
             />
           </Button>
-        </div>
-      )}
+        )}
+      </div>
       <NumericInput2
         intOnly
         emitNaNString
