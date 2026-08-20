@@ -9,7 +9,7 @@ import { CopilotType } from '../../models/operation'
 import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
 import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
-import { ZodIssue, operationLooseSchema } from './validation/schema'
+import { ZodIssue, operationForParsing } from './validation/schema'
 import { EntityIssue } from './validation/validation'
 
 export interface EditorState {
@@ -17,12 +17,14 @@ export interface EditorState {
   metadata: EditorMetadata
 }
 
-const defaultOperation = operationLooseSchema.parse({
-  version: CopilotDocV1.VERSION,
-})
+const defaultOperation = toEditorOperation(
+  operationForParsing.parse({
+    version: CopilotDocV1.VERSION,
+  }),
+)
 
 export const defaultEditorState: EditorState = {
-  operation: toEditorOperation(defaultOperation),
+  operation: defaultOperation,
   metadata: {
     visibility: 'public',
     type: CopilotType.PRTS,
@@ -82,7 +84,7 @@ export type BaseEditorGroup = Simplify<
 
 const baseAtom = atom<EditorOperationBase>({
   version: defaultOperation.version,
-  minimumRequired: defaultOperation.minimum_required,
+  minimumRequired: defaultOperation.minimumRequired,
   doc: defaultOperation.doc,
 })
 const operatorsAtom = atom<EditorOperator[]>([])
@@ -219,15 +221,20 @@ export function getEditorConfig() {
   return getDefaultStore().get(localConfigAtom)
 }
 
+export interface SimpleIssue {
+  message: string
+  path?: (string | number)[]
+}
+export type Issue = ZodIssue | EntityIssue | SimpleIssue
+const editorParsingErrorsAtom = atom<ZodIssue[]>([])
 const editorGlobalErrorsAtom = atom<ZodIssue[]>([])
 const editorEntityErrorsAtom = atom<Record<string, EntityIssue[]>>({})
 const editorErrorsVisibleAtom = atom(initialConfig.showErrorsByDefault)
-const editorVisibleGlobalErrorsAtom = atom((get) =>
-  get(editorErrorsVisibleAtom) ? get(editorGlobalErrorsAtom) : undefined,
-)
-const editorVisibleEntityErrorsAtom = atom((get) =>
-  get(editorErrorsVisibleAtom) ? get(editorEntityErrorsAtom) : undefined,
-)
+const editorGlobalWarningsAtom = atom<Issue[]>([])
+const editorEntityWarningsAtom = atom<Record<string, EntityIssue[]>>({})
+function visibleIssuesAtom<T>(sourceAtom: PrimitiveAtom<T>) {
+  return atom((get) => (get(editorErrorsVisibleAtom) ? get(sourceAtom) : undefined))
+}
 
 // this atom will cause some memory leak but generally not a big deal
 const skillLevelOverridesAtom = atomFamily((id: string) => atom<Record<number, number>>({}))
@@ -260,11 +267,16 @@ export const editorAtoms = {
   skillLevelOverrides: skillLevelOverridesAtom,
 
   // validation
+  parsingErrors: editorParsingErrorsAtom,
   globalErrors: editorGlobalErrorsAtom,
   entityErrors: editorEntityErrorsAtom,
+  globalWarnings: editorGlobalWarningsAtom,
+  entityWarnings: editorEntityWarningsAtom,
   errorsVisible: editorErrorsVisibleAtom,
-  visibleGlobalErrors: editorVisibleGlobalErrorsAtom,
-  visibleEntityErrors: editorVisibleEntityErrorsAtom,
+  visibleGlobalErrors: visibleIssuesAtom(editorGlobalErrorsAtom),
+  visibleEntityErrors: visibleIssuesAtom(editorEntityErrorsAtom),
+  visibleGlobalWarnings: visibleIssuesAtom(editorGlobalWarningsAtom),
+  visibleEntityWarnings: visibleIssuesAtom(editorEntityWarningsAtom),
 
   reset: atom(null, (get, set, editorState: EditorState = defaultEditorState) => {
     set(historyAtom, 'RESET')

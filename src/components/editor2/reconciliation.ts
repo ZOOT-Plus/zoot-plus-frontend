@@ -10,19 +10,19 @@ import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
-import { CopilotOperationLoose } from './validation/schema'
+import { ParsedOperation } from './validation/schema'
 
 export type WithPartialCoordinates<T> = T extends {
   location?: [number, number]
 }
   ? Omit<T, 'location'> & {
-      location?: [number | undefined, number | undefined]
+      location?: [number | undefined | null, number | undefined | null]
     }
   : T extends {
         distance?: [number, number]
       }
     ? Omit<T, 'distance'> & {
-        distance?: [number | undefined, number | undefined]
+        distance?: [number | undefined | null, number | undefined | null]
       }
     : T
 
@@ -207,7 +207,7 @@ export function hydrateOperation(source: DehydratedEditorOperation): EditorOpera
   }
 }
 
-export function toEditorOperation(source: CopilotOperationLoose): EditorOperation {
+export function toEditorOperation(source: ParsedOperation): EditorOperation {
   const camelCased = camelcaseKeys(source, { deep: true })
   const operation = JSON.parse(
     JSON.stringify(migrateOperation(camelCased as CopilotDocV1.Operation)),
@@ -242,10 +242,14 @@ export function toEditorOperation(source: CopilotOperationLoose): EditorOperatio
   return hydrateOperation(converted)
 }
 
+type PartialMaaOperation = PartialDeep<Omit<CopilotDocV1.OperationSnakeCased, 'actions'>> & {
+  actions?: WithPartialCoordinates<PartialDeep<CopilotDocV1.Action>>[]
+}
+
 /**
  * To MAA's standard format. No validation is performed so it's not guaranteed to be valid.
  */
-export function toMaaOperation(operation: EditorOperation): CopilotOperationLoose {
+export function toMaaOperation(operation: EditorOperation): PartialMaaOperation {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
   const converted = {

@@ -1,208 +1,194 @@
 import { locales } from 'zod/v4/core'
 
-import { get, isNumber, isString } from 'lodash-es'
+import { get, isNumber, isObject, isString } from 'lodash-es'
 import { Primitive } from 'type-fest'
 import * as z from 'zod'
 
-import { i18n } from '../../../i18n/i18n'
+import { i18n, I18NTranslations } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
 import { OpDifficulty } from '../../../models/operation'
 import cn from './error-map-cn'
 
 export type ZodIssue = z.core.$ZodIssue
 
-const version = z.number().optional()
-const stage_name = z.string().optional()
-const difficulty = z.enum(OpDifficulty).optional()
-const minimum_required = z
-  .string()
-  .regex(
-    /^v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/,
-  )
-  .default('v6.0.0')
+const DEFAULT_MINIMUM_REQUIRED = 'v6.0.0'
 
-const doc = z.looseObject({
+// xxForParsing: 用于最基础的语法检查，如果不通过则编辑器会进入不可用状态，用户只能使用 JSON 编辑器进行 JSON 编辑
+// xxForValidation: 用于更严格的语义检查，如果不通过则会显示警告，但编辑器仍然可用
+// xxForSubmission: 用于提交到后端的最终检查，如果不通过则无法提交
+
+const baseOperationForParsing = z.looseObject({
+  version: z.number().optional(),
+  stage_name: z.string().optional(),
+  difficulty: z.number().int().optional(),
+  minimum_required: z.string().default(DEFAULT_MINIMUM_REQUIRED),
+})
+const baseOperationForValidation = z.looseObject({
+  ...baseOperationForParsing.shape,
+  stage_name: baseOperationForParsing.shape.stage_name.unwrap().min(1),
+  difficulty: z.enum(OpDifficulty).optional(),
+  minimum_required: baseOperationForParsing.shape.minimum_required
+    .unwrap()
+    .regex(
+      /^v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/,
+    )
+    .default(DEFAULT_MINIMUM_REQUIRED),
+})
+
+const docForParsing = z.looseObject({
   title: z.string().optional(),
   details: z.string().optional(),
   title_color: z.string().optional(),
   details_color: z.string().optional(),
 })
+const docForValidation = z.looseObject({
+  ...docForParsing.shape,
+  title: docForParsing.shape.title.unwrap().min(1),
+})
+const docForSubmission = z.looseObject({
+  title: docForValidation.shape.title,
+})
 
-const docStrict = doc
-  .extend({
-    title: doc.shape.title.unwrap().min(1),
-  })
-  .transform((doc) => ({
-    ...doc,
-    // the backend requires details to be non-empty, but we don't want to
-    // force the user to fill it in, so we use title as a fallback
-    details: doc.details || doc.title,
-  }))
-
-const operator_requirements = z.looseObject({
-  elite: z.number().int().min(0).max(2).optional(),
-  level: z.number().int().min(0).optional(),
-  skill_level: z.number().int().min(0).max(10).optional(),
+const requirementsForParsing = z.looseObject({
+  elite: z.number().int().optional(),
+  level: z.number().int().optional(),
+  skill_level: z.number().int().optional(),
   module: z.number().int().optional(),
-  potentiality: z.number().int().min(0).max(6).optional(),
+  potentiality: z.number().int().optional(),
+})
+const requirementsForValidation = z.looseObject({
+  ...requirementsForParsing.shape,
+  elite: requirementsForParsing.shape.elite.unwrap().min(0).max(2).optional(),
+  level: requirementsForParsing.shape.level.unwrap().min(0).optional(),
+  skill_level: requirementsForParsing.shape.skill_level.unwrap().min(0).max(10).optional(),
+  potentiality: requirementsForParsing.shape.potentiality.unwrap().min(0).max(6).optional(),
 })
 
-const operator = z.looseObject({
-  name: z.string().min(1),
-  skill: z.number().int().min(1).max(3).optional(),
-  skill_usage: z.number().int().min(0).max(3).optional(),
-  skill_times: z.number().int().min(0).optional(),
-  requirements: operator_requirements.optional(),
-})
-
-const group = z.looseObject({
+const operatorForParsing = z.looseObject({
   name: z.string(),
-  opers: z.array(operator).default([]),
+  skill: z.number().int().optional(),
+  skill_usage: z.number().int().optional(),
+  skill_times: z.number().int().optional(),
+  requirements: requirementsForParsing.optional(),
+})
+const operatorForValidation = z.looseObject({
+  ...operatorForParsing.shape,
+  name: operatorForParsing.shape.name.min(1),
+  skill: operatorForParsing.shape.skill.unwrap().min(0).max(3).optional(),
+  skill_usage: z.enum(CopilotDocV1.SkillUsageType).optional(),
+  skill_times: operatorForParsing.shape.skill_times.unwrap().min(0).optional(),
+  requirements: requirementsForValidation.optional(),
 })
 
-const groupStrict = group.extend({
-  name: group.shape.name.min(1),
+const groupForParsing = z.looseObject({
+  name: z.string(),
+  opers: z.array(operatorForParsing).default([]),
+})
+const groupForValidation = z.looseObject({
+  ...groupForParsing.shape,
+  name: groupForParsing.shape.name.min(1),
+  opers: z.array(operatorForValidation).default([]),
 })
 
-const actionShape = {
-  name: z.string().min(1).optional(),
-  location: z.tuple([z.number().int().or(z.undefined()), z.number().int().or(z.undefined())]).optional(),
-
-  // We have to use `distance: z.string()` here and later validate it in `.check()`,
-  // because if we use `distance: z.enum()` here, it becomes the second discriminator key,
-  // which leads to very counterintuitive behavior when parsing. See: https://github.com/colinhacks/zod/issues/4280
-  // We also need to cast its type to match the expected type in `actionWithDirection` below.
-  direction: z.string().optional() as unknown as z.ZodOptional<typeof actionWithDirection.shape.direction>,
-
-  distance: z.tuple([z.number().or(z.undefined()), z.number().or(z.undefined())]).optional(),
-  skill_usage: operator.shape.skill_usage,
-  skill_times: operator.shape.skill_times,
-
-  // common fields
-  kills: z.number().int().min(0).optional(),
-  costs: z.number().int().min(0).optional(),
-  cost_changes: z.number().int().optional(),
-  cooling: z.number().int().min(0).optional(),
-  pre_delay: z.number().int().min(0).optional(),
-  rear_delay: z.number().int().min(0).optional(),
-  post_delay: z.number().int().min(0).optional(),
-  doc: z.string().optional(),
-  doc_color: z.string().optional(),
+const baseActionForParsing = {
+  kills: z.number().int(),
+  costs: z.number().int(),
+  cost_changes: z.number().int(),
+  cooling: z.number().int(),
+  pre_delay: z.number().int(),
+  rear_delay: z.number().int(),
+  post_delay: z.number().int(),
+  doc: z.string(),
+  doc_color: z.string(),
 }
-const actionWithDirection = z.object({
+const baseActionForValidation = {
+  ...baseActionForParsing,
+  kills: baseActionForParsing.kills.min(0),
+  costs: baseActionForParsing.costs.min(0),
+  cooling: baseActionForParsing.cooling.min(0),
+  pre_delay: baseActionForParsing.pre_delay.min(0),
+  rear_delay: baseActionForParsing.rear_delay.min(0),
+  post_delay: baseActionForParsing.post_delay.min(0),
+}
+const specializedActionForParsing = {
+  name: z.string(),
+  direction: z.string(),
+  // JSON 序列化会把 undefined 转为 null，所以这里允许 null
+  location: z.array(z.union([z.number(), z.undefined(), z.null()])),
+  distance: z.array(z.union([z.number(), z.undefined(), z.null()])),
+  skill_usage: operatorForParsing.shape.skill_usage.unwrap(),
+  skill_times: operatorForParsing.shape.skill_times.unwrap(),
+}
+const specializedActionForValidation = {
+  ...specializedActionForParsing,
+  name: specializedActionForParsing.name.min(1),
   direction: z.enum(CopilotDocV1.Direction),
-})
-const action = z
-  .discriminatedUnion('type', [
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.Deploy),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.SkillUsage),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.Skill),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.Retreat),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.BulletTime),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.MoveCamera),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.SpeedUp),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.SkillDaemon),
-      ...actionShape,
-    }),
-    z.looseObject({
-      type: z.literal(CopilotDocV1.Type.Output),
-      ...actionShape,
-    }),
-  ])
-  .check(({ value, issues }) => {
-    if ('direction' in value && value.direction !== undefined) {
-      const result = actionWithDirection.safeParse(value)
-      if (result.error) {
-        issues.push(...(result.error.issues as any))
-      }
-    }
-  })
-
-const actionShapeStrict = {
-  ...actionShape,
-  location: z.tuple([z.number().int(), z.number().int()]).optional(),
-  distance: z.tuple([z.number(), z.number()]).optional(),
+  location: z.tuple([z.number().int(), z.number().int()]),
+  distance: z.tuple([z.number(), z.number()]),
+  skill_usage: operatorForValidation.shape.skill_usage.unwrap(),
+  skill_times: operatorForValidation.shape.skill_times.unwrap(),
 }
-const actionStrict = z
+const actionForParsing = z
+  .looseObject({
+    ...baseActionForParsing,
+    ...specializedActionForParsing,
+  })
+  .partial()
+  .extend({
+    type: z.string().min(1),
+  })
+const actionForValidation = z
   .discriminatedUnion('type', [
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.Deploy),
-      name: actionShapeStrict.name.unwrap(),
-      location: actionShapeStrict.location.unwrap(),
-      direction: actionShapeStrict.direction.unwrap(),
+      name: specializedActionForValidation.name,
+      location: specializedActionForValidation.location,
+      direction: specializedActionForValidation.direction,
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.SkillUsage),
-      name: actionShapeStrict.name.unwrap(),
-      skill_usage: actionShapeStrict.skill_usage.unwrap(),
+      name: specializedActionForValidation.name,
+      skill_usage: specializedActionForValidation.skill_usage,
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.Skill),
-      name: actionShapeStrict.name,
-      location: actionShapeStrict.location,
+      name: specializedActionForValidation.name.optional(),
+      location: specializedActionForValidation.location.optional(),
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.Retreat),
-      name: actionShapeStrict.name,
-      location: actionShapeStrict.location,
+      name: specializedActionForValidation.name.optional(),
+      location: specializedActionForValidation.location.optional(),
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.BulletTime),
-      name: actionShapeStrict.name,
-      location: actionShapeStrict.location,
+      name: specializedActionForValidation.name.optional(),
+      location: specializedActionForValidation.location.optional(),
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.MoveCamera),
-      distance: actionShapeStrict.distance.unwrap(),
+      distance: specializedActionForValidation.distance,
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.SpeedUp),
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.SkillDaemon),
     }),
     z.looseObject({
-      ...actionShapeStrict,
+      ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.Output),
     }),
   ])
   .check(({ value, issues }) => {
-    if ('direction' in value && value.direction !== undefined) {
-      const result = actionWithDirection.safeParse(value)
-      if (result.error) {
-        issues.push(...(result.error.issues as any))
-      }
-    }
     if (
       (value.type === CopilotDocV1.Type.Retreat ||
         value.type === CopilotDocV1.Type.Skill ||
@@ -213,34 +199,36 @@ const actionStrict = z
       issues.push({
         code: 'custom',
         input: value,
+        // TODO: i18n
         message: '目标或位置至少需要填写一项',
         continue: true,
       })
     }
   })
 
-export type CopilotOperationLoose = z.infer<typeof operationLooseSchema>
-export const operationLooseSchema = z.looseObject({
-  version,
-  stage_name,
-  difficulty,
-  minimum_required,
-  doc: doc.default({}),
-  opers: z.array(operator).default([]),
-  groups: z.array(group).default([]),
-  actions: z.array(action).default([]),
+export type ParsedOperation = z.infer<typeof operationForParsing>
+export const operationForParsing = z.looseObject({
+  ...baseOperationForParsing.shape,
+  doc: docForParsing.default({}),
+  opers: z.array(operatorForParsing).default([]),
+  groups: z.array(groupForParsing).default([]),
+  actions: z.array(actionForParsing).default([]),
 })
 
-export type CopilotOperation = z.infer<typeof operationSchema>
-export const operationSchema = z.object({
-  version,
-  stage_name: stage_name.unwrap(),
-  difficulty,
-  minimum_required,
-  doc: docStrict,
-  opers: z.array(operator).default([]),
-  groups: z.array(groupStrict).default([]),
-  actions: z.array(actionStrict).default([]),
+export type ValidatedOperation = z.infer<typeof operationForValidation>
+export const operationForValidation = z.object({
+  ...baseOperationForValidation.shape,
+  // use {} as a prefault, so that when the doc is undefined, zod will parse this {}
+  // and properly report the missing required fields in the doc, instead of just saying "doc is required"
+  doc: docForValidation.prefault({} as z.infer<typeof docForValidation>),
+  opers: z.array(operatorForValidation).default([]),
+  groups: z.array(groupForValidation).default([]),
+  actions: z.array(actionForValidation).default([]),
+})
+
+export const operationForSubmission = z.looseObject({
+  stage_name: operationForValidation.shape.stage_name,
+  doc: docForSubmission.prefault({} as z.infer<typeof docForSubmission>),
 })
 
 type Labeled<T> = T extends Primitive
@@ -251,8 +239,8 @@ type Labeled<T> = T extends Primitive
       : string
     : { [K in keyof T as string extends K ? never : K]-?: Labeled<T[K]> }
 
-export function getLabel(path: PropertyKey[]) {
-  const labels: Labeled<CopilotOperation> = {
+export function getLabel(i18n: I18NTranslations, path: PropertyKey[]) {
+  const labels: Labeled<ValidatedOperation> = {
     ...i18n.components.editor2.label.operation,
     opers: i18n.components.editor2.label.opers,
     groups: {
@@ -264,13 +252,13 @@ export function getLabel(path: PropertyKey[]) {
   if (isString(labelOrObject)) {
     return labelOrObject
   }
-  if ('_item' in labelOrObject) {
+  if (isObject(labelOrObject) && '_item' in labelOrObject) {
     return labelOrObject._item as string
   }
   return undefined
 }
 
-export function getLabeledPath(path: PropertyKey[]): string {
+export function getLabeledPath(i18n: I18NTranslations, path: PropertyKey[]): string {
   if (path.length === 0) {
     return ''
   }
@@ -281,10 +269,10 @@ export function getLabeledPath(path: PropertyKey[]): string {
   if (isNumber(maybeIndex)) {
     label = maybeIndex + 1 + ''
   } else {
-    label = getLabel(path)
+    label = getLabel(i18n, path)
   }
 
-  return [getLabeledPath(path.slice(0, -1)), label].filter(Boolean).join('/')
+  return [getLabeledPath(i18n, path.slice(0, -1)), label].filter(Boolean).join('/')
 }
 
 const enError = locales.en()
