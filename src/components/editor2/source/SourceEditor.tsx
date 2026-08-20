@@ -13,7 +13,7 @@ import { DrawerLayout } from '../../drawer/DrawerLayout'
 import { SourceEditorHeader } from '../../editor/source/SourceEditorHeader'
 import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
-import { ZodIssue, operationLooseSchema } from '../validation/schema'
+import { ZodIssue, operationForParsing } from '../validation/schema'
 
 interface SourceEditorProps {
   onUnsavedChanges?: (hasUnsavedChanges: boolean) => void
@@ -35,9 +35,9 @@ const SourceEditor = withSuspensable(({ onUnsavedChanges }: SourceEditorProps) =
       debounce((text: string) => {
         setPending(false)
         try {
-          const json = operationLooseSchema.parse(JSON.parse(text))
+          const parsed = operationForParsing.parse(JSON.parse(text))
+          const newOperation = toEditorOperation(parsed)
           edit((get, set, skip) => {
-            const newOperation = toEditorOperation(json)
             const operation = get(editorAtoms.operation)
             if (JSON.stringify(operation) === JSON.stringify(newOperation)) {
               return skip

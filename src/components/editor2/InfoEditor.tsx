@@ -6,19 +6,19 @@ import { useImmerAtom } from 'jotai-immer'
 import { memo } from 'react'
 import { Paths } from 'type-fest'
 
+import { i18n, useTranslation } from '../../i18n/i18n'
+import { isCustomLevel } from '../../models/level'
+import { CopilotType } from '../../models/operation'
 import {
   CopilotTypePicker,
   TypeSwitchConfirmAlert,
   VideoUrlField,
   useTypeSwitchConfirm,
 } from '../editor/CopilotTypePicker'
-import { i18n, useTranslation } from '../../i18n/i18n'
-import { CopilotType } from '../../models/operation'
-import { isCustomLevel } from '../../models/level'
 import { DifficultyPicker } from './DifficultyPicker'
 import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
-import { CopilotOperation, getLabeledPath } from './validation/schema'
+import { ValidatedOperation, getLabeledPath } from './validation/schema'
 
 interface InfoEditorProps {
   className?: string
@@ -210,7 +210,8 @@ export const InfoEditor = memo(({ className }: InfoEditorProps) => {
 })
 InfoEditor.displayName = 'InfoEditor'
 
-const FieldError = ({ path }: { path: Paths<CopilotOperation> }) => {
+const FieldError = ({ path }: { path: Paths<ValidatedOperation> }) => {
+  const t = useTranslation()
   const globalErrors = useAtomValue(editorAtoms.visibleGlobalErrors)
   const errors = globalErrors?.filter((e) => e.path.join('.') === path)
   if (!errors?.length) return null
@@ -218,7 +219,7 @@ const FieldError = ({ path }: { path: Paths<CopilotOperation> }) => {
     <Callout intent="danger" icon={null} className="mt-1 p-2 text-xs">
       {errors.map(({ path, message }) => (
         <p key={path.join()}>
-          {getLabeledPath(path)}: {message}
+          {getLabeledPath(t, path)}: {message}
         </p>
       ))}
     </Callout>

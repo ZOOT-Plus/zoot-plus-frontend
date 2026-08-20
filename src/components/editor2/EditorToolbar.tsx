@@ -264,7 +264,7 @@ const ErrorButton = (buttonProps: ButtonProps) => {
             <ul className="m-2 text-red-500">
               {allErrors.map(({ path, message }) => (
                 <li key={path.join()}>
-                  <span className="font-bold">{getLabeledPath(path)}: </span>
+                  <span className="font-bold">{getLabeledPath(t, path)}: </span>
                   {message}
                 </li>
               ))}

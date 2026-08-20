@@ -10,7 +10,7 @@ import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
-import { CopilotOperationLoose } from './validation/schema'
+import { ParsedOperation } from './validation/schema'
 
 // Coordinates (location/distance 2-tuples and rect/begin/end 4-tuples) are edited
 // element by element in the UI, so each element must be individually nullable
@@ -202,7 +202,7 @@ export function hydrateOperation(source: DehydratedEditorOperation): EditorOpera
   }
 }
 
-export function toEditorOperation(source: CopilotOperationLoose): EditorOperation {
+export function toEditorOperation(source: ParsedOperation): EditorOperation {
   const camelCased = camelcaseKeys(source, { deep: true })
   const operation = JSON.parse(
     JSON.stringify(migrateOperation(camelCased as CopilotDocV1.Operation)),
@@ -237,10 +237,14 @@ export function toEditorOperation(source: CopilotOperationLoose): EditorOperatio
   return hydrateOperation(converted)
 }
 
+type PartialMaaOperation = PartialDeep<Omit<CopilotDocV1.OperationSnakeCased, 'actions'>> & {
+  actions?: WithPartialCoordinates<PartialDeep<CopilotDocV1.Action>>[]
+}
+
 /**
  * To MAA's standard format. No validation is performed so it's not guaranteed to be valid.
  */
-export function toMaaOperation(operation: EditorOperation): CopilotOperationLoose {
+export function toMaaOperation(operation: EditorOperation): PartialMaaOperation {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
   const converted = {
