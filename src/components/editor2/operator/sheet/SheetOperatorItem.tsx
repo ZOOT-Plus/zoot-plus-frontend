@@ -1,51 +1,39 @@
-import { Button, Card, Icon, Intent, PopoverNext } from '@blueprintjs/core'
+import { Card, Icon, Intent } from '@blueprintjs/core'
 
 import clsx from 'clsx'
-import { useAtom } from 'jotai'
-import { isEqual, omit } from 'lodash-es'
 import { FC } from 'react'
 
 import { AppToaster } from 'components/Toaster'
-import { useLocalizedOperatorName } from 'models/operator'
-import { ignoreKeyDic } from 'store/useFavGroups'
-import { favOperatorAtom } from 'store/useFavOperators'
+import { DetailedSelectChoice } from 'components/editor/DetailedSelect'
+import { CopilotDocV1 } from 'models/copilot.schema'
+import { operatorSkillUsages, useLocalizedOperatorName } from 'models/operator'
 
 import { useTranslation } from '../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../OperatorAvatar'
 import { useSheet } from '../../../editor/operator/sheet/SheetProvider'
 
 export interface SheetOperatorItemProp {
-  name: string
+  operator: CopilotDocV1.Operator
+  showSkillAbout?: boolean
 }
 
-export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
+const skillDic = operatorSkillUsages as DetailedSelectChoice[]
+
+export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOperator, showSkillAbout = false }) => {
+  const { name } = baseOperator
   const t = useTranslation()
   const { existedOperators, existedGroups, submitOperatorInSheet, removeOperator } = useSheet()
-  const [favOperators, setFavOperators] = useAtom(favOperatorAtom)
 
   const operatorNoneGroupedIndex = existedOperators.findIndex(({ name: existedName }) => existedName === name)
   const operatorInGroup = existedGroups
-    .map(({ opers }) => opers)
-    .flat()
-    .filter((item) => !!item)
+    .flatMap(({ opers }) => opers ?? [])
     .find(({ name: existedName }) => existedName === name)
   const selected = operatorNoneGroupedIndex !== -1
   const grouped = !!operatorInGroup
   const operator = existedOperators?.[operatorNoneGroupedIndex] ||
     operatorInGroup ||
-    favOperators.find(({ name: exsitedName }) => exsitedName === name) || {
-      name,
-    }
-  const operatorWithoutSkill = omit(operator, ['skill', 'skillUsage', 'skillTimes']) as typeof operator
+    baseOperator
   const selectedInView = selected || grouped
-
-  const pinned = isEqual(
-    omit(operatorWithoutSkill, [...ignoreKeyDic]),
-    omit(
-      favOperators.find(({ name: exsitedName }) => exsitedName === name),
-      [...ignoreKeyDic, 'skill', 'skillUsage', 'skillTimes'],
-    ),
-  )
 
   const onOperatorSelect = () => {
     if (grouped)
@@ -56,21 +44,8 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
     else {
       if (selected) {
         removeOperator(operatorNoneGroupedIndex)
-      } else submitOperatorInSheet(operatorWithoutSkill)
+      } else submitOperatorInSheet(operator)
     }
-  }
-
-  const updateFavOperator = () => {
-    setFavOperators([
-      ...[...favOperators].filter(({ name }) => name !== operatorWithoutSkill.name),
-      { ...operatorWithoutSkill },
-    ])
-    submitOperatorInSheet(operatorWithoutSkill)
-  }
-
-  const onPinnedChange = () => {
-    if (pinned) setFavOperators([...favOperators].filter(({ name: existedName }) => existedName !== name))
-    else updateFavOperator()
   }
 
   return (
@@ -93,36 +68,9 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
         >
           {useLocalizedOperatorName(name)}
         </p>
+        {showSkillAbout && <SheetOperatorSkillAbout operator={operator} />}
       </div>
 
-      {selected && (
-        <div className="absolute top-2 right-2" onClick={(e) => e.stopPropagation()} role="presentation">
-          {(() => {
-            const isFavDuplicate = favOperators.find(({ name: existedName }) => existedName === name)
-            return (
-              <PopoverNext
-                content={
-                  <Button minimal onClick={onPinnedChange}>
-                    <Icon icon={pinned ? 'pin' : 'warning-sign'} className={clsx(pinned && '-rotate-45')} />
-                    <span>
-                      {pinned
-                        ? t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.remove_from_favorites
-                        : t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.will_replace_operator}
-                    </span>
-                  </Button>
-                }
-                disabled={!pinned && !isFavDuplicate}
-              >
-                <Icon
-                  icon={pinned ? 'pin' : 'unpin'}
-                  className={clsx(pinned && '-rotate-45')}
-                  onClick={!pinned && !isFavDuplicate ? onPinnedChange : undefined}
-                />
-              </PopoverNext>
-            )
-          })()}
-        </div>
-      )}
       {grouped && (
         <div className={clsx('flex mt-1 text-gray-500 items-center text-xs')}>
           <Icon icon="warning-sign" size={12} className="flex items-center mr-1" />
@@ -130,5 +78,29 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
         </div>
       )}
     </Card>
+  )
+}
+
+const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = ({ operator }) => {
+  const t = useTranslation()
+
+  return (
+    <div className="flex mt-1 max-w-full flex-nowrap items-center justify-center text-xs text-gray-500 whitespace-nowrap">
+      {!operator.skill && <Icon icon="info-sign" size={12} className="flex items-center mr-1" />}
+      <p>
+        {operator.skill
+          ? t.models.operator.skill_number({ count: operator.skill })
+          : t.components.editor.operator.sheet.SheetOperatorSkillAbout.not_set}
+        {operator.skillUsage !== undefined && ' ·'}
+      </p>
+      {operator.skillUsage !== undefined && (
+        <Icon
+          icon={skillDic.find((item) => item.value === operator.skillUsage)?.icon}
+          className="flex items-center ml-1"
+          size={12}
+        />
+      )}
+      {operator.skillTimes && <p>×{operator.skillTimes}</p>}
+    </div>
   )
 }

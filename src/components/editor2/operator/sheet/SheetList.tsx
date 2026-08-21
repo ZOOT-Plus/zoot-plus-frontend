@@ -7,6 +7,7 @@ import { OperatorRaritySelect } from 'components/editor/operator/sheet/sheetOper
 
 import { OperatorNoData } from '../../../editor/operator/sheet/SheetNoneData'
 import {
+  DEFAULTPROFID,
   defaultPagination,
   useOperatorFilterProvider,
 } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorFilterProvider'
@@ -43,6 +44,8 @@ export const SheetList: FC<SheetListProps> = () => {
     setPaginationFilter(defaultPagination)
   }, [reverse, selectedProf, selectedRarity, setPaginationFilter, toTop])
 
+  const showSkillAbout = selectedProf[0] === DEFAULTPROFID.FAV
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex h-full w-full overflow-hidden">
@@ -55,9 +58,9 @@ export const SheetList: FC<SheetListProps> = () => {
                 key="operatorContainer"
                 className="grid auto-rows-auto grid-cols-[repeat(auto-fill,minmax(128px,128px))] gap-[1px]"
               >
-                {operatorFilteredData.map(({ name }, index) => (
+                {operatorFilteredData.map((operator, index) => (
                   <div className="flex items-center flex-0 w-full h-32" key={index}>
-                    <SheetOperatorItem {...{ name }} />
+                    <SheetOperatorItem {...{ operator, showSkillAbout }} />
                   </div>
                 ))}
               </div>
