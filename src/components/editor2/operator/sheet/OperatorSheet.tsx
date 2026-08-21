@@ -12,6 +12,10 @@ import { SheetList } from './SheetList'
 
 // TODO: 兼容性处理，以后要去掉
 const ensureEditorOperator = (operation: EditorOperation, operator: CopilotDocV1.Operator): EditorOperator => {
+  const operatorWithId = operator as CopilotDocV1.Operator & { id?: string }
+  if (operatorWithId.id) {
+    return operatorWithId as EditorOperator
+  }
   if (operator._id) {
     const { _id, ...rest } = operator
     return { ...rest, id: uniqueId() }

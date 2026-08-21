@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/core'
 
 import { useAtomValue } from 'jotai'
-import { clamp, mapValues } from 'lodash-es'
+import { clamp, defaults, isEqual, mapValues, pick } from 'lodash-es'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
@@ -13,6 +13,17 @@ export { OPERATORS, PROFESSIONS }
 
 export type OperatorInfo = (typeof OPERATORS)[number]
 export type Profession = (typeof PROFESSIONS)[number]
+
+const OPERATOR_CONFIG_COMPARE_KEYS = ['name', 'skill', 'skillUsage', 'skillTimes', 'requirements.skillLevel'] as const
+
+export function isSameOperatorConfig(
+  operatorA: Partial<CopilotDocV1.Operator>,
+  operatorB: Partial<CopilotDocV1.Operator>,
+  deepCompare: boolean = false,
+) {
+  if (!deepCompare) return operatorA.name === operatorB.name
+  return isEqual(pick(operatorA, OPERATOR_CONFIG_COMPARE_KEYS), pick(operatorB, OPERATOR_CONFIG_COMPARE_KEYS))
+}
 
 const OPERATORS_BY_ID = Object.fromEntries(OPERATORS.map((operator) => [operator.id, operator]))
 export function findOperatorById(id: string): OperatorInfo | undefined {
@@ -102,6 +113,14 @@ const defaultRequirementsByRarity: Record<number, Required<CopilotDocV1.Requirem
 
 export function getDefaultRequirements(rarity = 6) {
   return defaultRequirementsByRarity[rarity] ?? defaultRequirementsByRarity[6]
+}
+
+export function withDefaultRequirements(
+  baseRequirements: CopilotDocV1.Requirements = {},
+  rarity = 6,
+): Required<CopilotDocV1.Requirements> {
+  const defaultRequirements = getDefaultRequirements(rarity)
+  return defaults({}, baseRequirements, defaultRequirements)
 }
 
 export function adjustOperatorLevel({

@@ -3,10 +3,11 @@ import { Card, Icon, Intent } from '@blueprintjs/core'
 import clsx from 'clsx'
 import { FC } from 'react'
 
+import { MasteryIcon } from 'components/MasteryIcon'
 import { AppToaster } from 'components/Toaster'
 import { DetailedSelectChoice } from 'components/editor/DetailedSelect'
 import { CopilotDocV1 } from 'models/copilot.schema'
-import { operatorSkillUsages, useLocalizedOperatorName } from 'models/operator'
+import { isSameOperatorConfig, operatorSkillUsages, useLocalizedOperatorName } from 'models/operator'
 
 import { useTranslation } from '../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../OperatorAvatar'
@@ -24,15 +25,19 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
   const t = useTranslation()
   const { existedOperators, existedGroups, submitOperatorInSheet, removeOperator } = useSheet()
 
-  const operatorNoneGroupedIndex = existedOperators.findIndex(({ name: existedName }) => existedName === name)
+  const operatorNoneGroupedIndex = existedOperators.findIndex((operator) =>
+    isSameOperatorConfig(operator, baseOperator, true)
+  )
   const operatorInGroup = existedGroups
     .flatMap(({ opers }) => opers ?? [])
-    .find(({ name: existedName }) => existedName === name)
+    .find((operator) => isSameOperatorConfig(operator, baseOperator, true))
+  const sameNameOperator = showSkillAbout
+    ? existedOperators.find(({ name: existedName }) => existedName === name) ||
+      existedGroups.flatMap(({ opers }) => opers ?? []).find(({ name: existedName }) => existedName === name)
+    : undefined
   const selected = operatorNoneGroupedIndex !== -1
   const grouped = !!operatorInGroup
-  const operator = existedOperators?.[operatorNoneGroupedIndex] ||
-    operatorInGroup ||
-    baseOperator
+  const operator = existedOperators?.[operatorNoneGroupedIndex] || operatorInGroup || baseOperator
   const selectedInView = selected || grouped
 
   const onOperatorSelect = () => {
@@ -44,7 +49,16 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
     else {
       if (selected) {
         removeOperator(operatorNoneGroupedIndex)
-      } else submitOperatorInSheet(operator)
+      } else {
+        submitOperatorInSheet(
+          sameNameOperator
+            ? ({
+                ...baseOperator,
+                id: (sameNameOperator as typeof sameNameOperator & { id: string }).id,
+              } as typeof baseOperator)
+            : operator,
+        )
+      }
     }
   }
 
@@ -91,12 +105,22 @@ const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = ({ oper
         {operator.skill
           ? t.models.operator.skill_number({ count: operator.skill })
           : t.components.editor.operator.sheet.SheetOperatorSkillAbout.not_set}
-        {operator.skillUsage !== undefined && ' ·'}
       </p>
+      {operator.requirements?.skillLevel !== undefined &&
+        (operator.requirements.skillLevel < 8 ? (
+          <p className="ml-1">Lv.{operator.requirements.skillLevel}</p>
+        ) : (
+          <MasteryIcon
+            className="ml-1 h-3 w-3"
+            mastery={operator.requirements.skillLevel - 7}
+            subClassName="fill-gray-300"
+          />
+        ))}
+      {operator.skillUsage !== undefined && <p className="mx-1">·</p>}
       {operator.skillUsage !== undefined && (
         <Icon
           icon={skillDic.find((item) => item.value === operator.skillUsage)?.icon}
-          className="flex items-center ml-1"
+          className="flex items-center"
           size={12}
         />
       )}

@@ -850,6 +850,14 @@
           "cn": "已添加到收藏",
           "en": "Added to favorites"
         },
+        "remove_from_favorites": {
+          "cn": "取消收藏",
+          "en": "Remove from favorites"
+        },
+        "removed_from_favorites": {
+          "cn": "已取消收藏",
+          "en": "Removed from favorites"
+        },
         "elite": {
           "cn": "精英{{level}}",
           "en": "Elite {{level}}"
