@@ -1,4 +1,4 @@
-import { Callout, FormGroup, InputGroup, Radio, RadioGroup, TextArea } from '@blueprintjs/core'
+import { FormGroup, InputGroup, Radio, RadioGroup, TextArea } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -16,9 +16,10 @@ import {
   useTypeSwitchConfirm,
 } from '../editor/CopilotTypePicker'
 import { DifficultyPicker } from './DifficultyPicker'
-import { LevelSelect } from './LevelSelect'
 import { editorAtoms, useEdit } from './editor-state'
+import { LevelSelect } from './LevelSelect'
 import { ValidatedOperation, getLabeledPath } from './validation/schema'
+import { IssuesDisplay } from './validation/Validator'
 
 interface InfoEditorProps {
   className?: string
@@ -213,15 +214,14 @@ InfoEditor.displayName = 'InfoEditor'
 const FieldError = ({ path }: { path: Paths<ValidatedOperation> }) => {
   const t = useTranslation()
   const globalErrors = useAtomValue(editorAtoms.visibleGlobalErrors)
-  const errors = globalErrors?.filter((e) => e.path.join('.') === path)
-  if (!errors?.length) return null
+  const globalWarnings = useAtomValue(editorAtoms.visibleGlobalWarnings)
+  const errors = globalErrors?.filter((e) => e.path && e.path.join('.') === path)
+  const warnings = globalWarnings?.filter((e) => e.path && e.path.join('.') === path)
   return (
-    <Callout intent="danger" icon={null} className="mt-1 p-2 text-xs">
-      {errors.map(({ path, message }) => (
-        <p key={path.join()}>
-          {getLabeledPath(t, path)}: {message}
-        </p>
-      ))}
-    </Callout>
+    <IssuesDisplay
+      className="mt-1"
+      errors={errors?.map((e) => getLabeledPath(t, e.path!) + ': ' + e.message)}
+      warnings={warnings?.map((e) => getLabeledPath(t, e.path!) + ': ' + e.message)}
+    />
   )
 }

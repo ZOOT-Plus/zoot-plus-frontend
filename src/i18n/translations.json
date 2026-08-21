@@ -442,8 +442,8 @@
           "en": "Undo History (limit {{limit}})"
         },
         "errors_header": {
-          "cn": "错误",
-          "en": "Errors"
+          "cn": "问题",
+          "en": "Problems"
         },
         "no_errors": {
           "cn": "无错误",

@@ -1,4 +1,4 @@
-import { Button, Callout, NonIdealState } from '@blueprintjs/core'
+import { Button, NonIdealState } from '@blueprintjs/core'
 import {
   Active,
   DndContext,
@@ -25,6 +25,7 @@ import { AtomRenderer } from '../AtomRenderer'
 import { EditorOperator, editorAtoms, traverseOperators, useEdit } from '../editor-state'
 import { createGroup, createOperator } from '../reconciliation'
 import { EntityIssue } from '../validation/validation'
+import { IssuesDisplay } from '../validation/Validator'
 import { GroupItem } from './GroupItem'
 import { OperatorItem } from './OperatorItem'
 import { OperatorSelect } from './OperatorSelect'
@@ -141,7 +142,7 @@ export const OperatorEditor: FC = memo(() => {
         <CreateOperatorButton />
       </div>
       <div className="grow md:overflow-auto px-4 pt-4">
-        <OperatorError />
+        <OperatorIssues />
         {operatorAtoms.length === 0 && baseGroupAtoms.length === 0 ? (
           <NonIdealState icon="helicopter" title={t.components.editor2.OperatorEditor.no_operators} />
         ) : (
@@ -276,50 +277,75 @@ const OperatorDragOverlay = () => {
   return <DragOverlay>{activeOperator && <OperatorItem onOverlay operator={activeOperator} />}</DragOverlay>
 }
 
-const operatorErrorsAtom = atom((get) => {
+const operatorIssuesAtom = atom((get) => {
   const entityErrors = get(editorAtoms.visibleEntityErrors)
-  if (!entityErrors) return undefined
+  const entityWarnings = get(editorAtoms.visibleEntityWarnings)
+  if (!(entityErrors && Object.keys(entityErrors).length) && !(entityWarnings && Object.keys(entityWarnings).length))
+    return undefined
 
   const opers = get(editorAtoms.operators)
   const groups = get(editorAtoms.groups)
-  const operatorErrors: { operator: EditorOperator; errors: EntityIssue[] }[] = []
+  const operatorIssuesMap: Record<
+    string,
+    {
+      operator: EditorOperator
+      errors: EntityIssue[]
+      warnings: EntityIssue[]
+    }
+  > = {}
 
-  for (const [id, errors] of Object.entries(entityErrors)) {
-    traverseOperators({ opers, groups }, (operator) => {
-      if (operator.id === id) {
-        operatorErrors.push({ operator, errors })
-        return true
-      }
-      return false
-    })
+  if (entityErrors) {
+    for (const [id, errors] of Object.entries(entityErrors)) {
+      traverseOperators({ opers, groups }, (operator) => {
+        if (operator.id === id) {
+          if (!operatorIssuesMap[id]) {
+            operatorIssuesMap[id] = { operator, errors: [], warnings: [] }
+          }
+          operatorIssuesMap[id].errors.push(...errors)
+          return true
+        }
+        return false
+      })
+    }
   }
-  return operatorErrors.length ? operatorErrors : undefined
+  if (entityWarnings) {
+    for (const [id, warnings] of Object.entries(entityWarnings)) {
+      traverseOperators({ opers, groups }, (operator) => {
+        if (operator.id === id) {
+          if (!operatorIssuesMap[id]) {
+            operatorIssuesMap[id] = { operator, errors: [], warnings: [] }
+          }
+          operatorIssuesMap[id].warnings.push(...warnings)
+          return true
+        }
+        return false
+      })
+    }
+  }
+  const operatorIssues = Object.values(operatorIssuesMap)
+  return operatorIssues.length ? operatorIssues : undefined
 })
 
-const OperatorError = () => {
-  const errors = useAtomValue(operatorErrorsAtom)
+const OperatorIssues: FC = () => {
+  const issues = useAtomValue(operatorIssuesAtom)
   const language = useAtomValue(languageAtom)
   const t = useTranslation()
-  if (!errors) return null
+  if (!issues) return null
 
-  return (
-    <Callout intent="danger" icon={null} className="mb-4 p-2 text-xs">
-      {errors.map(({ operator, errors }) =>
-        errors.map(({ path, fieldLabel, message }) => (
-          <p key={operator.id + path.join()} className="error-message">
-            {fieldLabel
-              ? t.components.editor2.OperatorEditor.operator_field_error({
-                  name: getLocalizedOperatorName(operator.name, language),
-                  field: fieldLabel,
-                  error: message,
-                })
-              : t.components.editor2.OperatorEditor.operator_error({
-                  name: getLocalizedOperatorName(operator.name, language),
-                  error: message,
-                })}
-          </p>
-        )),
-      )}
-    </Callout>
-  )
+  const getIssueMessage = (operator: EditorOperator, { fieldLabel, message }: EntityIssue) =>
+    fieldLabel
+      ? t.components.editor2.OperatorEditor.operator_field_error({
+          name: getLocalizedOperatorName(operator.name, language),
+          field: fieldLabel,
+          error: message,
+        })
+      : t.components.editor2.OperatorEditor.operator_error({
+          name: getLocalizedOperatorName(operator.name, language),
+          error: message,
+        })
+
+  const errors = issues.flatMap(({ operator, errors }) => errors.map((e) => getIssueMessage(operator, e)))
+  const warnings = issues.flatMap(({ operator, warnings }) => warnings.map((w) => getIssueMessage(operator, w)))
+
+  return <IssuesDisplay className="mb-4" errors={errors} warnings={warnings} />
 }

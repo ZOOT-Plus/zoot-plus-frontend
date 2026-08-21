@@ -9,8 +9,8 @@ import { CopilotType } from '../../models/operation'
 import { PartialDeep } from '../../utils/partial-deep'
 import { createHistoryAtom, useHistoryEdit } from './history'
 import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
-import { ZodIssue, operationForParsing } from './validation/schema'
-import { EntityIssue } from './validation/validation'
+import { operationForParsing } from './validation/schema'
+import { EntityIssue, GlobalIssue } from './validation/validation'
 
 export interface EditorState {
   operation: EditorOperation
@@ -221,16 +221,11 @@ export function getEditorConfig() {
   return getDefaultStore().get(localConfigAtom)
 }
 
-export interface SimpleIssue {
-  message: string
-  path?: (string | number)[]
-}
-export type Issue = ZodIssue | EntityIssue | SimpleIssue
-const editorParsingErrorsAtom = atom<ZodIssue[]>([])
-const editorGlobalErrorsAtom = atom<ZodIssue[]>([])
+const editorParsingErrorsAtom = atom<GlobalIssue[]>([])
+const editorGlobalErrorsAtom = atom<GlobalIssue[]>([])
 const editorEntityErrorsAtom = atom<Record<string, EntityIssue[]>>({})
 const editorErrorsVisibleAtom = atom(initialConfig.showErrorsByDefault)
-const editorGlobalWarningsAtom = atom<Issue[]>([])
+const editorGlobalWarningsAtom = atom<GlobalIssue[]>([])
 const editorEntityWarningsAtom = atom<Record<string, EntityIssue[]>>({})
 function visibleIssuesAtom<T>(sourceAtom: PrimitiveAtom<T>) {
   return atom((get) => (get(editorErrorsVisibleAtom) ? get(sourceAtom) : undefined))

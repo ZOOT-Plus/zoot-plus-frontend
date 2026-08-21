@@ -7,6 +7,12 @@ import { editorAtoms } from '../editor-state'
 import { toMaaOperation } from '../reconciliation'
 import { getLabel, operationForSubmission, operationForValidation, ZodIssue } from './schema'
 
+export type GlobalIssue = ZodIssue | SimpleIssue
+export interface SimpleIssue {
+  message: string
+  path?: (string | number)[]
+}
+
 // Entities are objects that have an `id` property and are stored in an array.
 // This includes operators, groups, and actions. For entity-specific errors,
 // we want to display them next to their associated entity instead of displaying

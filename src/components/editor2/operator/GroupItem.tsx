@@ -1,4 +1,4 @@
-import { Button, Callout, Card, Classes, Dialog, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
+import { Button, Card, Classes, Dialog, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 import { SortableContext } from '@dnd-kit/sortable'
 
 import clsx from 'clsx'
@@ -16,7 +16,8 @@ import { Droppable, Sortable } from '../../dnd'
 import { AtomRenderer } from '../AtomRenderer'
 import { BaseEditorGroup, editorAtoms, useActiveState, useEdit } from '../editor-state'
 import { WithId, createOperator, editorFavGroupsAtom } from '../reconciliation'
-import { useEntityErrors } from '../validation/validation'
+import { IssuesDisplay } from '../validation/Validator'
+import { useEntityErrors, useEntityWarnings } from '../validation/validation'
 import { OperatorItem } from './OperatorItem'
 import { OperatorSelect } from './OperatorSelect'
 import { useAddOperator } from './useAddOperator'
@@ -39,7 +40,6 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
   }, [baseGroup.opersAtom])
   const [active, setActive] = useActiveState(editorAtoms.activeGroupIdAtom as any, baseGroup.id)
   const operatorIds = useAtomValue(operatorIdsAtom)
-  const errors = useEntityErrors(baseGroup.id)
   const addOperator = useAddOperator()
   const t = useTranslation()
 
@@ -138,16 +138,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           <Button minimal icon={<Icon icon="more" className="rotate-90" />} className="h-full !p-0 !border-0" />
         </PopoverNext>
       </div>
-      {errors && (
-        <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
-          {errors.map(({ path, message, fieldLabel }) => (
-            <p key={path.join()}>
-              {fieldLabel && fieldLabel + ': '}
-              {message}
-            </p>
-          ))}
-        </Callout>
-      )}
+      <GroupIssues id={baseGroup.id} />
       <Droppable className="grow px-4 py-2" id={baseGroup.id} data={{ type: 'group' }}>
         <SortableContext items={operatorIds}>
           <ul className="flex flex-wrap gap-4">
@@ -433,3 +424,16 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
   )
 })
 GroupTitle.displayName = 'GroupTitle'
+
+const GroupIssues: FC<{ id: string }> = ({ id }) => {
+  const errors = useEntityErrors(id)
+  const warnings = useEntityWarnings(id)
+
+  return (
+    <IssuesDisplay
+      className="!rounded-none"
+      errors={errors?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+      warnings={warnings?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+    />
+  )
+}

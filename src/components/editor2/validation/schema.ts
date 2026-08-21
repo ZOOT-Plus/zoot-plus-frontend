@@ -91,24 +91,24 @@ const groupForValidation = z.looseObject({
 })
 
 const baseActionForParsing = {
-  kills: z.number().int(),
-  costs: z.number().int(),
-  cost_changes: z.number().int(),
-  cooling: z.number().int(),
-  pre_delay: z.number().int(),
-  rear_delay: z.number().int(),
-  post_delay: z.number().int(),
-  doc: z.string(),
-  doc_color: z.string(),
+  kills: z.number().int().optional(),
+  costs: z.number().int().optional(),
+  cost_changes: z.number().int().optional(),
+  cooling: z.number().int().optional(),
+  pre_delay: z.number().int().optional(),
+  rear_delay: z.number().int().optional(),
+  post_delay: z.number().int().optional(),
+  doc: z.string().optional(),
+  doc_color: z.string().optional(),
 }
 const baseActionForValidation = {
   ...baseActionForParsing,
-  kills: baseActionForParsing.kills.min(0),
-  costs: baseActionForParsing.costs.min(0),
-  cooling: baseActionForParsing.cooling.min(0),
-  pre_delay: baseActionForParsing.pre_delay.min(0),
-  rear_delay: baseActionForParsing.rear_delay.min(0),
-  post_delay: baseActionForParsing.post_delay.min(0),
+  kills: baseActionForParsing.kills.unwrap().min(0).optional(),
+  costs: baseActionForParsing.costs.unwrap().min(0).optional(),
+  cooling: baseActionForParsing.cooling.unwrap().min(0).optional(),
+  pre_delay: baseActionForParsing.pre_delay.unwrap().min(0).optional(),
+  rear_delay: baseActionForParsing.rear_delay.unwrap().min(0).optional(),
+  post_delay: baseActionForParsing.post_delay.unwrap().min(0).optional(),
 }
 const specializedActionForParsing = {
   name: z.string(),

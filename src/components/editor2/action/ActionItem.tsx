@@ -1,4 +1,4 @@
-import { Button, Callout, Card, Classes, Divider, Icon, InputGroup, MenuItem, Tooltip } from '@blueprintjs/core'
+import { Button, Card, Classes, Divider, Icon, InputGroup, MenuItem, Tooltip } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -24,7 +24,8 @@ import { NumericInput2 } from '../../editor/NumericInput2'
 import { EditorAction, editorAtoms, useActiveState, useEdit } from '../editor-state'
 import { OperatorSelect } from '../operator/OperatorSelect'
 import { createAction } from '../reconciliation'
-import { useEntityErrors } from '../validation/validation'
+import { IssuesDisplay } from '../validation/Validator'
+import { useEntityErrors, useEntityWarnings } from '../validation/validation'
 import { ActionLinker } from './ActionLinker'
 
 interface ActionItemProps extends Partial<SortableItemProps> {
@@ -40,7 +41,6 @@ export const ActionItem: FC<ActionItemProps> = memo(
     const dispatchActions = useSetAtom(editorAtoms.actionAtoms as any)
     const [action, setAction] = useImmerAtom(actionAtom)
     const [active, setActive] = useActiveState(editorAtoms.activeActionIdAtom as any, action.id)
-    const errors = useEntityErrors(action.id)
     const [docDraft, setDocDraft] = useState<string | undefined>()
     const [docInput, setDocInput] = useState<HTMLInputElement | null>(null)
     const shouldFocusDocInput = useRef(false)
@@ -505,16 +505,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
               />
             </div>
           )}
-          {errors && (
-            <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
-              {errors.map(({ path, message, fieldLabel }) => (
-                <p key={path.join()}>
-                  {fieldLabel && fieldLabel + ': '}
-                  {message}
-                </p>
-              ))}
-            </Callout>
-          )}
+          <ActionIssues id={action.id} />
         </Card>
       </div>
     )
@@ -599,5 +590,18 @@ const ActionTarget: FC<{
         </div>
       </Button>
     </OperatorSelect>
+  )
+}
+
+const ActionIssues: FC<{ id: string }> = ({ id }) => {
+  const errors = useEntityErrors(id)
+  const warnings = useEntityWarnings(id)
+
+  return (
+    <IssuesDisplay
+      className="!rounded-none"
+      errors={errors?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+      warnings={warnings?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+    />
   )
 }
