@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/core'
 
 import { useAtomValue } from 'jotai'
-import { clamp, defaults, mapValues } from 'lodash-es'
+import { clamp, mapValues } from 'lodash-es'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
@@ -102,14 +102,6 @@ const defaultRequirementsByRarity: Record<number, Required<CopilotDocV1.Requirem
 
 export function getDefaultRequirements(rarity = 6) {
   return defaultRequirementsByRarity[rarity] ?? defaultRequirementsByRarity[6]
-}
-
-export function withDefaultRequirements(
-  baseRequirements: CopilotDocV1.Requirements = {},
-  rarity = 6,
-): Required<CopilotDocV1.Requirements> {
-  const defaultRequirements = getDefaultRequirements(rarity)
-  return defaults({}, baseRequirements, defaultRequirements)
 }
 
 export function adjustOperatorLevel({

@@ -557,6 +557,14 @@
           "cn": "编辑器设置",
           "en": "Editor Settings"
         },
+        "edit": {
+          "cn": "编辑",
+          "en": "Edit"
+        },
+        "ui": {
+          "cn": "界面",
+          "en": "UI"
+        },
         "show_linker_buttons": {
           "cn": "始终显示动作之间的按钮",
           "en": "Always Show Buttons Between Actions"
@@ -568,6 +576,28 @@
         "show_errors_by_default": {
           "cn": "默认显示验证错误",
           "en": "Show Validation Errors by Default"
+        },
+        "operator_presets": {
+          "cn": "干员预设",
+          "en": "Operator Presets"
+        },
+        "reset_to_default": {
+          "cn": "重置所有选项为默认值",
+          "en": "Reset all the options to default"
+        },
+        "presets_when_adding": {
+          "cn": "添加干员时使用的预设值",
+          "en": "Presets when adding an operator"
+        },
+        "rarity": {
+          "cn": {
+            "0": "{{count}}星（通常为召唤物）",
+            "other": "{{count}}星"
+          },
+          "en":{
+            "0": "{{count}}-star (usually a summon)",
+            "other": "{{count}}-star"
+          }
         },
         "history_limit": {
           "cn": "撤销记录上限",
@@ -824,6 +854,14 @@
           "cn": "精英{{level}}",
           "en": "Elite {{level}}"
         },
+        "level": {
+          "cn": "等级（可使用鼠标滚轮调整）",
+          "en": "Level (use mouse wheel to adjust)"
+        },
+        "level_unset": {
+          "cn": "未设置等级",
+          "en": "Level not set"
+        },
         "module": {
           "cn": "模组",
           "en": "Module"
@@ -839,6 +877,10 @@
             "0": "Switch to Original Module",
             "other": "Switch to {{name}} Module"
           }
+        },
+        "selected_skill": {
+          "cn": "{{skill}}（可使用鼠标滚轮调整等级）",
+          "en": "{{skill}} (use mouse wheel to adjust level)"
         },
         "skill_not_available": {
           "cn": "当前等级未解锁该技能",
