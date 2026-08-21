@@ -1,6 +1,5 @@
 import {
   Button,
-  Callout,
   Card,
   Classes,
   Divider,
@@ -29,15 +28,16 @@ import {
   getSkillUsageAltTitle,
 } from '../../../models/operator'
 import { findActionType } from '../../../models/types'
-import { OperatorAvatar } from '../../OperatorAvatar'
-import { Select } from '../../Select'
 import { SortableItemProps } from '../../dnd'
 import { DetailedSelect } from '../../editor/DetailedSelect'
 import { NumericInput2 } from '../../editor/NumericInput2'
+import { OperatorAvatar } from '../../OperatorAvatar'
+import { Select } from '../../Select'
 import { EditorAction, editorAtoms, useActiveState, useEdit } from '../editor-state'
 import { OperatorSelect } from '../operator/OperatorSelect'
 import { createAction } from '../reconciliation'
-import { useEntityErrors } from '../validation/validation'
+import { useEntityErrors, useEntityWarnings } from '../validation/validation'
+import { IssuesDisplay } from '../validation/Validator'
 import { ActionLinker } from './ActionLinker'
 
 interface ActionItemProps extends Partial<SortableItemProps> {
@@ -62,7 +62,6 @@ export const ActionItem: FC<ActionItemProps> = memo(
     const dispatchActions = useSetAtom(editorAtoms.actionAtoms as any)
     const [action, setAction] = useImmerAtom(actionAtom)
     const [active, setActive] = useActiveState(editorAtoms.activeActionIdAtom as any, action.id)
-    const errors = useEntityErrors(action.id)
     const [docDraft, setDocDraft] = useState<string | undefined>()
     const [docInput, setDocInput] = useState<HTMLInputElement | null>(null)
     const shouldFocusDocInput = useRef(false)
@@ -869,16 +868,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
               />
             </div>
           )}
-          {errors && (
-            <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
-              {errors.map(({ path, message, fieldLabel }) => (
-                <p key={path.join()}>
-                  {fieldLabel && fieldLabel + ': '}
-                  {message}
-                </p>
-              ))}
-            </Callout>
-          )}
+          <ActionIssues id={action.id} />
         </Card>
       </div>
     )
@@ -995,3 +985,15 @@ const RectInput: FC<{
     ))}
   </>
 )
+const ActionIssues: FC<{ id: string }> = ({ id }) => {
+  const errors = useEntityErrors(id)
+  const warnings = useEntityWarnings(id)
+
+  return (
+    <IssuesDisplay
+      className="!rounded-none"
+      errors={errors?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+      warnings={warnings?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+    />
+  )
+}

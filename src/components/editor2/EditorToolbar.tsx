@@ -7,8 +7,8 @@ import {
   Menu,
   MenuDivider,
   MenuItem,
-  Tag,
   PopoverNext,
+  Tag,
 } from '@blueprintjs/core'
 
 import clsx from 'clsx'
@@ -21,13 +21,14 @@ import { formatRelativeTime } from '../../utils/times'
 import { useCurrentSize } from '../../utils/useCurrenSize'
 import { RelativeTime } from '../RelativeTime'
 import { AppToaster } from '../Toaster'
-import { Settings } from './Settings'
 import { editorAtoms, historyAtom, useEdit } from './editor-state'
 import { useHistoryControls, useHistoryValue } from './history'
 import { hydrateOperation } from './reconciliation'
+import { Settings } from './Settings'
 import { SourceEditorButton } from './source/SourceEditor'
 import { AUTO_SAVE_INTERVAL, AUTO_SAVE_LIMIT, editorArchiveAtom, editorSaveAtom } from './useAutoSave'
 import { getLabeledPath } from './validation/schema'
+import { IssuesDisplay } from './validation/Validator'
 
 interface EditorToolbarProps extends SubmitButtonProps {
   subtitle?: string
@@ -253,43 +254,54 @@ const ErrorButton = (buttonProps: ButtonProps) => {
   const t = useTranslation()
   const globalErrors = useAtomValue(editorAtoms.globalErrors)
   const entityErrors = useAtomValue(editorAtoms.entityErrors)
+  const globalWarnings = useAtomValue(editorAtoms.globalWarnings)
+  const entityWarnings = useAtomValue(editorAtoms.entityWarnings)
   const [isOpen, setIsOpen] = useState(false)
-  const allErrors = globalErrors.concat(Object.values(entityErrors).flat())
+  const allErrors = [...globalErrors, ...Object.values(entityErrors).flat()]
+  const allWarnings = [...globalWarnings, ...Object.values(entityWarnings).flat()]
   return (
     <PopoverNext
       content={
         isOpen ? (
           <>
             <MenuDivider className="pb-2 border-b" title={t.components.editor2.EditorToolbar.errors_header} />
-            <ul className="m-2 text-red-500">
-              {allErrors.map(({ path, message }) => (
-                <li key={path.join()}>
-                  <span className="font-bold">{getLabeledPath(t, path)}: </span>
-                  {message}
-                </li>
-              ))}
-            </ul>
+            <div className="min-w-64 max-w-[90vw] max-h-96 overflow-y-auto">
+              {allErrors.length === 0 && allWarnings.length === 0 && (
+                <p className="p-2 text-xs">{t.components.editor2.EditorToolbar.no_errors}</p>
+              )}
+              <IssuesDisplay
+                minimal
+                errors={allErrors.map(({ path, message }) => (
+                  <>
+                    {path && <b>{getLabeledPath(t, path)}: </b>}
+                    {message}
+                  </>
+                ))}
+                warnings={allWarnings.map(({ path, message }) => (
+                  <>
+                    {path && <b>{getLabeledPath(t, path)}: </b>}
+                    {message}
+                  </>
+                ))}
+              />
+            </div>
           </>
         ) : (
           <span />
         )
       }
       placement="bottom"
-      isOpen={isOpen}
-      onInteraction={(isOpen) => setIsOpen(allErrors.length > 0 && isOpen)}
+      onOpening={() => setIsOpen(true)}
+      onClosed={() => setIsOpen(false)}
     >
-      <Button
-        {...buttonProps}
-        className={clsx('tabular-nums', buttonProps.className)}
-        icon={allErrors.length > 0 ? 'cross-circle' : 'tick-circle'}
-        intent={allErrors.length > 0 ? 'danger' : 'success'}
-        title={
-          allErrors.length > 0
-            ? t.components.editor2.EditorToolbar.errors_header
-            : t.components.editor2.EditorToolbar.no_errors
-        }
-        text={allErrors.length || <Icon className="!-ml-px" icon="small-tick" />}
-      />
+      <Button {...buttonProps} title={t.components.editor2.EditorToolbar.errors_header}>
+        <div className="tabular-nums flex items-center gap-1">
+          <Icon icon="cross-circle" className="!mr-0" intent={allErrors.length > 0 ? 'danger' : 'none'} />
+          {allErrors.length}
+          <Icon icon="warning-sign" intent={allWarnings.length > 0 ? 'warning' : 'none'} />
+          {allWarnings.length}
+        </div>
+      </Button>
     </PopoverNext>
   )
 }

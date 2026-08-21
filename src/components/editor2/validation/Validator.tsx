@@ -1,7 +1,8 @@
 import { useAtom as useAtomValue, useSetAtom } from 'jotai'
-import { debounce } from 'lodash-es'
-import { memo, useEffect, useMemo } from 'react'
+import { debounce, isString } from 'lodash-es'
+import { memo, ReactNode, useEffect, useMemo } from 'react'
 
+import { Callout, CalloutProps, Icon } from '@blueprintjs/core'
 import { translationsAtom } from '../../../i18n/i18n'
 import { editorAtoms } from '../editor-state'
 import { editorValidationAtom } from './validation'
@@ -20,3 +21,40 @@ export const Validator = memo(() => {
   return null
 })
 Validator.displayName = 'Validator'
+
+interface IssuesDisplayProps extends CalloutProps {
+  errors?: ReactNode[]
+  warnings?: ReactNode[]
+}
+
+export function IssuesDisplay({ errors, warnings, ...props }: IssuesDisplayProps) {
+  if (!errors?.length && !warnings?.length) return null
+  return (
+    <Callout compact {...props}>
+      {errors?.map((message, i) => (
+        <Callout
+          minimal
+          icon={null}
+          intent="danger"
+          className="p-0 text-xs leading-5"
+          key={'e' + i + (isString(message) ? message : '')}
+        >
+          <Icon size={12} icon="cross-circle" className="mr-1 align-[-2px]" />
+          {message}
+        </Callout>
+      ))}
+      {warnings?.map((message, i) => (
+        <Callout
+          minimal
+          icon={null}
+          intent="warning"
+          className="p-0 text-xs leading-5"
+          key={'w' + i + (isString(message) ? message : '')}
+        >
+          <Icon size={12} icon="warning-sign" className="mr-1 align-[-2px]" />
+          {message}
+        </Callout>
+      ))}
+    </Callout>
+  )
+}
