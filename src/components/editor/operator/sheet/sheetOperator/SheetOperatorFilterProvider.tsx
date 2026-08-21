@@ -2,13 +2,12 @@ import { useAtomValue } from 'jotai'
 import { Dispatch, FC, ReactNode, SetStateAction, createContext, useContext, useMemo, useState } from 'react'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
-import { OperatorInfo as ModelsOperator, OPERATORS } from 'models/operator'
+import { findOperatorByName, OperatorInfo as ModelsOperator, OPERATORS } from 'models/operator'
 import { favOperatorAtom } from 'store/useFavOperators'
 
 import { useSheet } from '../SheetProvider'
 
 type OperatorInfo = ModelsOperator & Partial<CopilotDocV1.Operator>
-const operatorInfoByName = new Map(OPERATORS.map((operator) => [operator.name, operator]))
 
 export enum DEFAULTPROFID {
   ALL = 'allProf',
@@ -150,7 +149,7 @@ const useOperatorFilterSource = () => {
       const customizedOperators = new Map<string, OperatorInfo>()
 
       existedSheetOperators.forEach(({ name }) => {
-        if (!operatorInfoByName.has(name)) {
+        if (!findOperatorByName(name)) {
           customizedOperators.set(name, generateCustomizedOperInfo(name))
         }
       })
@@ -163,7 +162,7 @@ const useOperatorFilterSource = () => {
   const favOperatorsInfo = useMemo<OperatorInfo[]>(
     () =>
       favOperators.map((operator) => ({
-        ...(operatorInfoByName.get(operator.name) || generateCustomizedOperInfo(operator.name)),
+        ...(findOperatorByName(operator.name) || generateCustomizedOperInfo(operator.name)),
         ...operator,
       })),
     [favOperators],
