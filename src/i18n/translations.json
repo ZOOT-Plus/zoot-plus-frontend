@@ -594,7 +594,7 @@
             "0": "{{count}}星（通常为召唤物）",
             "other": "{{count}}星"
           },
-          "en":{
+          "en": {
             "0": "{{count}}-star (usually a summon)",
             "other": "{{count}}-star"
           }
@@ -613,23 +613,31 @@
           "cn": "编辑 JSON",
           "en": "Edit JSON"
         },
-        "auto_sync_note": {
-          "cn": "编辑后的 JSON 内容会自动同步到编辑器里",
-          "en": "Edited JSON content will automatically sync to the editor"
+        "auto_sync": {
+          "cn": "自动同步",
+          "en": "Auto Sync"
         },
-        "has_errors": {
-          "cn": "存在错误",
-          "en": "Has Errors"
+        "auto_sync_note": {
+          "cn": "编辑后的 JSON 会自动校验并同步到编辑器里。如果将延迟设置为 0，则会禁用自动校验和同步，仅在关闭 JSON 编辑器时才会执行。",
+          "en": "The edited JSON will be automatically validated and synchronized to the editor. If the delay is set to 0, automatic validation and synchronization will be disabled, and will only be executed when the JSON editor is being closed."
+        },
+        "auto_sync_timeout": {
+          "cn": "自动同步延迟 (毫秒)",
+          "en": "Auto Sync Delay (ms)"
+        },
+        "validation_failed": {
+          "cn": "验证未通过",
+          "en": "Validation Failed"
         },
         "validation_passed": {
           "cn": "验证通过",
           "en": "Validation Passed"
         },
         "error_count": {
-          "cn": "{{count}} 个错误",
+          "cn": "{{count}} 个问题",
           "en": {
-            "1": "{{count}} error",
-            "other": "{{count}} errors"
+            "1": "{{count}} problem",
+            "other": "{{count}} problems"
           }
         },
         "json_syntax_error": {
