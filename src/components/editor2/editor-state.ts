@@ -175,6 +175,7 @@ interface EditorConfig {
   toggleSelectorPanel: boolean
   historyLimit: number
   showErrorsByDefault: boolean
+  sourceEditorSyncTimeout: number
   operatorPreset?: OperatorPreset
 }
 export interface OperatorPreset {
@@ -189,6 +190,7 @@ const defaultConfig: EditorConfig = {
   toggleSelectorPanel: true,
   historyLimit: 20,
   showErrorsByDefault: false,
+  sourceEditorSyncTimeout: 1000,
 }
 const localConfigAtom = atomWithStorage<Partial<EditorConfig>>('prts-editor-config', {}, undefined, { getOnInit: true })
 const initialConfig = {

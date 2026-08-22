@@ -1,48 +1,118 @@
-import { Button, ButtonProps, Callout, Drawer, DrawerSize, H6, IconSize, Spinner } from '@blueprintjs/core'
+import {
+  Button,
+  ButtonProps,
+  Callout,
+  Classes,
+  Drawer,
+  DrawerSize,
+  FormGroup,
+  H6,
+  Icon,
+  IconSize,
+  PopoverNext,
+  Spinner,
+} from '@blueprintjs/core'
 
-import { useAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import { debounce } from 'lodash-es'
-import { FC, memo, useMemo, useRef, useState } from 'react'
+import { FC, forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { ZodError } from 'zod'
 
+import clsx from 'clsx'
 import { i18n, useTranslation } from '../../../i18n/i18n'
 import { formatError } from '../../../utils/error'
 import { Confirm } from '../../Confirm'
-import { withSuspensable } from '../../Suspensable'
 import { DrawerLayout } from '../../drawer/DrawerLayout'
-import { SourceEditorHeader } from '../../editor/source/SourceEditorHeader'
+import { NumericInput2 } from '../../editor/NumericInput2'
+import { SourceEditorToolbar } from '../../editor/source/SourceEditorHeader'
 import { editorAtoms, useEdit } from '../editor-state'
 import { toEditorOperation, toMaaOperation } from '../reconciliation'
-import { ZodIssue, operationForParsing } from '../validation/schema'
+import { operationForParsing, operationForValidation, ParsedOperation } from '../validation/schema'
+import { IssuesDisplay } from '../validation/Validator'
 
-interface SourceEditorProps {
-  onUnsavedChanges?: (hasUnsavedChanges: boolean) => void
+interface SourceEditorHandle {
+  requestClose: () => 'unsaved' | void
 }
 
-const SourceEditor = withSuspensable(({ onUnsavedChanges }: SourceEditorProps) => {
+const SourceEditor = forwardRef<SourceEditorHandle>((_, ref) => {
   const t = useTranslation()
-  const onUnsavedChangesRef = useRef(onUnsavedChanges)
-  onUnsavedChangesRef.current = onUnsavedChanges
   const edit = useEdit()
-  const [operation, setOperation] = useAtom(editorAtoms.operation)
-  const [text, setText] = useState(() => JSON.stringify(toMaaOperation(operation), null, 2))
+  const getOperation = useSetAtom(useState(() => atom(null, (get) => get(editorAtoms.operation)))[0])
+  const [text, setText] = useState(() => JSON.stringify(toMaaOperation(getOperation()), null, 2))
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const [pending, setPending] = useState(false)
-  const [errors, setErrors] = useState<(ZodIssue | string)[]>([])
+  const [syncing, setSyncing] = useState(false)
+  const [config, setConfig] = useAtom(editorAtoms.config)
+  const [errors, setErrors] = useState<string[]>([])
+  const [warnings, setWarnings] = useState<string[]>([])
+  const syncCountdownRef = useRef<CountdownSpinnerHandle>(null)
+  const autoSyncEnabled = config.sourceEditorSyncTimeout > 0
 
-  const update = useMemo(
+  useImperativeHandle(ref, () => ({
+    requestClose: () => {
+      if (hasUnsavedChanges) {
+        if (!autoSyncEnabled) {
+          sync(text)
+        }
+        const result = sync.flush()
+        if (result === false) {
+          return 'unsaved'
+        }
+      }
+      return undefined
+    },
+  }))
+
+  const parse = useCallback((text: string): ParsedOperation | undefined => {
+    setErrors([])
+    setWarnings([])
+
+    let json: any
+    let parsed: ParsedOperation
+
+    try {
+      json = JSON.parse(text)
+    } catch (e) {
+      setErrors([i18n.components.editor2.SourceEditor.json_syntax_error])
+      return undefined
+    }
+    try {
+      parsed = operationForParsing.parse(json)
+    } catch (e) {
+      setErrors(formatErrors(e))
+      return undefined
+    }
+    try {
+      operationForValidation.parse(json)
+    } catch (e) {
+      setWarnings(formatErrors(e))
+    }
+
+    return parsed
+  }, [])
+
+  // this effect should only run once on mount to show validation errors for the initial text,
+  // so we intentionally do not put anything in the dependency array
+  useEffect(() => {
+    parse(text)
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const sync = useMemo(
     () =>
-      debounce((text: string) => {
-        setPending(false)
+      debounce((text: string): boolean => {
+        setSyncing(false)
+        const parsed = parse(text)
+        if (!parsed) {
+          return false
+        }
         try {
-          const parsed = operationForParsing.parse(JSON.parse(text))
           const newOperation = toEditorOperation(parsed)
           edit((get, set, skip) => {
             const operation = get(editorAtoms.operation)
             if (JSON.stringify(operation) === JSON.stringify(newOperation)) {
               return skip
             }
-            setOperation(newOperation)
+            set(editorAtoms.operation, newOperation)
             return {
               action: 'edit-json',
               desc: i18n.actions.editor2.set_json,
@@ -50,80 +120,102 @@ const SourceEditor = withSuspensable(({ onUnsavedChanges }: SourceEditorProps) =
             }
           })
 
-          setErrors([])
           setHasUnsavedChanges(false)
-          onUnsavedChangesRef.current?.(false)
         } catch (e) {
-          if (e instanceof SyntaxError) {
-            setErrors([i18n.components.editor2.SourceEditor.json_syntax_error])
-          } else if (e instanceof ZodError) {
-            setErrors(e.issues)
-          } else {
-            setErrors([
-              i18n.components.editor2.SourceEditor.unknown_error({
-                error: formatError(e),
-              }),
-            ])
-          }
+          setErrors(formatErrors(e))
         }
-      }, 1000),
-    [edit, setOperation],
+
+        return true
+      }, config.sourceEditorSyncTimeout),
+    [edit, parse, config.sourceEditorSyncTimeout],
   )
 
+  useEffect(() => {
+    return () => {
+      sync.flush()
+    }
+  }, [sync])
+
   const handleChange = (text: string) => {
-    setPending(true)
     setText(text)
-    update(text)
     setHasUnsavedChanges(true)
-    onUnsavedChanges?.(true)
+
+    if (autoSyncEnabled) {
+      setSyncing(true)
+      syncCountdownRef.current?.restart()
+      sync(text)
+    }
   }
 
   return (
-    <DrawerLayout title={<SourceEditorHeader text={text} onChange={handleChange} />}>
-      <div className="px-8 py-4 flex-grow flex flex-col gap-2 bg-zinc-50 dark:bg-slate-900 dark:text-white">
-        <Callout
-          title={t.components.editor2.SourceEditor.auto_sync_note}
-          intent={hasUnsavedChanges ? 'primary' : 'success'}
-          icon={
-            pending ? (
-              <Spinner size={IconSize.STANDARD} className="bp6-icon" />
-            ) : hasUnsavedChanges ? (
-              'warning-sign'
-            ) : (
-              'tick'
-            )
-          }
-        />
+    <DrawerLayout
+      title={
+        <>
+          <Icon icon="manually-entered-data" />
+          <span className="ml-2">{t.components.editor.source.SourceEditorHeader.edit_json}</span>
+          <div className="flex-1" />
+          <PopoverNext
+            animation="minimal"
+            arrow={false}
+            placement="bottom-start"
+            content={
+              <FormGroup
+                className="max-w-96 my-2"
+                label={t.components.editor2.SourceEditor.auto_sync_timeout}
+                helperText={t.components.editor2.SourceEditor.auto_sync_note}
+              >
+                <NumericInput2
+                  intOnly
+                  value={config.sourceEditorSyncTimeout}
+                  min={0}
+                  majorStepSize={1000}
+                  stepSize={100}
+                  wheelStepSize={100}
+                  onValueChange={(v) => setConfig((c) => ({ sourceEditorSyncTimeout: v }))}
+                />
+              </FormGroup>
+            }
+          >
+            <Button
+              className="mr-4"
+              icon={
+                autoSyncEnabled ? (
+                  syncing ? (
+                    <CountdownSpinner countdown={config.sourceEditorSyncTimeout} ref={syncCountdownRef} />
+                  ) : hasUnsavedChanges ? (
+                    <Icon intent="warning" icon="warning-sign" />
+                  ) : (
+                    <Icon intent="success" icon="tick" />
+                  )
+                ) : (
+                  <Icon icon="disable" />
+                )
+              }
+              text={t.components.editor2.SourceEditor.auto_sync}
+              endIcon="caret-down"
+            />
+          </PopoverNext>
+          <SourceEditorToolbar text={text} onChange={handleChange} />
+        </>
+      }
+    >
+      <div className="px-8 py-2 flex-grow flex flex-col gap-2 bg-zinc-50 dark:bg-slate-900 dark:text-white">
         <Callout
           title={
-            errors.length
-              ? t.components.editor2.SourceEditor.has_errors
+            errors.length || warnings.length
+              ? t.components.editor2.SourceEditor.validation_failed
               : t.components.editor2.SourceEditor.validation_passed
           }
-          intent={errors.length ? 'danger' : 'success'}
+          intent={errors.length ? 'danger' : warnings.length ? 'warning' : 'success'}
         >
-          {errors.length > 0 ? (
+          {errors.length > 0 || warnings.length > 0 ? (
             <details open>
               <summary className="cursor-pointer">
                 {t.components.editor2.SourceEditor.error_count({
-                  count: errors.length,
+                  count: errors.length + warnings.length,
                 })}
               </summary>
-              <ul className="">
-                {errors.map((error, index) => (
-                  <li key={index} className="text-sm">
-                    {typeof error === 'string' ? (
-                      error
-                    ) : (
-                      <>
-                        {' '}
-                        <span className="font-bold">{error.path.join('.')}: </span>
-                        {error.message}
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <IssuesDisplay minimal className="!p-0" errors={errors} warnings={warnings} />
             </details>
           ) : null}
         </Callout>
@@ -131,13 +223,56 @@ const SourceEditor = withSuspensable(({ onUnsavedChanges }: SourceEditorProps) =
           className="p-1 flex-grow bg-white border text-xm font-mono resize-none focus:outline focus:outline-2 focus:outline-purple-300 dark:bg-slate-900 dark:text-white"
           value={text}
           onChange={(e) => handleChange(e.target.value)}
-          onBlur={() => update.flush()}
+          onBlur={() => sync.flush()}
         />
       </div>
     </DrawerLayout>
   )
 })
 SourceEditor.displayName = 'SourceEditor'
+
+interface CountdownSpinnerHandle {
+  restart: () => void
+}
+
+const CountdownSpinner = memo(
+  forwardRef<CountdownSpinnerHandle, { countdown: number }>(({ countdown }, ref) => {
+    const [phase, setPhase] = useState<'idle' | 'active'>('idle')
+    const [value, setValue] = useState(0)
+
+    useImperativeHandle(ref, () => ({
+      restart: () => {
+        setPhase('idle')
+        setValue(0)
+      },
+    }))
+
+    useEffect(() => {
+      if (value !== 1) {
+        setValue(1)
+        if (phase === 'idle') {
+          setPhase('active')
+        }
+      }
+    }, [phase, value])
+
+    return (
+      <Spinner
+        size={IconSize.STANDARD}
+        className={clsx(
+          Classes.ICON,
+          phase === 'idle'
+            ? '[&_.bp6-spinner-head]:transition-none'
+            : '[&_.bp6-spinner-head]:[transition:stroke-dashoffset_var(--countdown)_linear]',
+        )}
+        style={{
+          ['--countdown' as string]: `${countdown}ms`,
+        }}
+        value={value}
+      />
+    )
+  }),
+)
 
 interface SourceEditorButtonProps extends ButtonProps {
   className?: string
@@ -146,7 +281,7 @@ interface SourceEditorButtonProps extends ButtonProps {
 export const SourceEditorButton: FC<SourceEditorButtonProps> = memo(({ className, ...buttonProps }) => {
   const t = useTranslation()
   const [isOpen, setIsOpen] = useAtom(editorAtoms.sourceEditorIsOpen)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const sourceEditorRef = useRef<SourceEditorHandle>(null)
 
   return (
     <>
@@ -166,15 +301,16 @@ export const SourceEditorButton: FC<SourceEditorButtonProps> = memo(({ className
             className="max-w-[800px]"
             size={DrawerSize.LARGE}
             isOpen={isOpen}
-            onClose={() => {
-              if (hasUnsavedChanges) {
+            onClose={async () => {
+              const result = sourceEditorRef.current?.requestClose()
+              if (result === 'unsaved') {
                 handleClick()
               } else {
                 setIsOpen(false)
               }
             }}
           >
-            {isOpen && <SourceEditor onUnsavedChanges={setHasUnsavedChanges} />}
+            {isOpen && <SourceEditor ref={sourceEditorRef} />}
           </Drawer>
         )}
       >
@@ -185,3 +321,15 @@ export const SourceEditorButton: FC<SourceEditorButtonProps> = memo(({ className
   )
 })
 SourceEditorButton.displayName = 'SourceEditorButton'
+
+function formatErrors(e: unknown): string[] {
+  if (e instanceof ZodError) {
+    return e.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+  } else {
+    return [
+      i18n.components.editor2.SourceEditor.unknown_error({
+        error: formatError(e),
+      }),
+    ]
+  }
+}
