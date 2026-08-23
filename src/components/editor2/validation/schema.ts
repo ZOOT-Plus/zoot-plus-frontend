@@ -70,7 +70,7 @@ const operatorForParsing = z.looseObject({
   skill_times: z.number().int().optional(),
   requirements: requirementsForParsing.optional(),
 })
-const operatorForValidation = z.looseObject({
+const operatorForValidationWithoutRefine = z.looseObject({
   ...operatorForParsing.shape,
   name: operatorForParsing.shape.name.min(1),
   skill: operatorForParsing.shape.skill.unwrap().min(0).max(3).optional(),
@@ -78,6 +78,56 @@ const operatorForValidation = z.looseObject({
   skill_times: operatorForParsing.shape.skill_times.unwrap().min(0).optional(),
   requirements: requirementsForValidation.optional(),
 })
+const operatorForValidation = operatorForValidationWithoutRefine.superRefine(
+  (value, ctx) => {
+    if (
+      !operatorForValidationWithoutRefine
+        .pick({
+          name: true,
+          skill: true,
+          requirements: true,
+        })
+        .safeParse(value).success
+    )
+      return
+    const { name, skill, requirements } = value
+    if (name && requirements?.elite !== undefined && skill !== undefined) {
+      if (requirements.elite + 1 < skill) {
+        ctx.addIssue({
+          code: 'custom',
+          input: value,
+          path: ['skill'],
+          message: i18n.components.editor2.validation.skill_locked({ skill, elite: requirements.elite }),
+        })
+      }
+      if (requirements.skill_level !== undefined) {
+        if (requirements.elite < 1 && requirements.skill_level > 4) {
+          ctx.addIssue({
+            code: 'custom',
+            input: value,
+            path: ['requirements', 'skill_level'],
+            message: i18n.components.editor2.validation.skill_level_locked({
+              elite: requirements.elite,
+              skill_level: requirements.skill_level,
+            }),
+          })
+        } else if (requirements.elite < 2 && requirements.skill_level > 7) {
+          ctx.addIssue({
+            code: 'custom',
+            input: value,
+            path: ['requirements', 'skill_level'],
+            message: i18n.components.editor2.validation.skill_level_locked({
+              elite: requirements.elite,
+              skill_level: requirements.skill_level,
+            }),
+          })
+        }
+      }
+    }
+  },
+  // always run this check, even if the previous validation has failed
+  { when: () => true },
+)
 
 const groupForParsing = z.looseObject({
   name: z.string(),
@@ -214,15 +264,46 @@ export const operationForParsing = z.looseObject({
 })
 
 export type ValidatedOperation = z.infer<typeof operationForValidation>
-export const operationForValidation = z.object({
-  ...baseOperationForValidation.shape,
-  // use {} as a prefault, so that when the doc is undefined, zod will parse this {}
-  // and properly report the missing required fields in the doc, instead of just saying "doc is required"
-  doc: docForValidation.prefault({} as z.infer<typeof docForValidation>),
-  opers: z.array(operatorForValidation).default([]),
-  groups: z.array(groupForValidation).default([]),
-  actions: z.array(actionForValidation).default([]),
-})
+export const operationForValidation = z
+  .object({
+    ...baseOperationForValidation.shape,
+    // use {} as a prefault, so that when the doc is undefined, zod will parse this {}
+    // and properly report the missing required fields in the doc, instead of just saying "doc is required"
+    doc: docForValidation.prefault({} as z.infer<typeof docForValidation>),
+    opers: z.array(operatorForValidation).default([]),
+    groups: z.array(groupForValidation).default([]),
+    actions: z.array(actionForValidation).default([]),
+  })
+  .superRefine(
+    (value, ctx) => {
+      if (!isObject(value)) return
+      if (!Array.isArray(value.actions)) return
+      const validatedOpers = Array.isArray(value.opers)
+        ? value.opers.filter((o) => operatorForParsing.pick({ name: true }).safeParse(o).success)
+        : []
+      const validatedGroups = Array.isArray(value.groups)
+        ? value.groups.filter((g) => groupForParsing.pick({ name: true }).safeParse(g).success)
+        : []
+      value.actions.forEach((action, index) => {
+        if (!actionForParsing.pick({ name: true }).safeParse(action).success) return
+        const actionName = action.name as string
+        if (action.name) {
+          if (
+            !validatedOpers.some((oper) => oper.name === actionName) &&
+            !validatedGroups.some((group) => group.name === actionName)
+          ) {
+            ctx.addIssue({
+              code: 'custom',
+              input: actionName,
+              path: ['actions', index, 'name'],
+              message: i18n.components.editor2.validation.action_name_not_found({ name: actionName }),
+            })
+          }
+        }
+      })
+    },
+    { when: () => true },
+  )
 
 export const operationForSubmission = z.looseObject({
   stage_name: operationForValidation.shape.stage_name,

@@ -98,7 +98,7 @@
         "en": "Change Visibility"
       },
       "set_action_target": {
-        "cn": "修改动作的目标",
+        "cn": "修改动作的对象",
         "en": "Change Action's Target"
       },
       "set_action_location": {
@@ -285,7 +285,7 @@
               "en": "Action Type"
             },
             "name": {
-              "cn": "目标",
+              "cn": "对象",
               "en": "Target"
             },
             "location": {
@@ -396,9 +396,21 @@
           "cn": "必填",
           "en": "Required"
         },
+        "skill_locked": {
+          "cn": "技能 {{skill}} 在精 {{elite}} 时尚未解锁",
+          "en": "Skill {{skill}} is not unlocked at Elite {{elite}}"
+        },
+        "skill_level_locked": {
+          "cn": "技能等级 {{skill_level}} 在精 {{elite}} 时尚未解锁",
+          "en": "Skill level {{skill_level}} is not unlocked at Elite {{elite}}"
+        },
         "name_or_location_required": {
           "cn": "对象或位置至少需要填写一项",
           "en": "Either target or location is required"
+        },
+        "action_name_not_found": {
+          "cn": "\"{{name}}\" 不是已有的干员或干员组",
+          "en": "\"{{name}}\" is not an existing operator or operator group"
         }
       },
       "EditorToolbar": {
@@ -691,7 +703,7 @@
           "en": "(Unnamed Group)"
         },
         "select_target": {
-          "cn": "选择目标",
+          "cn": "选择对象",
           "en": "Select Target"
         },
         "group": {
@@ -711,7 +723,7 @@
           "en": "Unknown Unit"
         },
         "target_or_location": {
-          "cn": "目标或位置只需填入其中一项",
+          "cn": "对象或位置只需填入其中一项",
           "en": "Only one of target or location is required"
         },
         "or": {
