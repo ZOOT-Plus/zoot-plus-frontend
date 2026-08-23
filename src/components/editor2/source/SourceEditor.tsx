@@ -50,9 +50,7 @@ const SourceEditor = forwardRef<SourceEditorHandle>((_, ref) => {
   useImperativeHandle(ref, () => ({
     requestClose: () => {
       if (hasUnsavedChanges) {
-        if (!autoSyncEnabled) {
-          sync(text)
-        }
+        sync(text)
         const result = sync.flush()
         if (result === false) {
           return 'unsaved'
