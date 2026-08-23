@@ -395,6 +395,10 @@
         "required": {
           "cn": "必填",
           "en": "Required"
+        },
+        "name_or_location_required": {
+          "cn": "对象或位置至少需要填写一项",
+          "en": "Either target or location is required"
         }
       },
       "EditorToolbar": {

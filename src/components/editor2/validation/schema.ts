@@ -4,10 +4,9 @@ import { get, isNumber, isObject, isString } from 'lodash-es'
 import { Primitive } from 'type-fest'
 import * as z from 'zod'
 
-import { i18n, I18NTranslations } from '../../../i18n/i18n'
+import { i18n, I18NTranslations, Language, languageChangeEmitter } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
 import { OpDifficulty } from '../../../models/operation'
-import cn from './error-map-cn'
 
 export type ZodIssue = z.core.$ZodIssue
 
@@ -199,8 +198,7 @@ const actionForValidation = z
       issues.push({
         code: 'custom',
         input: value,
-        // TODO: i18n
-        message: '目标或位置至少需要填写一项',
+        message: i18n.components.editor2.validation.name_or_location_required,
         continue: true,
       })
     }
@@ -275,11 +273,8 @@ export function getLabeledPath(i18n: I18NTranslations, path: PropertyKey[]): str
   return [getLabeledPath(i18n, path.slice(0, -1)), label].filter(Boolean).join('/')
 }
 
-const enError = locales.en()
-const cnError = cn()
-
 z.config({
-  localeError: (issue) => {
+  customError: (issue) => {
     // the default error message for missing fields is not very user-friendly
     // so we override it with our own one
     if (
@@ -288,7 +283,31 @@ z.config({
     ) {
       return i18n.components.editor2.validation.required
     }
-
-    return i18n.currentLanguage === 'cn' ? cnError.localeError(issue) : enError.localeError(issue)
+    return undefined
   },
 })
+
+async function loadLocale(lang: Language) {
+  try {
+    if (lang === 'cn') {
+      const locale = await import('zod/v4/locales/zh-CN.js')
+
+      // check language again to avoid race condition
+      if (lang === i18n.currentLanguage) {
+        z.config(locale.default())
+      }
+    } else {
+      // the en locale is already automatically loaded by zod, so we don't need to lazily load it
+      z.config(locales.en())
+    }
+    languageChangeEmitter.emit('localeLoadedForZod')
+  } catch (e) {
+    console.error('Failed to load zod locale', lang, e)
+  }
+}
+
+languageChangeEmitter.on('languageChange', (lang) => {
+  void loadLocale(lang)
+})
+
+void loadLocale(i18n.currentLanguage)

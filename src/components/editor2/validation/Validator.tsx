@@ -3,7 +3,7 @@ import { debounce, isString } from 'lodash-es'
 import { memo, ReactNode, useEffect, useMemo } from 'react'
 
 import { Callout, CalloutProps, Icon } from '@blueprintjs/core'
-import { translationsAtom } from '../../../i18n/i18n'
+import { languageChangeEmitter, translationsAtom } from '../../../i18n/i18n'
 import { editorAtoms } from '../editor-state'
 import { editorValidationAtom } from './validation'
 
@@ -17,6 +17,14 @@ export const Validator = memo(() => {
   useEffect(() => {
     debouncedValidate()
   }, [operation, translations, debouncedValidate])
+
+  useEffect(() => {
+    const onLanguageChange = () => debouncedValidate()
+    languageChangeEmitter.on('localeLoadedForZod', onLanguageChange)
+    return () => {
+      languageChangeEmitter.off('localeLoadedForZod', onLanguageChange)
+    }
+  }, [debouncedValidate])
 
   return null
 })
