@@ -137,10 +137,14 @@ export const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = 
       )}
       {operator.skillTimes && <p>×{operator.skillTimes}</p>}
       {operator.requirements?.module !== undefined && operator.requirements.module !== CopilotDocV1.Module.Default && (
-        <p className="mx-1">·</p>
-      )}
-      {operator.requirements?.module !== undefined && operator.requirements.module !== CopilotDocV1.Module.Default && (
-        <p>{getModuleName(operator.requirements.module)}</p>
+        <>
+          <p className="mx-1">·</p>
+          {operator.requirements.module === CopilotDocV1.Module.Original ? (
+            <Icon icon="small-square" size={12} />
+          ) : (
+            <p>{getModuleName(operator.requirements.module)}</p>
+          )}
+        </>
       )}
     </div>
   )

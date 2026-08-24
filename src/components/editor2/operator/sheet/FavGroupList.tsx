@@ -124,7 +124,7 @@ const FavGroupOperatorItem: FC<{ operator: CopilotDocV1.Operator }> = ({ operato
 )
 
 const EmptyFavGroupOperatorItem: FC<{ label: string }> = ({ label }) => (
-  <div className="flex h-32 w-24 shrink-0 items-center justify-center border border-dashed border-gray-200 px-2 py-3 text-center text-[11px] font-semibold text-gray-400 dark:border-gray-600 dark:text-gray-500">
+  <div className="flex h-32 w-32 shrink-0 items-center justify-center border border-dashed border-gray-200 px-2 py-3 text-center text-[11px] font-semibold text-gray-400 dark:border-gray-600 dark:text-gray-500">
     {label}
   </div>
 )
