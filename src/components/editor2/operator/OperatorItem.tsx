@@ -22,7 +22,6 @@ import {
   getSkillUsageAltTitle,
   isSameOperatorConfig,
   useLocalizedOperatorName,
-  withDefaultRequirements,
 } from '../../../models/operator'
 import { MasteryIcon } from '../../MasteryIcon'
 import { OperatorAvatar } from '../../OperatorAvatar'
@@ -52,11 +51,8 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
   ({ operator, onChange, onRemove, onOverlay, isDragging, isSorting, attributes, listeners }) => {
     const t = useTranslation()
     const displayName = useLocalizedOperatorName(operator.name)
-    const [skillLevels, setSkillLevels] = useAtom(editorAtoms.skillLevelOverrides(operator.id))
     const [favOperators, setFavOperators] = useAtom(editorFavOperatorsAtom)
     const info = OPERATORS.find(({ name }) => name === operator.name)
-    const skillCount = info ? getSkillCount(info) : 3
-    const requirements = withDefaultRequirements(operator.requirements, info?.rarity)
     const controlsEnabled = !onOverlay && !isDragging && !isSorting
     const favOperatorIndex = favOperators.findIndex((favOperator) =>
       isSameOperatorConfig(favOperator, operator, true),
@@ -78,9 +74,12 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
                       : t.components.editor2.OperatorItem.add_to_favorites
                   }
                   onClick={() => {
-                    setFavOperators((prev) =>
-                      isFavOperator ? prev.filter((_, index) => index !== favOperatorIndex) : [...prev, operator],
-                    )
+                    setFavOperators((prev) => {
+                      if (isFavOperator) {
+                        return prev.filter((_, index) => index !== favOperatorIndex)
+                      }
+                      return [...prev, operator]
+                    })
                     AppToaster.show({
                       message: isFavOperator
                         ? t.components.editor2.OperatorItem.removed_from_favorites

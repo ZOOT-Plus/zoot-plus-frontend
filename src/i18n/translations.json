@@ -820,6 +820,10 @@
           "cn": "是否要替换掉已有的干员？",
           "en": "Do you want to replace the existing operators?"
         },
+        "replace_existing_favorite_group": {
+          "cn": "存在同名收藏分组，要覆盖已有收藏还是添加为新的收藏？",
+          "en": "A favorite group with the same name already exists. Overwrite it or add this as a new favorite?"
+        },
         "append": {
           "cn": "追加",
           "en": "Append"
@@ -827,6 +831,14 @@
         "overwrite": {
           "cn": "覆盖",
           "en": "Overwrite"
+        },
+        "add_as_new_favorite": {
+          "cn": "添加为新收藏",
+          "en": "Add as New Favorite"
+        },
+        "overwrite_favorite": {
+          "cn": "覆盖收藏",
+          "en": "Overwrite Favorite"
         },
         "load_operator_group_from_favorites": {
           "cn": "从收藏中读取干员组",

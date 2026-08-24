@@ -12,6 +12,7 @@ import {
   useOperatorFilterProvider,
 } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorFilterProvider'
 import { ShowMore } from '../../../editor/operator/sheet/sheetOperator/ShowMore'
+import { FavGroupList } from './FavGroupList'
 import { OperatorFilterSummary } from './OperatorFilterSummary'
 import { ProfClassification } from './ProfClassification'
 import { SheetOperatorItem } from './SheetOperatorItem'
@@ -65,9 +66,13 @@ export const SheetList: FC<SheetListProps> = () => {
                 ))}
               </div>
               <ShowMore {...{ toTop }} />
+              {showSkillAbout && <FavGroupList />}
             </>
           ) : (
-            <OperatorNoData />
+            <>
+              <OperatorNoData />
+              {showSkillAbout && <FavGroupList />}
+            </>
           )}
         </div>
         <div className="h-full self-start shrink-0 z-10 flex flex-col items-center justify-center">

@@ -7,7 +7,7 @@ import { MasteryIcon } from 'components/MasteryIcon'
 import { AppToaster } from 'components/Toaster'
 import { DetailedSelectChoice } from 'components/editor/DetailedSelect'
 import { CopilotDocV1 } from 'models/copilot.schema'
-import { isSameOperatorConfig, operatorSkillUsages, useLocalizedOperatorName } from 'models/operator'
+import { getModuleName, isSameOperatorConfig, operatorSkillUsages, useLocalizedOperatorName } from 'models/operator'
 
 import { useTranslation } from '../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../OperatorAvatar'
@@ -24,24 +24,29 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
   const { name } = baseOperator
   const t = useTranslation()
   const { existedOperators, existedGroups, submitOperatorInSheet, removeOperator } = useSheet()
-
-  const operatorNoneGroupedIndex = existedOperators.findIndex((operator) =>
-    isSameOperatorConfig(operator, baseOperator, true)
-  )
-  const operatorInGroup = existedGroups
-    .flatMap(({ opers }) => opers ?? [])
-    .find((operator) => isSameOperatorConfig(operator, baseOperator, true))
+  const compareOperator = showSkillAbout
+    ? (operator: CopilotDocV1.Operator) => isSameOperatorConfig(operator, baseOperator, true)
+    : (operator: CopilotDocV1.Operator) => operator.name === name
   const sameNameOperator = showSkillAbout
     ? existedOperators.find(({ name: existedName }) => existedName === name) ||
       existedGroups.flatMap(({ opers }) => opers ?? []).find(({ name: existedName }) => existedName === name)
     : undefined
+  const sameNameOperatorInGroup = showSkillAbout
+    ? existedGroups.flatMap(({ opers }) => opers ?? []).find(({ name: existedName }) => existedName === name)
+    : undefined
+
+  const operatorNoneGroupedIndex = existedOperators.findIndex(compareOperator)
+  const operatorInGroup = existedGroups
+    .flatMap(({ opers }) => opers ?? [])
+    .find(compareOperator)
   const selected = operatorNoneGroupedIndex !== -1
   const grouped = !!operatorInGroup
+  const selectionLocked = grouped || !!sameNameOperatorInGroup
   const operator = existedOperators?.[operatorNoneGroupedIndex] || operatorInGroup || baseOperator
   const selectedInView = selected || grouped
 
   const onOperatorSelect = () => {
-    if (grouped)
+    if (selectionLocked)
       AppToaster.show({
         message: t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.operator_in_group({ name }),
         intent: Intent.DANGER,
@@ -51,12 +56,14 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
         removeOperator(operatorNoneGroupedIndex)
       } else {
         submitOperatorInSheet(
-          sameNameOperator
+          showSkillAbout && sameNameOperator
             ? ({
                 ...baseOperator,
                 id: (sameNameOperator as typeof sameNameOperator & { id: string }).id,
               } as typeof baseOperator)
-            : operator,
+            : showSkillAbout
+              ? operator
+              : { name },
         )
       }
     }
@@ -72,7 +79,12 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
       interactive={false}
       onClick={onOperatorSelect}
     >
-      <div className="flex min-h-0 grow w-full flex-col items-center justify-center gap-2 px-2 py-3">
+      <div
+        className={clsx(
+          'flex min-h-0 grow w-full flex-col items-center justify-center px-2 py-3',
+          grouped ? 'gap-1.5' : 'gap-2',
+        )}
+      >
         <OperatorAvatar className="!h-12 !w-12 shrink-0" name={name} size="large" sourceSize={96} />
         <p
           className={clsx(
@@ -83,19 +95,18 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
           {useLocalizedOperatorName(name)}
         </p>
         {showSkillAbout && <SheetOperatorSkillAbout operator={operator} />}
+        {grouped && (
+          <div className={clsx('flex text-gray-500 items-center text-xs')}>
+            <Icon icon="warning-sign" size={12} className="flex items-center mr-1" />
+            <p className="font-semibold">{t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.in_group}</p>
+          </div>
+        )}
       </div>
-
-      {grouped && (
-        <div className={clsx('flex mt-1 text-gray-500 items-center text-xs')}>
-          <Icon icon="warning-sign" size={12} className="flex items-center mr-1" />
-          <p className="font-semibold">{t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.in_group}</p>
-        </div>
-      )}
     </Card>
   )
 }
 
-const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = ({ operator }) => {
+export const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = ({ operator }) => {
   const t = useTranslation()
 
   return (
@@ -125,6 +136,12 @@ const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = ({ oper
         />
       )}
       {operator.skillTimes && <p>×{operator.skillTimes}</p>}
+      {operator.requirements?.module !== undefined && operator.requirements.module !== CopilotDocV1.Module.Default && (
+        <p className="mx-1">·</p>
+      )}
+      {operator.requirements?.module !== undefined && operator.requirements.module !== CopilotDocV1.Module.Default && (
+        <p>{getModuleName(operator.requirements.module)}</p>
+      )}
     </div>
   )
 }

@@ -14,7 +14,14 @@ export { OPERATORS, PROFESSIONS }
 export type OperatorInfo = (typeof OPERATORS)[number]
 export type Profession = (typeof PROFESSIONS)[number]
 
-const OPERATOR_CONFIG_COMPARE_KEYS = ['name', 'skill', 'skillUsage', 'skillTimes', 'requirements.skillLevel'] as const
+const OPERATOR_CONFIG_COMPARE_KEYS = [
+  'name',
+  'skill',
+  'skillUsage',
+  'skillTimes',
+  'requirements.skillLevel',
+  'requirements.module',
+] as const
 
 export function isSameOperatorConfig(
   operatorA: Partial<CopilotDocV1.Operator>,
