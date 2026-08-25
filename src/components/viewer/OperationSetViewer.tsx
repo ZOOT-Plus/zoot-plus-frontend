@@ -22,7 +22,7 @@ import { copyShortCode } from 'services/operation'
 
 import { OperationsData } from 'apis/operation'
 import { FactItem } from 'components/FactItem'
-import { OperationListView} from 'components/OperationList'
+import { OperationListView } from 'components/OperationList'
 import { Paragraphs } from 'components/Paragraphs'
 import { RelativeTime } from 'components/RelativeTime'
 import { withSuspensable } from 'components/Suspensable'
