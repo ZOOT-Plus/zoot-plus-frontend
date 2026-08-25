@@ -1,4 +1,17 @@
-import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState, PopoverNext, Spinner } from '@blueprintjs/core'
+import {
+  Alert,
+  Button,
+  H3,
+  H4,
+  H5,
+  Icon,
+  Menu,
+  MenuItem,
+  NonIdealState,
+  PopoverNext,
+  Spinner,
+  Tooltip,
+} from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
 import { useOperations } from 'apis/operation'
@@ -310,7 +323,9 @@ function OperationSetViewerOperators({ operations }: { operations: Operation[] }
         ) : (
           <div className="flex flex-wrap gap-2">
             {operatorNames.map((name) => (
-              <OperatorAvatar key={name} name={name} className="w-10 h-10" sourceSize={96} />
+              <Tooltip content={name}>
+                <OperatorAvatar key={name} name={name} className="w-10 h-10" sourceSize={96} />
+              </Tooltip>
             ))}
           </div>
         )}
