@@ -1,10 +1,10 @@
-import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState, PopoverNext } from '@blueprintjs/core'
+import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState, PopoverNext, Spinner } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
 import { useOperations } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
 import { useAtom } from 'jotai'
-import { ComponentType, FC, useEffect, useMemo, useState } from 'react'
+import { ComponentType, FC, Suspense, useEffect, useMemo, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
@@ -196,71 +196,91 @@ function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet 
   )
 }
 
-const OperationSetViewerBody = withSuspensable(
-  function OperationSetViewerBody({ operationSet }: { operationSet: OperationSet }) {
-    const t = useTranslation()
+function OperationSetViewerBody({ operationSet }: { operationSet: OperationSet }) {
+  const t = useTranslation()
+  const hasDescription = Boolean(operationSet.description?.trim())
 
-    const data = useOperations({
-      operationIds: operationSet.copilotIds,
-      suspense: true,
-    })
-    const hasDescription = Boolean(operationSet.description?.trim())
-
-    return (
-      <>
-        <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-x-8">
-          <div
-            className={
-              hasDescription
-                ? 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-2 md:row-start-1'
-                : 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-1 md:row-start-1'
-            }
-          >
-            <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
-              <span className="text-gray-800 dark:text-slate-100 font-bold">
-                <RelativeTime moment={operationSet.createTime} />
-              </span>
-            </FactItem>
-
-            <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
-              <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
-                {operationSet.creator}
-              </UserName>
-            </FactItem>
-          </div>
-
-          {hasDescription && (
-            <div className="flex flex-col md:col-start-1 md:row-start-1 md:row-span-2">
-              <Paragraphs content={operationSet.description} linkify />
-            </div>
-          )}
-
-          <div className={hasDescription ? 'md:col-start-2 md:row-start-2' : 'md:col-start-2 md:row-start-1'}>
-            <OperationSetViewerOperators operations={data.operations} />
-          </div>
-        </div>
-
-        <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
-
-        <ErrorBoundary
-          fallback={
-            <NonIdealState
-              icon="issue"
-              title={t.components.viewer.OperationSetViewer.render_error}
-              description={t.components.viewer.OperationSetViewer.render_preview_problem}
-              className="h-96 bg-stripe rounded"
-            />
+  return (
+    <>
+      <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-x-8">
+        <div
+          className={
+            hasDescription
+              ? 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-2 md:row-start-1'
+              : 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-1 md:row-start-1'
           }
         >
-          <OperationSetViewerInnerDetails operationSet={operationSet} data={data} />
-        </ErrorBoundary>
-      </>
-    )
-  },
-  {
-    pendingTitle: i18nDefer.components.viewer.OperationSetViewer.loading_task_set,
-  },
-)
+          <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
+            <span className="text-gray-800 dark:text-slate-100 font-bold">
+              <RelativeTime moment={operationSet.createTime} />
+            </span>
+          </FactItem>
+
+          <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
+            <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
+              {operationSet.creator}
+            </UserName>
+          </FactItem>
+        </div>
+
+        {hasDescription && (
+          <div className="flex flex-col md:col-start-1 md:row-start-1 md:row-span-2">
+            <Paragraphs content={operationSet.description} linkify />
+          </div>
+        )}
+
+        <div className={hasDescription ? 'md:col-start-2 md:row-start-2' : 'md:col-start-2 md:row-start-1'}>
+          <OperationSetViewerOperatorsSection operationSet={operationSet} />
+        </div>
+      </div>
+
+      <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
+
+      <OperationSetViewerDetails operationSet={operationSet} />
+    </>
+  )
+}
+
+function useOperationSetOperations(operationSet: OperationSet) {
+  return useOperations({
+    operationIds: operationSet.copilotIds,
+    suspense: true,
+  })
+}
+
+function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: OperationSet }) {
+  const t = useTranslation()
+
+  return (
+    <ErrorBoundary
+      key={operationSet.id}
+      fallback={({ error }) => (
+        <NonIdealState
+          icon="issue"
+          title={t.components.Suspensable.loadFailed}
+          description={error.message}
+          className="py-4"
+        />
+      )}
+    >
+      <Suspense
+        fallback={
+          <div className="flex items-center gap-2 py-4 text-slate-500">
+            <Spinner size={20} />
+            <span>{t.components.viewer.OperationSetViewer.loading_task_set}</span>
+          </div>
+        }
+      >
+        <OperationSetViewerOperatorsLoader operationSet={operationSet} />
+      </Suspense>
+    </ErrorBoundary>
+  )
+}
+
+function OperationSetViewerOperatorsLoader({ operationSet }: { operationSet: OperationSet }) {
+  const data = useOperationSetOperations(operationSet)
+  return <OperationSetViewerOperators operations={data.operations} />
+}
 
 function OperationSetViewerOperators({ operations }: { operations: Operation[] }) {
   const t = useTranslation()
@@ -300,6 +320,33 @@ function OperationSetViewerOperators({ operations }: { operations: Operation[] }
     </div>
   )
 }
+
+const OperationSetViewerDetails = withSuspensable(
+  function OperationSetViewerDetails({ operationSet }: { operationSet: OperationSet }) {
+    const t = useTranslation()
+    const data = useOperationSetOperations(operationSet)
+
+    return (
+      <ErrorBoundary
+        key={operationSet.id}
+        fallback={
+          <NonIdealState
+            icon="issue"
+            title={t.components.viewer.OperationSetViewer.render_error}
+            description={t.components.viewer.OperationSetViewer.render_preview_problem}
+            className="h-96 bg-stripe rounded"
+          />
+        }
+      >
+        <OperationSetViewerInnerDetails operationSet={operationSet} data={data} />
+      </ErrorBoundary>
+    )
+  },
+  {
+    pendingTitle: i18nDefer.components.viewer.OperationSetViewer.loading_task_set,
+    retryOnChange: ['operationSet'],
+  },
+)
 
 function OperationSetViewerInnerDetails({ operationSet, data }: { operationSet: OperationSet; data: OperationsData }) {
   const t = useTranslation()
