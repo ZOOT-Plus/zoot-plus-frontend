@@ -16,7 +16,7 @@ import { ErrorBoundary } from '@sentry/react'
 
 import { useOperations } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ComponentType, FC, Suspense, useEffect, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
@@ -31,12 +31,12 @@ import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { OperationSetEditorDialog } from 'components/operation-set/OperationSetEditor'
 import { OperatorAvatar } from 'components/OperatorAvatar'
 import { Operation } from 'models/operation'
-import { findOperatorByName } from 'models/operator'
+import { findOperatorByName, getLocalizedOperatorName } from 'models/operator'
 import { OperationSet } from 'models/operation-set'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
-import { i18nDefer, useTranslation } from '../../i18n/i18n'
+import { i18nDefer, languageAtom, useTranslation } from '../../i18n/i18n'
 import { formatError } from '../../utils/error'
 import { UserName } from '../UserName'
 
@@ -298,6 +298,7 @@ function OperationSetViewerOperatorsLoader({ operationSet }: { operationSet: Ope
 
 function OperationSetViewerOperators({ operations }: { operations: Operation[] }) {
   const t = useTranslation()
+  const language = useAtomValue(languageAtom)
 
   const rarityByName = new Map<string, number>()
   const push = (name: string) => {
@@ -324,8 +325,8 @@ function OperationSetViewerOperators({ operations }: { operations: Operation[] }
         ) : (
           <div className="flex flex-wrap gap-2">
             {operatorNames.map((name) => (
-              <Tooltip content={name}>
-                <OperatorAvatar key={name} name={name} className="w-10 h-10" sourceSize={96} />
+              <Tooltip key={name} content={getLocalizedOperatorName(name, language)}>
+                <OperatorAvatar name={name} className="w-10 h-10" sourceSize={96} />
               </Tooltip>
             ))}
           </div>
