@@ -4,7 +4,7 @@ import { ErrorBoundary } from '@sentry/react'
 import { useOperations } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
 import { useAtom } from 'jotai'
-import { ComponentType, FC, Suspense, useEffect, useMemo, useState } from 'react'
+import { ComponentType, FC, Suspense, useEffect, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
@@ -285,22 +285,20 @@ function OperationSetViewerOperatorsLoader({ operationSet }: { operationSet: Ope
 function OperationSetViewerOperators({ operations }: { operations: Operation[] }) {
   const t = useTranslation()
 
-  const operatorNames = useMemo(() => {
-    const rarityByName = new Map<string, number>()
-    const push = (name: string) => {
-      if (rarityByName.has(name)) return
-      rarityByName.set(name, findOperatorByName(name)?.rarity ?? 0)
-    }
+  const rarityByName = new Map<string, number>()
+  const push = (name: string) => {
+    if (rarityByName.has(name)) return
+    rarityByName.set(name, findOperatorByName(name)?.rarity ?? 0)
+  }
 
-    for (const operation of operations) {
-      // 干员组（groups[].opers）是“任选其一”的可替换干员，非确定使用，故头像区只展示明确指定的 opers
-      operation.parsedContent.opers?.forEach(({ name }) => push(name))
-    }
+  for (const operation of operations) {
+    // 干员组（groups[].opers）是“任选其一”的可替换干员，非确定使用，故头像区只展示明确指定的 opers
+    operation.parsedContent.opers?.forEach(({ name }) => push(name))
+  }
 
-    return Array.from(rarityByName.entries())
-      .sort(([, a], [, b]) => b - a)
-      .map(([name]) => name)
-  }, [operations])
+  const operatorNames = Array.from(rarityByName.entries())
+    .sort(([, a], [, b]) => b - a)
+    .map(([name]) => name)
 
   return (
     <div className="flex flex-col items-start select-none tabular-nums">
