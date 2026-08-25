@@ -12,9 +12,7 @@ import { Operation } from '../models/operation'
 import { NeoOperationCard, OperationCard } from './OperationCard'
 import { withSuspensable } from './Suspensable'
 import { AddToOperationSetButton } from './operation-set/AddToOperationSet'
-
-/** 已解析作业列表的数据，供需要与 `OperationList` 共享同一份数据的组件复用 */
-export type OperationsData = ReturnType<typeof useOperations>
+import { OperationsData } from 'apis/operation'
 
 interface OperationListProps extends UseOperationsParams {
   multiselect?: boolean
