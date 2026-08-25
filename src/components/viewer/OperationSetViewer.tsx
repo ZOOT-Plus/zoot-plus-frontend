@@ -1,24 +1,41 @@
-import { Alert, Button, H3, H4, H5, Icon, Menu, MenuItem, NonIdealState, PopoverNext } from '@blueprintjs/core'
+import {
+  Alert,
+  Button,
+  H3,
+  H4,
+  H5,
+  Icon,
+  Menu,
+  MenuItem,
+  NonIdealState,
+  PopoverNext,
+  Spinner,
+  Tooltip,
+} from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
+import { useOperations, type OperationsData } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
-import { useAtom } from 'jotai'
-import { ComponentType, FC, useEffect, useState } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import { ComponentType, FC, Suspense, useEffect, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
-import { OperationList } from 'components/OperationList'
+import { OperationListView } from 'components/OperationList'
 import { Paragraphs } from 'components/Paragraphs'
 import { RelativeTime } from 'components/RelativeTime'
 import { withSuspensable } from 'components/Suspensable'
 import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { OperationSetEditorDialog } from 'components/operation-set/OperationSetEditor'
+import { OperatorAvatar } from 'components/OperatorAvatar'
+import { Operation } from 'models/operation'
+import { findOperatorByName, getLocalizedOperatorName } from 'models/operator'
 import { OperationSet } from 'models/operation-set'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
-import { i18nDefer, useTranslation } from '../../i18n/i18n'
+import { i18nDefer, languageAtom, useTranslation } from '../../i18n/i18n'
 import { formatError } from '../../utils/error'
 import { UserName } from '../UserName'
 
@@ -146,24 +163,20 @@ export const OperationSetViewer: ComponentType<{
 
             <div className="flex-1" />
 
-            {operationSet.creatorId === auth.userId && (
-              <PopoverNext content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
-                <Button
-                  className="ml-4"
-                  icon="wrench"
-                  text={t.components.viewer.OperationSetViewer.manage}
-                  rightIcon="caret-down"
-                />
-              </PopoverNext>
-            )}
+            <div className="flex flex-wrap items-center gap-2 md:gap-4">
+              {operationSet.creatorId === auth.userId && (
+                <PopoverNext content={<ManageMenu operationSet={operationSet} onUpdate={() => onCloseDrawer()} />}>
+                  <Button icon="wrench" text={t.components.viewer.OperationSetViewer.manage} rightIcon="caret-down" />
+                </PopoverNext>
+              )}
 
-            <Button
-              className="ml-4"
-              icon="clipboard"
-              text={t.components.viewer.OperationSetViewer.copy_secret_code}
-              intent="primary"
-              onClick={() => copyShortCode({ id: operationSet.id, type: 'operation-set' })}
-            />
+              <Button
+                icon="clipboard"
+                text={t.components.viewer.OperationSetViewer.copy_secret_code}
+                intent="primary"
+                onClick={() => copyShortCode({ id: operationSet.id, type: 'operation-set' })}
+              />
+            </div>
           </>
         }
       >
@@ -187,18 +200,29 @@ export const OperationSetViewer: ComponentType<{
 )
 
 function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet }) {
-  const t = useTranslation()
-
   return (
-    <div className="h-full overflow-auto py-4 px-8 pt-8">
+    <div className="h-full overflow-auto p-4 md:p-8">
       <H3>{operationSet.name}</H3>
 
-      <div className="grid grid-rows-1 grid-cols-3 gap-8">
-        <div className="flex flex-col">
-          <Paragraphs content={operationSet.description} linkify />
-        </div>
+      <OperationSetViewerBody operationSet={operationSet} />
+    </div>
+  )
+}
 
-        <div className="flex flex-col items-start select-none tabular-nums">
+function OperationSetViewerBody({ operationSet }: { operationSet: OperationSet }) {
+  const t = useTranslation()
+  const hasDescription = Boolean(operationSet.description?.trim())
+
+  return (
+    <>
+      <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-x-8">
+        <div
+          className={
+            hasDescription
+              ? 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-2 md:row-start-1'
+              : 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-1 md:row-start-1'
+          }
+        >
           <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
             <span className="text-gray-800 dark:text-slate-100 font-bold">
               <RelativeTime moment={operationSet.createTime} />
@@ -211,11 +235,114 @@ function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet 
             </UserName>
           </FactItem>
         </div>
+
+        {hasDescription && (
+          <div className="flex flex-col md:col-start-1 md:row-start-1 md:row-span-2">
+            <Paragraphs content={operationSet.description} linkify />
+          </div>
+        )}
+
+        <div className={hasDescription ? 'md:col-start-2 md:row-start-2' : 'md:col-start-2 md:row-start-1'}>
+          <OperationSetViewerOperatorsSection operationSet={operationSet} />
+        </div>
       </div>
 
       <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
 
+      <OperationSetViewerDetails operationSet={operationSet} />
+    </>
+  )
+}
+
+function useOperationSetOperations(operationSet: OperationSet) {
+  return useOperations({
+    operationIds: operationSet.copilotIds,
+    suspense: true,
+  })
+}
+
+function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: OperationSet }) {
+  const t = useTranslation()
+
+  return (
+    <ErrorBoundary
+      key={operationSet.id}
+      fallback={({ error }) => (
+        <NonIdealState
+          icon="issue"
+          title={t.components.Suspensable.loadFailed}
+          description={error.message}
+          className="py-4"
+        />
+      )}
+    >
+      <Suspense
+        fallback={
+          <div className="flex items-center gap-2 py-4 text-slate-500">
+            <Spinner size={20} />
+            <span>{t.components.viewer.OperationSetViewer.loading_task_set}</span>
+          </div>
+        }
+      >
+        <OperationSetViewerOperatorsLoader operationSet={operationSet} />
+      </Suspense>
+    </ErrorBoundary>
+  )
+}
+
+function OperationSetViewerOperatorsLoader({ operationSet }: { operationSet: OperationSet }) {
+  const data = useOperationSetOperations(operationSet)
+  return <OperationSetViewerOperators operations={data.operations} />
+}
+
+function OperationSetViewerOperators({ operations }: { operations: Operation[] }) {
+  const t = useTranslation()
+  const language = useAtomValue(languageAtom)
+
+  const rarityByName = new Map<string, number>()
+  const push = (name: string) => {
+    if (rarityByName.has(name)) return
+    rarityByName.set(name, findOperatorByName(name)?.rarity ?? 0)
+  }
+
+  for (const operation of operations) {
+    // 干员组（groups[].opers）是“任选其一”的可替换干员，非确定使用，故头像区只展示明确指定的 opers
+    operation.parsedContent.opers?.forEach(({ name }) => push(name))
+  }
+
+  const operatorNames = Array.from(rarityByName.entries())
+    .sort(([, a], [, b]) => b - a)
+    .map(([name]) => name)
+
+  return (
+    <div className="flex flex-col items-start select-none tabular-nums">
+      <FactItem title={t.components.viewer.OperationSetViewer.operators} icon="people">
+        {operatorNames.length === 0 ? (
+          <span className="text-gray-800 dark:text-slate-100 font-bold">
+            {t.components.viewer.OperationSetViewer.no_operators}
+          </span>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {operatorNames.map((name) => (
+              <Tooltip key={name} content={getLocalizedOperatorName(name, language)}>
+                <OperatorAvatar name={name} className="w-10 h-10" sourceSize={96} />
+              </Tooltip>
+            ))}
+          </div>
+        )}
+      </FactItem>
+    </div>
+  )
+}
+
+const OperationSetViewerDetails = withSuspensable(
+  function OperationSetViewerDetails({ operationSet }: { operationSet: OperationSet }) {
+    const t = useTranslation()
+    const data = useOperationSetOperations(operationSet)
+
+    return (
       <ErrorBoundary
+        key={operationSet.id}
         fallback={
           <NonIdealState
             icon="issue"
@@ -225,13 +352,17 @@ function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet 
           />
         }
       >
-        <OperationSetViewerInnerDetails operationSet={operationSet} />
+        <OperationSetViewerInnerDetails operationSet={operationSet} data={data} />
       </ErrorBoundary>
-    </div>
-  )
-}
+    )
+  },
+  {
+    pendingTitle: i18nDefer.components.viewer.OperationSetViewer.loading_task_set,
+    retryOnChange: ['operationSet'],
+  },
+)
 
-function OperationSetViewerInnerDetails({ operationSet }: { operationSet: OperationSet }) {
+function OperationSetViewerInnerDetails({ operationSet, data }: { operationSet: OperationSet; data: OperationsData }) {
   const t = useTranslation()
 
   return (
@@ -240,7 +371,7 @@ function OperationSetViewerInnerDetails({ operationSet }: { operationSet: Operat
         {t.components.viewer.OperationSetViewer.task_list}({operationSet.copilotIds.length})
       </H5>
       <div className="flex flex-col mb-4 max-w-screen-2xl">
-        <OperationList operationIds={operationSet.copilotIds} />
+        <OperationListView data={data} />
       </div>
     </div>
   )
