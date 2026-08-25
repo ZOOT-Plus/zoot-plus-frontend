@@ -14,13 +14,12 @@ import {
 } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
-import { useOperations } from 'apis/operation'
+import { useOperations, type OperationsData } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
 import { useAtom, useAtomValue } from 'jotai'
 import { ComponentType, FC, Suspense, useEffect, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
-import { OperationsData } from 'apis/operation'
 import { FactItem } from 'components/FactItem'
 import { OperationListView } from 'components/OperationList'
 import { Paragraphs } from 'components/Paragraphs'
