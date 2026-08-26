@@ -2,14 +2,15 @@ import { PrimitiveAtom, SetStateAction, atom, getDefaultStore, useAtom } from 'j
 import { atomFamily, atomWithStorage, splitAtom } from 'jotai/utils'
 import { noop } from 'lodash-es'
 import { useMemo } from 'react'
-import { SetRequired, Simplify } from 'type-fest'
+import { Simplify } from 'type-fest'
 
+import { CamelCaseKeys } from 'camelcase-keys'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { CopilotType } from '../../models/operation'
-import { PartialDeep } from '../../utils/partial-deep'
+import { OmitIndexSignatureDeep } from '../../types'
 import { createHistoryAtom, useHistoryEdit } from './history'
-import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
-import { operationForParsing } from './validation/schema'
+import { WithId, toEditorOperation } from './reconciliation'
+import { ParsedOperation, operationForParsing } from './validation/schema'
 import { EntityIssue, GlobalIssue } from './validation/validation'
 
 export interface EditorState {
@@ -43,28 +44,20 @@ interface EditorMetadata {
   videoUrl: string
 }
 
-type EditorOperationBase = Simplify<
-  Omit<PartialDeep<CopilotDocV1.Operation>, 'doc' | 'opers' | 'groups' | 'actions'> & {
-    minimumRequired: string
-    doc: PartialDeep<CopilotDocV1.Doc>
+type OperationBasis = CamelCaseKeys<OmitIndexSignatureDeep<ParsedOperation>, true>
+
+type EditorOperationBase = Omit<OperationBasis, 'opers' | 'groups' | 'actions'>
+export type EditorOperator = WithId<OperationBasis['opers'][number]>
+export type EditorGroup = WithId<
+  Omit<OperationBasis['groups'][number], 'opers'> & {
+    opers: EditorOperator[]
   }
 >
-
-export type EditorOperator = Simplify<WithId<SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'>>>
-export type EditorGroup = Simplify<
-  WithId<
-    PartialDeep<Omit<CopilotDocV1.Group, 'opers'>> & {
-      name: string
-      opers: EditorOperator[]
-    }
-  >
->
-export type EditorAction = Simplify<
-  WithPartialCoordinates<Omit<CopilotDocV1.Action, 'preDelay' | 'postDelay' | 'rearDelay'>> &
-    WithId<{
-      intermediatePreDelay?: number
-      intermediatePostDelay?: number
-    }>
+export type EditorAction = WithId<
+  Omit<OperationBasis['actions'][number], 'preDelay' | 'postDelay' | 'rearDelay'> & {
+    intermediatePreDelay?: number
+    intermediatePostDelay?: number
+  }
 >
 
 export interface EditorOperation extends EditorOperationBase {
