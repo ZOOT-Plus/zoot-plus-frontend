@@ -89,9 +89,9 @@ export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
   // update or reset the active tiles when active action's location changes
   const setMapState = useCallback(() => {
     if (iframeWindow) {
-      const x = Number(activeLocation?.[0])
-      const y = Number(activeLocation?.[1])
-      const activeTiles = Number.isNaN(x) || Number.isNaN(y) ? [] : [{ x, y }]
+      const x = activeLocation?.[0]
+      const y = activeLocation?.[1]
+      const activeTiles = typeof x === 'number' && Number.isFinite(x) && typeof y === 'number' && Number.isFinite(y) ? [{ x, y }] : []
       sendMessage<SetMapStateMessage>(iframeWindow, MAP_ORIGIN, {
         type: 'setMapState',
         data: { activeTiles },
