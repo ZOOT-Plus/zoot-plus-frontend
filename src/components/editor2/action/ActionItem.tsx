@@ -956,7 +956,7 @@ const ActionTarget: FC<{
   )
 }
 
-type PartialRect = [number | undefined, number | undefined, number | undefined, number | undefined]
+type PartialRect = (number | undefined | null)[]
 
 // 720p 基准像素矩形 [x, y, w, h] 的逐位输入，字号继承父容器。
 // 清空输入时 NumericInput2 回调 NaN，转成 undefined；全部清空时把整个字段置空以便 ｢未填｣ 与 ｢已填｣ 可区分
