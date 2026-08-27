@@ -24,7 +24,7 @@ import { ErrorBoundary } from '@sentry/react'
 import { banComments, deleteOperation, rateOperation, useOperation, useRefreshOperations } from 'apis/operation'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
-import { ComponentType, FC, useEffect, useState } from 'react'
+import { ComponentType, FC, useEffect, useId, useState } from 'react'
 import { copyShortCode, handleDownloadJSON } from 'services/operation'
 import { BanCommentsStatusEnum, CopilotSetStatus } from 'zoot-plus-client'
 
@@ -480,17 +480,23 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
   const [showOperators, setShowOperators] = useState(true)
   const [showActions, setShowActions] = useState(false)
   const [gridMode, setGridMode] = useAtom(gridModeAtom)
+  const operatorsContentId = useId()
 
   const isVideo = operation.type === CopilotType.VIDEO
 
   return (
     <div>
-      <H4
-        className="inline-flex items-center cursor-pointer hover:opacity-80"
-        onClick={() => setShowOperators((v) => !v)}
-      >
-        {t.components.viewer.OperationViewer.operators_and_groups}
-        <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
+      <H4 className="inline-flex">
+        <button
+          type="button"
+          className="inline-flex items-center cursor-pointer border-0 bg-transparent p-0 hover:opacity-80"
+          aria-expanded={showOperators}
+          aria-controls={operatorsContentId}
+          onClick={() => setShowOperators((v) => !v)}
+        >
+          {t.components.viewer.OperationViewer.operators_and_groups}
+          <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
+        </button>
       </H4>
       <details className="inline">
         <summary className="inline cursor-pointer">
@@ -505,38 +511,40 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
           </p>
         </Callout>
       </details>
-      <Collapse isOpen={showOperators}>
-        <div className="mt-2 flex flex-wrap gap-6">
-          {!operation.parsedContent.opers?.length && !operation.parsedContent.groups?.length && (
-            <NonIdealState
-              className="my-2"
-              title={t.components.viewer.OperationViewer.no_operators}
-              description={t.components.viewer.OperationViewer.no_operators_added}
-              icon="slash"
-              layout="horizontal"
-            />
-          )}
-          {operation.parsedContent.opers?.map((operator) => (
-            <OperatorCard key={operator.name} operator={operator} />
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-4 mt-4">
-          {operation.parsedContent.groups?.map((group) => (
-            <Card elevation={Elevation.ONE} className="!p-2 flex flex-col items-center" key={group.name}>
-              <H6 className="mb-3 text-gray-800">{group.name}</H6>
-              <div className="flex flex-wrap px-2 gap-6">
-                {group.opers?.filter(Boolean).map((operator) => (
-                  <OperatorCard key={operator.name} operator={operator} />
-                ))}
+      <div id={operatorsContentId}>
+        <Collapse isOpen={showOperators}>
+          <div className="mt-2 flex flex-wrap gap-6">
+            {!operation.parsedContent.opers?.length && !operation.parsedContent.groups?.length && (
+              <NonIdealState
+                className="my-2"
+                title={t.components.viewer.OperationViewer.no_operators}
+                description={t.components.viewer.OperationViewer.no_operators_added}
+                icon="slash"
+                layout="horizontal"
+              />
+            )}
+            {operation.parsedContent.opers?.map((operator) => (
+              <OperatorCard key={operator.name} operator={operator} />
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-4 mt-4">
+            {operation.parsedContent.groups?.map((group) => (
+              <Card elevation={Elevation.ONE} className="!p-2 flex flex-col items-center" key={group.name}>
+                <H6 className="mb-3 text-gray-800">{group.name}</H6>
+                <div className="flex flex-wrap px-2 gap-6">
+                  {group.opers?.filter(Boolean).map((operator) => (
+                    <OperatorCard key={operator.name} operator={operator} />
+                  ))}
 
-                {group.opers?.filter(Boolean).length === 0 && (
-                  <span className="text-zinc-500">{t.components.viewer.OperationViewer.no_operator}</span>
-                )}
-              </div>
-            </Card>
-          ))}
-        </div>
-      </Collapse>
+                  {group.opers?.filter(Boolean).length === 0 && (
+                    <span className="text-zinc-500">{t.components.viewer.OperationViewer.no_operator}</span>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </Collapse>
+      </div>
 
       <div className="mt-6 flex items-center gap-4">
         {isVideo ? (

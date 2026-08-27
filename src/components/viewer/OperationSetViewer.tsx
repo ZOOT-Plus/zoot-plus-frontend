@@ -19,7 +19,7 @@ import { useOperations, type OperationsData } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
-import { ComponentType, FC, Suspense, useEffect, useState } from 'react'
+import { ComponentType, FC, Suspense, useEffect, useState, useId } from 'react'
 import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
@@ -274,16 +274,22 @@ function useOperationSetOperations(operationSet: OperationSet) {
 function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: OperationSet }) {
   const t = useTranslation()
   const [showOperators, setShowOperators] = useState(true)
+  const operatorsContentId = useId()
   const exceedsAggregationLimit = operationSet.copilotIds.length > 50
 
   return (
     <div className="mb-6">
-      <H4
-        className="inline-flex items-center cursor-pointer hover:opacity-80"
-        onClick={() => setShowOperators((visible) => !visible)}
-      >
-        {t.components.viewer.OperationSetViewer.operators}
-        <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
+      <H4 className="inline-flex">
+        <button
+          type="button"
+          className="inline-flex items-center cursor-pointer border-0 bg-transparent p-0 hover:opacity-80"
+          aria-expanded={showOperators}
+          aria-controls={operatorsContentId}
+          onClick={() => setShowOperators((visible) => !visible)}
+        >
+          {t.components.viewer.OperationSetViewer.operators}
+          <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
+        </button>
       </H4>
 
       <Collapse isOpen={showOperators}>
@@ -346,7 +352,7 @@ export function aggregateOperationSetOperators(operations: readonly Operation[])
   const operatorsByName = new Map<string, MutableAggregatedOperator>()
 
   for (const operation of operations) {
-    // 干员组表示“任选其一”，不属于作业集明确指定的所需干员。
+    // opers 不含干员组内干员
     for (const operator of operation.parsedContent.opers ?? []) {
       let aggregated = operatorsByName.get(operator.name)
       if (!aggregated) {
