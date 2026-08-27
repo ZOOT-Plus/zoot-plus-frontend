@@ -594,7 +594,7 @@
             "0": "{{count}}星（通常为召唤物）",
             "other": "{{count}}星"
           },
-          "en":{
+          "en": {
             "0": "{{count}}-star (usually a summon)",
             "other": "{{count}}-star"
           }
