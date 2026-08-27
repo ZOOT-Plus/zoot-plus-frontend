@@ -1,11 +1,12 @@
-import { locales } from 'zod/v4/core'
-
+import { produce } from 'immer'
 import { get, isNumber, isObject, isString } from 'lodash-es'
 import { Primitive } from 'type-fest'
 import * as z from 'zod'
+import { locales } from 'zod/v4/core'
 
 import { i18n, I18NTranslations, Language, languageChangeEmitter } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
+import JSON_SCHEMA from '../../../models/copilot.schema.json'
 import { OpDifficulty } from '../../../models/operation'
 
 export type ZodIssue = z.core.$ZodIssue
@@ -43,9 +44,6 @@ const docForParsing = z.looseObject({
 const docForValidation = z.looseObject({
   ...docForParsing.shape,
   title: docForParsing.shape.title.unwrap().min(1),
-})
-const docForSubmission = z.looseObject({
-  title: docForValidation.shape.title,
 })
 
 const requirementsForParsing = z.looseObject({
@@ -305,10 +303,11 @@ export const operationForValidation = z
     { when: () => true },
   )
 
-export const operationForSubmission = z.looseObject({
-  stage_name: operationForValidation.shape.stage_name,
-  doc: docForSubmission.prefault({} as z.infer<typeof docForSubmission>),
-})
+const jsonSchema = produce(JSON_SCHEMA, (draft) => {
+  // make doc.details optional
+  draft.definitions.doc.required = draft.definitions.doc.required.filter((field) => field !== 'details')
+}) as z.core.JSONSchema.JSONSchema
+export const operationForSubmission = z.fromJSONSchema(jsonSchema).prefault({ doc: {} })
 
 type Labeled<T> = T extends Primitive
   ? string

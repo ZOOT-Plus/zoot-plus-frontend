@@ -1,5 +1,5 @@
 import { atom, useAtomValue } from 'jotai'
-import { findLastIndex, isEqual, isNumber, isString, get as lodashGet } from 'lodash-es'
+import { findLastIndex, isNumber, isString, get as lodashGet } from 'lodash-es'
 import { useMemo } from 'react'
 
 import { i18n } from '../../../i18n/i18n'
@@ -81,11 +81,15 @@ export const editorValidationAtom = atom(null, (get, set) => {
     entityErrors = classified.entityIssues
   }
 
+  function isSameIssue(a: ZodIssue, b: ZodIssue) {
+    return a.code === b.code && a.path.join() === b.path.join()
+  }
+
   // deduplicate warnings that are also errors
-  globalWarnings = globalWarnings.filter((warning) => !globalErrors.some((error) => isEqual(warning, error)))
+  globalWarnings = globalWarnings.filter((warning) => !globalErrors.some((error) => isSameIssue(warning, error)))
   for (const entityId in entityWarnings) {
     entityWarnings[entityId] = entityWarnings[entityId].filter(
-      (warning) => !entityErrors[entityId]?.some((error) => isEqual(warning, error)),
+      (warning) => !entityErrors[entityId]?.some((error) => isSameIssue(warning, error)),
     )
   }
 

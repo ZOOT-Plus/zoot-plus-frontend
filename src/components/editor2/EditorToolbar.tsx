@@ -265,7 +265,7 @@ const ErrorButton = (buttonProps: ButtonProps) => {
         isOpen ? (
           <>
             <MenuDivider className="pb-2 border-b" title={t.components.editor2.EditorToolbar.errors_header} />
-            <div className="min-w-64 max-w-[90vw] max-h-96 overflow-y-auto">
+            <div className="min-w-64 max-w-[min(800px,100vw)] max-h-96 overflow-y-auto">
               {allErrors.length === 0 && allWarnings.length === 0 && (
                 <p className="p-2 text-xs">{t.components.editor2.EditorToolbar.no_errors}</p>
               )}
