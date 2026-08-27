@@ -44,7 +44,7 @@ export const EditorPage = withSuspensable(() => {
   useLayoutEffect(() => {
     if (apiOperation) {
       try {
-        const maaOperation = JSON.parse(apiOperation.content + '1')
+        const maaOperation = JSON.parse(apiOperation.content)
         const parsed = operationForParsing.parse(maaOperation)
         store.set(editorAtoms.reset, {
           operation: toEditorOperation(parsed),
