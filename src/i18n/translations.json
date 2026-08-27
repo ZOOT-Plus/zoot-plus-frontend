@@ -2912,9 +2912,24 @@
           "cn": "所需干员",
           "en": "Required Operators"
         },
-        "no_operators": {
-          "cn": "无干员",
-          "en": "No operators"
+        "operators_help": {
+          "cn": "仅汇总各作业明确指定的干员，不包含干员组中的可替换候选。同一干员只显示一次，其技能、养成要求和模组会合并展示。",
+          "en": "Only operators explicitly specified by each Job are included; substitutes in operator groups are excluded. Each operator appears once, with skills, development requirements, and modules merged."
+        },
+        "no_explicit_operators": {
+          "cn": "没有明确指定的所需干员",
+          "en": "No explicitly required operators"
+        },
+        "operators_over_limit": {
+          "cn": "作业数量超过 50，无法汇总所需干员",
+          "en": "This Job Set has more than 50 Jobs, so required operators cannot be summarized."
+        },
+        "operators_incomplete": {
+          "cn": "有 {{count}} 个作业无法读取，所需干员汇总可能不完整。",
+          "en": {
+            "1": "{{count}} Job could not be read, so the required operator summary may be incomplete.",
+            "other": "{{count}} Jobs could not be read, so the required operator summary may be incomplete."
+          }
         },
         "render_preview_problem": {
           "cn": "渲染此作业集的预览时出现了问题 Σ(っ °Д °;)っ",

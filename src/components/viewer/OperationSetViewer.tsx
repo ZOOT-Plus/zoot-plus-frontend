@@ -1,6 +1,8 @@
 import {
   Alert,
   Button,
+  Callout,
+  Collapse,
   H3,
   H4,
   H5,
@@ -10,32 +12,33 @@ import {
   NonIdealState,
   PopoverNext,
   Spinner,
-  Tooltip,
 } from '@blueprintjs/core'
 import { ErrorBoundary } from '@sentry/react'
 
 import { useOperations, type OperationsData } from 'apis/operation'
 import { deleteOperationSet, useOperationSet, useRefreshOperationSets } from 'apis/operation-set'
-import { useAtom, useAtomValue } from 'jotai'
+import clsx from 'clsx'
+import { useAtom } from 'jotai'
 import { ComponentType, FC, Suspense, useEffect, useState } from 'react'
 import { copyShortCode } from 'services/operation'
 
 import { FactItem } from 'components/FactItem'
 import { OperationListView } from 'components/OperationList'
+import { OperatorCard, type OperatorCardSkill } from 'components/OperatorCard'
 import { Paragraphs } from 'components/Paragraphs'
 import { RelativeTime } from 'components/RelativeTime'
 import { withSuspensable } from 'components/Suspensable'
 import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { OperationSetEditorDialog } from 'components/operation-set/OperationSetEditor'
-import { OperatorAvatar } from 'components/OperatorAvatar'
+import { CopilotDocV1 } from 'models/copilot.schema'
 import { Operation } from 'models/operation'
-import { findOperatorByName, getLocalizedOperatorName } from 'models/operator'
+import { OPERATORS } from 'models/operator'
 import { OperationSet } from 'models/operation-set'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
 
-import { i18nDefer, languageAtom, useTranslation } from '../../i18n/i18n'
+import { i18nDefer, useTranslation } from '../../i18n/i18n'
 import { formatError } from '../../utils/error'
 import { UserName } from '../UserName'
 
@@ -210,46 +213,53 @@ function OperationSetViewerInner({ operationSet }: { operationSet: OperationSet 
 }
 
 function OperationSetViewerBody({ operationSet }: { operationSet: OperationSet }) {
-  const t = useTranslation()
   const hasDescription = Boolean(operationSet.description?.trim())
 
   return (
     <>
-      <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-x-8">
+      <div className="flex flex-col gap-2 md:grid md:grid-cols-3 md:gap-x-8">
         <div
           className={
             hasDescription
-              ? 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-2 md:row-start-1'
+              ? 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-3 md:row-start-1'
               : 'flex flex-wrap items-start gap-x-4 select-none tabular-nums md:col-start-1 md:row-start-1'
           }
         >
-          <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
-            <span className="text-gray-800 dark:text-slate-100 font-bold">
-              <RelativeTime moment={operationSet.createTime} />
-            </span>
-          </FactItem>
-
-          <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
-            <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
-              {operationSet.creator}
-            </UserName>
-          </FactItem>
+          <OperationSetMetadata operationSet={operationSet} />
         </div>
 
         {hasDescription && (
-          <div className="flex flex-col md:col-start-1 md:row-start-1 md:row-span-2">
+          <div className="flex flex-col md:col-span-2 md:col-start-1 md:row-start-1">
             <Paragraphs content={operationSet.description} linkify />
           </div>
         )}
-
-        <div className={hasDescription ? 'md:col-start-2 md:row-start-2' : 'md:col-start-2 md:row-start-1'}>
-          <OperationSetViewerOperatorsSection operationSet={operationSet} />
-        </div>
       </div>
 
       <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
 
+      <OperationSetViewerOperatorsSection operationSet={operationSet} />
+
       <OperationSetViewerDetails operationSet={operationSet} />
+    </>
+  )
+}
+
+function OperationSetMetadata({ operationSet }: { operationSet: OperationSet }) {
+  const t = useTranslation()
+
+  return (
+    <>
+      <FactItem title={t.components.viewer.OperationSetViewer.published_at} icon="time">
+        <span className="text-gray-800 dark:text-slate-100 font-bold">
+          <RelativeTime moment={operationSet.createTime} />
+        </span>
+      </FactItem>
+
+      <FactItem title={t.components.viewer.OperationSetViewer.author} icon="user">
+        <UserName className="text-gray-800 dark:text-slate-100 font-bold" userId={operationSet.creatorId}>
+          {operationSet.creator}
+        </UserName>
+      </FactItem>
     </>
   )
 }
@@ -263,74 +273,185 @@ function useOperationSetOperations(operationSet: OperationSet) {
 
 function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: OperationSet }) {
   const t = useTranslation()
+  const [showOperators, setShowOperators] = useState(true)
+  const exceedsAggregationLimit = operationSet.copilotIds.length > 50
 
   return (
-    <ErrorBoundary
-      key={operationSet.id}
-      fallback={({ error }) => (
-        <NonIdealState
-          icon="issue"
-          title={t.components.Suspensable.loadFailed}
-          description={error.message}
-          className="py-4"
-        />
-      )}
-    >
-      <Suspense
-        fallback={
-          <div className="flex items-center gap-2 py-4 text-slate-500">
-            <Spinner size={20} />
-            <span>{t.components.viewer.OperationSetViewer.loading_task_set}</span>
-          </div>
-        }
+    <div className="mb-6">
+      <H4
+        className="inline-flex items-center cursor-pointer hover:opacity-80"
+        onClick={() => setShowOperators((visible) => !visible)}
       >
-        <OperationSetViewerOperatorsLoader operationSet={operationSet} />
-      </Suspense>
-    </ErrorBoundary>
+        {t.components.viewer.OperationSetViewer.operators}
+        <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
+      </H4>
+      <details className="inline">
+        <summary className="inline cursor-pointer">
+          <Icon icon="help" size={14} className="ml-2 mb-1 opacity-50" />
+        </summary>
+        <Callout intent="primary" icon={null} className="mb-4">
+          <p>{t.components.viewer.OperationSetViewer.operators_help}</p>
+        </Callout>
+      </details>
+
+      <Collapse isOpen={showOperators}>
+        {exceedsAggregationLimit ? (
+          <Callout intent="warning" className="mt-2">
+            {t.components.viewer.OperationSetViewer.operators_over_limit}
+          </Callout>
+        ) : (
+          <ErrorBoundary
+            key={operationSet.id}
+            fallback={({ error }) => (
+              <NonIdealState
+                icon="issue"
+                title={t.components.Suspensable.loadFailed}
+                description={error.message}
+                className="py-4"
+              />
+            )}
+          >
+            <Suspense
+              fallback={
+                <div className="flex items-center gap-2 py-4 text-slate-500">
+                  <Spinner size={20} />
+                  <span>{t.components.viewer.OperationSetViewer.loading_task_set}</span>
+                </div>
+              }
+            >
+              <OperationSetViewerOperatorsLoader operationSet={operationSet} />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+      </Collapse>
+    </div>
   )
 }
 
 function OperationSetViewerOperatorsLoader({ operationSet }: { operationSet: OperationSet }) {
   const data = useOperationSetOperations(operationSet)
-  return <OperationSetViewerOperators operations={data.operations} />
+  return <OperationSetViewerOperators operationSet={operationSet} operations={data.operations} />
 }
 
-function OperationSetViewerOperators({ operations }: { operations: Operation[] }) {
-  const t = useTranslation()
-  const language = useAtomValue(languageAtom)
+interface AggregatedOperator {
+  operator: CopilotDocV1.Operator
+  skills: OperatorCardSkill[]
+  modules: CopilotDocV1.Module[]
+}
 
-  const rarityByName = new Map<string, number>()
-  const push = (name: string) => {
-    if (rarityByName.has(name)) return
-    rarityByName.set(name, findOperatorByName(name)?.rarity ?? 0)
-  }
+interface MutableAggregatedOperator {
+  name: string
+  skills: Map<number, number | undefined>
+  modules: Set<CopilotDocV1.Module>
+  requirements?: Pick<CopilotDocV1.Requirements, 'elite' | 'level'>
+}
+
+const OPERATOR_ORDER = new Map(
+  OPERATORS.map((operator, index) => [operator.name, { rarity: operator.rarity, index }] as const),
+)
+
+export function aggregateOperationSetOperators(operations: readonly Operation[]): AggregatedOperator[] {
+  const operatorsByName = new Map<string, MutableAggregatedOperator>()
 
   for (const operation of operations) {
-    // 干员组（groups[].opers）是“任选其一”的可替换干员，非确定使用，故头像区只展示明确指定的 opers
-    operation.parsedContent.opers?.forEach(({ name }) => push(name))
+    // 干员组表示“任选其一”，不属于作业集明确指定的所需干员。
+    for (const operator of operation.parsedContent.opers ?? []) {
+      let aggregated = operatorsByName.get(operator.name)
+      if (!aggregated) {
+        aggregated = {
+          name: operator.name,
+          skills: new Map(),
+          modules: new Set(),
+        }
+        operatorsByName.set(operator.name, aggregated)
+      }
+
+      const { elite, level, skillLevel, module } = operator.requirements ?? {}
+
+      if (operator.skill !== undefined) {
+        const currentSkillLevel = aggregated.skills.get(operator.skill)
+        if (
+          !aggregated.skills.has(operator.skill) ||
+          (skillLevel !== undefined && (currentSkillLevel === undefined || skillLevel > currentSkillLevel))
+        ) {
+          aggregated.skills.set(operator.skill, skillLevel)
+        }
+      }
+
+      if (
+        elite !== undefined &&
+        level !== undefined &&
+        (!aggregated.requirements ||
+          elite > aggregated.requirements.elite! ||
+          (elite === aggregated.requirements.elite && level > aggregated.requirements.level!))
+      ) {
+        aggregated.requirements = { elite, level }
+      }
+
+      if (module !== undefined && module !== CopilotDocV1.Module.Default) {
+        aggregated.modules.add(module)
+      }
+    }
   }
 
-  const operatorNames = Array.from(rarityByName.entries())
-    .sort(([, a], [, b]) => b - a)
-    .map(([name]) => name)
+  return Array.from(operatorsByName.values())
+    .sort((a, b) => {
+      const aOrder = OPERATOR_ORDER.get(a.name)
+      const bOrder = OPERATOR_ORDER.get(b.name)
+
+      if (aOrder && bOrder) {
+        return bOrder.rarity - aOrder.rarity || aOrder.index - bOrder.index
+      }
+      if (aOrder) return -1
+      if (bOrder) return 1
+      if (a.name === b.name) return 0
+      return a.name < b.name ? -1 : 1
+    })
+    .map(({ name, requirements, skills, modules }) => ({
+      operator: {
+        name,
+        ...(requirements && { requirements }),
+      },
+      skills: Array.from(skills, ([skill, skillLevel]) => ({ skill, skillLevel })).sort((a, b) => a.skill - b.skill),
+      modules: Array.from(modules).sort((a, b) => a - b),
+    }))
+}
+
+function OperationSetViewerOperators({
+  operationSet,
+  operations,
+}: {
+  operationSet: OperationSet
+  operations: Operation[]
+}) {
+  const t = useTranslation()
+  const operators = aggregateOperationSetOperators(operations)
+  const expectedOperationIds = new Set(operationSet.copilotIds)
+  const loadedOperationIds = new Set(operations.map((operation) => operation.id))
+  const missingOperationCount = Array.from(expectedOperationIds).filter((id) => !loadedOperationIds.has(id)).length
 
   return (
-    <div className="flex flex-col items-start select-none tabular-nums">
-      <FactItem title={t.components.viewer.OperationSetViewer.operators} icon="people">
-        {operatorNames.length === 0 ? (
-          <span className="text-gray-800 dark:text-slate-100 font-bold">
-            {t.components.viewer.OperationSetViewer.no_operators}
-          </span>
+    <div className="mt-2 select-none tabular-nums">
+      {missingOperationCount > 0 && (
+        <Callout intent="warning" className="mb-4">
+          {t.components.viewer.OperationSetViewer.operators_incomplete({ count: missingOperationCount })}
+        </Callout>
+      )}
+
+      <div className="flex flex-wrap gap-6">
+        {operators.length === 0 ? (
+          <NonIdealState
+            className="my-2"
+            title={t.components.viewer.OperationSetViewer.no_explicit_operators}
+            icon="slash"
+            layout="horizontal"
+          />
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {operatorNames.map((name) => (
-              <Tooltip key={name} content={getLocalizedOperatorName(name, language)}>
-                <OperatorAvatar name={name} className="w-10 h-10" sourceSize={96} />
-              </Tooltip>
-            ))}
-          </div>
+          operators.map(({ operator, skills, modules }) => (
+            <OperatorCard key={operator.name} operator={operator} skills={skills} modules={modules} />
+          ))
         )}
-      </FactItem>
+      </div>
     </div>
   )
 }
