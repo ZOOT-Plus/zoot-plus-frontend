@@ -109,9 +109,9 @@ export const OperatorCard: FC<{
               title={t.models.operator.skill_number({ count: skillNumber })}
             >
               <div className="w-6 h-6 flex items-center justify-center font-bold text-xl border-2 border-current">
-                {selected &&
-                  (selectedSkill.skillLevel === undefined ? (
-                    <Icon icon="tick" />
+                {selected ? (
+                  selectedSkill.skillLevel === undefined ? (
+                    selectedSkill.skill
                   ) : selectedSkill.skillLevel <= 7 ? (
                     selectedSkill.skillLevel
                   ) : (
@@ -120,7 +120,10 @@ export const OperatorCard: FC<{
                       mastery={selectedSkill.skillLevel - 7}
                       subClassName="fill-gray-300 dark:fill-gray-500"
                     />
-                  ))}
+                  )
+                ) : (
+                  skillNumber
+                )}
               </div>
             </li>
           )
