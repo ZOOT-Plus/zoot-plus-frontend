@@ -44,7 +44,7 @@ export function IssuesDisplay({ errors, warnings, ...props }: IssuesDisplayProps
           minimal
           icon={null}
           intent="danger"
-          className="p-0 text-xs leading-5"
+          className="p-0 text-xs leading-5 break-words"
           key={'e' + i + (isString(message) ? message : '')}
         >
           <Icon size={12} icon="cross-circle" className="mr-1 align-[-2px]" />
@@ -56,7 +56,7 @@ export function IssuesDisplay({ errors, warnings, ...props }: IssuesDisplayProps
           minimal
           icon={null}
           intent="warning"
-          className="p-0 text-xs leading-5"
+          className="p-0 text-xs leading-5 break-words"
           key={'w' + i + (isString(message) ? message : '')}
         >
           <Icon size={12} icon="warning-sign" className="mr-1 align-[-2px]" />
