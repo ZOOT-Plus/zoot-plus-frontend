@@ -285,14 +285,6 @@ function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: Op
         {t.components.viewer.OperationSetViewer.operators}
         <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
       </H4>
-      <details className="inline">
-        <summary className="inline cursor-pointer">
-          <Icon icon="help" size={14} className="ml-2 mb-1 opacity-50" />
-        </summary>
-        <Callout intent="primary" icon={null} className="mb-4">
-          <p>{t.components.viewer.OperationSetViewer.operators_help}</p>
-        </Callout>
-      </details>
 
       <Collapse isOpen={showOperators}>
         {exceedsAggregationLimit ? (
