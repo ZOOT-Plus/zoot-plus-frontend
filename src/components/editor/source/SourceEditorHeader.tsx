@@ -113,7 +113,6 @@ export const SourceEditorToolbar: FC<SourceEditorToolbarProps> = ({ text, onChan
         }
       >
         <Button
-          className="mr-4"
           icon="export"
           text={t.components.editor.source.SourceEditorHeader.export}
           rightIcon="caret-down"

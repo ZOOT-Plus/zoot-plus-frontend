@@ -1,8 +1,10 @@
 import { atom, useAtomValue } from 'jotai'
 import { findLastIndex, isNumber, isString, get as lodashGet } from 'lodash-es'
 import { useMemo } from 'react'
+import type { ZodError } from 'zod'
 
 import { i18n } from '../../../i18n/i18n'
+import { formatError } from '../../../utils/error'
 import { editorAtoms } from '../editor-state'
 import { toMaaOperation } from '../reconciliation'
 import { getLabel, operationForSubmission, operationForValidation, ZodIssue } from './schema'
@@ -109,3 +111,14 @@ export const editorValidationAtom = atom(null, (get, set) => {
     entityErrors,
   }
 })
+
+function isZodError(e: unknown): e is ZodError {
+  return 'issues' in (e as any) && Array.isArray((e as any).issues)
+}
+
+export function normalizeIssues(e: unknown): GlobalIssue[] {
+  if (isZodError(e)) {
+    return e.issues
+  }
+  return [{ message: formatError(e) }]
+}

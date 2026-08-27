@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useStore } from 'jotai'
 import { useAtomDevtools } from 'jotai-devtools'
 import { useAtomCallback } from 'jotai/utils'
 import { useCallback, useLayoutEffect } from 'react'
@@ -12,8 +12,9 @@ import { withSuspensable } from '../components/Suspensable'
 import { AppToaster } from '../components/Toaster'
 import { editorAtoms, historyAtom } from '../components/editor2/editor-state'
 import { toEditorOperation, toMaaOperation } from '../components/editor2/reconciliation'
-import { operationForParsing } from '../components/editor2/validation/schema'
-import { editorValidationAtom } from '../components/editor2/validation/validation'
+import { SourceEditorForRecovery } from '../components/editor2/source/SourceEditor'
+import { operationForParsing, ParsedOperation } from '../components/editor2/validation/schema'
+import { editorValidationAtom, normalizeIssues } from '../components/editor2/validation/validation'
 import { i18n, useTranslation } from '../i18n/i18n'
 import { CopilotType } from '../models/operation'
 import { formatError } from '../utils/error'
@@ -32,7 +33,8 @@ export const EditorPage = withSuspensable(() => {
     revalidateOnReconnect: false,
   }).data
   const t = useTranslation()
-  const resetEditor = useSetAtom(editorAtoms.reset)
+  const store = useStore()
+  const fatalErrors = useAtomValue(editorAtoms.fatalErrors)
 
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -41,21 +43,41 @@ export const EditorPage = withSuspensable(() => {
 
   useLayoutEffect(() => {
     if (apiOperation) {
-      const maaOperation = JSON.parse(apiOperation.content)
-      const parsed = operationForParsing.parse(maaOperation)
-      resetEditor({
-        operation: toEditorOperation(parsed),
-        metadata: {
-          visibility: apiOperation.status === CopilotSetStatus.Public ? 'public' : 'private',
-          type: (apiOperation.type as CopilotType) ?? CopilotType.PRTS,
-          typeLocked: true,
-          videoUrl: apiOperation.videoUrl ?? '',
-        },
-      })
+      try {
+        const maaOperation = JSON.parse(apiOperation.content + '1')
+        const parsed = operationForParsing.parse(maaOperation)
+        store.set(editorAtoms.reset, {
+          operation: toEditorOperation(parsed),
+          metadata: {
+            visibility: apiOperation.status === CopilotSetStatus.Public ? 'public' : 'private',
+            type: (apiOperation.type as CopilotType) ?? CopilotType.PRTS,
+            typeLocked: true,
+            videoUrl: apiOperation.videoUrl ?? '',
+          },
+        })
+      } catch (e) {
+        console.warn('Failed to parse operation content', e)
+        store.set(editorAtoms.fatalErrors, normalizeIssues(e))
+      }
     } else {
-      resetEditor()
+      store.set(editorAtoms.reset)
     }
-  }, [apiOperation, resetEditor])
+  }, [apiOperation, store])
+
+  const handleRecover = (parsed: ParsedOperation) => {
+    if (!apiOperation) {
+      throw new Error('!?unknown error?!')
+    }
+    store.set(editorAtoms.reset, {
+      operation: toEditorOperation(parsed),
+      metadata: {
+        visibility: apiOperation.status === CopilotSetStatus.Public ? 'public' : 'private',
+        type: (apiOperation.type as CopilotType) ?? CopilotType.PRTS,
+        typeLocked: true,
+        videoUrl: apiOperation.videoUrl ?? '',
+      },
+    })
+  }
 
   const handleSubmit = useAtomCallback(
     useCallback(
@@ -143,7 +165,9 @@ export const EditorPage = withSuspensable(() => {
     ),
   )
 
-  return (
+  return fatalErrors.length ? (
+    <SourceEditorForRecovery input={apiOperation?.content || ''} onRecover={handleRecover} />
+  ) : (
     <OperationEditor
       subtitle={isNew ? t.pages.editor.create.subtitle : t.pages.editor.edit.subtitle}
       submitAction={isNew ? t.pages.editor.create.submit : t.pages.editor.edit.submit}
