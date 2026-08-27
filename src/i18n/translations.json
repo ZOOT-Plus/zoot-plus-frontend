@@ -629,6 +629,10 @@
           "cn": "编辑 JSON",
           "en": "Edit JSON"
         },
+        "format_json": {
+          "cn": "格式化 JSON",
+          "en": "Format JSON"
+        },
         "auto_sync": {
           "cn": "自动同步",
           "en": "Auto Sync"
@@ -657,8 +661,8 @@
           }
         },
         "json_syntax_error": {
-          "cn": "JSON 语法错误",
-          "en": "JSON Syntax Error"
+          "cn": "JSON 语法错误：{{error}}",
+          "en": "JSON Syntax Error: {{error}}"
         },
         "unknown_error": {
           "cn": "未知错误: {{error}}",
@@ -671,6 +675,18 @@
         "unsaved_warning": {
           "cn": "未保存的修改将在关闭 JSON 编辑器后丢失，是否仍要关闭？",
           "en": "Unsaved changes will be lost after closing the JSON editor. Do you still want to close it?"
+        },
+        "submit": {
+          "cn": "提交",
+          "en": "Submit"
+        },
+        "recovery_note":{
+          "cn": "作业解析失败，无法进行编辑。请修正 JSON 后提交以恢复编辑器状态。",
+          "en": "Failed to parse operation, cannot edit. Please fix the JSON and submit to recover the editor state."
+        },
+        "recovery_submit_failed": {
+          "cn": "验证未通过，请修正后再提交",
+          "en": "Validation failed, please fix the issues before submitting"
         }
       },
       "SelectorPanel": {

@@ -216,7 +216,7 @@ export function getEditorConfig() {
   return getDefaultStore().get(localConfigAtom)
 }
 
-const editorParsingErrorsAtom = atom<GlobalIssue[]>([])
+const editorFatalErrorsAtom = atom<GlobalIssue[]>([])
 const editorGlobalErrorsAtom = atom<GlobalIssue[]>([])
 const editorEntityErrorsAtom = atom<Record<string, EntityIssue[]>>({})
 const editorErrorsVisibleAtom = atom(initialConfig.showErrorsByDefault)
@@ -257,7 +257,7 @@ export const editorAtoms = {
   skillLevelOverrides: skillLevelOverridesAtom,
 
   // validation
-  parsingErrors: editorParsingErrorsAtom,
+  fatalErrors: editorFatalErrorsAtom,
   globalErrors: editorGlobalErrorsAtom,
   entityErrors: editorEntityErrorsAtom,
   globalWarnings: editorGlobalWarningsAtom,
@@ -271,8 +271,11 @@ export const editorAtoms = {
   reset: atom(null, (get, set, editorState: EditorState = defaultEditorState) => {
     set(historyAtom, 'RESET')
     set(editorAtom, editorState)
+    set(editorFatalErrorsAtom, [])
     set(editorGlobalErrorsAtom, [])
     set(editorEntityErrorsAtom, {})
+    set(editorGlobalWarningsAtom, [])
+    set(editorEntityWarningsAtom, {})
 
     skillLevelOverridesAtom.setShouldRemove(() => true)
     skillLevelOverridesAtom.setShouldRemove(null)
