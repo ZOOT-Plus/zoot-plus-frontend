@@ -10,14 +10,31 @@ import { OPERATORS, getEliteIconUrl, getModuleName, getSkillCount, useLocalizedO
 import { MasteryIcon } from './MasteryIcon'
 import { OperatorAvatar } from './OperatorAvatar'
 
+export interface OperatorCardSkill {
+  skill: number
+  skillLevel?: number
+}
+
 export const OperatorCard: FC<{
   operator: CopilotDocV1.Operator
-}> = ({ operator }) => {
+  skills?: readonly OperatorCardSkill[]
+  modules?: readonly CopilotDocV1.Module[]
+}> = ({ operator, skills, modules }) => {
   const t = useTranslation()
   const displayName = useLocalizedOperatorName(operator.name)
   const info = OPERATORS.find((o) => o.name === operator.name)
   const { level, elite, skillLevel, module } = operator.requirements ?? {}
-  const skillCount = info ? Math.max(getSkillCount(info), operator.skill ?? 1) : 3
+  const selectedSkills =
+    skills ?? (operator.skill === undefined ? [] : [{ skill: operator.skill, skillLevel } satisfies OperatorCardSkill])
+  const selectedModules = Array.from(
+    new Set(
+      (modules ?? (module === undefined ? [] : [module])).filter(
+        (selectedModule) => selectedModule !== CopilotDocV1.Module.Default,
+      ),
+    ),
+  ).sort((a, b) => a - b)
+  const highestSelectedSkill = selectedSkills.reduce((highest, selected) => Math.max(highest, selected.skill), 0)
+  const skillCount = Math.max(info ? getSkillCount(info) : 3, highestSelectedSkill, operator.skill ?? 1)
 
   return (
     <div className="relative flex items-start">
@@ -30,15 +47,24 @@ export const OperatorCard: FC<{
             fallback={displayName}
             sourceSize={96}
           />
-          {module !== undefined && module !== CopilotDocV1.Module.Default && (
-            <div
-              title={t.components.viewer.OperationViewer.module_title({
-                count: module,
-                name: getModuleName(module),
-              })}
-              className="absolute -bottom-1 right-1 font-serif font-bold text-lg text-white [text-shadow:0_0_3px_#a855f7,0_0_5px_#a855f7]"
-            >
-              {module === CopilotDocV1.Module.Original ? <Icon icon="small-square" /> : getModuleName(module)}
+          {selectedModules.length > 0 && (
+            <div className="absolute -bottom-1 right-1 flex items-center gap-0.5 font-serif font-bold text-lg text-white [text-shadow:0_0_3px_#a855f7,0_0_5px_#a855f7]">
+              {selectedModules.map((selectedModule) => (
+                <span
+                  key={selectedModule}
+                  className="inline-flex items-center"
+                  title={t.components.viewer.OperationViewer.module_title({
+                    count: selectedModule,
+                    name: getModuleName(selectedModule),
+                  })}
+                >
+                  {selectedModule === CopilotDocV1.Module.Original ? (
+                    <Icon icon="small-square" />
+                  ) : (
+                    getModuleName(selectedModule)
+                  )}
+                </span>
+              ))}
             </div>
           )}
         </div>
@@ -69,7 +95,8 @@ export const OperatorCard: FC<{
       <ul className="flex flex-col gap-1 ml-1">
         {Array.from({ length: skillCount }, (_, index) => {
           const skillNumber = index + 1
-          const selected = operator.skill === skillNumber
+          const selectedSkill = selectedSkills.find((selected) => selected.skill === skillNumber)
+          const selected = selectedSkill !== undefined
           return (
             <li
               key={index}
@@ -83,14 +110,14 @@ export const OperatorCard: FC<{
             >
               <div className="w-6 h-6 flex items-center justify-center font-bold text-xl border-2 border-current">
                 {selected &&
-                  (skillLevel === undefined ? (
+                  (selectedSkill.skillLevel === undefined ? (
                     <Icon icon="tick" />
-                  ) : skillLevel <= 7 ? (
-                    skillLevel
+                  ) : selectedSkill.skillLevel <= 7 ? (
+                    selectedSkill.skillLevel
                   ) : (
                     <MasteryIcon
                       className="w-4 h-4"
-                      mastery={skillLevel - 7}
+                      mastery={selectedSkill.skillLevel - 7}
                       subClassName="fill-gray-300 dark:fill-gray-500"
                     />
                   ))}
