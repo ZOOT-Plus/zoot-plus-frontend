@@ -2916,15 +2916,15 @@
           "cn": "无所需干员",
           "en": "No required operators"
         },
-        "operators_over_limit": {
+        "operations_over_limit": {
           "cn": "作业数量过多，请自行核对所需干员。",
-          "en": "There are too many tasks; please check the required operators yourself."
+          "en": "There are too many operations; please check the required operators yourself."
         },
-        "operators_incomplete": {
+        "operations_incomplete": {
           "cn": "{{count}} 个作业无法读取，所需干员汇总可能不完整。",
           "en": {
-            "1": "{{count}} Job could not be read, so the required operator summary may be incomplete.",
-            "other": "{{count}} Jobs could not be read, so the required operator summary may be incomplete."
+            "1": "{{count}} operation could not be read, so the required operator summary may be incomplete.",
+            "other": "{{count}} operations could not be read, so the required operator summary may be incomplete."
           }
         },
         "render_preview_problem": {

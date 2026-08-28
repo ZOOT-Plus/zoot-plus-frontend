@@ -295,7 +295,7 @@ function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: Op
       <Collapse isOpen={showOperators}>
         {exceedsAggregationLimit ? (
           <Callout intent="warning" className="mt-2">
-            {t.components.viewer.OperationSetViewer.operators_over_limit}
+            {t.components.viewer.OperationSetViewer.operations_over_limit}
           </Callout>
         ) : (
           <ErrorBoundary
@@ -432,7 +432,7 @@ function OperationSetViewerOperators({
     <div className="mt-2 select-none tabular-nums">
       {missingOperationCount > 0 && (
         <Callout intent="warning" className="mb-4">
-          {t.components.viewer.OperationSetViewer.operators_incomplete({ count: missingOperationCount })}
+          {t.components.viewer.OperationSetViewer.operations_incomplete({ count: missingOperationCount })}
         </Callout>
       )}
 
