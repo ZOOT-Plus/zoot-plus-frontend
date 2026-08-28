@@ -44,29 +44,44 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
   const selectionLocked = grouped || !!sameNameOperatorInGroup
   const operator = existedOperators?.[operatorNoneGroupedIndex] || operatorInGroup || baseOperator
   const selectedInView = selected || grouped
+  const { skill, skillUsage, skillTimes, requirements: baseRequirements } = baseOperator
+  const requirements: CopilotDocV1.Requirements = {
+    ...(baseRequirements?.skillLevel !== undefined && { skillLevel: baseRequirements.skillLevel }),
+    ...(baseRequirements?.module !== undefined && { module: baseRequirements.module }),
+  }
+  const operatorConfig = {
+    name,
+    ...(skill !== undefined && { skill }),
+    ...(skillUsage !== undefined && { skillUsage }),
+    ...(skillTimes !== undefined && { skillTimes }),
+    ...(Object.keys(requirements).length && { requirements }),
+  } satisfies CopilotDocV1.Operator
 
   const onOperatorSelect = () => {
-    if (selectionLocked)
+    if (selectionLocked) {
       AppToaster.show({
         message: t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.operator_in_group({ name }),
         intent: Intent.DANGER,
       })
-    else {
-      if (selected) {
-        removeOperator(operatorNoneGroupedIndex)
-      } else {
-        submitOperatorInSheet(
-          showSkillAbout && sameNameOperator
-            ? ({
-                ...baseOperator,
-                id: (sameNameOperator as typeof sameNameOperator & { id: string }).id,
-              } as typeof baseOperator)
-            : showSkillAbout
-              ? operator
-              : { name },
-        )
+      return
+    }
+
+    if (selected) {
+      removeOperator(operatorNoneGroupedIndex)
+      return
+    }
+
+    let selectedOperator: CopilotDocV1.Operator = { name }
+    if (showSkillAbout) {
+      selectedOperator = operatorConfig
+      if (sameNameOperator) {
+        selectedOperator = {
+          ...operatorConfig,
+          id: (sameNameOperator as typeof sameNameOperator & { id: string }).id,
+        } as typeof baseOperator
       }
     }
+    submitOperatorInSheet(selectedOperator)
   }
 
   return (
