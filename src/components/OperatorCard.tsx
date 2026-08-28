@@ -26,6 +26,7 @@ export const OperatorCard: FC<{
   const { level, elite, skillLevel, module } = operator.requirements ?? {}
   const selectedSkills =
     skills ?? (operator.skill === undefined ? [] : [{ skill: operator.skill, skillLevel } satisfies OperatorCardSkill])
+  const hasSelectedSkillLevel = selectedSkills.some((selectedSkill) => selectedSkill.skillLevel !== undefined)
   const selectedModules = Array.from(
     new Set(
       (modules ?? (module === undefined ? [] : [module])).filter(
@@ -121,7 +122,7 @@ export const OperatorCard: FC<{
                       subClassName="fill-gray-300 dark:fill-gray-500"
                     />
                   )
-                ) : (
+                ) : hasSelectedSkillLevel ? null : (
                   skillNumber
                 )}
               </div>
