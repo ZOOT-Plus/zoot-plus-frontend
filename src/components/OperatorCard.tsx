@@ -26,7 +26,6 @@ export const OperatorCard: FC<{
   const { level, elite, skillLevel, module } = operator.requirements ?? {}
   const selectedSkills =
     skills ?? (operator.skill === undefined ? [] : [{ skill: operator.skill, skillLevel } satisfies OperatorCardSkill])
-  const hasSelectedSkillLevel = selectedSkills.some((selectedSkill) => selectedSkill.skillLevel !== undefined)
   const selectedModules = Array.from(
     new Set(
       (modules ?? (module === undefined ? [] : [module])).filter(
@@ -110,9 +109,9 @@ export const OperatorCard: FC<{
               title={t.models.operator.skill_number({ count: skillNumber })}
             >
               <div className="w-6 h-6 flex items-center justify-center font-bold text-xl border-2 border-current">
-                {selected ? (
-                  selectedSkill.skillLevel === undefined ? (
-                    selectedSkill.skill
+                {selected &&
+                  (selectedSkill.skillLevel === undefined ? (
+                    <Icon icon="tick" />
                   ) : selectedSkill.skillLevel <= 7 ? (
                     selectedSkill.skillLevel
                   ) : (
@@ -121,10 +120,7 @@ export const OperatorCard: FC<{
                       mastery={selectedSkill.skillLevel - 7}
                       subClassName="fill-gray-300 dark:fill-gray-500"
                     />
-                  )
-                ) : hasSelectedSkillLevel ? null : (
-                  skillNumber
-                )}
+                  ))}
               </div>
             </li>
           )
