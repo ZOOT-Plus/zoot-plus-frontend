@@ -8,7 +8,13 @@ import { MasteryIcon } from 'components/MasteryIcon'
 import { AppToaster } from 'components/Toaster'
 import { DetailedSelectChoice } from 'components/editor/DetailedSelect'
 import { CopilotDocV1 } from 'models/copilot.schema'
-import { getModuleName, isSameOperatorConfig, operatorSkillUsages, useLocalizedOperatorName } from 'models/operator'
+import {
+  getEliteIconUrl,
+  getModuleName,
+  isSameOperatorConfig,
+  operatorSkillUsages,
+  useLocalizedOperatorName,
+} from 'models/operator'
 
 import { useTranslation } from '../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../OperatorAvatar'
@@ -49,6 +55,8 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
   const selectedInView = selected || grouped
   const { skill, skillUsage, skillTimes, requirements: baseRequirements } = baseOperator
   const requirements: CopilotDocV1.Requirements = {
+    ...(baseRequirements?.level !== undefined && { level: baseRequirements.level }),
+    ...(baseRequirements?.elite !== undefined && { elite: baseRequirements.elite }),
     ...(baseRequirements?.skillLevel !== undefined && { skillLevel: baseRequirements.skillLevel }),
     ...(baseRequirements?.module !== undefined && { module: baseRequirements.module }),
   }
@@ -115,7 +123,10 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
           grouped ? 'gap-1.5' : 'gap-2',
         )}
       >
-        <OperatorAvatar className="!h-12 !w-12 shrink-0" name={name} size="large" sourceSize={96} />
+        <div className="relative">
+          <OperatorAvatar className="!h-12 !w-12 shrink-0" name={name} size="large" sourceSize={96} />
+          <OperatorLevelBadge requirements={baseRequirements} />
+        </div>
         {favorite && (
           <Button
             minimal
@@ -188,6 +199,31 @@ export const SheetOperatorSkillAbout: FC<{ operator: CopilotDocV1.Operator }> = 
             <p>{getModuleName(operator.requirements.module)}</p>
           )}
         </>
+      )}
+    </div>
+  )
+}
+
+export const OperatorLevelBadge: FC<{ requirements?: CopilotDocV1.Requirements }> = ({ requirements }) => {
+  const level = requirements?.level
+  const elite = requirements?.elite
+  if (level === undefined && elite === undefined) {
+    return null
+  }
+
+  return (
+    <div className="pointer-events-none absolute -left-2 -top-2 flex flex-col items-center">
+      {level !== undefined && (
+        <div className="flex size-7 items-center justify-center rounded-full border-2 border-yellow-300 bg-black/70 text-sm font-semibold leading-none text-white shadow">
+          {level}
+        </div>
+      )}
+      {elite !== undefined && (
+        <img
+          className={clsx('h-5 w-5 object-contain drop-shadow', level !== undefined && '-mt-1')}
+          src={getEliteIconUrl(elite)}
+          alt=""
+        />
       )}
     </div>
   )

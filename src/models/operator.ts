@@ -19,6 +19,8 @@ const OPERATOR_CONFIG_COMPARE_KEYS = [
   'skill',
   'skillUsage',
   'skillTimes',
+  'requirements.level',
+  'requirements.elite',
   'requirements.skillLevel',
   'requirements.module',
 ] as const

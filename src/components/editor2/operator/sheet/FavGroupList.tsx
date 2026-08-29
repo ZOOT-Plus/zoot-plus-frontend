@@ -12,7 +12,7 @@ import { OperatorAvatar } from '../../../OperatorAvatar'
 import { AppToaster } from '../../../Toaster'
 import { editorAtoms, useEdit } from '../../editor-state'
 import { createGroup, createOperator, editorFavGroupsAtom } from '../../reconciliation'
-import { SheetOperatorSkillAbout } from './SheetOperatorItem'
+import { OperatorLevelBadge, SheetOperatorSkillAbout } from './SheetOperatorItem'
 
 export const FavGroupList: FC = () => {
   const t = useTranslation()
@@ -53,6 +53,8 @@ export const FavGroupList: FC = () => {
           const opers =
             group.opers?.map(({ name, skill, skillUsage, skillTimes, requirements: baseRequirements }) => {
               const requirements: CopilotDocV1.Requirements = {
+                ...(baseRequirements?.level !== undefined && { level: baseRequirements.level }),
+                ...(baseRequirements?.elite !== undefined && { elite: baseRequirements.elite }),
                 ...(baseRequirements?.skillLevel !== undefined && { skillLevel: baseRequirements.skillLevel }),
                 ...(baseRequirements?.module !== undefined && { module: baseRequirements.module }),
               }
@@ -149,7 +151,10 @@ export const FavGroupList: FC = () => {
 
 const FavGroupOperatorItem: FC<{ operator: CopilotDocV1.Operator }> = ({ operator }) => (
   <div className="flex h-32 w-32 shrink-0 flex-col items-center justify-center gap-2 border border-gray-200 px-2 py-3 dark:border-gray-600">
-    <OperatorAvatar className="!h-12 !w-12 shrink-0" name={operator.name} size="large" sourceSize={96} />
+    <div className="relative">
+      <OperatorAvatar className="!h-12 !w-12 shrink-0" name={operator.name} size="large" sourceSize={96} />
+      <OperatorLevelBadge requirements={operator.requirements} />
+    </div>
     <p className="max-w-full break-words text-center text-xs font-bold leading-tight">
       {useLocalizedOperatorName(operator.name)}
     </p>
