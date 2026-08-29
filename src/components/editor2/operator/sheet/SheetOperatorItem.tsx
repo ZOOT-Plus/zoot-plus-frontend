@@ -1,6 +1,7 @@
-import { Card, Icon, Intent } from '@blueprintjs/core'
+import { Button, Card, Icon, Intent } from '@blueprintjs/core'
 
 import clsx from 'clsx'
+import { useAtom } from 'jotai'
 import { FC } from 'react'
 
 import { MasteryIcon } from 'components/MasteryIcon'
@@ -12,6 +13,7 @@ import { getModuleName, isSameOperatorConfig, operatorSkillUsages, useLocalizedO
 import { useTranslation } from '../../../../i18n/i18n'
 import { OperatorAvatar } from '../../../OperatorAvatar'
 import { useSheet } from '../../../editor/operator/sheet/SheetProvider'
+import { editorFavOperatorsAtom } from '../../reconciliation'
 
 export interface SheetOperatorItemProp {
   operator: CopilotDocV1.Operator
@@ -24,6 +26,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
   const { name } = baseOperator
   const t = useTranslation()
   const { existedOperators, existedGroups, submitOperatorInSheet, removeOperator } = useSheet()
+  const [favOperators, setFavOperators] = useAtom(editorFavOperatorsAtom)
   const compareOperator = showSkillAbout
     ? (operator: CopilotDocV1.Operator) => isSameOperatorConfig(operator, baseOperator, true)
     : (operator: CopilotDocV1.Operator) => operator.name === name
@@ -56,6 +59,10 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
     ...(skillTimes !== undefined && { skillTimes }),
     ...(Object.keys(requirements).length && { requirements }),
   } satisfies CopilotDocV1.Operator
+  const favOperatorIndex = favOperators.findIndex((favOperator) =>
+    isSameOperatorConfig(favOperator, baseOperator, true),
+  )
+  const favorite = showSkillAbout && favOperatorIndex !== -1
 
   const onOperatorSelect = () => {
     if (selectionLocked) {
@@ -84,6 +91,14 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
     submitOperatorInSheet(selectedOperator)
   }
 
+  const removeFromFavorites = () => {
+    setFavOperators((prev) => prev.filter((_, index) => index !== favOperatorIndex))
+    AppToaster.show({
+      message: t.components.editor2.OperatorItem.removed_from_favorites,
+      intent: 'success',
+    })
+  }
+
   return (
     <Card
       className={clsx(
@@ -101,6 +116,19 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ operator: baseOpe
         )}
       >
         <OperatorAvatar className="!h-12 !w-12 shrink-0" name={name} size="large" sourceSize={96} />
+        {favorite && (
+          <Button
+            minimal
+            small
+            icon="pin"
+            className="absolute right-1 top-1 z-10 -rotate-45"
+            title={t.components.editor2.OperatorItem.remove_from_favorites}
+            onClick={(event) => {
+              event.stopPropagation()
+              removeFromFavorites()
+            }}
+          />
+        )}
         <p
           className={clsx(
             'max-w-full text-xs font-bold leading-tight text-center',

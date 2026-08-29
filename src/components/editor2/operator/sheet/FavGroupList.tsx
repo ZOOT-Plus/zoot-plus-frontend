@@ -1,8 +1,8 @@
-import { Card, Intent } from '@blueprintjs/core'
+import { Button, Card, Intent } from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { produce } from 'immer'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { FC } from 'react'
 
 import { i18n, useTranslation } from '../../../../i18n/i18n'
@@ -16,7 +16,7 @@ import { SheetOperatorSkillAbout } from './SheetOperatorItem'
 
 export const FavGroupList: FC = () => {
   const t = useTranslation()
-  const favGroups = useAtomValue(editorFavGroupsAtom)
+  const [favGroups, setFavGroups] = useAtom(editorFavGroupsAtom)
   const groups = useAtomValue(editorAtoms.groups)
   const edit = useEdit()
 
@@ -50,10 +50,29 @@ export const FavGroupList: FC = () => {
       set(
         editorAtoms.operation,
         produce(operation, (draft) => {
+          const opers =
+            group.opers?.map(({ name, skill, skillUsage, skillTimes, requirements: baseRequirements }) => {
+              const requirements: CopilotDocV1.Requirements = {
+                ...(baseRequirements?.skillLevel !== undefined && { skillLevel: baseRequirements.skillLevel }),
+                ...(baseRequirements?.module !== undefined && { module: baseRequirements.module }),
+              }
+
+              return createOperator(
+                {
+                  name,
+                  ...(skill !== undefined && { skill }),
+                  ...(skillUsage !== undefined && { skillUsage }),
+                  ...(skillTimes !== undefined && { skillTimes }),
+                  ...(Object.keys(requirements).length && { requirements }),
+                },
+                false,
+              )
+            }) ?? []
+
           draft.opers = draft.opers.filter(({ name }) => !groupOperatorNames.has(name))
           draft.groups.push({
             ...createGroup(group),
-            opers: group.opers?.map((operator) => createOperator(operator)) ?? [],
+            opers,
           })
         }),
       )
@@ -71,7 +90,7 @@ export const FavGroupList: FC = () => {
         {t.components.editor.operator.sheet.SheetGroup.favorite_groups}
       </h3>
       <div className="flex flex-wrap items-start gap-2">
-        {favGroups.map((group) => {
+        {favGroups.map((group, groupIndex) => {
           const selected = groups.some((existedGroup) => isSameGroupConfig(existedGroup, group))
 
           return (
@@ -84,12 +103,27 @@ export const FavGroupList: FC = () => {
                 }
               }}
               className={clsx(
-                '!p-0 inline-flex max-w-full w-fit flex-col overflow-hidden !rounded-none shadow-sm hover:!shadow',
+                '!p-0 relative inline-flex max-w-full w-fit flex-col overflow-hidden !rounded-none shadow-sm hover:!shadow',
                 !selected && 'cursor-pointer',
                 selected &&
                   '!bg-gray-200 text-gray-500 opacity-70 [&_img]:grayscale dark:!bg-gray-700 dark:text-gray-400',
               )}
             >
+              <Button
+                minimal
+                small
+                icon="pin"
+                className="absolute right-1 top-1 z-10 -rotate-45"
+                title={t.components.editor2.OperatorItem.remove_from_favorites}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setFavGroups((prev) => prev.filter((_, index) => index !== groupIndex))
+                  AppToaster.show({
+                    message: t.components.editor2.OperatorItem.removed_from_favorites,
+                    intent: 'success',
+                  })
+                }}
+              />
               <div className="min-w-0 px-3 py-2 text-base font-bold italic text-slate-400">
                 <span className="block truncate">{group.name}</span>
               </div>
