@@ -224,3 +224,5 @@ export async function banComments(req: { operationId: number; status: BanComment
     ...req,
   })
 }
+
+export type OperationsData = ReturnType<typeof useOperations>
