@@ -356,6 +356,8 @@ export interface AggregatedOperatorGroupTitleSegment {
 }
 
 export interface AggregatedOperatorGroup {
+  /** 干员清单指纹，全局唯一，作为组卡片的稳定 React key */
+  key: string
   titleSegments: AggregatedOperatorGroupTitleSegment[]
   operators: AggregatedOperator[]
 }
@@ -490,7 +492,8 @@ export function aggregateOperationSetOperators(operations: readonly Operation[])
 
   return {
     operators: finalizeAggregatedOperators(operatorsByName),
-    groups: Array.from(groupsByFingerprint.values(), ({ titleSegments, operatorsByName }) => ({
+    groups: Array.from(groupsByFingerprint, ([key, { titleSegments, operatorsByName }]) => ({
+      key,
       titleSegments,
       operators: finalizeAggregatedOperators(operatorsByName),
     })),
@@ -548,8 +551,8 @@ function OperationSetViewerOperators({
 
       {groups.length > 0 && (
         <div className="flex flex-wrap gap-4 mt-4">
-          {groups.map((group, index) => (
-            <Card elevation={Elevation.ONE} className="!p-2 flex flex-col items-center" key={index}>
+          {groups.map((group) => (
+            <Card elevation={Elevation.ONE} className="!p-2 flex flex-col items-center" key={group.key}>
               <H6 className="mb-3 text-gray-800">{formatAggregatedOperatorGroupTitle(group.titleSegments)}</H6>
               <div className="flex flex-wrap px-2 gap-6">
                 {group.operators.map(({ operator, skills, modules }) => (
