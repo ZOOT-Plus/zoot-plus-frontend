@@ -292,36 +292,38 @@ function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: Op
         </button>
       </H4>
 
-      <Collapse isOpen={showOperators}>
-        {exceedsAggregationLimit ? (
-          <Callout intent="warning" className="mt-2">
-            {t.components.viewer.OperationSetViewer.operations_over_limit}
-          </Callout>
-        ) : (
-          <ErrorBoundary
-            key={operationSet.id}
-            fallback={({ error }) => (
-              <NonIdealState
-                icon="issue"
-                title={t.components.Suspensable.loadFailed}
-                description={error.message}
-                className="py-4"
-              />
-            )}
-          >
-            <Suspense
-              fallback={
-                <div className="flex items-center gap-2 py-4 text-slate-500">
-                  <Spinner size={20} />
-                  <span>{t.components.viewer.OperationSetViewer.loading_task_set}</span>
-                </div>
-              }
+      <div id={operatorsContentId}>
+        <Collapse isOpen={showOperators}>
+          {exceedsAggregationLimit ? (
+            <Callout intent="warning" className="mt-2">
+              {t.components.viewer.OperationSetViewer.operations_over_limit}
+            </Callout>
+          ) : (
+            <ErrorBoundary
+              key={operationSet.id}
+              fallback={({ error }) => (
+                <NonIdealState
+                  icon="issue"
+                  title={t.components.Suspensable.loadFailed}
+                  description={error.message}
+                  className="py-4"
+                />
+              )}
             >
-              <OperationSetViewerOperatorsLoader operationSet={operationSet} />
-            </Suspense>
-          </ErrorBoundary>
-        )}
-      </Collapse>
+              <Suspense
+                fallback={
+                  <div className="flex items-center gap-2 py-4 text-slate-500">
+                    <Spinner size={20} />
+                    <span>{t.components.viewer.OperationSetViewer.loading_task_set}</span>
+                  </div>
+                }
+              >
+                <OperationSetViewerOperatorsLoader operationSet={operationSet} />
+              </Suspense>
+            </ErrorBoundary>
+          )}
+        </Collapse>
+      </div>
     </div>
   )
 }
