@@ -2,10 +2,13 @@ import {
   Alert,
   Button,
   Callout,
+  Card,
   Collapse,
+  Elevation,
   H3,
   H4,
   H5,
+  H6,
   Icon,
   Menu,
   MenuItem,
@@ -346,67 +349,87 @@ interface MutableAggregatedOperator {
   requirements?: Pick<CopilotDocV1.Requirements, 'elite' | 'level'>
 }
 
+/** 干员组卡片的标题段：一个来源组的组名与其所属作业的标题 */
+export interface AggregatedOperatorGroupTitleSegment {
+  groupName: string
+  operationTitle: string
+}
+
+export interface AggregatedOperatorGroup {
+  titleSegments: AggregatedOperatorGroupTitleSegment[]
+  operators: AggregatedOperator[]
+}
+
+interface MutableAggregatedOperatorGroup {
+  titleSegments: AggregatedOperatorGroupTitleSegment[]
+  operatorsByName: Map<string, MutableAggregatedOperator>
+}
+
 const OPERATOR_ORDER = new Map(
   OPERATORS.map((operator, index) => [operator.name, { rarity: operator.rarity, index }] as const),
 )
 
-export function aggregateOperationSetOperators(operations: readonly Operation[]): AggregatedOperator[] {
-  const operatorsByName = new Map<string, MutableAggregatedOperator>()
+/** 技能等级、精英/等级取最高，模组取并集；普通干员与干员组内干员共用 */
+function mergeOperatorIntoAggregated(aggregated: MutableAggregatedOperator, operator: CopilotDocV1.Operator): void {
+  const { elite, level, skillLevel, module } = operator.requirements ?? {}
 
-  for (const operation of operations) {
-    // opers 不含干员组内干员
-    for (const operator of operation.parsedContent.opers ?? []) {
-      let aggregated = operatorsByName.get(operator.name)
-      if (!aggregated) {
-        aggregated = {
-          name: operator.name,
-          skills: new Map(),
-          modules: new Set(),
-        }
-        operatorsByName.set(operator.name, aggregated)
-      }
-
-      const { elite, level, skillLevel, module } = operator.requirements ?? {}
-
-      if (operator.skill !== undefined) {
-        const currentSkillLevel = aggregated.skills.get(operator.skill)
-        if (
-          !aggregated.skills.has(operator.skill) ||
-          (skillLevel !== undefined && (currentSkillLevel === undefined || skillLevel > currentSkillLevel))
-        ) {
-          aggregated.skills.set(operator.skill, skillLevel)
-        }
-      }
-
-      if (
-        elite !== undefined &&
-        level !== undefined &&
-        (!aggregated.requirements ||
-          elite > aggregated.requirements.elite! ||
-          (elite === aggregated.requirements.elite && level > aggregated.requirements.level!))
-      ) {
-        aggregated.requirements = { elite, level }
-      }
-
-      if (module !== undefined && module !== CopilotDocV1.Module.Default) {
-        aggregated.modules.add(module)
-      }
+  if (operator.skill !== undefined) {
+    const currentSkillLevel = aggregated.skills.get(operator.skill)
+    if (
+      !aggregated.skills.has(operator.skill) ||
+      (skillLevel !== undefined && (currentSkillLevel === undefined || skillLevel > currentSkillLevel))
+    ) {
+      aggregated.skills.set(operator.skill, skillLevel)
     }
   }
 
-  return Array.from(operatorsByName.values())
-    .sort((a, b) => {
-      const aOrder = OPERATOR_ORDER.get(a.name)
-      const bOrder = OPERATOR_ORDER.get(b.name)
+  if (
+    elite !== undefined &&
+    level !== undefined &&
+    (!aggregated.requirements ||
+      elite > aggregated.requirements.elite! ||
+      (elite === aggregated.requirements.elite && level > aggregated.requirements.level!))
+  ) {
+    aggregated.requirements = { elite, level }
+  }
 
-      if (aOrder && bOrder) {
-        return bOrder.rarity - aOrder.rarity || aOrder.index - bOrder.index
-      }
-      if (aOrder) return -1
-      if (bOrder) return 1
-      if (a.name === b.name) return 0
-      return a.name < b.name ? -1 : 1
-    })
+  if (module !== undefined && module !== CopilotDocV1.Module.Default) {
+    aggregated.modules.add(module)
+  }
+}
+
+function getOrCreateAggregatedOperator(
+  operatorsByName: Map<string, MutableAggregatedOperator>,
+  name: string,
+): MutableAggregatedOperator {
+  let aggregated = operatorsByName.get(name)
+  if (!aggregated) {
+    aggregated = {
+      name,
+      skills: new Map(),
+      modules: new Set(),
+    }
+    operatorsByName.set(name, aggregated)
+  }
+  return aggregated
+}
+
+function compareAggregatedOperators(a: MutableAggregatedOperator, b: MutableAggregatedOperator) {
+  const aOrder = OPERATOR_ORDER.get(a.name)
+  const bOrder = OPERATOR_ORDER.get(b.name)
+
+  if (aOrder && bOrder) {
+    return bOrder.rarity - aOrder.rarity || aOrder.index - bOrder.index
+  }
+  if (aOrder) return -1
+  if (bOrder) return 1
+  if (a.name === b.name) return 0
+  return a.name < b.name ? -1 : 1
+}
+
+function finalizeAggregatedOperators(operatorsByName: Map<string, MutableAggregatedOperator>): AggregatedOperator[] {
+  return Array.from(operatorsByName.values())
+    .sort(compareAggregatedOperators)
     .map(({ name, requirements, skills, modules }) => ({
       operator: {
         name,
@@ -417,6 +440,76 @@ export function aggregateOperationSetOperators(operations: readonly Operation[])
     }))
 }
 
+export function aggregateOperationSetOperators(operations: readonly Operation[]): {
+  operators: AggregatedOperator[]
+  groups: AggregatedOperatorGroup[]
+} {
+  const operatorsByName = new Map<string, MutableAggregatedOperator>()
+  // 以排序后的干员名清单为指纹：仅清单完全一致的干员组（跨作业、组名可不同）才允许合并，
+  // 清单有任何差异的组各自独立成卡片
+  const groupsByFingerprint = new Map<string, MutableAggregatedOperatorGroup>()
+
+  for (const operation of operations) {
+    // opers 不含干员组内干员
+    for (const operator of operation.parsedContent.opers ?? []) {
+      mergeOperatorIntoAggregated(getOrCreateAggregatedOperator(operatorsByName, operator.name), operator)
+    }
+
+    for (const group of operation.parsedContent.groups ?? []) {
+      // 老数据中组内 opers 可能混入空元素；空组无信息量，直接跳过
+      const groupOpers = (group.opers ?? []).filter((oper) => !!oper)
+      if (groupOpers.length === 0) continue
+
+      const fingerprint = groupOpers
+        .map((oper) => oper.name)
+        .sort()
+        .join('\n')
+
+      let aggregatedGroup = groupsByFingerprint.get(fingerprint)
+      if (!aggregatedGroup) {
+        aggregatedGroup = {
+          titleSegments: [],
+          operatorsByName: new Map(),
+        }
+        groupsByFingerprint.set(fingerprint, aggregatedGroup)
+      }
+
+      aggregatedGroup.titleSegments.push({
+        groupName: group.name,
+        operationTitle: operation.parsedContent.doc.title,
+      })
+
+      for (const operator of groupOpers) {
+        mergeOperatorIntoAggregated(
+          getOrCreateAggregatedOperator(aggregatedGroup.operatorsByName, operator.name),
+          operator,
+        )
+      }
+    }
+  }
+
+  return {
+    operators: finalizeAggregatedOperators(operatorsByName),
+    groups: Array.from(groupsByFingerprint.values(), ({ titleSegments, operatorsByName }) => ({
+      titleSegments,
+      operators: finalizeAggregatedOperators(operatorsByName),
+    })),
+  }
+}
+
+/** 同名簇：组名只写一次，各来源作业标题依次排列，如「奶【SR-5】【SR-7】」；
+ * 异名簇：每段「组名【作业标题】」以管道符分隔，如「奶【SR-5】 | 治疗【SR-6】」 */
+export function formatAggregatedOperatorGroupTitle(
+  titleSegments: readonly AggregatedOperatorGroupTitleSegment[],
+): string {
+  const groupNames = new Set(titleSegments.map(({ groupName }) => groupName))
+  if (groupNames.size === 1) {
+    const titles = titleSegments.map(({ operationTitle }) => `【${operationTitle}】`).join('')
+    return `${titleSegments[0].groupName}${titles}`
+  }
+  return titleSegments.map(({ groupName, operationTitle }) => `${groupName}【${operationTitle}】`).join(' | ')
+}
+
 function OperationSetViewerOperators({
   operationSet,
   operations,
@@ -425,7 +518,7 @@ function OperationSetViewerOperators({
   operations: Operation[]
 }) {
   const t = useTranslation()
-  const operators = aggregateOperationSetOperators(operations)
+  const { operators, groups } = aggregateOperationSetOperators(operations)
   const expectedOperationIds = new Set(operationSet.copilotIds)
   const loadedOperationIds = new Set(operations.map((operation) => operation.id))
   const missingOperationCount = Array.from(expectedOperationIds).filter((id) => !loadedOperationIds.has(id)).length
@@ -439,7 +532,7 @@ function OperationSetViewerOperators({
       )}
 
       <div className="flex flex-wrap gap-6">
-        {operators.length === 0 ? (
+        {operators.length === 0 && groups.length === 0 ? (
           <NonIdealState
             className="my-2"
             title={t.components.viewer.OperationSetViewer.no_explicit_operators}
@@ -452,6 +545,21 @@ function OperationSetViewerOperators({
           ))
         )}
       </div>
+
+      {groups.length > 0 && (
+        <div className="flex flex-wrap gap-4 mt-4">
+          {groups.map((group, index) => (
+            <Card elevation={Elevation.ONE} className="!p-2 flex flex-col items-center" key={index}>
+              <H6 className="mb-3 text-gray-800">{formatAggregatedOperatorGroupTitle(group.titleSegments)}</H6>
+              <div className="flex flex-wrap px-2 gap-6">
+                {group.operators.map(({ operator, skills, modules }) => (
+                  <OperatorCard key={operator.name} operator={operator} skills={skills} modules={modules} />
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
