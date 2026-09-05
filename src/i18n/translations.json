@@ -2908,13 +2908,13 @@
           "cn": "作者",
           "en": "Author"
         },
-        "operators": {
-          "cn": "所需干员",
-          "en": "Required Operators"
+        "operators_and_groups": {
+          "cn": "所需干员与干员组",
+          "en": "Required Operators and Groups"
         },
         "no_explicit_operators": {
-          "cn": "无所需干员",
-          "en": "No required operators"
+          "cn": "无所需干员与干员组",
+          "en": "No required operators or operator groups"
         },
         "operations_over_limit": {
           "cn": "作业数量过多，请自行核对所需干员。",
@@ -3085,10 +3085,6 @@
           "cn": "干员与干员组",
           "en": "Operators and Operator Groups"
         },
-        "operators_and_groups_note": {
-          "cn": "{{operators(干员)}}\n作业必需的干员。\n干员练度（等级、模组）仅供参考，客户端的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(干员组)}}\n一系列可替换干员的编组。\n组内干员可以任选其一，客户端自动编队时按最高练度来选择。",
-          "en": "{{operators(Operators)}}\nOperators required for this Job. \nThe requirements (level and module) are for reference only. The client's auto-formation only supports skill selection, and other information is not yet supported.\n\n{{groups(Operator Groups)}}\nGroups of interchangeable operators. \nYou can choose any operator in a group. The client's auto-formation selects the one with the highest level."
-        },
         "no_operators": {
           "cn": "暂无干员",
           "en": "No Operators"
@@ -3162,6 +3158,12 @@
         "type_prts": {
           "cn": "PRTS",
           "en": "PRTS"
+        }
+      },
+      "OperatorsAndGroupsHelpNote": {
+        "note": {
+          "cn": "{{operators(干员)}}\n作业必需的干员。\n干员练度（等级、模组）仅供参考，客户端的自动编队仅支持技能选择，其余信息暂未支持。\n\n{{groups(干员组)}}\n一系列可替换干员的编组。\n组内干员可以任选其一，客户端自动编队时按最高练度来选择。",
+          "en": "{{operators(Operators)}}\nOperators required for this Job. \nThe requirements (level and module) are for reference only. The client's auto-formation only supports skill selection, and other information is not yet supported.\n\n{{groups(Operator Groups)}}\nGroups of interchangeable operators. \nYou can choose any operator in a group. The client's auto-formation selects the one with the highest level."
         }
       }
     },

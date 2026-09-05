@@ -2,7 +2,6 @@ import {
   AnchorButton,
   Button,
   ButtonGroup,
-  Callout,
   Card,
   Collapse,
   Elevation,
@@ -38,6 +37,7 @@ import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { EDifficultyLevel } from 'components/entity/ELevel'
 import { OperationRating } from 'components/viewer/OperationRating'
+import { OperatorsAndGroupsHelpNote } from 'components/viewer/OperatorsAndGroupsHelpNote'
 import { CopilotType, OpRatingType, Operation } from 'models/operation'
 import { authAtom } from 'store/auth'
 import { wrapErrorMessage } from 'utils/wrapErrorMessage'
@@ -498,19 +498,7 @@ function OperationViewerInnerDetails({ operation }: { operation: Operation }) {
           <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
         </button>
       </H4>
-      <details className="inline">
-        <summary className="inline cursor-pointer">
-          <Icon icon="help" size={14} className="ml-2 mb-1 opacity-50" />
-        </summary>
-        <Callout intent="primary" icon={null} className="mb-4">
-          <p>
-            {t.components.viewer.OperationViewer.operators_and_groups_note.jsx({
-              operators: (s) => <b>{s}</b>,
-              groups: (s) => <b>{s}</b>,
-            })}
-          </p>
-        </Callout>
-      </details>
+      <OperatorsAndGroupsHelpNote />
       <div id={operatorsContentId}>
         <Collapse isOpen={showOperators}>
           <div className="mt-2 flex flex-wrap gap-6">
