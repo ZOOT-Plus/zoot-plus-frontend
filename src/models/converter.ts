@@ -34,28 +34,37 @@ export function migrateOperation(operation: CopilotDocV1.Operation): CopilotDocV
     return {
       ...operation,
       version: CopilotDocV1.VERSION,
-      opers: operation.opers?.map((operator) => {
-        if (operator.requirements?.module === undefined) {
-          return operator
-        }
-        const modules = findOperatorByName(operator.name)?.modules
-        if (!modules) {
-          return operator
-        }
-        const actualModuleName = modules[operator.requirements.module]
-        const actualModule =
-          actualModuleName in CopilotDocV1.Module
-            ? (CopilotDocV1.Module[actualModuleName] as CopilotDocV1.Module)
-            : CopilotDocV1.Module.Default
-        return {
-          ...operator,
-          requirements: {
-            ...operator.requirements,
-            module: actualModule,
-          },
-        }
-      }),
+      opers: migrateOperatorsModule(operation.opers),
+      // groups 内的干员同样存在 v2 模组索引，需要一并迁移
+      groups: operation.groups?.map((group) => ({
+        ...group,
+        opers: migrateOperatorsModule(group.opers),
+      })),
     }
   }
   return operation
+}
+
+function migrateOperatorsModule(opers?: CopilotDocV1.Operator[]): CopilotDocV1.Operator[] | undefined {
+  return opers?.map((operator) => {
+    if (operator.requirements?.module === undefined) {
+      return operator
+    }
+    const modules = findOperatorByName(operator.name)?.modules
+    if (!modules) {
+      return operator
+    }
+    const actualModuleName = modules[operator.requirements.module]
+    const actualModule =
+      actualModuleName in CopilotDocV1.Module
+        ? (CopilotDocV1.Module[actualModuleName] as CopilotDocV1.Module)
+        : CopilotDocV1.Module.Default
+    return {
+      ...operator,
+      requirements: {
+        ...operator.requirements,
+        module: actualModule,
+      },
+    }
+  })
 }
