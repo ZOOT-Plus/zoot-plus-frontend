@@ -34,6 +34,7 @@ import { withSuspensable } from 'components/Suspensable'
 import { AppToaster } from 'components/Toaster'
 import { DrawerLayout } from 'components/drawer/DrawerLayout'
 import { OperationSetEditorDialog } from 'components/operation-set/OperationSetEditor'
+import { OperatorsAndGroupsHelpNote } from 'components/viewer/OperatorsAndGroupsHelpNote'
 import { CopilotDocV1 } from 'models/copilot.schema'
 import { Operation } from 'models/operation'
 import { OPERATORS } from 'models/operator'
@@ -290,10 +291,11 @@ function OperationSetViewerOperatorsSection({ operationSet }: { operationSet: Op
           aria-controls={operatorsContentId}
           onClick={() => setShowOperators((visible) => !visible)}
         >
-          {t.components.viewer.OperationSetViewer.operators}
+          {t.components.viewer.OperationSetViewer.operators_and_groups}
           <Icon icon="chevron-down" className={clsx('ml-1 transition-transform', showOperators && 'rotate-180')} />
         </button>
       </H4>
+      <OperatorsAndGroupsHelpNote />
 
       <div id={operatorsContentId}>
         <Collapse isOpen={showOperators}>
