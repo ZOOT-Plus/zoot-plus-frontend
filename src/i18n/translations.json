@@ -98,7 +98,7 @@
         "en": "Change Visibility"
       },
       "set_action_target": {
-        "cn": "修改动作的目标",
+        "cn": "修改动作的对象",
         "en": "Change Action's Target"
       },
       "set_action_location": {
@@ -285,7 +285,7 @@
               "en": "Action Type"
             },
             "name": {
-              "cn": "目标",
+              "cn": "对象",
               "en": "Target"
             },
             "location": {
@@ -395,6 +395,22 @@
         "required": {
           "cn": "必填",
           "en": "Required"
+        },
+        "skill_locked": {
+          "cn": "技能 {{skill}} 在精 {{elite}} 时尚未解锁",
+          "en": "Skill {{skill}} is not unlocked at Elite {{elite}}"
+        },
+        "skill_level_locked": {
+          "cn": "技能等级 {{skill_level}} 在精 {{elite}} 时尚未解锁",
+          "en": "Skill level {{skill_level}} is not unlocked at Elite {{elite}}"
+        },
+        "name_or_location_required": {
+          "cn": "对象或位置至少需要填写一项",
+          "en": "Either target or location is required"
+        },
+        "action_name_not_found": {
+          "cn": "\"{{name}}\" 不是已有的干员或干员组",
+          "en": "\"{{name}}\" is not an existing operator or operator group"
         }
       },
       "EditorToolbar": {
@@ -442,8 +458,8 @@
           "en": "Undo History (limit {{limit}})"
         },
         "errors_header": {
-          "cn": "错误",
-          "en": "Errors"
+          "cn": "问题",
+          "en": "Problems"
         },
         "no_errors": {
           "cn": "无错误",
@@ -613,28 +629,40 @@
           "cn": "编辑 JSON",
           "en": "Edit JSON"
         },
-        "auto_sync_note": {
-          "cn": "编辑后的 JSON 内容会自动同步到编辑器里",
-          "en": "Edited JSON content will automatically sync to the editor"
+        "format_json": {
+          "cn": "格式化 JSON",
+          "en": "Format JSON"
         },
-        "has_errors": {
-          "cn": "存在错误",
-          "en": "Has Errors"
+        "auto_sync": {
+          "cn": "自动同步",
+          "en": "Auto Sync"
+        },
+        "auto_sync_note": {
+          "cn": "编辑后的 JSON 会自动校验并同步到编辑器里。如果将延迟设置为 0，则会禁用自动校验和同步，仅在关闭 JSON 编辑器时才会执行。",
+          "en": "The edited JSON will be automatically validated and synchronized to the editor. If the delay is set to 0, automatic validation and synchronization will be disabled, and will only be executed when the JSON editor is being closed."
+        },
+        "auto_sync_timeout": {
+          "cn": "自动同步延迟 (毫秒)",
+          "en": "Auto Sync Delay (ms)"
+        },
+        "validation_failed": {
+          "cn": "验证未通过",
+          "en": "Validation Failed"
         },
         "validation_passed": {
           "cn": "验证通过",
           "en": "Validation Passed"
         },
         "error_count": {
-          "cn": "{{count}} 个错误",
+          "cn": "{{count}} 个问题",
           "en": {
-            "1": "{{count}} error",
-            "other": "{{count}} errors"
+            "1": "{{count}} problem",
+            "other": "{{count}} problems"
           }
         },
         "json_syntax_error": {
-          "cn": "JSON 语法错误",
-          "en": "JSON Syntax Error"
+          "cn": "JSON 语法错误：{{error}}",
+          "en": "JSON Syntax Error: {{error}}"
         },
         "unknown_error": {
           "cn": "未知错误: {{error}}",
@@ -647,6 +675,18 @@
         "unsaved_warning": {
           "cn": "未保存的修改将在关闭 JSON 编辑器后丢失，是否仍要关闭？",
           "en": "Unsaved changes will be lost after closing the JSON editor. Do you still want to close it?"
+        },
+        "submit": {
+          "cn": "提交",
+          "en": "Submit"
+        },
+        "recovery_note":{
+          "cn": "作业解析失败，无法进行编辑。请修正 JSON 后提交以恢复编辑器状态。",
+          "en": "Failed to parse operation, cannot edit. Please fix the JSON and submit to recover the editor state."
+        },
+        "recovery_submit_failed": {
+          "cn": "验证未通过，请修正后再提交",
+          "en": "Validation failed, please fix the issues before submitting"
         }
       },
       "SelectorPanel": {
@@ -679,7 +719,7 @@
           "en": "(Unnamed Group)"
         },
         "select_target": {
-          "cn": "选择目标",
+          "cn": "选择对象",
           "en": "Select Target"
         },
         "group": {
@@ -699,7 +739,7 @@
           "en": "Unknown Unit"
         },
         "target_or_location": {
-          "cn": "目标或位置只需填入其中一项",
+          "cn": "对象或位置只需填入其中一项",
           "en": "Only one of target or location is required"
         },
         "or": {

@@ -1,4 +1,4 @@
-import camelcaseKeys from 'camelcase-keys'
+import camelcaseKeys, { CamelCaseKeys } from 'camelcase-keys'
 import { atom } from 'jotai'
 import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
 import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
@@ -10,23 +10,13 @@ import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
-import { CopilotOperationLoose } from './validation/schema'
+import { ParsedOperation } from './validation/schema'
 
-export type WithPartialCoordinates<T> = T extends {
-  location?: [number, number]
+export type WithLooseCoordinates<T> = {
+  [K in keyof T]: K extends 'location' | 'distance' ? (number | undefined | null)[] : T[K]
 }
-  ? Omit<T, 'location'> & {
-      location?: [number | undefined, number | undefined]
-    }
-  : T extends {
-        distance?: [number, number]
-      }
-    ? Omit<T, 'distance'> & {
-        distance?: [number | undefined, number | undefined]
-      }
-    : T
 
-export type WithId<T = {}> = T extends never ? never : T & { id: string }
+export type WithId<T = {}> = { [K in keyof (T & { id: string })]: K extends keyof T ? T[K] : string }
 
 type DehydratedEditorOperation = WithoutIdDeep<EditorOperation>
 
@@ -58,7 +48,7 @@ export function createOperator(
 ): EditorOperator {
   const info = findOperatorByName(initialValues.name)
   const shouldApplyDefaultRequirements = applyDefaultRequirements && (!info || info.prof !== 'TOKEN')
-  let defaultRequirements: CopilotDocV1.Requirements | undefined
+  let defaultRequirements: EditorOperator['requirements'] | undefined
   if (shouldApplyDefaultRequirements) {
     const rarity = info?.rarity ?? 6
     const preset = getEditorConfig().operatorPreset?.byRarity?.[rarity]
@@ -68,7 +58,11 @@ export function createOperator(
         elite: preset.elite,
       }
     }
-    defaultRequirements = defaults({}, defaultRequirements, getDefaultRequirements(rarity))
+    defaultRequirements = defaults(
+      {},
+      defaultRequirements,
+      getDefaultRequirements(rarity) satisfies EditorOperator['requirements'],
+    )
   }
   const operator: EditorOperator = defaultsDeep(
     { id: uniqueId() } satisfies Omit<EditorOperator, 'name'>,
@@ -207,7 +201,7 @@ export function hydrateOperation(source: DehydratedEditorOperation): EditorOpera
   }
 }
 
-export function toEditorOperation(source: CopilotOperationLoose): EditorOperation {
+export function toEditorOperation(source: ParsedOperation): EditorOperation {
   const camelCased = camelcaseKeys(source, { deep: true })
   const operation = JSON.parse(
     JSON.stringify(migrateOperation(camelCased as CopilotDocV1.Operation)),
@@ -242,18 +236,23 @@ export function toEditorOperation(source: CopilotOperationLoose): EditorOperatio
   return hydrateOperation(converted)
 }
 
+type PartialMaaOperation = PartialDeep<Omit<CopilotDocV1.OperationSnakeCased, 'actions'>> & {
+  actions?: PartialMaaAction[]
+}
+type PartialMaaAction = WithLooseCoordinates<NonNullable<CopilotDocV1.OperationSnakeCased['actions']>[number]>
+
 /**
  * To MAA's standard format. No validation is performed so it's not guaranteed to be valid.
  */
-export function toMaaOperation(operation: EditorOperation): CopilotOperationLoose {
+export function toMaaOperation(operation: EditorOperation): PartialMaaOperation {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
   const converted = {
     ...dehydrated,
     actions: dehydrated.actions.map((action, index, actions) => {
-      type Action = PartialDeep<WithPartialCoordinates<CopilotDocV1.Action>>
-      const { _id, intermediatePreDelay, intermediatePostDelay, ...newAction }: WithoutIdDeep<EditorAction> & Action =
-        action
+      const { intermediatePreDelay, intermediatePostDelay, ...restAction } = action
+      const newAction: CamelCaseKeys<PartialMaaAction> = restAction
+
       // preDelay 等于当前动作的 intermediatePostDelay
       if (intermediatePostDelay !== undefined) {
         newAction.preDelay = intermediatePostDelay
@@ -265,16 +264,6 @@ export function toMaaOperation(operation: EditorOperation): CopilotOperationLoos
           newAction.postDelay = nextAction.intermediatePreDelay
         }
       }
-
-      // 类型检查
-      newAction satisfies Action
-      // 检查多余的属性
-      '114514' as keyof typeof newAction satisfies Exclude<
-        keyof Action,
-        // TODO: 兼容性处理，等到 _id 被去掉之后就可以去掉 Exclude _id 了
-        '_id'
-      >
-
       return newAction
     }),
   }

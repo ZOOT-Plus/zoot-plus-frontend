@@ -2,27 +2,30 @@ import { PrimitiveAtom, SetStateAction, atom, getDefaultStore, useAtom } from 'j
 import { atomFamily, atomWithStorage, splitAtom } from 'jotai/utils'
 import { noop } from 'lodash-es'
 import { useMemo } from 'react'
-import { SetRequired, Simplify } from 'type-fest'
+import { Simplify } from 'type-fest'
 
+import { CamelCaseKeys } from 'camelcase-keys'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { CopilotType } from '../../models/operation'
-import { PartialDeep } from '../../utils/partial-deep'
+import { OmitIndexSignatureDeep } from '../../types'
 import { createHistoryAtom, useHistoryEdit } from './history'
-import { WithId, WithPartialCoordinates, toEditorOperation } from './reconciliation'
-import { ZodIssue, operationLooseSchema } from './validation/schema'
-import { EntityIssue } from './validation/validation'
+import { WithId, toEditorOperation } from './reconciliation'
+import { ParsedOperation, operationForParsing } from './validation/schema'
+import { EntityIssue, GlobalIssue } from './validation/validation'
 
 export interface EditorState {
   operation: EditorOperation
   metadata: EditorMetadata
 }
 
-const defaultOperation = operationLooseSchema.parse({
-  version: CopilotDocV1.VERSION,
-})
+const defaultOperation = toEditorOperation(
+  operationForParsing.parse({
+    version: CopilotDocV1.VERSION,
+  }),
+)
 
 export const defaultEditorState: EditorState = {
-  operation: toEditorOperation(defaultOperation),
+  operation: defaultOperation,
   metadata: {
     visibility: 'public',
     type: CopilotType.PRTS,
@@ -41,32 +44,21 @@ interface EditorMetadata {
   videoUrl: string
 }
 
-type EditorOperationBase = Simplify<
-  Omit<PartialDeep<CopilotDocV1.Operation>, 'doc' | 'opers' | 'groups' | 'actions'> & {
-    minimumRequired: string
-    doc: PartialDeep<CopilotDocV1.Doc>
+type OperationBasis = CamelCaseKeys<OmitIndexSignatureDeep<ParsedOperation>, true>
+
+type EditorOperationBase = Omit<OperationBasis, 'opers' | 'groups' | 'actions'>
+export type EditorOperator = WithId<OperationBasis['opers'][number]>
+export type EditorGroup = WithId<
+  Omit<OperationBasis['groups'][number], 'opers'> & {
+    opers: EditorOperator[]
   }
 >
-
-export type EditorOperator = Simplify<WithId<SetRequired<PartialDeep<CopilotDocV1.Operator>, 'name'>>>
-export type EditorGroup = Simplify<
-  WithId<
-    PartialDeep<Omit<CopilotDocV1.Group, 'opers'>> & {
-      name: string
-      opers: EditorOperator[]
-    }
-  >
+export type EditorAction = WithId<
+  Omit<OperationBasis['actions'][number], 'preDelay' | 'postDelay' | 'rearDelay'> & {
+    intermediatePreDelay?: number
+    intermediatePostDelay?: number
+  }
 >
-export type EditorAction = GenerateEditorAction<CopilotDocV1.Action>
-type GenerateEditorAction<T extends CopilotDocV1.Action> = T extends never
-  ? never
-  : Simplify<
-      WithPartialCoordinates<Omit<SetRequired<PartialDeep<T>, 'type'>, 'preDelay' | 'postDelay' | 'rearDelay'>> &
-        WithId<{
-          intermediatePreDelay?: number
-          intermediatePostDelay?: number
-        }>
-    >
 
 export interface EditorOperation extends EditorOperationBase {
   opers: EditorOperator[]
@@ -85,7 +77,7 @@ export type BaseEditorGroup = Simplify<
 
 const baseAtom = atom<EditorOperationBase>({
   version: defaultOperation.version,
-  minimumRequired: defaultOperation.minimum_required,
+  minimumRequired: defaultOperation.minimumRequired,
   doc: defaultOperation.doc,
 })
 const operatorsAtom = atom<EditorOperator[]>([])
@@ -176,6 +168,7 @@ interface EditorConfig {
   toggleSelectorPanel: boolean
   historyLimit: number
   showErrorsByDefault: boolean
+  sourceEditorSyncTimeout: number
   operatorPreset?: OperatorPreset
 }
 export interface OperatorPreset {
@@ -190,6 +183,7 @@ const defaultConfig: EditorConfig = {
   toggleSelectorPanel: true,
   historyLimit: 20,
   showErrorsByDefault: false,
+  sourceEditorSyncTimeout: 1000,
 }
 const localConfigAtom = atomWithStorage<Partial<EditorConfig>>('prts-editor-config', {}, undefined, { getOnInit: true })
 const initialConfig = {
@@ -222,15 +216,15 @@ export function getEditorConfig() {
   return getDefaultStore().get(localConfigAtom)
 }
 
-const editorGlobalErrorsAtom = atom<ZodIssue[]>([])
+const editorFatalErrorsAtom = atom<GlobalIssue[]>([])
+const editorGlobalErrorsAtom = atom<GlobalIssue[]>([])
 const editorEntityErrorsAtom = atom<Record<string, EntityIssue[]>>({})
 const editorErrorsVisibleAtom = atom(initialConfig.showErrorsByDefault)
-const editorVisibleGlobalErrorsAtom = atom((get) =>
-  get(editorErrorsVisibleAtom) ? get(editorGlobalErrorsAtom) : undefined,
-)
-const editorVisibleEntityErrorsAtom = atom((get) =>
-  get(editorErrorsVisibleAtom) ? get(editorEntityErrorsAtom) : undefined,
-)
+const editorGlobalWarningsAtom = atom<GlobalIssue[]>([])
+const editorEntityWarningsAtom = atom<Record<string, EntityIssue[]>>({})
+function visibleIssuesAtom<T>(sourceAtom: PrimitiveAtom<T>) {
+  return atom((get) => (get(editorErrorsVisibleAtom) ? get(sourceAtom) : undefined))
+}
 
 // this atom will cause some memory leak but generally not a big deal
 const skillLevelOverridesAtom = atomFamily((id: string) => atom<Record<number, number>>({}))
@@ -263,17 +257,25 @@ export const editorAtoms = {
   skillLevelOverrides: skillLevelOverridesAtom,
 
   // validation
+  fatalErrors: editorFatalErrorsAtom,
   globalErrors: editorGlobalErrorsAtom,
   entityErrors: editorEntityErrorsAtom,
+  globalWarnings: editorGlobalWarningsAtom,
+  entityWarnings: editorEntityWarningsAtom,
   errorsVisible: editorErrorsVisibleAtom,
-  visibleGlobalErrors: editorVisibleGlobalErrorsAtom,
-  visibleEntityErrors: editorVisibleEntityErrorsAtom,
+  visibleGlobalErrors: visibleIssuesAtom(editorGlobalErrorsAtom),
+  visibleEntityErrors: visibleIssuesAtom(editorEntityErrorsAtom),
+  visibleGlobalWarnings: visibleIssuesAtom(editorGlobalWarningsAtom),
+  visibleEntityWarnings: visibleIssuesAtom(editorEntityWarningsAtom),
 
   reset: atom(null, (get, set, editorState: EditorState = defaultEditorState) => {
     set(historyAtom, 'RESET')
     set(editorAtom, editorState)
+    set(editorFatalErrorsAtom, [])
     set(editorGlobalErrorsAtom, [])
     set(editorEntityErrorsAtom, {})
+    set(editorGlobalWarningsAtom, [])
+    set(editorEntityWarningsAtom, {})
 
     skillLevelOverridesAtom.setShouldRemove(() => true)
     skillLevelOverridesAtom.setShouldRemove(null)

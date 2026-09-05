@@ -1,6 +1,7 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Copilot Operation",
+  "type": "object",
   "properties": {
     "stage_name": {
       "$ref": "#/definitions/stage_name"

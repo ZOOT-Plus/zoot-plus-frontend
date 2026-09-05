@@ -9,7 +9,7 @@ import type { CopilotDocV1 } from 'models/copilot.schema'
 import { useTranslation } from '../../../i18n/i18n'
 import { operatorSkillUsages } from '../../../models/operator'
 
-export const EditorOperatorSkillUsage = <T extends CopilotDocV1.Operator | CopilotDocV1.ActionSkillUsage>({
+export const EditorOperatorSkillUsage = <T extends CopilotDocV1.Operator | CopilotDocV1.Action>({
   name,
   control,
   ...controllerProps
