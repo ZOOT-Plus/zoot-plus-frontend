@@ -1,6 +1,8 @@
 allowBuilds:
   esbuild: true
   zoot-plus-client@git+https://github.com/ZOOT-Plus/zoot-plus-client-ts.git: true
+  zoot-plus-client: true
+  nodejieba: true
   sharp: true
   unrs-resolver: true
 

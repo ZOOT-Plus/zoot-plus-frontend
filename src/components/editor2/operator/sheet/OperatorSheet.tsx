@@ -12,6 +12,10 @@ import { SheetList } from './SheetList'
 
 // TODO: 兼容性处理，以后要去掉
 const ensureEditorOperator = (operation: EditorOperation, operator: CopilotDocV1.Operator): EditorOperator => {
+  const operatorWithId = operator as CopilotDocV1.Operator & { id?: string }
+  if (operatorWithId.id) {
+    return operatorWithId as EditorOperator
+  }
   if (operator._id) {
     const { _id, ...rest } = operator
     return { ...rest, id: uniqueId() }
@@ -61,34 +65,39 @@ export const OperatorSheet = () => {
       const operator = ensureEditorOperator(operation, _operator)
 
       const newOperation = produce(operation, (draft) => {
-        let targetOperator = draft.opers.find((op) => op.id === operator.id)
-        if (!targetOperator) {
-          for (const group of draft.groups) {
-            targetOperator = group.opers.find((op) => op.id === operator.id)
-            if (targetOperator) {
-              break
-            }
-          }
-        }
-        if (targetOperator) {
-          Object.assign(targetOperator, operator)
+        const targetOperatorIndex = draft.opers.findIndex((op) => op.id === operator.id)
+        if (targetOperatorIndex !== -1) {
+          draft.opers[targetOperatorIndex] = operator
           checkpoint = {
             action: 'update-operator',
             desc: i18n.actions.editor2.update_operator,
           }
+          return
+        }
+
+        for (const group of draft.groups) {
+          const targetOperatorIndex = group.opers.findIndex((op) => op.id === operator.id)
+          if (targetOperatorIndex !== -1) {
+            group.opers[targetOperatorIndex] = operator
+            checkpoint = {
+              action: 'update-operator',
+              desc: i18n.actions.editor2.update_operator,
+            }
+            return
+          }
+        }
+
+        const newOperator = createOperator(operator)
+        const activeGroupId = get(editorAtoms.activeGroupIdAtom)
+        if (activeGroupId) {
+          const activeGroup = draft.groups.find((g) => g.id === activeGroupId)
+          activeGroup?.opers.push(newOperator)
         } else {
-          const newOperator = createOperator(operator)
-          const activeGroupId = get(editorAtoms.activeGroupIdAtom)
-          if (activeGroupId) {
-            const activeGroup = draft.groups.find((g) => g.id === activeGroupId)
-            activeGroup?.opers.push(newOperator)
-          } else {
-            draft.opers.push(newOperator)
-          }
-          checkpoint = {
-            action: 'add-operator',
-            desc: i18n.actions.editor2.add_operator,
-          }
+          draft.opers.push(newOperator)
+        }
+        checkpoint = {
+          action: 'add-operator',
+          desc: i18n.actions.editor2.add_operator,
         }
       })
       set(editorAtoms.operation, newOperation)

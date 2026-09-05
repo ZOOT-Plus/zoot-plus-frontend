@@ -3,17 +3,20 @@ import { Button, PopoverNext } from '@blueprintjs/core'
 import { FC, useCallback, useEffect, useRef } from 'react'
 
 import { OperatorBackToTop } from 'components/editor/operator/sheet/sheetOperator/toolBox/OperatorBackToTop'
-import { OperatorMutipleSelect } from 'components/editor/operator/sheet/sheetOperator/toolBox/OperatorMutipleSelect'
 import { OperatorRaritySelect } from 'components/editor/operator/sheet/sheetOperator/toolBox/OperatorRaritySelect'
 
 import { OperatorNoData } from '../../../editor/operator/sheet/SheetNoneData'
 import {
+  DEFAULTPROFID,
   defaultPagination,
   useOperatorFilterProvider,
 } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorFilterProvider'
-import { SheetOperatorItem } from '../../../editor/operator/sheet/sheetOperator/SheetOperatorItem'
 import { ShowMore } from '../../../editor/operator/sheet/sheetOperator/ShowMore'
+import { FavGroupList } from './FavGroupList'
+import { OperatorFilterSummary } from './OperatorFilterSummary'
 import { ProfClassification } from './ProfClassification'
+import { SheetOperatorItem } from './SheetOperatorItem'
+import { OperatorMutipleSelect } from './toolBox/OperatorMutipleSelect'
 
 interface SheetListProps {}
 
@@ -33,43 +36,51 @@ export const SheetList: FC<SheetListProps> = () => {
   const {
     operatorFiltered: { data: operatorFilteredData },
     useProfFilterState: [{ selectedProf }],
+    useRarityFilterState: [{ selectedRarity, reverse }],
     usePaginationFilterState: [_, setPaginationFilter],
   } = useOperatorFilterProvider()
 
   useEffect(() => {
     toTop()
     setPaginationFilter(defaultPagination)
-  }, [selectedProf, setPaginationFilter, toTop])
+  }, [reverse, selectedProf, selectedRarity, setPaginationFilter, toTop])
+
+  const showSkillAbout = selectedProf[0] === DEFAULTPROFID.FAV
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex h-full w-full overflow-auto">
-        <div className="grow px-1 py-4">
+      <div className="flex h-full w-full overflow-hidden">
+        <div className="grow min-w-0 overflow-auto px-1 py-4">
+          <div ref={operatorScrollRef} />
+          <OperatorFilterSummary />
           {operatorFilteredData.length ? (
             <>
               <div
                 key="operatorContainer"
-                className="grid auto-rows-auto grid-cols-[repeat(auto-fit,minmax(128px,1fr))]"
-                ref={operatorScrollRef}
+                className="grid auto-rows-auto grid-cols-[repeat(auto-fill,minmax(128px,128px))] gap-[1px]"
               >
-                {operatorFilteredData.map(({ name }, index) => (
+                {operatorFilteredData.map((operator, index) => (
                   <div className="flex items-center flex-0 w-full h-32" key={index}>
-                    <SheetOperatorItem {...{ name }} />
+                    <SheetOperatorItem {...{ operator, showSkillAbout }} />
                   </div>
                 ))}
               </div>
               <ShowMore {...{ toTop }} />
+              {showSkillAbout && <FavGroupList />}
             </>
           ) : (
-            <OperatorNoData />
+            <>
+              <OperatorNoData />
+              {showSkillAbout && <FavGroupList />}
+            </>
           )}
         </div>
-        <div className="h-full sticky top-0 self-start shrink-0 z-10 flex flex-col items-center justify-center">
+        <div className="h-full self-start shrink-0 z-10 flex flex-col items-center justify-center">
           <PopoverNext
             content={
-              <>
+              <div className="min-w-52">
                 <OperatorRaritySelect />
-              </>
+              </div>
             }
           >
             <Button minimal icon="filter-list" />

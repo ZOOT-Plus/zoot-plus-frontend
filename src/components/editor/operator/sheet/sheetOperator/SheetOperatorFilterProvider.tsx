@@ -1,12 +1,13 @@
 import { useAtomValue } from 'jotai'
 import { Dispatch, FC, ReactNode, SetStateAction, createContext, useContext, useMemo, useState } from 'react'
 
-import { OperatorInfo as ModelsOperator, OPERATORS } from 'models/operator'
+import { CopilotDocV1 } from 'models/copilot.schema'
+import { findOperatorByName, OperatorInfo as ModelsOperator, OPERATORS } from 'models/operator'
 import { favOperatorAtom } from 'store/useFavOperators'
 
 import { useSheet } from '../SheetProvider'
 
-type OperatorInfo = ModelsOperator
+type OperatorInfo = ModelsOperator & Partial<CopilotDocV1.Operator>
 
 export enum DEFAULTPROFID {
   ALL = 'allProf',
@@ -103,93 +104,101 @@ const useOperatorFiltered = (
   paginationFilter: PaginationFilter,
   rarityFilter: RarityFilter,
 ) => {
-  // Priority: prof > sub prof > rarity/rarityReverse
-  // filterResult init and prof filter about
-  const profFilterResult = useProfFilterHandle(profFilter)
-  //   rarity about
-  const rarityFilterResult = rarityFilterHandle(rarityFilter, profFilterResult)
-  //   pagination about
-  //   filterResult
-  const filterResult = paginationFilterHandle(paginationFilter, rarityFilterResult)
+  const { allOperators, favOperatorsInfo, selectedOperatorNames } = useOperatorFilterSource()
+
+  const filterResult = useMemo(() => {
+    const sourceOperators =
+      profFilter.selectedProf[0] === DEFAULTPROFID.FAV ? favOperatorsInfo : allOperators
+    const filteredOperators: OperatorInfo[] = []
+
+    for (const operator of sourceOperators) {
+      if (
+        matchProfFilter(operator, profFilter, selectedOperatorNames) &&
+        matchRarityFilter(operator, rarityFilter)
+      ) {
+        filteredOperators.push(operator)
+      }
+    }
+
+    filteredOperators.sort(({ rarity: rarityA }, { rarity: rarityB }) =>
+      rarityFilter.reverse ? rarityA - rarityB : rarityB - rarityA,
+    )
+
+    return filteredOperators
+  }, [allOperators, favOperatorsInfo, profFilter, rarityFilter, selectedOperatorNames])
 
   return {
     // return data after being paginated
-    data: filterResult,
+    data: filterResult.slice(0, paginationFilter.current * paginationFilter.size),
     meta: {
-      dataTotal: profFilterResult.length,
+      dataTotal: filterResult.length,
     },
   }
 }
 
-const useProfFilterHandle = (
-  profFilter: ProfFilter = {
-    selectedProf: [DEFAULTPROFID.ALL, DEFAULTSUBPROFID.ALL],
-  },
-) => {
-  const {
-    selectedProf: [prof, subProf],
-  } = profFilter
-  const { existedOperators } = useSheet()
-
+const useOperatorFilterSource = () => {
+  const { existedOperators, existedGroups } = useSheet()
   const favOperators = useAtomValue(favOperatorAtom)
-  const customizedOperatorsInfo = useMemo<OperatorInfo[]>(
-    () =>
-      existedOperators
-        .map(({ name }) =>
-          OPERATORS.find(({ name: OPERName }) => OPERName === name) ? undefined : generateCustomizedOperInfo(name),
-        )
-        .filter((item) => !!item) as OperatorInfo[],
-    [existedOperators],
+  const existedSheetOperators = useMemo(
+    () => [...existedOperators, ...existedGroups.flatMap(({ opers }) => opers ?? [])],
+    [existedGroups, existedOperators],
   )
+
+  const customizedOperatorsInfo = useMemo<OperatorInfo[]>(
+    () => {
+      const customizedOperators = new Map<string, OperatorInfo>()
+
+      existedSheetOperators.forEach(({ name }) => {
+        if (!findOperatorByName(name)) {
+          customizedOperators.set(name, generateCustomizedOperInfo(name))
+        }
+      })
+
+      return [...customizedOperators.values()]
+    },
+    [existedSheetOperators],
+  )
+  const allOperators = useMemo(() => [...OPERATORS, ...customizedOperatorsInfo], [customizedOperatorsInfo])
   const favOperatorsInfo = useMemo<OperatorInfo[]>(
     () =>
-      favOperators.map(
-        ({ name }) => OPERATORS.find(({ name: OPERName }) => OPERName === name) || generateCustomizedOperInfo(name),
-      ),
+      favOperators.map((operator) => ({
+        ...(findOperatorByName(operator.name) || generateCustomizedOperInfo(operator.name)),
+        ...operator,
+      })),
     [favOperators],
   )
+  const selectedOperatorNames = useMemo(
+    () => new Set(existedSheetOperators.map(({ name }) => name)),
+    [existedSheetOperators],
+  )
 
-  let operatorsFilteredByProf: OperatorInfo[] = []
-  const OPERATORSWITHINCUSTOMIZED = [...OPERATORS, ...customizedOperatorsInfo]
-  switch (prof) {
-    case DEFAULTPROFID.ALL: {
-      operatorsFilteredByProf = OPERATORSWITHINCUSTOMIZED
-      break
-    }
-    case DEFAULTPROFID.FAV: {
-      operatorsFilteredByProf = favOperatorsInfo
-      break
-    }
-    case DEFAULTPROFID.OTHERS: {
-      operatorsFilteredByProf = OPERATORSWITHINCUSTOMIZED.filter(({ prof }) => prof === 'TOKEN')
-      break
-    }
+  return { allOperators, favOperatorsInfo, selectedOperatorNames }
+}
 
-    default: {
-      operatorsFilteredByProf = OPERATORSWITHINCUSTOMIZED.filter(({ prof: OPERProf }) => OPERProf === prof)
-      break
-    }
-  }
+const matchProfFilter = (
+  operator: OperatorInfo,
+  {
+    selectedProf: [prof, subProf],
+  }: ProfFilter,
+  selectedOperatorNames: Set<string>,
+) => {
+  const profMatched =
+    prof === DEFAULTPROFID.ALL ||
+    prof === DEFAULTPROFID.FAV ||
+    (prof === DEFAULTPROFID.OTHERS ? operator.prof === 'TOKEN' : operator.prof === prof)
+
+  if (!profMatched) return false
 
   switch (subProf) {
-    case DEFAULTSUBPROFID.ALL: {
-      return operatorsFilteredByProf
-    }
-    case DEFAULTSUBPROFID.SELECTED: {
-      return operatorsFilteredByProf.filter(
-        ({ name }) => !!existedOperators.find(({ name: existedName }) => existedName === name),
-      )
-    }
-    default: {
-      return operatorsFilteredByProf.filter(({ subProf: operatorSubProf }) => operatorSubProf === subProf)
-    }
+    case DEFAULTSUBPROFID.ALL:
+      return true
+    case DEFAULTSUBPROFID.SELECTED:
+      return selectedOperatorNames.has(operator.name)
+    default:
+      return operator.subProf === subProf
   }
 }
 
-const paginationFilterHandle = ({ current, size }: PaginationFilter, originData: OperatorInfo[] = OPERATORS) =>
-  originData.slice(0, current * size)
-
-const rarityFilterHandle = ({ selectedRarity, reverse }: RarityFilter, originData: OperatorInfo[] = OPERATORS) =>
-  originData
-    .filter(({ rarity }) => selectedRarity.includes(rarity))
-    .sort(({ rarity: rarityA }, { rarity: rarityB }) => (reverse ? rarityA - rarityB : rarityB - rarityA))
+const matchRarityFilter = ({ rarity }: OperatorInfo, { selectedRarity }: RarityFilter) => {
+  return selectedRarity.includes(rarity)
+}
