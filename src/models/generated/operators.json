@@ -208,6 +208,20 @@
       ]
     },
     {
+      "id": "char_4218_aigis",
+      "prof": "SNIPER",
+      "subProf": "skybreaker",
+      "name_en": "Aegis",
+      "name": "埃癸斯",
+      "alias": "aiguisi ags 埃癸斯",
+      "rarity": 5,
+      "alt_name": "Aegis",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
       "id": "char_4123_ela",
       "prof": "SPECIAL",
       "subProf": "traper",
@@ -935,7 +949,8 @@
       "alt_name": "Qiubai",
       "modules": [
         "",
-        "X"
+        "X",
+        "Y"
       ]
     },
     {
@@ -1956,6 +1971,16 @@
       ]
     },
     {
+      "id": "char_4220_kormr",
+      "prof": "WARRIOR",
+      "subProf": "sword",
+      "name_en": "Koromaru",
+      "name": "虎狼丸",
+      "alias": "hulangwan hlw 虎狼丸",
+      "rarity": 1,
+      "alt_name": "Koromaru"
+    },
+    {
       "id": "char_171_bldsk",
       "prof": "MEDIC",
       "subProf": "physician",
@@ -2375,6 +2400,20 @@
       "modules": [
         "",
         "X"
+      ]
+    },
+    {
+      "id": "char_4217_makoto",
+      "prof": "SPECIAL",
+      "subProf": "dollkeeper",
+      "name_en": "Makoto Yuki",
+      "name": "结城理",
+      "alias": "jiechengli jcl 結城理",
+      "rarity": 6,
+      "alt_name": "Makoto Yuki",
+      "modules": [
+        "",
+        "Y"
       ]
     },
     {
@@ -6588,6 +6627,20 @@
       "alias": "yuejianye yuexianye yjy yxy 月見夜",
       "rarity": 3,
       "alt_name": "Midnight"
+    },
+    {
+      "id": "char_4219_yukari",
+      "prof": "SUPPORT",
+      "subProf": "supportiveranger",
+      "name_en": "Yukari Takeba",
+      "name": "岳羽由加莉",
+      "alias": "yueyuyoujiali yyyjl 嶽羽由加莉",
+      "rarity": 5,
+      "alt_name": "Yukari Takeba",
+      "modules": [
+        "",
+        "X"
+      ]
     },
     {
       "id": "char_4100_caper",
