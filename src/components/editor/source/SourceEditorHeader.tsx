@@ -2,12 +2,12 @@ import { Button, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import { FC, useState } from 'react'
 
+import { writeTextToClipboard } from 'utils/clipboard'
 import { useTranslation } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
 import { AppToaster } from '../../Toaster'
 import { FileImporter } from './FileImporter'
 import { ShortCodeImporter } from './ShortCodeImporter'
-import { writeTextToClipboard } from 'utils/clipboard'
 
 interface SourceEditorHeaderProps {
   text: string
@@ -15,6 +15,23 @@ interface SourceEditorHeaderProps {
 }
 
 export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange }) => {
+  const t = useTranslation()
+  return (
+    <>
+      <Icon icon="manually-entered-data" />
+      <span className="ml-2">{t.components.editor.source.SourceEditorHeader.edit_json}</span>
+      <div className="flex-1" />
+      <SourceEditorToolbar text={text} onChange={onChange} />
+    </>
+  )
+}
+
+interface SourceEditorToolbarProps {
+  text: string
+  onChange: (text: string) => void
+}
+
+export const SourceEditorToolbar: FC<SourceEditorToolbarProps> = ({ text, onChange }) => {
   const t = useTranslation()
   const [importDropdownOpen, setImportDropdownOpen] = useState(false)
 
@@ -58,11 +75,6 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange
 
   return (
     <>
-      <Icon icon="manually-entered-data" />
-      <span className="ml-2">{t.components.editor.source.SourceEditorHeader.edit_json}</span>
-
-      <div className="flex-1" />
-
       <PopoverNext
         animation="minimal"
         arrow={false}
@@ -101,7 +113,6 @@ export const SourceEditorHeader: FC<SourceEditorHeaderProps> = ({ text, onChange
         }
       >
         <Button
-          className="mr-4"
           icon="export"
           text={t.components.editor.source.SourceEditorHeader.export}
           rightIcon="caret-down"

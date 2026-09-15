@@ -1,5 +1,3 @@
-import { OpDifficulty } from './operation'
-
 /**
  * 战斗流程协议 v1
  * https://maa.plus/docs/zh-cn/protocol/copilot-schema.html
@@ -18,14 +16,22 @@ export namespace CopilotDocV1 {
      * 必填。除危机合约外，均为关卡中文名
      */
     stageName: string
-    difficulty?: OpDifficulty
+    difficulty?: number
   }
 
   export type OperationSnakeCased = import('type-fest').SnakeCasedPropertiesDeep<Operation>
 
-  interface ActionBase {
+  export interface Action extends Partial<OperatorIdentity> {
     /** Required in editor; should be stripped when exporting. */
     _id?: string
+
+    type: string
+    location?: [number, number]
+    direction?: string
+    skillUsage?: number
+    skillTimes?: number
+    distance?: [number, number]
+
     // Action common optional fields
     doc?: string
     docColor?: string
@@ -37,56 +43,6 @@ export namespace CopilotDocV1 {
     rearDelay?: number
     postDelay?: number
   }
-
-  export interface ActionDeploy extends ActionBase {
-    direction: Direction
-    // location: any[]
-    // should be
-    location: [number, number]
-    name: string
-    type: Type.Deploy
-  }
-
-  export type ActionSkillOrRetreatOrBulletTime = ActionBase &
-    (
-      | {
-          // location: any[]
-          // should be
-          location: [number, number]
-          name?: string
-          type: Type.Skill | Type.Retreat | Type.BulletTime
-        }
-      | {
-          // location?: any[]
-          // should be
-          location?: [number, number]
-          name: string
-          type: Type.Skill | Type.Retreat | Type.BulletTime
-        }
-    )
-
-  export interface ActionSkillUsage extends ActionBase {
-    name: string
-    skillUsage: SkillUsageType
-    type: Type.SkillUsage
-    skillTimes?: number
-  }
-
-  export interface ActionUtil extends ActionBase {
-    type: Type.SpeedUp | Type.Output | Type.SkillDaemon
-  }
-
-  export interface ActionMoveCamera extends ActionBase {
-    type: Type.MoveCamera
-    distance: [number, number]
-  }
-
-  export type Action =
-    | ActionDeploy
-    | ActionSkillOrRetreatOrBulletTime
-    | ActionSkillUsage
-    | ActionUtil
-    | ActionMoveCamera
 
   export enum Direction {
     Left = 'Left',
@@ -122,19 +78,19 @@ export namespace CopilotDocV1 {
     opers?: Operator[]
   }
 
-  export interface Operator {
+  export interface OperatorIdentity {
+    name: string
+  }
+
+  export interface Operator extends OperatorIdentity {
     /** Required in editor; should be stripped when exporting. */
     _id?: string
-    /**
-     * 必填
-     */
-    name: string
     requirements?: Requirements
     /**
      * 可选，默认 1，取值范围 [1, 3]
      */
     skill?: number
-    skillUsage?: SkillUsageType
+    skillUsage?: number
     /**
      * 技能使用次数，可选，默认为 1
      */
@@ -165,7 +121,7 @@ export namespace CopilotDocV1 {
   export interface Requirements {
     elite?: number
     level?: number
-    module?: Module
+    module?: number
     potentiality?: number
     skillLevel?: number
   }

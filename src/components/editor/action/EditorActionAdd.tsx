@@ -2,7 +2,7 @@ import { Button, Callout, Card, TextArea } from '@blueprintjs/core'
 import { DevTool } from '@hookform/devtools'
 
 import { useEffect, useMemo } from 'react'
-import { Control, DeepPartial, FieldErrors, UseFormSetError, useForm, useWatch } from 'react-hook-form'
+import { Control, DeepPartial, UseFormSetError, useForm, useWatch } from 'react-hook-form'
 
 import { CardTitle } from 'components/CardTitle'
 import { FormField, FormField2 } from 'components/FormField'
@@ -42,7 +42,7 @@ const defaultAction: DeepPartial<CopilotDocV1.Action> = {
   type: CopilotDocV1.Type.Deploy,
 }
 
-const defaultMoveCameraAction: DeepPartial<CopilotDocV1.ActionMoveCamera> = {
+const defaultMoveCameraAction: DeepPartial<CopilotDocV1.Action> = {
   type: CopilotDocV1.Type.MoveCamera,
   distance: [4.5, 0],
 }
@@ -161,9 +161,7 @@ export const EditorActionAdd = ({
   useEffect(() => {
     setValue(
       'skillTimes',
-      skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-        ? ((editingAction as CopilotDocV1.ActionSkillUsage)?.skillTimes ?? 1)
-        : undefined,
+      skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes ? (editingAction?.skillTimes ?? 1) : undefined,
     )
   }, [skillUsage, editingAction, setValue])
 
@@ -224,13 +222,11 @@ export const EditorActionAdd = ({
           type === 'SkillUsage' ||
           type === 'BulletTime') && (
           <div className="flex">
-            <FormField2<CopilotDocV1.ActionDeploy | CopilotDocV1.ActionSkillOrRetreatOrBulletTime>
+            <FormField2<CopilotDocV1.Action>
               label={t.components.editor.action.EditorActionAdd.operator_group_name}
               description={t.components.editor.action.EditorActionAdd.select_operator_description}
               field="name"
-              error={
-                (errors as FieldErrors<CopilotDocV1.ActionDeploy | CopilotDocV1.ActionSkillOrRetreatOrBulletTime>).name
-              }
+              error={errors.name}
               asterisk={type === 'Deploy'}
               FormGroupProps={{
                 helperText: (
@@ -280,26 +276,18 @@ export const EditorActionAdd = ({
             <FormField2
               label={t.components.editor.action.EditorActionAdd.skill_usage}
               field="skillUsage"
-              error={(errors as FieldErrors<CopilotDocV1.ActionSkillUsage>).skillUsage}
+              error={errors.skillUsage}
             >
-              <EditorOperatorSkillUsage
-                shouldUnregister
-                control={control as Control<CopilotDocV1.ActionSkillUsage>}
-                name="skillUsage"
-                defaultValue={0}
-              />
+              <EditorOperatorSkillUsage shouldUnregister control={control} name="skillUsage" defaultValue={0} />
             </FormField2>
 
             {skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes && (
               <FormField2
                 label={t.components.editor.action.EditorActionAdd.skill_usage_count}
                 field="skillTimes"
-                error={(errors as FieldErrors<CopilotDocV1.ActionSkillUsage>).skillTimes}
+                error={errors.skillTimes}
               >
-                <EditorOperatorSkillTimes
-                  control={control as Control<CopilotDocV1.ActionSkillUsage>}
-                  name="skillTimes"
-                />
+                <EditorOperatorSkillTimes control={control} name="skillTimes" />
               </FormField2>
             )}
           </div>

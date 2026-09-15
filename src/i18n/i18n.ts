@@ -7,12 +7,11 @@ import { Fragment, ReactElement, ReactNode, createElement } from 'react'
 import { preserveLineBreaks } from '../utils/react'
 import ESSENTIALS from './generated/essentials'
 
-export const languages = ['cn', 'en'] as const
+export type Language = keyof typeof ESSENTIALS
+export const languages = ['cn', 'en'] satisfies Language[]
 const defaultLanguage = navigator.language.startsWith('zh') ? 'cn' : 'en'
 
 const updater = mitt()
-
-export type Language = (typeof languages)[number]
 
 export type I18NTranslations = MakeTranslations<
   typeof import('./generated/cn').default | typeof import('./generated/en').default
@@ -107,8 +106,11 @@ export const allEssentials = Object.fromEntries(
 ) as Record<Language, I18NEssentials>
 
 const languageStorageKey = 'zoot-plus-lang'
+export const languageAtom = atomWithStorage<Language>(languageStorageKey, defaultLanguage, undefined, {
+  getOnInit: true,
+})
 
-let currentLanguage: Language
+let currentLanguage = getDefaultStore().get(languageAtom)
 let currentTranslations: I18NTranslations | undefined
 
 export const i18n = new Proxy({} as I18NTranslations & { currentLanguage: Language }, {
@@ -170,12 +172,6 @@ function createDeferredProxy(path: string) {
   })
 }
 
-export const languageAtom = atomWithStorage<Language>(languageStorageKey, defaultLanguage, undefined, {
-  getOnInit: true,
-})
-
-currentLanguage = getDefaultStore().get(languageAtom) as Language
-
 export interface RawTranslations {
   language: Language
   data: object
@@ -187,14 +183,18 @@ const internalRawTranslationsAtom = atom<RawTranslations | undefined>(undefined)
 export const rawTranslationsAtom = atom(
   (get) => get(internalRawTranslationsAtom),
   (get, set, rawTranslations: RawTranslations) => {
+    const currentRawTranslations = get(internalRawTranslationsAtom)
+    const languageChanged = currentRawTranslations?.language !== rawTranslations.language
+
     const translations = setupTranslations(rawTranslations) as I18NTranslations
     currentLanguage = rawTranslations.language
     currentTranslations = translations
+    set(internalRawTranslationsAtom, rawTranslations)
+    set(translationsAtom, translations)
 
-    // @ts-ignore jotai v2.20 type narrowing
-    set(internalRawTranslationsAtom as any, rawTranslations)
-    // @ts-ignore jotai v2.20 type narrowing
-    set(translationsAtom as any, translations)
+    if (languageChanged) {
+      languageChangeEmitter.emit('languageChange', rawTranslations.language)
+    }
   },
 )
 const internalTranslationsAtom = atom<I18NTranslations | undefined>(undefined) as PrimitiveAtom<
@@ -320,3 +320,8 @@ function setupTranslations({ language, data }: RawTranslations) {
 export function useTranslation() {
   return useAtomValue(translationsAtom)
 }
+
+export const languageChangeEmitter = mitt<{
+  languageChange: Language
+  localeLoadedForZod: void
+}>()
