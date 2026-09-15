@@ -1,7 +1,7 @@
 import { Button, Card, Classes, Icon, Menu, MenuItem, PopoverNext } from '@blueprintjs/core'
 
 import clsx from 'clsx'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { clamp } from 'lodash-es'
 import { FC, memo } from 'react'
 
@@ -10,6 +10,7 @@ import { CopilotDocV1 } from 'models/copilot.schema'
 import { SetRequired } from 'type-fest'
 import { i18n, useTranslation } from '../../../i18n/i18n'
 import {
+  OPERATORS,
   OperatorInfo,
   adjustOperatorLevel,
   alternativeOperatorSkillUsages,
@@ -19,6 +20,7 @@ import {
   getModuleName,
   getSkillCount,
   getSkillUsageAltTitle,
+  isSameOperatorConfig,
   useLocalizedOperatorName,
 } from '../../../models/operator'
 import { MasteryIcon } from '../../MasteryIcon'
@@ -49,9 +51,13 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
   ({ operator, onChange, onRemove, onOverlay, isDragging, isSorting, attributes, listeners }) => {
     const t = useTranslation()
     const displayName = useLocalizedOperatorName(operator.name)
-    const setFavOperators = useSetAtom(editorFavOperatorsAtom)
-    const info = findOperatorByName(operator.name)
+    const [favOperators, setFavOperators] = useAtom(editorFavOperatorsAtom)
+    const info = OPERATORS.find(({ name }) => name === operator.name)
     const controlsEnabled = !onOverlay && !isDragging && !isSorting
+    const favOperatorIndex = favOperators.findIndex((favOperator) =>
+      isSameOperatorConfig(favOperator, operator, true),
+    )
+    const isFavOperator = favOperatorIndex !== -1
 
     return (
       <div className={clsx('relative flex items-start', isDragging && 'invisible')}>
@@ -62,11 +68,22 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
               <Menu>
                 <MenuItem
                   icon="star"
-                  text={t.components.editor2.OperatorItem.add_to_favorites}
+                  text={
+                    isFavOperator
+                      ? t.components.editor2.OperatorItem.remove_from_favorites
+                      : t.components.editor2.OperatorItem.add_to_favorites
+                  }
                   onClick={() => {
-                    setFavOperators((prev) => [...prev, operator])
+                    setFavOperators((prev) => {
+                      if (isFavOperator) {
+                        return prev.filter((_, index) => index !== favOperatorIndex)
+                      }
+                      return [...prev, operator]
+                    })
                     AppToaster.show({
-                      message: t.components.editor2.OperatorItem.added_to_favorites,
+                      message: isFavOperator
+                        ? t.components.editor2.OperatorItem.removed_from_favorites
+                        : t.components.editor2.OperatorItem.added_to_favorites,
                       intent: 'success',
                     })
                   }}

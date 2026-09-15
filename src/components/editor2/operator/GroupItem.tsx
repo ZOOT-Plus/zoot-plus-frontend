@@ -8,6 +8,8 @@ import { selectAtom, useAtomCallback } from 'jotai/utils'
 import { FC, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { i18n, useTranslation } from '../../../i18n/i18n'
+import { CopilotDocV1 } from '../../../models/copilot.schema'
+import { isSameOperatorConfig } from '../../../models/operator'
 import { FavGroup } from '../../../store/useFavGroups'
 import { useDebouncedQuery } from '../../../utils/useDebouncedQuery'
 import { Suggest } from '../../Suggest'
@@ -30,6 +32,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
   const baseGroup = useAtomValue(baseGroupAtom)
   const [baseGroupAtoms, dispatchBaseGroups] = useAtom(editorAtoms.baseGroupAtoms)
   const [operatorAtoms, dispatchOperators] = useAtom(baseGroup.operAtomsAtom)
+  const groupOperators = useAtomValue(baseGroup.opersAtom)
   const operatorIdsAtom = useMemo(() => {
     return selectAtom(
       baseGroup.opersAtom,
@@ -42,20 +45,44 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
   const errors = useEntityErrors(baseGroup.id)
   const addOperator = useAddOperator()
   const t = useTranslation()
+  const favGroups = useAtomValue(editorFavGroupsAtom)
+  const currentGroup = useMemo(() => ({ ...baseGroup, opers: groupOperators }), [baseGroup, groupOperators])
+  const isFavGroup = favGroups.some((group) => isSameGroupConfig(currentGroup, group))
+  const [confirmingFavorite, setConfirmingFavorite] = useState(false)
 
   const actionContainerRef = useRef<HTMLDivElement>(null)
   const actionContainerInitialWidthRef = useRef(0)
 
-  const addToFavorite = useAtomCallback(
+  const setFavorite = useAtomCallback(
     useCallback(
-      (get, set) => {
+      (get, set, mode: 'determine' | 'append' | 'overwrite' | 'remove') => {
         const baseGroupAtoms = get(editorAtoms.baseGroupAtoms)
         const index = baseGroupAtoms.indexOf(baseGroupAtom)
         const group = get(editorAtoms.groups)[index]
         if (!group) {
           return
         }
-        set(editorFavGroupsAtom, (prev) => [...prev, group])
+        const favGroups = get(editorFavGroupsAtom)
+        const isFavGroup = favGroups.some((favGroup) => isSameGroupConfig(group, favGroup))
+        if (mode === 'remove' || isFavGroup) {
+          set(editorFavGroupsAtom, (prev) => prev.filter((favGroup) => !isSameGroupConfig(group, favGroup)))
+          AppToaster.show({
+            message: i18n.components.editor2.OperatorItem.removed_from_favorites,
+            intent: 'success',
+          })
+          return
+        }
+
+        if (mode === 'determine' && favGroups.some((favGroup) => favGroup.name === group.name)) {
+          setConfirmingFavorite(true)
+          return
+        }
+
+        set(editorFavGroupsAtom, (prev) =>
+          mode === 'overwrite'
+            ? [...prev.filter((favGroup) => favGroup.name !== group.name), group]
+            : [...prev, mode === 'append' ? { ...group, name: `${group.name}-副本` } : group],
+        )
         AppToaster.show({
           message: i18n.components.editor2.GroupItem.added_to_favorites,
           intent: 'success',
@@ -78,7 +105,15 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           placement="bottom"
           content={
             <Menu>
-              <MenuItem icon="star" text={t.components.editor2.GroupItem.add_to_favorites} onClick={addToFavorite} />
+              <MenuItem
+                icon={isFavGroup ? 'star-empty' : 'star'}
+                text={
+                  isFavGroup
+                    ? t.components.editor2.OperatorItem.remove_from_favorites
+                    : t.components.editor2.GroupItem.add_to_favorites
+                }
+                onClick={() => setFavorite(isFavGroup ? 'remove' : 'determine')}
+              />
               <MenuItem
                 icon="arrow-left"
                 text={t.components.editor2.GroupItem.move_left}
@@ -138,6 +173,33 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           <Button minimal icon={<Icon icon="more" className="rotate-90" />} className="h-full !p-0 !border-0" />
         </PopoverNext>
       </div>
+      <Dialog isOpen={confirmingFavorite} className={Classes.ALERT} onClose={() => setConfirmingFavorite(false)}>
+        <div className={Classes.ALERT_BODY}>
+          <Icon icon="info-sign" size={40} />
+          <div className={Classes.ALERT_CONTENTS}>
+            {t.components.editor2.GroupItem.replace_existing_favorite_group}
+          </div>
+        </div>
+        <div className={Classes.ALERT_FOOTER}>
+          <Button
+            intent="primary"
+            text={t.components.editor2.GroupItem.overwrite_favorite}
+            onClick={() => {
+              setFavorite('overwrite')
+              setConfirmingFavorite(false)
+            }}
+          />
+          <Button
+            intent="primary"
+            text={t.components.editor2.GroupItem.add_as_new_favorite}
+            onClick={() => {
+              setFavorite('append')
+              setConfirmingFavorite(false)
+            }}
+          />
+          <Button text={t.common.cancel} onClick={() => setConfirmingFavorite(false)} />
+        </div>
+      </Dialog>
       {errors && (
         <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
           {errors.map(({ path, message, fieldLabel }) => (
@@ -433,3 +495,19 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
   )
 })
 GroupTitle.displayName = 'GroupTitle'
+
+const isSameGroupConfig = (
+  groupA: { name?: string; opers?: CopilotDocV1.Operator[] },
+  groupB: { name?: string; opers?: CopilotDocV1.Operator[] },
+) => {
+  const operatorsA = groupA.opers ?? []
+  const operatorsB = groupB.opers ?? []
+
+  return (
+    groupA.name === groupB.name &&
+    operatorsA.length === operatorsB.length &&
+    operatorsA.every((operatorA) =>
+      operatorsB.some((operatorB) => isSameOperatorConfig(operatorA, operatorB, true)),
+    )
+  )
+}
