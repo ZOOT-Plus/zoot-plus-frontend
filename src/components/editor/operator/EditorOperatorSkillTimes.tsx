@@ -6,7 +6,7 @@ import type { CopilotDocV1 } from 'models/copilot.schema'
 import { useTranslation } from '../../../i18n/i18n'
 import { NumericInput2 } from '../NumericInput2'
 
-export const EditorOperatorSkillTimes = <T extends CopilotDocV1.Operator | CopilotDocV1.ActionSkillUsage>({
+export const EditorOperatorSkillTimes = <T extends CopilotDocV1.Operator | CopilotDocV1.Action>({
   name,
   control,
   ...controllerProps

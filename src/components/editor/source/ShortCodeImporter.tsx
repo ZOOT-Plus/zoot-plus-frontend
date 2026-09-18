@@ -7,6 +7,7 @@ import { useController, useForm } from 'react-hook-form'
 import { useTranslation } from '../../../i18n/i18n'
 import { parseShortCode, useNewShortCodeProtocol } from '../../../models/shortCode'
 import { formatError } from '../../../utils/error'
+import { snakeCaseKeysUnicode } from '../../../utils/object'
 import { FormField2 } from '../../FormField'
 
 interface ShortCodeForm {
@@ -49,17 +50,13 @@ export const ShortCodeImporter: FC<{
       }
 
       const { id } = shortCodeContent
-      const operationContent = (await getOperation({ id })).parsedContent
+      const operationContentCamelcased = (await getOperation({ id })).parsedContent
 
-      if (operationContent.doc.title === t.models.converter.invalid_operation_content) {
+      if (operationContentCamelcased.doc.title === t.models.converter.invalid_operation_content) {
         throw new Error(t.components.editor.source.ShortCodeImporter.cannot_parse_content)
       }
 
-      // deal with race condition
-      if (!dialogOpen) {
-        return
-      }
-
+      const operationContent = snakeCaseKeysUnicode(operationContentCamelcased as any, { deep: true })
       const prettifiedJson = JSON.stringify(operationContent, null, 2)
 
       onImport(prettifiedJson)
