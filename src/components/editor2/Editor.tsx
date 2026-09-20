@@ -128,7 +128,7 @@ const SelectorPanel = () => {
     <>
       <div
         className={clsx(
-          'absolute z-10 left-0 top-0 flex rounded-lg shadow text-gray-200 transition-[background-position] [background-size:150%] bg-[linear-gradient(90deg,currentColor_0%,currentColor_33%,#a855f7_33%,#a855f7_66%,currentColor_66%,currentColor_100%)]',
+          'absolute z-30 left-0 top-0 flex rounded-lg shadow text-gray-200 transition-[background-position] [background-size:150%] bg-[linear-gradient(90deg,currentColor_0%,currentColor_33%,#a855f7_33%,#a855f7_66%,currentColor_66%,currentColor_100%)]',
           mode === 'operator' && '[background-position:100%]',
         )}
       >
