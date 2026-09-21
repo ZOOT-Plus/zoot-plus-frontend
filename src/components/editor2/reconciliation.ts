@@ -12,19 +12,14 @@ import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
 import { CopilotOperationLoose } from './validation/schema'
 
-export type WithPartialCoordinates<T> = T extends {
-  location?: [number, number]
+// Coordinates (location/distance 2-tuples and rect/begin/end 4-tuples) are edited
+// element by element in the UI, so each element must be individually nullable
+// while the user has only filled in part of the tuple.
+type WithPartialCoordinateElements<V> = V extends [number, ...number[]] ? { [I in keyof V]: V[I] | undefined } : V
+
+export type WithPartialCoordinates<T> = {
+  [K in keyof T]: WithPartialCoordinateElements<T[K]>
 }
-  ? Omit<T, 'location'> & {
-      location?: [number | undefined, number | undefined]
-    }
-  : T extends {
-        distance?: [number, number]
-      }
-    ? Omit<T, 'distance'> & {
-        distance?: [number | undefined, number | undefined]
-      }
-    : T
 
 export type WithId<T = {}> = T extends never ? never : T & { id: string }
 

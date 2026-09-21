@@ -1,8 +1,8 @@
-import { Button, Callout, Card, TextArea } from '@blueprintjs/core'
+import { Button, Callout, Card, Checkbox, TextArea } from '@blueprintjs/core'
 import { DevTool } from '@hookform/devtools'
 
 import { useEffect, useMemo } from 'react'
-import { Control, DeepPartial, FieldErrors, UseFormSetError, useForm, useWatch } from 'react-hook-form'
+import { Control, Controller, DeepPartial, FieldErrors, UseFormSetError, useForm, useWatch } from 'react-hook-form'
 
 import { CardTitle } from 'components/CardTitle'
 import { FormField, FormField2 } from 'components/FormField'
@@ -30,6 +30,8 @@ import { EditorOperatorSkillUsage } from '../operator/EditorOperatorSkillUsage'
 import { EditorActionPreDelay, EditorActionRearDelay } from './EditorActionDelay'
 import { EditorActionDistance } from './EditorActionDistance'
 import { EditorActionModule } from './EditorActionModule'
+import { EditorActionRect } from './EditorActionRect'
+import { EditorActionSwipeParams } from './EditorActionSwipeParams'
 
 export interface EditorActionAddProps {
   control: Control<CopilotDocV1.Operation>
@@ -45,6 +47,12 @@ const defaultAction: DeepPartial<CopilotDocV1.Action> = {
 const defaultMoveCameraAction: DeepPartial<CopilotDocV1.ActionMoveCamera> = {
   type: CopilotDocV1.Type.MoveCamera,
   distance: [4.5, 0],
+}
+
+const defaultSwipeAction: DeepPartial<CopilotDocV1.ActionSwipe> = {
+  type: CopilotDocV1.Type.Swipe,
+  begin: [100, 100, 50, 50],
+  end: [400, 400, 50, 50],
 }
 
 export const EditorActionAdd = ({
@@ -82,6 +90,7 @@ export const EditorActionAdd = ({
       // to prevent layout jumping, we persist the action type on reset
       type,
       ...(type === 'MoveCamera' ? defaultMoveCameraAction : null),
+      ...(type === 'Swipe' ? defaultSwipeAction : null),
     }),
     [type],
   )
@@ -146,6 +155,36 @@ export const EditorActionAdd = ({
         if ('distance' in editingAction) {
           setValue('distance', editingAction.distance)
         }
+        if ('rect' in editingAction) {
+          setValue('rect', (editingAction as CopilotDocV1.ActionClick).rect)
+        }
+        if ('begin' in editingAction) {
+          setValue('begin', (editingAction as CopilotDocV1.ActionSwipe).begin)
+        }
+        if ('end' in editingAction) {
+          setValue('end', (editingAction as CopilotDocV1.ActionSwipe).end)
+        }
+        if ('duration' in editingAction) {
+          setValue('duration', (editingAction as CopilotDocV1.ActionSwipe).duration)
+        }
+        if ('extraSwipe' in editingAction) {
+          setValue('extraSwipe', (editingAction as CopilotDocV1.ActionSwipe).extraSwipe)
+        }
+        if ('slopeIn' in editingAction) {
+          setValue('slopeIn', (editingAction as CopilotDocV1.ActionSwipe).slopeIn)
+        }
+        if ('slopeOut' in editingAction) {
+          setValue('slopeOut', (editingAction as CopilotDocV1.ActionSwipe).slopeOut)
+        }
+        if ('withPause' in editingAction) {
+          setValue('withPause', (editingAction as CopilotDocV1.ActionSwipe).withPause)
+        }
+        if ('highResolutionSwipeFix' in editingAction) {
+          setValue('highResolutionSwipeFix', (editingAction as CopilotDocV1.ActionSwipe).highResolutionSwipeFix)
+        }
+        if ('keepKills' in editingAction) {
+          setValue('keepKills', (editingAction as CopilotDocV1.ActionMoveCamera).keepKills)
+        }
       }, 0)
     } else {
       reset(resettingValues)
@@ -153,7 +192,7 @@ export const EditorActionAdd = ({
   }, [editingAction, reset, resettingValues, setValue])
 
   useEffect(() => {
-    if (type === 'MoveCamera') {
+    if (type === 'MoveCamera' || type === 'Swipe') {
       reset(resettingValues)
     }
   }, [type, reset, resettingValues])
@@ -269,6 +308,52 @@ export const EditorActionAdd = ({
           </div>
         )}
 
+        {type === 'Click' && (
+          <>
+            <Callout className="mb-2">{t.components.editor.action.EditorActionAdd.click_hint}</Callout>
+            <div className="flex flex-col">
+              <EditorActionOperatorLocation
+                shouldUnregister
+                actionType={type}
+                level={level}
+                control={control}
+                name="location"
+              />
+              <EditorActionRect
+                shouldUnregister
+                label={t.components.editor.action.EditorActionAdd.pixel_rect}
+                control={control}
+                name="rect"
+              />
+            </div>
+          </>
+        )}
+
+        {type === 'Swipe' && (
+          <>
+            <Callout className="mb-2">{t.components.editor.action.EditorActionAdd.swipe_hint}</Callout>
+            <div className="flex flex-col">
+              <EditorActionRect
+                shouldUnregister
+                label={t.components.editor.action.EditorActionAdd.swipe_begin}
+                required
+                control={control}
+                name="begin"
+              />
+              <EditorActionRect
+                shouldUnregister
+                label={t.components.editor.action.EditorActionAdd.swipe_end}
+                required
+                control={control}
+                name="end"
+              />
+            </div>
+            <div className="flex mt-2">
+              <EditorActionSwipeParams control={control} />
+            </div>
+          </>
+        )}
+
         {type === 'Deploy' && (
           <div className="flex">
             <EditorActionOperatorDirection shouldUnregister control={control} name="direction" />
@@ -308,8 +393,19 @@ export const EditorActionAdd = ({
         {type === 'MoveCamera' && (
           <>
             <Callout>{t.components.editor.action.EditorActionAdd.camera_movement_hint}</Callout>
-            <div className="flex mt-2">
+            <div className="flex items-center mt-2">
               <EditorActionDistance shouldUnregister control={control} name="distance" />
+              <Controller
+                control={control}
+                name="keepKills"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    label={t.components.editor.action.EditorActionAdd.keep_kills}
+                    checked={!!value}
+                    onChange={(e) => onChange(e.target.checked ? true : undefined)}
+                  />
+                )}
+              />
             </div>
           </>
         )}

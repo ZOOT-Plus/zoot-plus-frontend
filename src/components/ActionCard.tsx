@@ -69,6 +69,24 @@ export const ActionCard: FC<ActionCardProps> = ({ className, action, title }) =>
               <span className="font-mono">{action.distance.join(', ')}</span>
             </FactItem>
           )}
+
+          {'rect' in action && action.rect && (
+            <FactItem dense title={t.components.ActionCard.rect} icon="select">
+              <span className="font-mono">{action.rect.join(', ')}</span>
+            </FactItem>
+          )}
+
+          {'begin' in action && action.begin && (
+            <FactItem dense title={t.components.ActionCard.swipe_range} icon="arrows-horizontal">
+              <span className="font-mono">
+                {action.begin.join(', ')} → {action.end?.join(', ')}
+              </span>
+            </FactItem>
+          )}
+
+          {'keepKills' in action && action.keepKills && (
+            <FactItem dense title={t.components.ActionCard.keep_kills} icon="endorsed" />
+          )}
         </div>
       </div>
 

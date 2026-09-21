@@ -17,5 +17,18 @@ export function validateAction(action: CopilotDocV1.Action, setError: UseFormSet
     }
   }
 
+  // Click 的 rect 与 location 至少填一项；同填是合法的，MAA 会警告并优先使用 rect
+  if (action.type === 'Click') {
+    if (!action.rect && !action.location) {
+      const error = {
+        type: 'required',
+        message: i18n.components.editor.action.validation.rect_or_location_required,
+      }
+      setError('rect', error)
+      setError('location', error)
+      return false
+    }
+  }
+
   return true
 }
