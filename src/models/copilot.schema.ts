@@ -79,6 +79,36 @@ export namespace CopilotDocV1 {
   export interface ActionMoveCamera extends ActionBase {
     type: Type.MoveCamera
     distance: [number, number]
+    /** 为 true 时不等待当前波次结束、击杀数不清零，适用于同一波次内移动镜头 */
+    keepKills?: boolean
+  }
+
+  export interface ActionClick extends ActionBase {
+    type: Type.Click
+    /** 720p 基准像素矩形 [x, y, w, h]，点击时在区域内随机取点；与 location 二选一 */
+    rect?: [number, number, number, number]
+    /** 战场格子坐标，任意合法格子（含 [0, 0]）；与 rect 二选一 */
+    location?: [number, number]
+  }
+
+  export interface ActionSwipe extends ActionBase {
+    type: Type.Swipe
+    /** 滑动起点矩形，720p 基准像素矩形 [x, y, w, h]，起点在区域内随机取点 */
+    begin: [number, number, number, number]
+    /** 滑动终点矩形，720p 基准像素矩形 [x, y, w, h]，终点在区域内随机取点 */
+    end: [number, number, number, number]
+    /** 滑动持续时间（毫秒），默认 0 */
+    duration?: number
+    /** 滑动结束后追加的补偿滑动方向：0 不启用，1/2/3/4 为上/下/左/右，默认 0 */
+    extraSwipe?: number
+    /** 滑动起始斜率，以 ×10 的整数存储（10 即 1.0），默认 10 */
+    slopeIn?: number
+    /** 滑动结束斜率，以 ×10 的整数存储（10 即 1.0），默认 10 */
+    slopeOut?: number
+    /** 滑动时是否附带暂停操作，仅部分触控模式支持 */
+    withPause?: boolean
+    /** 是否启用高分辨率滑动修正 */
+    highResolutionSwipeFix?: boolean
   }
 
   export type Action =
@@ -87,6 +117,8 @@ export namespace CopilotDocV1 {
     | ActionSkillUsage
     | ActionUtil
     | ActionMoveCamera
+    | ActionClick
+    | ActionSwipe
 
   export enum Direction {
     Left = 'Left',
@@ -106,6 +138,8 @@ export namespace CopilotDocV1 {
     SkillUsage = 'SkillUsage',
     SpeedUp = 'SpeedUp',
     MoveCamera = 'MoveCamera',
+    Click = 'Click',
+    Swipe = 'Swipe',
   }
 
   export interface Doc {

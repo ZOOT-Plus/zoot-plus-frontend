@@ -5,6 +5,7 @@ import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import { CLICK_SWIPE_MINIMUM_REQUIRED, compareVersions } from '../../models/operation'
 import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
@@ -12,19 +13,14 @@ import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
 import { CopilotOperationLoose } from './validation/schema'
 
-export type WithPartialCoordinates<T> = T extends {
-  location?: [number, number]
+// Coordinates (location/distance 2-tuples and rect/begin/end 4-tuples) are edited
+// element by element in the UI, so each element must be individually nullable
+// while the user has only filled in part of the tuple.
+type WithPartialCoordinateElements<V> = V extends [number, ...number[]] ? { [I in keyof V]: V[I] | undefined } : V
+
+export type WithPartialCoordinates<T> = {
+  [K in keyof T]: WithPartialCoordinateElements<T[K]>
 }
-  ? Omit<T, 'location'> & {
-      location?: [number | undefined, number | undefined]
-    }
-  : T extends {
-        distance?: [number, number]
-      }
-    ? Omit<T, 'distance'> & {
-        distance?: [number | undefined, number | undefined]
-      }
-    : T
 
 export type WithId<T = {}> = T extends never ? never : T & { id: string }
 
@@ -287,6 +283,17 @@ export function toMaaOperation(operation: EditorOperation): CopilotOperationLoos
     ) {
       converted.version = CopilotDocV1.VERSION
     }
+  }
+
+  // Click 与 Swipe 是 v6.18.0-beta.3 才进入协议的动作，含它们的作业至少要声明到该版本，
+  // 否则旧版 MAA 按声明版本加载会在解析期失败；已声明更高版本时保持不降级
+  if (
+    converted.actions.some(
+      (action) => action.type === CopilotDocV1.Type.Click || action.type === CopilotDocV1.Type.Swipe,
+    ) &&
+    compareVersions(converted.minimumRequired, CLICK_SWIPE_MINIMUM_REQUIRED) < 0
+  ) {
+    converted.minimumRequired = CLICK_SWIPE_MINIMUM_REQUIRED
   }
 
   return snakeCaseKeysUnicode(converted, { deep: true })

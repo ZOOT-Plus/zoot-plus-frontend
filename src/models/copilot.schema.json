@@ -175,6 +175,8 @@
             "打印",
             "摆完挂机",
             "移动相机",
+            "点击",
+            "滑动",
             "Deploy",
             "Skill",
             "Retreat",
@@ -183,7 +185,9 @@
             "SkillUsage",
             "Output",
             "SkillDaemon",
-            "MoveCamera"
+            "MoveCamera",
+            "Click",
+            "Swipe"
           ]
         },
         "kills": {
@@ -206,9 +210,19 @@
         },
         "location": {
           "type": "array",
-          "description": "Position for deployment. Required when `type` is \"Deploy (部署)\".  Optional when `type` is \"Retreat (撤退)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators.",
+          "description": "Position for deployment. Required when `type` is \"Deploy (部署)\".  Optional when `type` is \"Retreat (撤退)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators. When `type` is \"Click (点击)\", at least one of `rect` and `location` is required (failing to provide either fails to load the operation); when both are set, `rect` takes precedence with a warning. Any legal tile (including [0, 0]) can be clicked.",
           "minLength": 2,
           "maxLength": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "rect": {
+          "type": "array",
+          "description": "720p-based pixel rect [x, y, w, h] to click when `type` is \"Click (点击)\". A random point inside the rect is picked and scaled to the actual resolution. At least one of `rect` and `location` is required; when both are set, `rect` takes precedence with a warning.",
+          "minLength": 4,
+          "maxLength": 4,
           "items": {
             "type": "integer",
             "minimum": 0
@@ -244,6 +258,65 @@
         "doc_color": {
           "type": "string",
           "description": "Action description color. Optional. Displayed on the UI with no effects"
+        },
+        "keep_kills": {
+          "type": "boolean",
+          "description": "When `type` is \"MoveCamera (移动相机)\", optional, false by default. When true, the camera moves without waiting for the current wave to end and the kill count is not reset, useful for moving the camera within the same wave."
+        },
+        "begin": {
+          "type": "array",
+          "description": "Swipe begin rect, required when `type` is \"Swipe (滑动)\". 720p-based pixel rect [x, y, w, h]; the begin point is picked randomly inside the rect and scaled to the actual resolution.",
+          "minLength": 4,
+          "maxLength": 4,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "end": {
+          "type": "array",
+          "description": "Swipe end rect, required when `type` is \"Swipe (滑动)\". 720p-based pixel rect [x, y, w, h]; the end point is picked randomly inside the rect and scaled to the actual resolution.",
+          "minLength": 4,
+          "maxLength": 4,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "duration": {
+          "type": "integer",
+          "description": "Swipe duration in ms, optional, 0 by default.",
+          "minimum": 0,
+          "default": 0
+        },
+        "extra_swipe": {
+          "type": "integer",
+          "description": "Extra swipe direction appended after the main swipe when `type` is \"Swipe (滑动)\", used to cancel the fling inertia on the main swipe axis. 0 disables it (default); 1/2/3/4 mean up/down/left/right.",
+          "minimum": 0,
+          "maximum": 4,
+          "default": 0
+        },
+        "slope_in": {
+          "type": "integer",
+          "description": "Swipe start slope, optional, 10 by default. Stored as an integer scaled by 10, i.e. 10 means 1.0.",
+          "minimum": 0,
+          "default": 10
+        },
+        "slope_out": {
+          "type": "integer",
+          "description": "Swipe end slope, optional, 10 by default. Stored as an integer scaled by 10, i.e. 10 means 1.0.",
+          "minimum": 0,
+          "default": 10
+        },
+        "with_pause": {
+          "type": "boolean",
+          "description": "Whether to pause while swiping, optional, false by default. Only supported by some touch modes.",
+          "default": false
+        },
+        "high_resolution_swipe_fix": {
+          "type": "boolean",
+          "description": "Whether to enable the high resolution swipe fix, optional, false by default.",
+          "default": false
         }
       }
     }
