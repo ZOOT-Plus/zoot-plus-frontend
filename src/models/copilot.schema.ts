@@ -1,4 +1,4 @@
-import { OpDifficulty } from './operation'
+import { OpDifficulty, compareVersions } from './operation'
 
 /**
  * 战斗流程协议 v1
@@ -215,4 +215,41 @@ export namespace CopilotDocV1 {
     A = 3,
     D = 4,
   }
+}
+
+/**
+ * 协议特性首次进入 copilot 协议的 MAA 版本注册表。
+ * 新增仅新版 MAA 支持的动作或字段时在此登记，导出作业时会按所用特性自动抬升 minimum_required。
+ */
+export const PROTOCOL_FEATURE_MINIMUMS: ReadonlyArray<{
+  version: string
+  uses: (action: { type?: CopilotDocV1.Type; keepKills?: boolean }) => boolean
+}> = [
+  {
+    // Click 与 Swipe 动作、MoveCamera 的 keep_kills 参数自 v6.18.0-beta.3 起进入协议
+    version: 'v6.18.0-beta.3',
+    uses: (action) =>
+      action.type === CopilotDocV1.Type.Click ||
+      action.type === CopilotDocV1.Type.Swipe ||
+      (action.type === CopilotDocV1.Type.MoveCamera && action.keepKills === true),
+  },
+]
+
+/**
+ * 计算作业应声明的最低 MAA 版本：取动作所用特性的要求与当前声明值中的较大者，不做降级。
+ */
+export function minimumRequiredForActions(
+  actions: ReadonlyArray<{ type?: CopilotDocV1.Type; keepKills?: boolean } | undefined>,
+  current?: string,
+): string | undefined {
+  let required = current
+  for (const action of actions) {
+    if (!action) continue
+    for (const feature of PROTOCOL_FEATURE_MINIMUMS) {
+      if (feature.uses(action) && (required === undefined || compareVersions(feature.version, required) > 0)) {
+        required = feature.version
+      }
+    }
+  }
+  return required
 }

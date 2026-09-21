@@ -37,9 +37,6 @@ export enum MinimumRequired {
   V4_0_0 = 'v6.0.0',
 }
 
-/** Click 与 Swipe 动作首次进入 copilot 协议的 MAA 版本，含此类动作的作业导出时至少声明到它 */
-export const CLICK_SWIPE_MINIMUM_REQUIRED = 'v6.18.0-beta.3'
-
 /** 比较两个 `vX.Y.Z(-prerelease)` 版本串，返回 -1/0/1；格式不合法按相等处理 */
 export function compareVersions(a: string, b: string): number {
   const parse = (v: string) => {

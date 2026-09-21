@@ -4,8 +4,7 @@ import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
 import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
-import { CopilotDocV1 } from '../../models/copilot.schema'
-import { CLICK_SWIPE_MINIMUM_REQUIRED, compareVersions } from '../../models/operation'
+import { CopilotDocV1, minimumRequiredForActions } from '../../models/copilot.schema'
 import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
@@ -285,15 +284,11 @@ export function toMaaOperation(operation: EditorOperation): CopilotOperationLoos
     }
   }
 
-  // Click 与 Swipe 是 v6.18.0-beta.3 才进入协议的动作，含它们的作业至少要声明到该版本，
-  // 否则旧版 MAA 按声明版本加载会在解析期失败；已声明更高版本时保持不降级
-  if (
-    converted.actions.some(
-      (action) => action.type === CopilotDocV1.Type.Click || action.type === CopilotDocV1.Type.Swipe,
-    ) &&
-    compareVersions(converted.minimumRequired, CLICK_SWIPE_MINIMUM_REQUIRED) < 0
-  ) {
-    converted.minimumRequired = CLICK_SWIPE_MINIMUM_REQUIRED
+  // 含仅新版协议支持的动作/字段时按特性注册表抬升 minimum_required（见 PROTOCOL_FEATURE_MINIMUMS），
+  // 已声明更高版本时保持不降级
+  const minimumRequired = minimumRequiredForActions(converted.actions, converted.minimumRequired)
+  if (minimumRequired !== undefined) {
+    converted.minimumRequired = minimumRequired
   }
 
   return snakeCaseKeysUnicode(converted, { deep: true })
