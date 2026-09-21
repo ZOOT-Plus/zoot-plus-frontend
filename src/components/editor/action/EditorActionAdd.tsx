@@ -49,6 +49,8 @@ const defaultMoveCameraAction: DeepPartial<CopilotDocV1.ActionMoveCamera> = {
   distance: [4.5, 0],
 }
 
+// 切换动作类型时这些默认值并不会自动注入表单（MoveCamera 的 distance 同样如此，为上游既有行为），
+// 仅作为 required 校验通过前的语义占位，不要为此单独修表单联动
 const defaultSwipeAction: DeepPartial<CopilotDocV1.ActionSwipe> = {
   type: CopilotDocV1.Type.Swipe,
   begin: [100, 100, 50, 50],

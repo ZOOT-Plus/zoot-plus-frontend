@@ -5,6 +5,7 @@ import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1 } from '../../models/copilot.schema'
+import { CLICK_SWIPE_MINIMUM_REQUIRED, compareVersions } from '../../models/operation'
 import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
@@ -282,6 +283,17 @@ export function toMaaOperation(operation: EditorOperation): CopilotOperationLoos
     ) {
       converted.version = CopilotDocV1.VERSION
     }
+  }
+
+  // Click 与 Swipe 是 v6.18.0-beta.3 才进入协议的动作，含它们的作业至少要声明到该版本，
+  // 否则旧版 MAA 按声明版本加载会在解析期失败；已声明更高版本时保持不降级
+  if (
+    converted.actions.some(
+      (action) => action.type === CopilotDocV1.Type.Click || action.type === CopilotDocV1.Type.Swipe,
+    ) &&
+    compareVersions(converted.minimumRequired, CLICK_SWIPE_MINIMUM_REQUIRED) < 0
+  ) {
+    converted.minimumRequired = CLICK_SWIPE_MINIMUM_REQUIRED
   }
 
   return snakeCaseKeysUnicode(converted, { deep: true })

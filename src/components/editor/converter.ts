@@ -1,8 +1,8 @@
 import { compact, uniqueId } from 'lodash-es'
 import { DeepPartial, FieldArrayWithId } from 'react-hook-form'
 
-import type { CopilotDocV1 } from 'models/copilot.schema'
-import { MinimumRequired } from 'models/operation'
+import { CopilotDocV1 } from 'models/copilot.schema'
+import { CLICK_SWIPE_MINIMUM_REQUIRED, MinimumRequired, compareVersions } from 'models/operation'
 
 import { findOperatorDirection } from '../../models/operator'
 import { findActionType } from '../../models/types'
@@ -75,6 +75,17 @@ export function toMaaOperation(
   operation = removeNullFields(JSON.parse(JSON.stringify(operation))) as DeepPartial<CopilotDocV1.Operation>
 
   operation.minimumRequired ||= MinimumRequired.V4_0_0
+
+  // Click 与 Swipe 是 v6.18.0-beta.3 才进入协议的动作，含它们的作业至少要声明到该版本，
+  // 否则旧版 MAA 按声明版本加载会在解析期失败；已声明更高版本时保持不降级
+  if (
+    operation.actions?.some(
+      (action) => action?.type === CopilotDocV1.Type.Click || action?.type === CopilotDocV1.Type.Swipe,
+    ) &&
+    compareVersions(operation.minimumRequired, CLICK_SWIPE_MINIMUM_REQUIRED) < 0
+  ) {
+    operation.minimumRequired = CLICK_SWIPE_MINIMUM_REQUIRED
+  }
 
   // strip IDs
   compact(
