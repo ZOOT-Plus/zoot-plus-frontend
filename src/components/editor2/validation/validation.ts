@@ -1,5 +1,5 @@
 import { atom, useAtomValue } from 'jotai'
-import { findLastIndex, isNumber, isString, get as lodashGet } from 'lodash-es'
+import { isNumber, isString, get as lodashGet } from 'lodash-es'
 import { useMemo } from 'react'
 import type { ZodError } from 'zod'
 
@@ -46,23 +46,23 @@ export const editorValidationAtom = atom(null, (get, set) => {
     const entityIssues: Record<string, EntityIssue[]> = {}
 
     issues.forEach((issue) => {
-      const entityIndexIndex = findLastIndex(issue.path, isNumber)
-      if (entityIndexIndex !== -1) {
-        const entityPath = issue.path.slice(0, entityIndexIndex + 1)
-        try {
-          const maybeEntity = lodashGet(operation, entityPath)
-          if (maybeEntity && 'id' in maybeEntity && isString(maybeEntity.id)) {
-            ;(entityIssues[maybeEntity.id] ||= []).push({
-              ...issue,
-              entityId: maybeEntity.id,
-              fieldLabel: getLabel(i18n, issue.path),
-            })
-            return
+      try {
+        for (let i = issue.path.length - 1; i >= 0; i--) {
+          if (isNumber(issue.path[i])) {
+            const value = lodashGet(operation, issue.path.slice(0, i + 1))
+            if (value && 'id' in value && isString(value.id)) {
+              ;(entityIssues[value.id] ||= []).push({
+                ...issue,
+                entityId: value.id,
+                fieldLabel: getLabel(i18n, issue.path),
+              })
+              return
+            }
           }
-        } catch {
-          // if failed, fall back to adding to global issues
-          console.warn('Failed to get entity at', issue.path)
         }
+      } catch (e) {
+        // if failed, fall back to adding it to global issues
+        console.warn('Failed to get entity at', issue.path, e)
       }
       globalIssues.push(issue)
     })
