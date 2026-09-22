@@ -59,6 +59,8 @@ const activeActionLocationAtom = atom(
           // Click 的 rect 与 location 互斥，点选地图即明确使用 location，清掉 rect 以免同填
           draft.location = location
           delete draft.rect
+        } else if (draft.type === CopilotDocV1.Type.SetUnitLocation) {
+          draft.location = location
         }
       }),
     )

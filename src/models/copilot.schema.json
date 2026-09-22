@@ -177,6 +177,7 @@
             "移动相机",
             "点击",
             "滑动",
+            "设置单位坐标",
             "Deploy",
             "Skill",
             "Retreat",
@@ -187,7 +188,8 @@
             "SkillDaemon",
             "MoveCamera",
             "Click",
-            "Swipe"
+            "Swipe",
+            "SetUnitLocation"
           ]
         },
         "kills": {

@@ -140,6 +140,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                 CopilotDocV1.Type.Skill,
                 CopilotDocV1.Type.SkillUsage,
                 CopilotDocV1.Type.BulletTime,
+                CopilotDocV1.Type.SetUnitLocation,
               ],
               ({ actionAtom }) => (
                 <ActionTarget actionAtom={actionAtom} />
@@ -458,6 +459,66 @@ export const ActionItem: FC<ActionItemProps> = memo(
                     />
                   </div>
                   <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.end}</div>
+                </div>
+              </>
+            ))}
+            {renderForTypes([CopilotDocV1.Type.SetUnitLocation], ({ action, setAction }) => (
+              <>
+                <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
+                  <Divider className="rotate-12" />
+                </div>
+                <div className="shrink-0">
+                  <div className="flex items-center text-3xl">
+                    <span className="text-gray-300 dark:text-gray-600">{'('}</span>
+                    <NumericInput2
+                      intOnly
+                      buttonPosition="none"
+                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                      style={{
+                        width: String(action.location?.[0] ?? 0).length + 'ch',
+                      }}
+                      value={action.location?.[0] ?? ''}
+                      wheelStepSize={1}
+                      onValueChange={(v) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            // 必填字段，与部署一致：半填时另一位补 0，不留 undefined 中间态
+                            draft.location = [v, draft.location?.[1] ?? 0]
+                          })
+                          return {
+                            action: 'set-action-location-x',
+                            desc: i18n.actions.editor2.set_action_location,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
+                    <NumericInput2
+                      intOnly
+                      buttonPosition="none"
+                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                      style={{
+                        width: String(action.location?.[1] ?? 0).length + 'ch',
+                      }}
+                      value={action.location?.[1] ?? ''}
+                      wheelStepSize={1}
+                      onValueChange={(v) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            draft.location = [draft.location?.[0] ?? 0, v]
+                          })
+                          return {
+                            action: 'set-action-location-y',
+                            desc: i18n.actions.editor2.set_action_location,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="text-gray-300 dark:text-gray-600">{')'}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.location}</div>
                 </div>
               </>
             ))}
@@ -932,6 +993,7 @@ const ActionTarget: FC<{
           | CopilotDocV1.Type.Skill
           | CopilotDocV1.Type.SkillUsage
           | CopilotDocV1.Type.BulletTime
+          | CopilotDocV1.Type.SetUnitLocation
       }
     >
   >

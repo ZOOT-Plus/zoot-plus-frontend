@@ -331,6 +331,40 @@ export const EditorActionAdd = ({
           </>
         )}
 
+        {type === 'SetUnitLocation' && (
+          <>
+            <Callout className="mb-2">{t.components.editor.action.EditorActionAdd.set_unit_location_hint}</Callout>
+            <div className="flex">
+              <FormField2<CopilotDocV1.ActionSetUnitLocation>
+                label={t.components.editor.action.EditorActionAdd.operator_group_name}
+                field="name"
+                error={(errors as FieldErrors<CopilotDocV1.ActionSetUnitLocation>).name}
+                asterisk
+              >
+                <EditorOperatorName
+                  shouldUnregister
+                  groups={operatorGroups}
+                  operators={operators}
+                  control={control}
+                  name="name"
+                  rules={{
+                    required: t.components.editor.action.EditorActionAdd.operator_required,
+                  }}
+                />
+              </FormField2>
+            </div>
+            <div className="flex">
+              <EditorActionOperatorLocation
+                shouldUnregister
+                actionType={type}
+                level={level}
+                control={control}
+                name="location"
+              />
+            </div>
+          </>
+        )}
+
         {type === 'Swipe' && (
           <>
             <Callout className="mb-2">{t.components.editor.action.EditorActionAdd.swipe_hint}</Callout>

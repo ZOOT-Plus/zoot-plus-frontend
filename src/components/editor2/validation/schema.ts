@@ -160,6 +160,10 @@ const action = z
       ...actionShape,
     }),
     z.looseObject({
+      type: z.literal(CopilotDocV1.Type.SetUnitLocation),
+      ...actionShape,
+    }),
+    z.looseObject({
       type: z.literal(CopilotDocV1.Type.SpeedUp),
       ...actionShape,
     }),
@@ -236,6 +240,12 @@ const actionStrict = z
       type: z.literal(CopilotDocV1.Type.Swipe),
       begin: actionShapeStrict.begin.unwrap(),
       end: actionShapeStrict.end.unwrap(),
+    }),
+    z.looseObject({
+      ...actionShapeStrict,
+      type: z.literal(CopilotDocV1.Type.SetUnitLocation),
+      name: actionShapeStrict.name.unwrap(),
+      location: actionShapeStrict.location.unwrap(),
     }),
     z.looseObject({
       ...actionShapeStrict,
