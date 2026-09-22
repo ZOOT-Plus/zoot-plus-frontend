@@ -187,6 +187,10 @@ export const EditorActionAdd = ({
         if ('keepKills' in editingAction) {
           setValue('keepKills', (editingAction as CopilotDocV1.ActionMoveCamera).keepKills)
         }
+        // role 无对应表单控件，但保存时整条动作被表单值替换，不回填会静默丢失（SetUnitLocation 及导入时带 role 的其他动作）
+        if ('role' in editingAction) {
+          setValue('role', (editingAction as CopilotDocV1.ActionSetUnitLocation).role)
+        }
       }, 0)
     } else {
       reset(resettingValues)
