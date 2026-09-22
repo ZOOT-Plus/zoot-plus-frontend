@@ -51,10 +51,15 @@ export const editorValidationAtom = atom(null, (get, set) => {
           if (isNumber(issue.path[i])) {
             const value = lodashGet(operation, issue.path.slice(0, i + 1))
             if (value && 'id' in value && isString(value.id)) {
+              let fieldLabel = getLabel(i18n, issue.path)
+              // if the the full path leads to an non-entity array element, append the array index to the field label
+              if (i !== issue.path.length - 1 && isNumber(issue.path[issue.path.length - 1])) {
+                fieldLabel += `#${String(issue.path[issue.path.length - 1])}`
+              }
               ;(entityIssues[value.id] ||= []).push({
                 ...issue,
                 entityId: value.id,
-                fieldLabel: getLabel(i18n, issue.path),
+                fieldLabel,
               })
               return
             }
