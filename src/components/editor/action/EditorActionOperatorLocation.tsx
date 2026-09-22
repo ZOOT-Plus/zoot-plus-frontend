@@ -15,7 +15,7 @@ import { useFloatingMap } from '../floatingMap/FloatingMapContext'
 import { MAP_ORIGIN, TileClickMessage } from '../floatingMap/connection'
 
 interface EditorActionOperatorLocationProps extends EditorFieldProps<CopilotDocV1.Action, [number, number]> {
-  actionType: string
+  actionType: CopilotDocV1.Type
   level?: Level
 }
 

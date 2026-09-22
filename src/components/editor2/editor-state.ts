@@ -2,7 +2,7 @@ import { PrimitiveAtom, SetStateAction, atom, getDefaultStore, useAtom } from 'j
 import { atomFamily, atomWithStorage, splitAtom } from 'jotai/utils'
 import { noop } from 'lodash-es'
 import { useMemo } from 'react'
-import { Simplify } from 'type-fest'
+import { DistributedOmit, Simplify } from 'type-fest'
 
 import { CamelCaseKeys } from 'camelcase-keys'
 import { CopilotDocV1 } from '../../models/copilot.schema'
@@ -54,11 +54,13 @@ export type EditorGroup = WithId<
   }
 >
 export type EditorAction = WithId<
-  Omit<OperationBasis['actions'][number], 'preDelay' | 'postDelay' | 'rearDelay'> & {
+  DistributedOmit<OperationBasis['actions'][number], 'preDelay' | 'postDelay' | 'rearDelay'> & {
     intermediatePreDelay?: number
     intermediatePostDelay?: number
   }
 >
+
+export type EditorActionByType<T extends EditorAction['type']> = Extract<EditorAction, { type: T }>
 
 export interface EditorOperation extends EditorOperationBase {
   opers: EditorOperator[]

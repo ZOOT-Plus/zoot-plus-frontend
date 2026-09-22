@@ -243,7 +243,7 @@ export function findOperatorSkillUsage(value: number = defaultSkillUsage): Detai
   return operatorSkillUsages.filter(isChoice).find((item) => item.value === value) || unknownSkillUsage
 }
 
-export function getSkillUsageTitle(skillUsage: number = unknownSkillUsage.value, skillTimes?: CopilotDocV1.SkillTimes) {
+export function getSkillUsageTitle(skillUsage: CopilotDocV1.SkillUsageType, skillTimes?: CopilotDocV1.SkillTimes) {
   if (skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes && skillTimes !== undefined) {
     return i18n.models.operator.skill_usage.ready_to_use_times.format({
       count: skillTimes,
@@ -253,10 +253,7 @@ export function getSkillUsageTitle(skillUsage: number = unknownSkillUsage.value,
   return findOperatorSkillUsage(skillUsage).title()
 }
 
-export function getSkillUsageAltTitle(
-  skillUsage: number = unknownSkillUsage.value,
-  skillTimes?: CopilotDocV1.SkillTimes,
-) {
+export function getSkillUsageAltTitle(skillUsage: CopilotDocV1.SkillUsageType, skillTimes?: CopilotDocV1.SkillTimes) {
   if (skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes) {
     return i18n.models.operator.skill_usage.ready_to_use_times.alt_format({
       times: skillTimes ?? 1,
@@ -308,7 +305,7 @@ const unknownDirection: OperatorDirection = {
   value: null,
 }
 
-export function findOperatorDirection(value: string = defaultDirection): OperatorDirection {
+export function findOperatorDirection(value: CopilotDocV1.Direction = defaultDirection): OperatorDirection {
   return operatorDirections.find((item) => item.value === value) || unknownDirection
 }
 

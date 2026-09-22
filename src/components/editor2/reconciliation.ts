@@ -1,7 +1,7 @@
-import camelcaseKeys, { CamelCaseKeys } from 'camelcase-keys'
+import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
 import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
-import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
+import { SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1, minimumRequiredForActions } from '../../models/copilot.schema'
@@ -21,7 +21,7 @@ export type WithLooseCoordinates<T> = {
   [K in keyof T]: WithPartialCoordinateElements<T[K]>
 }
 
-export type WithId<T = {}> = { [K in keyof (T & { id: string })]: K extends keyof T ? T[K] : string }
+export type WithId<T = {}> = T & { id: string }
 
 type DehydratedEditorOperation = WithoutIdDeep<EditorOperation>
 
@@ -241,22 +241,17 @@ export function toEditorOperation(source: ParsedOperation): EditorOperation {
   return hydrateOperation(converted)
 }
 
-type PartialMaaOperation = PartialDeep<Omit<CopilotDocV1.OperationSnakeCased, 'actions'>> & {
-  actions?: PartialMaaAction[]
-}
-type PartialMaaAction = WithLooseCoordinates<NonNullable<CopilotDocV1.OperationSnakeCased['actions']>[number]>
-
 /**
  * To MAA's standard format. No validation is performed so it's not guaranteed to be valid.
  */
-export function toMaaOperation(operation: EditorOperation): PartialMaaOperation {
+export function toMaaOperation(operation: EditorOperation): ParsedOperation {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
   const converted = {
     ...dehydrated,
     actions: dehydrated.actions.map((action, index, actions) => {
       const { intermediatePreDelay, intermediatePostDelay, ...restAction } = action
-      const newAction: CamelCaseKeys<PartialMaaAction> = restAction
+      const newAction: ParsedOperation['actions'][number] = restAction
 
       // preDelay 等于当前动作的 intermediatePostDelay
       if (intermediatePostDelay !== undefined) {

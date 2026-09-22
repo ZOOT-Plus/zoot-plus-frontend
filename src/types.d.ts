@@ -11,7 +11,7 @@ export type OmitIndexSignatureDeep<T, U = OmitIndexSignature<T>> = {
   [K in keyof T as K extends keyof U ? K : never]: K extends keyof U ? _OmitIndexSignatureDeepForValue<U[K]> : never
 }
 type _OmitIndexSignatureDeepForValue<T> = T extends unknown[]
-  ? _OmitIndexSignatureDeepForValue<T[number]>[]
+  ? { [K in keyof T]: _OmitIndexSignatureDeepForValue<T[K]> }
   : T extends object
     ? OmitIndexSignatureDeep<T>
     : T

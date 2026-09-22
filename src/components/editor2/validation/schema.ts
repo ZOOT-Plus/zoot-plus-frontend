@@ -157,69 +157,143 @@ const baseActionForValidation = {
   rear_delay: baseActionForParsing.rear_delay.unwrap().min(0).optional(),
   post_delay: baseActionForParsing.post_delay.unwrap().min(0).optional(),
 }
+
+const looseCoordinate = z.tuple([
+  z.union([z.number(), z.undefined(), z.null()]),
+  z.union([z.number(), z.undefined(), z.null()]),
+])
+const coordinate = z.tuple([z.number().int(), z.number().int()])
+
+const looseVector = z.tuple([
+  z.union([z.number(), z.undefined(), z.null()]),
+  z.union([z.number(), z.undefined(), z.null()]),
+])
+const vector = z.tuple([z.number(), z.number()])
+
+const looseRect = z.tuple([
+  z.union([z.number(), z.undefined(), z.null()]),
+  z.union([z.number(), z.undefined(), z.null()]),
+  z.union([z.number(), z.undefined(), z.null()]),
+  z.union([z.number(), z.undefined(), z.null()]),
+])
+const rect = z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()])
+
 const specializedActionForParsing = {
   name: z.string(),
   direction: z.string(),
   // JSON 序列化会把 undefined 转为 null，所以这里允许 null
-  location: z.array(z.union([z.number(), z.undefined(), z.null()])),
-  distance: z.array(z.union([z.number(), z.undefined(), z.null()])),
+  location: looseCoordinate,
+  distance: looseVector,
+  keep_kills: z.boolean(),
   skill_usage: operatorForParsing.shape.skill_usage.unwrap(),
   skill_times: operatorForParsing.shape.skill_times.unwrap(),
-
-  // click & swipe fields
-  rect: z
-    .tuple([
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-    ])
-    .optional(),
-  begin: z
-    .tuple([
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-    ])
-    .optional(),
-  end: z
-    .tuple([
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-      z.number().int().or(z.undefined()).or(z.null()),
-    ])
-    .optional(),
-  duration: z.number().int().min(0).optional(),
-  extra_swipe: z.number().int().min(0).max(4).optional(),
-  slope_in: z.number().int().min(0).optional(),
-  slope_out: z.number().int().min(0).optional(),
-  with_pause: z.boolean().optional(),
-  high_resolution_swipe_fix: z.boolean().optional(),
-  keep_kills: z.boolean().optional(),
+  rect: looseRect,
+  begin: looseRect,
+  end: looseRect,
+  duration: z.number(),
+  extra_swipe: z.number(),
+  slope_in: z.number(),
+  slope_out: z.number(),
+  with_pause: z.boolean(),
+  high_resolution_swipe_fix: z.boolean(),
 }
 const specializedActionForValidation = {
   ...specializedActionForParsing,
   name: specializedActionForParsing.name.min(1),
   direction: z.enum(CopilotDocV1.Direction),
-  location: z.tuple([z.number().int(), z.number().int()]),
-  distance: z.tuple([z.number(), z.number()]),
-  rect: z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()]),
-  begin: z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()]),
-  end: z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()]),
+  location: coordinate,
+  distance: vector,
+  keep_kills: z.boolean(),
   skill_usage: operatorForValidation.shape.skill_usage.unwrap(),
   skill_times: operatorForValidation.shape.skill_times.unwrap(),
+  rect: rect,
+  begin: rect,
+  end: rect,
+  duration: z.number().int().min(0),
+  extra_swipe: z.number().int().min(0).max(4),
+  slope_in: z.number().int().min(0),
+  slope_out: z.number().int().min(0),
+  with_pause: z.boolean(),
+  high_resolution_swipe_fix: z.boolean(),
 }
-const actionForParsing = z
-  .looseObject({
+const actionForParsing = z.discriminatedUnion('type', [
+  z.looseObject({
     ...baseActionForParsing,
-    ...specializedActionForParsing,
-  })
-  .partial()
-  .extend({
-    type: z.string().min(1),
-  })
+    type: z.literal(CopilotDocV1.Type.Deploy),
+    name: specializedActionForParsing.name.optional(),
+    location: specializedActionForParsing.location.optional(),
+    direction: specializedActionForParsing.direction.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.SkillUsage),
+    name: specializedActionForParsing.name.optional(),
+    skill_usage: specializedActionForParsing.skill_usage.optional(),
+    skill_times: specializedActionForParsing.skill_times.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.Skill),
+    name: specializedActionForParsing.name.optional(),
+    location: specializedActionForParsing.location.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.Retreat),
+    name: specializedActionForParsing.name.optional(),
+    location: specializedActionForParsing.location.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.BulletTime),
+    name: specializedActionForParsing.name.optional(),
+    location: specializedActionForParsing.location.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.MoveCamera),
+    distance: specializedActionForParsing.distance.optional(),
+    keep_kills: specializedActionForParsing.keep_kills.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.Click),
+    rect: specializedActionForParsing.rect.optional(),
+    location: specializedActionForParsing.location.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.Swipe),
+    rect: specializedActionForParsing.rect.optional(),
+    location: specializedActionForParsing.location.optional(),
+    begin: specializedActionForParsing.begin.optional(),
+    end: specializedActionForParsing.end.optional(),
+    duration: specializedActionForParsing.duration.optional(),
+    extra_swipe: specializedActionForParsing.extra_swipe.optional(),
+    slope_in: specializedActionForParsing.slope_in.optional(),
+    slope_out: specializedActionForParsing.slope_out.optional(),
+    with_pause: specializedActionForParsing.with_pause.optional(),
+    high_resolution_swipe_fix: specializedActionForParsing.high_resolution_swipe_fix.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.SetUnitLocation),
+    name: specializedActionForParsing.name.optional(),
+    location: specializedActionForParsing.location.optional(),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.SpeedUp),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.SkillDaemon),
+  }),
+  z.looseObject({
+    ...baseActionForParsing,
+    type: z.literal(CopilotDocV1.Type.Output),
+  }),
+])
 const actionForValidation = z
   .discriminatedUnion('type', [
     z.looseObject({
@@ -234,6 +308,7 @@ const actionForValidation = z
       type: z.literal(CopilotDocV1.Type.SkillUsage),
       name: specializedActionForValidation.name,
       skill_usage: specializedActionForValidation.skill_usage,
+      skill_times: specializedActionForValidation.skill_times,
     }),
     z.looseObject({
       ...baseActionForValidation,
@@ -257,6 +332,7 @@ const actionForValidation = z
       ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.MoveCamera),
       distance: specializedActionForValidation.distance,
+      keep_kills: specializedActionForValidation.keep_kills.optional(),
     }),
     z.looseObject({
       ...baseActionForValidation,
@@ -267,8 +343,16 @@ const actionForValidation = z
     z.looseObject({
       ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.Swipe),
-      begin: specializedActionForValidation.begin,
-      end: specializedActionForValidation.end,
+      rect: specializedActionForValidation.rect.optional(),
+      location: specializedActionForValidation.location.optional(),
+      begin: specializedActionForValidation.begin.optional(),
+      end: specializedActionForValidation.end.optional(),
+      duration: specializedActionForValidation.duration.optional(),
+      extra_swipe: specializedActionForValidation.extra_swipe.optional(),
+      slope_in: specializedActionForValidation.slope_in.optional(),
+      slope_out: specializedActionForValidation.slope_out.optional(),
+      with_pause: specializedActionForValidation.with_pause.optional(),
+      high_resolution_swipe_fix: specializedActionForValidation.high_resolution_swipe_fix.optional(),
     }),
     z.looseObject({
       ...baseActionForValidation,
@@ -347,20 +431,18 @@ export const operationForValidation = z
         ? value.groups.filter((g) => groupForParsing.pick({ name: true }).safeParse(g).success)
         : []
       value.actions.forEach((action, index) => {
-        if (!actionForParsing.pick({ name: true }).safeParse(action).success) return
-        const actionName = action.name as string
-        if (action.name) {
-          if (
-            !validatedOpers.some((oper) => oper.name === actionName) &&
-            !validatedGroups.some((group) => group.name === actionName)
-          ) {
-            ctx.addIssue({
-              code: 'custom',
-              input: actionName,
-              path: ['actions', index, 'name'],
-              message: i18n.components.editor2.validation.action_name_not_found({ name: actionName }),
-            })
-          }
+        const actionName = specializedActionForParsing.name.safeParse(action)?.data
+        if (!actionName) return
+        if (
+          !validatedOpers.some((oper) => oper.name === actionName) &&
+          !validatedGroups.some((group) => group.name === actionName)
+        ) {
+          ctx.addIssue({
+            code: 'custom',
+            input: actionName,
+            path: ['actions', index, 'name'],
+            message: i18n.components.editor2.validation.action_name_not_found({ name: actionName }),
+          })
         }
       })
     },

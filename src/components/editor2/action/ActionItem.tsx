@@ -12,10 +12,11 @@ import {
 } from '@blueprintjs/core'
 
 import clsx from 'clsx'
+import { Draft } from 'immer'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
 import { selectAtom } from 'jotai/utils'
-import { FC, Fragment, memo, useEffect, useRef, useState } from 'react'
+import { FC, Fragment, memo, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
@@ -33,7 +34,7 @@ import { DetailedSelect } from '../../editor/DetailedSelect'
 import { NumericInput2 } from '../../editor/NumericInput2'
 import { OperatorAvatar } from '../../OperatorAvatar'
 import { Select } from '../../Select'
-import { EditorAction, editorAtoms, useActiveState, useEdit } from '../editor-state'
+import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../editor-state'
 import { OperatorSelect } from '../operator/OperatorSelect'
 import { createAction } from '../reconciliation'
 import { useEntityErrors, useEntityWarnings } from '../validation/validation'
@@ -75,6 +76,23 @@ export const ActionItem: FC<ActionItemProps> = memo(
       }
     }, [docInput])
 
+    // 类型断言不能用在多个参数上，所以只能组装成一个对象然后再解构了
+    // https://github.com/microsoft/TypeScript/issues/26916
+    type RenderArgs<A> = {
+      actionAtom: PrimitiveAtom<A>
+      action: A
+      setAction: (fn: (draft: Draft<A>) => void) => void
+    }
+    const renderForTypes = <T extends CopilotDocV1.Type>(
+      types: T[],
+      render: (args: RenderArgs<EditorActionByType<T>>) => ReactNode,
+    ) => {
+      if (types.includes(action.type as T)) {
+        return render({ actionAtom, action, setAction } as unknown as RenderArgs<EditorActionByType<T>>)
+      }
+      return null
+    }
+
     return (
       <div onMouseDownCapture={() => setActive(true)}>
         <ActionLinker actionAtom={actionAtom} isDragging={isDragging} isSorting={isSorting} />
@@ -114,89 +132,100 @@ export const ActionItem: FC<ActionItemProps> = memo(
               </div>
             </h4>
             <div className="flex-[0_1_1rem]" />
-            {(action.type === CopilotDocV1.Type.Deploy ||
-              action.type === CopilotDocV1.Type.Retreat ||
-              action.type === CopilotDocV1.Type.Skill ||
-              action.type === CopilotDocV1.Type.SkillUsage ||
-              action.type === CopilotDocV1.Type.BulletTime ||
-              action.type === CopilotDocV1.Type.SetUnitLocation) && <ActionTarget actionAtom={actionAtom} />}
-
-            {(action.type === CopilotDocV1.Type.Deploy ||
-              action.type === CopilotDocV1.Type.Retreat ||
-              action.type === CopilotDocV1.Type.Skill ||
-              action.type === CopilotDocV1.Type.BulletTime ||
-              action.type === CopilotDocV1.Type.SetUnitLocation) && (
-              <>
-                <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
-                  {action.type === CopilotDocV1.Type.Skill ||
-                  action.type === CopilotDocV1.Type.Retreat ||
-                  action.type === CopilotDocV1.Type.BulletTime ? (
-                    <>
-                      <Divider className="grow rotate-12 ml-3" />
-                      <Tooltip placement="top" content={t.components.editor2.ActionItem.target_or_location}>
-                        {t.components.editor2.ActionItem.or}
-                      </Tooltip>
-                      <Divider className="grow rotate-12 mr-3" />
-                    </>
-                  ) : (
-                    <Divider className="grow rotate-12" />
-                  )}
-                </div>
-                <div className="shrink-0">
-                  <div className="flex items-center text-3xl">
-                    <span className="text-gray-300 dark:text-gray-600">{'('}</span>
-                    <NumericInput2
-                      intOnly
-                      buttonPosition="none"
-                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
-                      style={{
-                        width: String(action.location?.[0] ?? 0).length + 'ch',
-                      }}
-                      value={action.location?.[0] ?? ''}
-                      wheelStepSize={1}
-                      onValueChange={(v) => {
-                        edit(() => {
-                          setAction((draft) => {
-                            draft.location = [v, draft.location?.[1] ?? 0]
-                          })
-                          return {
-                            action: 'set-action-location-x',
-                            desc: i18n.actions.editor2.set_action_location,
-                            squashBy: action.id,
-                          }
-                        })
-                      }}
-                    />
-                    <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
-                    <NumericInput2
-                      intOnly
-                      buttonPosition="none"
-                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
-                      style={{
-                        width: String(action.location?.[1] ?? 0).length + 'ch',
-                      }}
-                      value={action.location?.[1] ?? ''}
-                      wheelStepSize={1}
-                      onValueChange={(v) => {
-                        edit(() => {
-                          setAction((draft) => {
-                            draft.location = [draft.location?.[0] ?? 0, v]
-                          })
-                          return {
-                            action: 'set-action-location-y',
-                            desc: i18n.actions.editor2.set_action_location,
-                            squashBy: action.id,
-                          }
-                        })
-                      }}
-                    />
-                    <span className="text-gray-300 dark:text-gray-600">{')'}</span>
-                  </div>
-                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.location}</div>
-                </div>
-              </>
+            {renderForTypes(
+              [
+                CopilotDocV1.Type.Deploy,
+                CopilotDocV1.Type.Retreat,
+                CopilotDocV1.Type.Skill,
+                CopilotDocV1.Type.SkillUsage,
+                CopilotDocV1.Type.BulletTime,
+                CopilotDocV1.Type.SetUnitLocation,
+              ],
+              ({ actionAtom }) => (
+                <ActionTarget actionAtom={actionAtom} />
+              ),
             )}
-            {action.type === CopilotDocV1.Type.Click && (
+            {renderForTypes(
+              [
+                CopilotDocV1.Type.Deploy,
+                CopilotDocV1.Type.Retreat,
+                CopilotDocV1.Type.Skill,
+                CopilotDocV1.Type.BulletTime,
+                CopilotDocV1.Type.SetUnitLocation,
+              ],
+              ({ action, setAction }) => (
+                <>
+                  <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
+                    {action.type === CopilotDocV1.Type.Skill ||
+                    action.type === CopilotDocV1.Type.Retreat ||
+                    action.type === CopilotDocV1.Type.BulletTime ? (
+                      <>
+                        <Divider className="grow rotate-12 ml-3" />
+                        <Tooltip placement="top" content={t.components.editor2.ActionItem.target_or_location}>
+                          {t.components.editor2.ActionItem.or}
+                        </Tooltip>
+                        <Divider className="grow rotate-12 mr-3" />
+                      </>
+                    ) : (
+                      <Divider className="grow rotate-12" />
+                    )}
+                  </div>
+                  <div className="shrink-0">
+                    <div className="flex items-center text-3xl">
+                      <span className="text-gray-300 dark:text-gray-600">{'('}</span>
+                      <NumericInput2
+                        intOnly
+                        buttonPosition="none"
+                        inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                        style={{
+                          width: String(action.location?.[0] ?? 0).length + 'ch',
+                        }}
+                        value={action.location?.[0] ?? ''}
+                        wheelStepSize={1}
+                        onValueChange={(v) => {
+                          edit(() => {
+                            setAction((draft) => {
+                              draft.location = [v, draft.location?.[1] ?? 0]
+                            })
+                            return {
+                              action: 'set-action-location-x',
+                              desc: i18n.actions.editor2.set_action_location,
+                              squashBy: action.id,
+                            }
+                          })
+                        }}
+                      />
+                      <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
+                      <NumericInput2
+                        intOnly
+                        buttonPosition="none"
+                        inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                        style={{
+                          width: String(action.location?.[1] ?? 0).length + 'ch',
+                        }}
+                        value={action.location?.[1] ?? ''}
+                        wheelStepSize={1}
+                        onValueChange={(v) => {
+                          edit(() => {
+                            setAction((draft) => {
+                              draft.location = [draft.location?.[0] ?? 0, v]
+                            })
+                            return {
+                              action: 'set-action-location-y',
+                              desc: i18n.actions.editor2.set_action_location,
+                              squashBy: action.id,
+                            }
+                          })
+                        }}
+                      />
+                      <span className="text-gray-300 dark:text-gray-600">{')'}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.location}</div>
+                  </div>
+                </>
+              ),
+            )}
+            {renderForTypes([CopilotDocV1.Type.Click], ({ action, setAction }) => (
               <>
                 <div className="shrink-0">
                   <div className="flex items-center text-3xl">
@@ -292,8 +321,8 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.rect}</div>
                 </div>
               </>
-            )}
-            {action.type === CopilotDocV1.Type.MoveCamera && (
+            ))}
+            {renderForTypes([CopilotDocV1.Type.MoveCamera], ({ action, setAction }) => (
               <>
                 <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
                   <Divider className="grow rotate-12" />
@@ -380,8 +409,8 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   }}
                 />
               </>
-            )}
-            {action.type === CopilotDocV1.Type.Swipe && (
+            ))}
+            {renderForTypes([CopilotDocV1.Type.Swipe], ({ action, setAction }) => (
               <>
                 <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
                   <Divider className="grow rotate-12" />
@@ -432,8 +461,8 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.end}</div>
                 </div>
               </>
-            )}
-            {action.type === CopilotDocV1.Type.Deploy && (
+            ))}
+            {renderForTypes([CopilotDocV1.Type.Deploy], ({ action, setAction }) => (
               <>
                 <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
                   <Divider className="rotate-12" />
@@ -487,82 +516,84 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   </div>
                 </div>
               </>
-            )}
-            {action.type === CopilotDocV1.Type.SkillUsage && (
-              <>
-                <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
-                  <Divider className="rotate-12" />
-                </div>
-                <div className="">
-                  <div className="flex items-baseline gap-1 text-xl">
-                    <DetailedSelect
-                      items={alternativeOperatorSkillUsages.map((item) =>
-                        item.value === CopilotDocV1.SkillUsageType.ReadyToUseTimes
-                          ? {
-                              ...item,
-                              menuItemProps: {
-                                shouldDismissPopover: false,
-                              },
-                              description: (
-                                <>
-                                  <div>{item.description()}</div>
-                                  <span className="mr-2 text-lg">x</span>
-                                  <NumericInput2
-                                    intOnly
-                                    min={1}
-                                    className="inline-flex"
-                                    inputClassName="!p-0 !w-8 text-center font-semibold"
-                                    value={action.skillTimes ?? 1}
-                                    wheelStepSize={1}
-                                    onValueChange={(v) => {
-                                      edit(() => {
-                                        setAction((draft) => {
-                                          draft.skillTimes = v
+            ))}
+            {renderForTypes([CopilotDocV1.Type.SkillUsage], ({ action, setAction }) => {
+              return (
+                <>
+                  <div className="grow self-stretch max-w-10 flex items-stretch justify-center">
+                    <Divider className="rotate-12" />
+                  </div>
+                  <div className="">
+                    <div className="flex items-baseline gap-1 text-xl">
+                      <DetailedSelect
+                        items={alternativeOperatorSkillUsages.map((item) =>
+                          item.value === CopilotDocV1.SkillUsageType.ReadyToUseTimes
+                            ? {
+                                ...item,
+                                menuItemProps: {
+                                  shouldDismissPopover: false,
+                                },
+                                description: (
+                                  <>
+                                    <div>{item.description()}</div>
+                                    <span className="mr-2 text-lg">x</span>
+                                    <NumericInput2
+                                      intOnly
+                                      min={1}
+                                      className="inline-flex"
+                                      inputClassName="!p-0 !w-8 text-center font-semibold"
+                                      value={action.skillTimes ?? 1}
+                                      wheelStepSize={1}
+                                      onValueChange={(v) => {
+                                        edit(() => {
+                                          setAction((draft) => {
+                                            draft.skillTimes = v
+                                          })
+                                          return {
+                                            action: 'set-action-skillTimes',
+                                            desc: i18n.actions.editor2.set_action_skill_times,
+                                            squashBy: action.id,
+                                          }
                                         })
-                                        return {
-                                          action: 'set-action-skillTimes',
-                                          desc: i18n.actions.editor2.set_action_skill_times,
-                                          squashBy: action.id,
-                                        }
-                                      })
-                                    }}
-                                  />
-                                </>
-                              ),
+                                      }}
+                                    />
+                                  </>
+                                ),
+                              }
+                            : item,
+                        )}
+                        value={action.skillUsage}
+                        onItemSelect={(item) => {
+                          if (item.value === action.skillUsage) return
+                          edit(() => {
+                            setAction((draft) => {
+                              draft.skillUsage = item.value as number
+                            })
+                            return {
+                              action: 'set-action-skillUsage',
+                              desc: i18n.actions.editor2.set_action_skill_usage,
                             }
-                          : item,
-                      )}
-                      value={action.skillUsage}
-                      onItemSelect={(item) => {
-                        if (item.value === action.skillUsage) return
-                        edit(() => {
-                          setAction((draft) => {
-                            draft.skillUsage = item.value as number
                           })
-                          return {
-                            action: 'set-action-skillUsage',
-                            desc: i18n.actions.editor2.set_action_skill_usage,
+                        }}
+                      >
+                        <Button
+                          minimal
+                          className="-ml-1 !px-1 !py-0 !text-xl !font-normal !text-inherit"
+                          text={
+                            action.skillUsage
+                              ? getSkillUsageAltTitle(action.skillUsage, action.skillTimes)
+                              : t.components.editor2.ActionItem.select_usage
                           }
-                        })
-                      }}
-                    >
-                      <Button
-                        minimal
-                        className="-ml-1 !px-1 !py-0 !text-xl !font-normal !text-inherit"
-                        text={
-                          action.skillUsage
-                            ? getSkillUsageAltTitle(action.skillUsage, action.skillTimes)
-                            : t.components.editor2.ActionItem.select_usage
-                        }
-                      />
-                    </DetailedSelect>
+                        />
+                      </DetailedSelect>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {t.components.editor2.label.operation.actions.skill_usage}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {t.components.editor2.label.operation.actions.skill_usage}
-                  </div>
-                </div>
-              </>
-            )}
+                </>
+              )
+            })}
             <div className="ml-auto flex">
               <Button
                 minimal
@@ -615,7 +646,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
               />
             </div>
           </div>
-          {action.type === CopilotDocV1.Type.Swipe && (
+          {renderForTypes([CopilotDocV1.Type.Swipe], ({ action, setAction }) => (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-gray-200 px-3 py-1.5 dark:border-gray-700">
               <div className="flex items-center gap-1">
                 <span className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.duration}</span>
@@ -776,7 +807,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                 }}
               />
             </div>
-          )}
+          ))}
           {(doc !== undefined || action.docColor !== undefined) && (
             <div data-doc-section className="flex items-center bg-gray-200 text-gray-500">
               <Select
@@ -883,7 +914,20 @@ const groupNamesAtom = selectAtom(
 )
 
 const ActionTarget: FC<{
-  actionAtom: PrimitiveAtom<EditorAction>
+  actionAtom: PrimitiveAtom<
+    Extract<
+      EditorAction,
+      {
+        type:
+          | CopilotDocV1.Type.Deploy
+          | CopilotDocV1.Type.Retreat
+          | CopilotDocV1.Type.Skill
+          | CopilotDocV1.Type.SkillUsage
+          | CopilotDocV1.Type.BulletTime
+          | CopilotDocV1.Type.SetUnitLocation
+      }
+    >
+  >
 }> = ({ actionAtom }) => {
   const language = useAtomValue(languageAtom)
   const t = useTranslation()
@@ -956,13 +1000,13 @@ const ActionTarget: FC<{
   )
 }
 
-type PartialRect = (number | undefined | null)[]
+type Rect = NonNullable<EditorActionByType<CopilotDocV1.Type.Click>['rect']>
 
 // 720p 基准像素矩形 [x, y, w, h] 的逐位输入，字号继承父容器。
 // 清空输入时 NumericInput2 回调 NaN，转成 undefined；全部清空时把整个字段置空以便 ｢未填｣ 与 ｢已填｣ 可区分
 const RectInput: FC<{
-  value: PartialRect | undefined
-  onChange: (value: PartialRect | undefined) => void
+  value: Rect | undefined
+  onChange: (value: Rect | undefined) => void
 }> = ({ value, onChange }) => (
   <>
     {[0, 1, 2, 3].map((index, i) => (
@@ -976,7 +1020,7 @@ const RectInput: FC<{
           value={value?.[index] ?? ''}
           wheelStepSize={1}
           onValueChange={(v) => {
-            const next: PartialRect = [value?.[0], value?.[1], value?.[2], value?.[3]]
+            const next: Rect = [value?.[0], value?.[1], value?.[2], value?.[3]]
             next[index] = Number.isNaN(v) ? undefined : v
             onChange(next.every((x) => x === undefined) ? undefined : next)
           }}

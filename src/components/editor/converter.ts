@@ -46,23 +46,23 @@ export function toEditableOperation(
   })
 
   operation.actions?.forEach((action) => {
-    if (!action) return
-    const type = findActionType(action.type)
+    const type = findActionType(action?.type)
 
     // normalize action type, e.g. '部署' -> 'Deploy'
     if (type.value !== 'Unknown') {
-      action.type = type.value
+      action!.type = type.value
     }
 
     // role 为空串视为未填写，导入即清掉，避免原样导出
     stripEmptyRole(action!)
 
-    if (action.direction !== undefined) {
-      const direction = findOperatorDirection(action.direction).value
+    if (type.value === 'Deploy') {
+      const deployAction = action as CopilotDocV1.ActionDeploy
+      const direction = findOperatorDirection(deployAction.direction).value
 
       // normalize direction, e.g. '上' -> 'Up'
       if (direction !== null) {
-        action.direction = direction
+        deployAction.direction = direction
       }
     }
   })
