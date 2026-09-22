@@ -161,6 +161,23 @@
     "action": {
       "type": "object",
       "description": "One action to be executed.",
+      "if": {
+        "properties": {
+          "type": {
+            "enum": ["SetUnitLocation", "设置单位坐标"]
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["name", "location"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
       "properties": {
         "type": {
           "type": "string",
