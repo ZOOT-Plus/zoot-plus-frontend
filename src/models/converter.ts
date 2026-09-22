@@ -27,7 +27,20 @@ export function toCopilotOperation(apiOperation: CopilotInfo): CopilotDocV1.Oper
   }
 }
 
+/**
+ * role 为空串（含 null）视为未填写，就地删掉该字段，避免原样导出。
+ * 三条导入链路共用：migrateOperation（API 加载与 editor2）与 toEditableOperation（源码粘贴）。
+ */
+export function stripEmptyRole<T extends object>(action: T): T {
+  if ('role' in action && !(action as { role?: unknown }).role) {
+    delete (action as { role?: unknown }).role
+  }
+  return action
+}
+
 export function migrateOperation(operation: CopilotDocV1.Operation): CopilotDocV1.Operation {
+  // role 为空串视为未填写，导入链路统一在此清掉，避免原样导出
+  operation.actions?.forEach(stripEmptyRole)
   if (operation.version === 2) {
     // in version 2, the module property is set to the index of the module in the modules array,
     // we need to convert it using the correct CopilotDocV1.Module mapping
