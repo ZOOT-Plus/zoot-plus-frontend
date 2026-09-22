@@ -151,7 +151,10 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
               {/* Location + Direction */}
               {(('location' in action && action.location) ||
                 'direction' in action ||
-                ('distance' in action && action.distance)) && (
+                ('distance' in action && action.distance) ||
+                ('rect' in action && action.rect) ||
+                ('begin' in action && action.begin) ||
+                ('keepKills' in action && action.keepKills)) && (
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                   {'location' in action && action.location && (
                     <span className="flex items-center gap-1 text-[11px]">
@@ -176,6 +179,30 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                       <Icon icon="camera" size={10} className="text-zinc-400 dark:text-white/30" />
                       <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.distance}</span>
                       <span className="font-mono text-zinc-600 dark:text-white/60">{action.distance.join(', ')}</span>
+                    </span>
+                  )}
+                  {'rect' in action && action.rect && (
+                    <span className="flex items-center gap-1 text-[11px]">
+                      <Icon icon="select" size={10} className="text-zinc-400 dark:text-white/30" />
+                      <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.rect}</span>
+                      <span className="font-mono text-zinc-600 dark:text-white/60 bg-zinc-100 dark:bg-white/[0.06] px-1 rounded">
+                        {action.rect.join(', ')}
+                      </span>
+                    </span>
+                  )}
+                  {'begin' in action && action.begin && (
+                    <span className="flex items-center gap-1 text-[11px]">
+                      <Icon icon="arrows-horizontal" size={10} className="text-zinc-400 dark:text-white/30" />
+                      <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.swipe_range}</span>
+                      <span className="font-mono text-zinc-600 dark:text-white/60 bg-zinc-100 dark:bg-white/[0.06] px-1 rounded">
+                        {action.begin.join(', ')} → {action.end?.join(', ')}
+                      </span>
+                    </span>
+                  )}
+                  {'keepKills' in action && action.keepKills && (
+                    <span className="flex items-center gap-1 text-[11px]">
+                      <Icon icon="endorsed" size={10} className="text-zinc-400 dark:text-white/30" />
+                      <span className="text-zinc-400 dark:text-white/30">{t.components.ActionCard.keep_kills}</span>
                     </span>
                   )}
                 </div>
@@ -297,6 +324,22 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
 
           {'distance' in action && action.distance && (
             <span className="font-mono text-xs text-gray-400 dark:text-gray-500">{action.distance.join(', ')}</span>
+          )}
+
+          {'rect' in action && action.rect && (
+            <span className="font-mono text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-1 rounded">
+              {action.rect.join(', ')}
+            </span>
+          )}
+
+          {'begin' in action && action.begin && (
+            <span className="font-mono text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-1 rounded">
+              {action.begin.join(', ')} → {action.end?.join(', ')}
+            </span>
+          )}
+
+          {'keepKills' in action && action.keepKills && (
+            <span className="text-xs text-gray-400 dark:text-gray-500">{t.components.ActionCard.keep_kills}</span>
           )}
         </div>
 

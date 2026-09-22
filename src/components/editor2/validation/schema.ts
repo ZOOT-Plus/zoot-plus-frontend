@@ -78,6 +78,39 @@ const actionShape = {
   skill_usage: operator.shape.skill_usage,
   skill_times: operator.shape.skill_times,
 
+  // click & swipe fields
+  rect: z
+    .tuple([
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+    ])
+    .optional(),
+  begin: z
+    .tuple([
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+    ])
+    .optional(),
+  end: z
+    .tuple([
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+      z.number().int().or(z.undefined()),
+    ])
+    .optional(),
+  duration: z.number().int().min(0).optional(),
+  extra_swipe: z.number().int().min(0).max(4).optional(),
+  slope_in: z.number().int().min(0).optional(),
+  slope_out: z.number().int().min(0).optional(),
+  with_pause: z.boolean().optional(),
+  high_resolution_swipe_fix: z.boolean().optional(),
+  keep_kills: z.boolean().optional(),
+
   // common fields
   kills: z.number().int().min(0).optional(),
   costs: z.number().int().min(0).optional(),
@@ -119,6 +152,14 @@ const action = z
       ...actionShape,
     }),
     z.looseObject({
+      type: z.literal(CopilotDocV1.Type.Click),
+      ...actionShape,
+    }),
+    z.looseObject({
+      type: z.literal(CopilotDocV1.Type.Swipe),
+      ...actionShape,
+    }),
+    z.looseObject({
       type: z.literal(CopilotDocV1.Type.SpeedUp),
       ...actionShape,
     }),
@@ -144,6 +185,9 @@ const actionShapeStrict = {
   ...actionShape,
   location: z.tuple([z.number().int(), z.number().int()]).optional(),
   distance: z.tuple([z.number(), z.number()]).optional(),
+  rect: z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()]).optional(),
+  begin: z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()]).optional(),
+  end: z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()]).optional(),
 }
 const actionStrict = z
   .discriminatedUnion('type', [
@@ -185,6 +229,16 @@ const actionStrict = z
     }),
     z.looseObject({
       ...actionShapeStrict,
+      type: z.literal(CopilotDocV1.Type.Click),
+    }),
+    z.looseObject({
+      ...actionShapeStrict,
+      type: z.literal(CopilotDocV1.Type.Swipe),
+      begin: actionShapeStrict.begin.unwrap(),
+      end: actionShapeStrict.end.unwrap(),
+    }),
+    z.looseObject({
+      ...actionShapeStrict,
       type: z.literal(CopilotDocV1.Type.SpeedUp),
     }),
     z.looseObject({
@@ -214,6 +268,16 @@ const actionStrict = z
         code: 'custom',
         input: value,
         message: '目标或位置至少需要填写一项',
+        continue: true,
+      })
+    }
+    // Click 的 rect 与 location 至少填一项，都不填会导致 MAA 加载作业失败；
+    // 同填是合法的：MAA 会警告并优先使用 rect
+    if (value.type === CopilotDocV1.Type.Click && value.rect === undefined && value.location === undefined) {
+      issues.push({
+        code: 'custom',
+        input: value,
+        message: '像素区域与位置至少需要填写一项',
         continue: true,
       })
     }

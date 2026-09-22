@@ -1,11 +1,23 @@
-import { Button, Callout, Card, Classes, Divider, Icon, InputGroup, MenuItem, Tooltip } from '@blueprintjs/core'
+import {
+  Button,
+  Callout,
+  Card,
+  Classes,
+  Divider,
+  Icon,
+  InputGroup,
+  MenuItem,
+  PopoverInteractionKind,
+  Switch,
+  Tooltip,
+} from '@blueprintjs/core'
 
 import clsx from 'clsx'
 import { Draft } from 'immer'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
 import { selectAtom } from 'jotai/utils'
-import { FC, ReactNode, memo, useEffect, useRef, useState } from 'react'
+import { FC, Fragment, ReactNode, memo, useEffect, useRef, useState } from 'react'
 
 import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
@@ -13,6 +25,7 @@ import {
   actionDocColors,
   alternativeOperatorSkillUsages,
   findOperatorByName,
+  findOperatorDirection,
   getLocalizedOperatorName,
   getSkillUsageAltTitle,
 } from '../../../models/operator'
@@ -32,6 +45,15 @@ interface ActionItemProps extends Partial<SortableItemProps> {
   className?: string
   actionAtom: PrimitiveAtom<EditorAction>
 }
+
+// extra_swipe 的取值：0 不启用，1/2/3/4 分别为上/下/左/右（与 MAA 协议一致）
+const EXTRA_SWIPE_DIRECTIONS = [
+  { value: 0, direction: undefined, icon: 'disable' },
+  { value: 1, direction: CopilotDocV1.Direction.Up, icon: 'arrow-up' },
+  { value: 2, direction: CopilotDocV1.Direction.Down, icon: 'arrow-down' },
+  { value: 3, direction: CopilotDocV1.Direction.Left, icon: 'arrow-left' },
+  { value: 4, direction: CopilotDocV1.Direction.Right, icon: 'arrow-right' },
+] as const
 
 export const ActionItem: FC<ActionItemProps> = memo(
   ({ className, actionAtom, isDragging, isSorting, attributes, listeners }) => {
@@ -202,6 +224,103 @@ export const ActionItem: FC<ActionItemProps> = memo(
                 </>
               ),
             )}
+            {renderForTypes([CopilotDocV1.Type.Click], ({ action, setAction }) => (
+              <>
+                <div className="shrink-0">
+                  <div className="flex items-center text-3xl">
+                    <span className="text-gray-300 dark:text-gray-600">{'('}</span>
+                    <NumericInput2
+                      intOnly
+                      buttonPosition="none"
+                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                      style={{
+                        width: String(action.location?.[0] ?? 0).length + 'ch',
+                      }}
+                      value={action.location?.[0] ?? ''}
+                      wheelStepSize={1}
+                      onValueChange={(v) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            // 清空输入时 NumericInput2 回调 NaN，转成 undefined 以免 NaN 落进状态与序列化；
+                            // 两位都空时删除整个字段，半填是编辑中间态（导出会被校验拦下要求补全）
+                            const x = Number.isNaN(v) ? undefined : v
+                            if (x === undefined && draft.location?.[1] === undefined) {
+                              delete draft.location
+                            } else {
+                              draft.location = [x, draft.location?.[1]]
+                            }
+                          })
+                          return {
+                            action: 'set-action-location-x',
+                            desc: i18n.actions.editor2.set_action_location,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
+                    <NumericInput2
+                      intOnly
+                      buttonPosition="none"
+                      inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
+                      style={{
+                        width: String(action.location?.[1] ?? 0).length + 'ch',
+                      }}
+                      value={action.location?.[1] ?? ''}
+                      wheelStepSize={1}
+                      onValueChange={(v) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            const y = Number.isNaN(v) ? undefined : v
+                            if (y === undefined && draft.location?.[0] === undefined) {
+                              delete draft.location
+                            } else {
+                              draft.location = [draft.location?.[0], y]
+                            }
+                          })
+                          return {
+                            action: 'set-action-location-y',
+                            desc: i18n.actions.editor2.set_action_location,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="text-gray-300 dark:text-gray-600">{')'}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.location}</div>
+                </div>
+                <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
+                  <Divider className="grow rotate-12 ml-3" />
+                  <Tooltip placement="top" content={t.components.editor2.ActionItem.rect_or_location}>
+                    {t.components.editor2.ActionItem.or}
+                  </Tooltip>
+                  <Divider className="grow rotate-12 mr-3" />
+                </div>
+                <div className="shrink-0">
+                  <div className="flex items-center text-2xl">
+                    <span className="text-gray-300 dark:text-gray-600">{'['}</span>
+                    <RectInput
+                      value={action.rect}
+                      onChange={(value) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            draft.rect = value
+                          })
+                          return {
+                            action: 'set-action-rect',
+                            desc: i18n.actions.editor2.set_action_rect,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                    <span className="text-gray-300 dark:text-gray-600">{']'}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.rect}</div>
+                </div>
+              </>
+            ))}
             {renderForTypes([CopilotDocV1.Type.MoveCamera], ({ action, setAction }) => (
               <>
                 <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
@@ -258,6 +377,87 @@ export const ActionItem: FC<ActionItemProps> = memo(
                     <span className="text-gray-300 dark:text-gray-600">{')'}</span>
                   </div>
                   <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.distance}</div>
+                </div>
+                <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
+                  <Divider className="grow rotate-12" />
+                </div>
+                <Switch
+                  className="mt-2 !mb-0"
+                  labelElement={
+                    <span className="text-xs font-normal">
+                      {t.components.editor2.label.operation.actions.keep_kills}
+                    </span>
+                  }
+                  checked={action.keepKills ?? false}
+                  onChange={(e) => {
+                    edit(() => {
+                      setAction((draft) => {
+                        // false 是默认值，只在开启时写出，避免序列化出多余的 keep_kills: false
+                        if (e.target.checked) {
+                          draft.keepKills = true
+                        } else {
+                          delete draft.keepKills
+                        }
+                      })
+                      return {
+                        action: 'set-action-keepKills',
+                        desc: i18n.actions.editor2.set_action_keep_kills,
+                        squashBy: action.id,
+                      }
+                    })
+                  }}
+                />
+              </>
+            ))}
+            {renderForTypes([CopilotDocV1.Type.Swipe], ({ action, setAction }) => (
+              <>
+                <div className="grow self-stretch max-w-10 flex flex-col items-center text-xs">
+                  <Divider className="grow rotate-12" />
+                </div>
+                <div className="shrink-0">
+                  <div className="flex items-center text-xl">
+                    <RectInput
+                      value={action.begin}
+                      onChange={(value) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            draft.begin = value
+                          })
+                          return {
+                            action: 'set-action-begin',
+                            desc: i18n.actions.editor2.set_action_begin,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.begin}</div>
+                </div>
+                <Icon
+                  className="mx-1 mb-4 shrink-0 self-end text-gray-400 dark:text-gray-500"
+                  icon="arrow-right"
+                  size={20}
+                />
+                <div className="shrink-0">
+                  <div className="flex items-center text-xl">
+                    <RectInput
+                      value={action.end}
+                      onChange={(value) => {
+                        edit(() => {
+                          setAction((draft) => {
+                            draft.end = value
+                          })
+                          return {
+                            action: 'set-action-end',
+                            desc: i18n.actions.editor2.set_action_end,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.end}</div>
                 </div>
               </>
             ))}
@@ -445,6 +645,168 @@ export const ActionItem: FC<ActionItemProps> = memo(
               />
             </div>
           </div>
+          {renderForTypes([CopilotDocV1.Type.Swipe], ({ action, setAction }) => (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-gray-200 px-3 py-1.5 dark:border-gray-700">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500">{t.components.editor2.label.operation.actions.duration}</span>
+                <NumericInput2
+                  intOnly
+                  min={0}
+                  buttonPosition="none"
+                  inputClassName="!w-12 !p-0 !h-5 !leading-none !rounded-r-md text-center font-semibold !text-inherit"
+                  placeholder="0"
+                  value={action.duration ?? ''}
+                  wheelStepSize={10}
+                  onValueChange={(v) => {
+                    edit(() => {
+                      setAction((draft) => {
+                        if (Number.isNaN(v)) {
+                          delete draft.duration
+                        } else {
+                          draft.duration = v
+                        }
+                      })
+                      return {
+                        action: 'set-action-duration',
+                        desc: i18n.actions.editor2.set_action_duration,
+                        squashBy: action.id,
+                      }
+                    })
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500">
+                  {t.components.editor2.label.operation.actions.extra_swipe}
+                </span>
+                {EXTRA_SWIPE_DIRECTIONS.map(({ value, direction, icon }) => {
+                  const active = (action.extraSwipe ?? 0) === value
+                  return (
+                    <Button
+                      key={value}
+                      small
+                      minimal
+                      className={clsx(
+                        '!px-1.5 !bg-transparent [&_.bp6-icon]:!text-current',
+                        active ? '!text-inherit drop-shadow' : '!text-gray-300 hover:!text-gray-400',
+                      )}
+                      active={active}
+                      title={
+                        direction ? findOperatorDirection(direction).title() : t.components.editor2.ActionItem.disabled
+                      }
+                      onClick={() => {
+                        edit(() => {
+                          setAction((draft) => {
+                            // 0 是默认值（不启用），只在选择方向时写出
+                            if (value === 0) {
+                              delete draft.extraSwipe
+                            } else {
+                              draft.extraSwipe = value
+                            }
+                          })
+                          return {
+                            action: 'set-action-extraSwipe',
+                            desc: i18n.actions.editor2.set_action_extra_swipe,
+                            squashBy: action.id,
+                          }
+                        })
+                      }}
+                      icon={<Icon size={14} icon={icon} />}
+                    />
+                  )
+                })}
+              </div>
+              {(['slopeIn', 'slopeOut'] as const).map((key) => (
+                <div className="flex items-center gap-1" key={key}>
+                  <span className="text-xs text-gray-500">
+                    {t.components.editor2.label.operation.actions[key === 'slopeIn' ? 'slope_in' : 'slope_out']}
+                  </span>
+                  <NumericInput2
+                    intOnly
+                    min={0}
+                    buttonPosition="none"
+                    inputClassName="!w-10 !p-0 !h-5 !leading-none !rounded-r-md text-center font-semibold !text-inherit"
+                    placeholder="10"
+                    value={action[key] ?? ''}
+                    wheelStepSize={1}
+                    onValueChange={(v) => {
+                      edit(() => {
+                        setAction((draft) => {
+                          if (Number.isNaN(v)) {
+                            delete draft[key]
+                          } else {
+                            draft[key] = v
+                          }
+                        })
+                        return {
+                          action: `set-action-${key}`,
+                          desc: i18n.actions.editor2[
+                            key === 'slopeIn' ? 'set_action_slope_in' : 'set_action_slope_out'
+                          ],
+                          squashBy: action.id,
+                        }
+                      })
+                    }}
+                  />
+                </div>
+              ))}
+              <Switch
+                className="!mb-0"
+                labelElement={
+                  <span className="text-xs font-normal">{t.components.editor2.label.operation.actions.with_pause}</span>
+                }
+                checked={action.withPause ?? false}
+                onChange={(e) => {
+                  edit(() => {
+                    setAction((draft) => {
+                      if (e.target.checked) {
+                        draft.withPause = true
+                      } else {
+                        delete draft.withPause
+                      }
+                    })
+                    return {
+                      action: 'set-action-withPause',
+                      desc: i18n.actions.editor2.set_action_with_pause,
+                      squashBy: action.id,
+                    }
+                  })
+                }}
+              />
+              <Switch
+                className="!mb-0"
+                labelElement={
+                  <span className="text-xs font-normal">
+                    {t.components.editor2.label.operation.actions.high_resolution_swipe_fix}
+                    <Tooltip
+                      className="!inline-block !mt-0"
+                      interactionKind={PopoverInteractionKind.HOVER}
+                      content={t.components.editor2.label.operation.actions.high_resolution_swipe_fix_tip}
+                    >
+                      <Icon className="ml-1 cursor-help" icon="help" />
+                    </Tooltip>
+                  </span>
+                }
+                checked={action.highResolutionSwipeFix ?? false}
+                onChange={(e) => {
+                  edit(() => {
+                    setAction((draft) => {
+                      if (e.target.checked) {
+                        draft.highResolutionSwipeFix = true
+                      } else {
+                        delete draft.highResolutionSwipeFix
+                      }
+                    })
+                    return {
+                      action: 'set-action-highResolutionSwipeFix',
+                      desc: i18n.actions.editor2.set_action_high_resolution_swipe_fix,
+                      squashBy: action.id,
+                    }
+                  })
+                }}
+              />
+            </div>
+          ))}
           {(doc !== undefined || action.docColor !== undefined) && (
             <div data-doc-section className="flex items-center bg-gray-200 text-gray-500">
               <Select
@@ -644,3 +1006,33 @@ const ActionTarget: FC<{
     </OperatorSelect>
   )
 }
+
+type PartialRect = [number | undefined, number | undefined, number | undefined, number | undefined]
+
+// 720p 基准像素矩形 [x, y, w, h] 的逐位输入，字号继承父容器。
+// 清空输入时 NumericInput2 回调 NaN，转成 undefined；全部清空时把整个字段置空以便 ｢未填｣ 与 ｢已填｣ 可区分
+const RectInput: FC<{
+  value: PartialRect | undefined
+  onChange: (value: PartialRect | undefined) => void
+}> = ({ value, onChange }) => (
+  <>
+    {[0, 1, 2, 3].map((index, i) => (
+      <Fragment key={index}>
+        {i > 0 && <span className="mt-1 -ml-px mr-px text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>}
+        <NumericInput2
+          intOnly
+          buttonPosition="none"
+          inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit font-semibold text-center"
+          style={{ width: String(value?.[index] ?? 0).length + 'ch' }}
+          value={value?.[index] ?? ''}
+          wheelStepSize={1}
+          onValueChange={(v) => {
+            const next: PartialRect = [value?.[0], value?.[1], value?.[2], value?.[3]]
+            next[index] = Number.isNaN(v) ? undefined : v
+            onChange(next.every((x) => x === undefined) ? undefined : next)
+          }}
+        />
+      </Fragment>
+    ))}
+  </>
+)

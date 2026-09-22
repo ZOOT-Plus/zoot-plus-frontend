@@ -121,6 +121,46 @@
         "cn": "修改动作的技能使用次数",
         "en": "Change Action's Skill Usage Count"
       },
+      "set_action_rect": {
+        "cn": "修改动作的像素区域",
+        "en": "Change Action's Pixel Rect"
+      },
+      "set_action_begin": {
+        "cn": "修改动作的滑动起点",
+        "en": "Change Action's Swipe Begin Rect"
+      },
+      "set_action_end": {
+        "cn": "修改动作的滑动终点",
+        "en": "Change Action's Swipe End Rect"
+      },
+      "set_action_duration": {
+        "cn": "修改动作的滑动时长",
+        "en": "Change Action's Swipe Duration"
+      },
+      "set_action_extra_swipe": {
+        "cn": "修改动作的补偿滑动方向",
+        "en": "Change Action's Extra Swipe Direction"
+      },
+      "set_action_slope_in": {
+        "cn": "修改动作的滑动起始斜率",
+        "en": "Change Action's Swipe Start Slope"
+      },
+      "set_action_slope_out": {
+        "cn": "修改动作的滑动结束斜率",
+        "en": "Change Action's Swipe End Slope"
+      },
+      "set_action_with_pause": {
+        "cn": "修改动作的滑动暂停设置",
+        "en": "Change Action's Swipe With-Pause Setting"
+      },
+      "set_action_high_resolution_swipe_fix": {
+        "cn": "修改动作的高分辨率滑动修正设置",
+        "en": "Change Action's Hi-Res Swipe Fix Setting"
+      },
+      "set_action_keep_kills": {
+        "cn": "修改动作的保持击杀数设置",
+        "en": "Change Action's Keep-Kills Setting"
+      },
       "duplicate_action": {
         "cn": "复制动作",
         "en": "Duplicate Action"
@@ -343,6 +383,50 @@
             "doc_color": {
               "cn": "日志颜色",
               "en": "Log Color"
+            },
+            "keep_kills": {
+              "cn": "保持击杀数",
+              "en": "Keep Kills"
+            },
+            "rect": {
+              "cn": "像素区域",
+              "en": "Pixel Rect"
+            },
+            "begin": {
+              "cn": "起点区域",
+              "en": "Begin Rect"
+            },
+            "end": {
+              "cn": "终点区域",
+              "en": "End Rect"
+            },
+            "duration": {
+              "cn": "时长 (ms)",
+              "en": "Duration (ms)"
+            },
+            "extra_swipe": {
+              "cn": "补偿滑动",
+              "en": "Extra Swipe"
+            },
+            "slope_in": {
+              "cn": "起始斜率",
+              "en": "Start Slope"
+            },
+            "slope_out": {
+              "cn": "结束斜率",
+              "en": "End Slope"
+            },
+            "with_pause": {
+              "cn": "附带暂停",
+              "en": "With Pause"
+            },
+            "high_resolution_swipe_fix": {
+              "cn": "高分辨率修正",
+              "en": "Hi-Res Swipe Fix"
+            },
+            "high_resolution_swipe_fix_tip": {
+              "cn": "绝大多数情况下无需开启：该修正仅针对未使用 Unity 滑动方式的界面（现阶段仅主线关卡导航的章节滑动需要），自动战斗中的滑动不涉及",
+              "en": "In most cases there is no need to enable this: the fix only applies to screens that don't use Unity swiping (currently only the chapter swiping in main story stage navigation); swiping during auto battles is never affected"
             }
           }
         },
@@ -701,6 +785,14 @@
         "target_or_location": {
           "cn": "目标或位置只需填入其中一项",
           "en": "Only one of target or location is required"
+        },
+        "rect_or_location": {
+          "cn": "像素区域与位置至少填一项；同时填写时优先使用像素区域",
+          "en": "At least one of pixel rect or location is required; when both are set, the pixel rect takes precedence"
+        },
+        "disabled": {
+          "cn": "不启用",
+          "en": "Disabled"
         },
         "or": {
           "cn": "或",
@@ -1229,6 +1321,30 @@
             "cn": "移动距离一般不需要修改，只填写前置延迟（15000）和击杀数条件即可",
             "en": "Movement distance usually doesn't need modification, just fill in pre-delay (15000) and Kill Count conditions"
           },
+          "keep_kills": {
+            "cn": "保持击杀数",
+            "en": "Keep kills"
+          },
+          "click_hint": {
+            "cn": "直接点击像素区域或战场格子，不做任何识别，空格子也可点击；两者至少填一项，同时填写时优先使用像素区域",
+            "en": "Directly click a pixel rect or a battlefield tile without any recognition; empty tiles are clickable too. At least one of them is required; when both are set, the pixel rect takes precedence"
+          },
+          "swipe_hint": {
+            "cn": "从起点矩形滑动到终点矩形（720p 基准像素，起点/终点在各自区域内随机取点并自动缩放适配分辨率），其余参数可选",
+            "en": "Swipe from the begin rect to the end rect (720p-based pixels; the begin/end points are picked randomly inside each rect and scaled to the actual resolution). All other parameters are optional"
+          },
+          "pixel_rect": {
+            "cn": "像素区域",
+            "en": "Pixel Rect"
+          },
+          "swipe_begin": {
+            "cn": "起点区域",
+            "en": "Begin Rect"
+          },
+          "swipe_end": {
+            "cn": "终点区域",
+            "en": "End Rect"
+          },
           "execution_conditions": {
             "cn": "执行条件",
             "en": "Execution Conditions"
@@ -1262,6 +1378,66 @@
           "post_delay": {
             "cn": "后置延时",
             "en": "Post-Delay"
+          }
+        },
+        "EditorActionRect": {
+          "rect_required": {
+            "cn": "必须填写像素矩形",
+            "en": "Pixel rect is required"
+          },
+          "not_valid_rect": {
+            "cn": "像素矩形不合法",
+            "en": "Not a valid pixel rect"
+          },
+          "x": {
+            "cn": "X",
+            "en": "X"
+          },
+          "y": {
+            "cn": "Y",
+            "en": "Y"
+          },
+          "w": {
+            "cn": "宽",
+            "en": "W"
+          },
+          "h": {
+            "cn": "高",
+            "en": "H"
+          }
+        },
+        "EditorActionSwipeParams": {
+          "duration": {
+            "cn": "时长 (ms)",
+            "en": "Duration (ms)"
+          },
+          "extra_swipe": {
+            "cn": "补偿滑动",
+            "en": "Extra Swipe"
+          },
+          "extra_swipe_disabled": {
+            "cn": "不启用",
+            "en": "Disabled"
+          },
+          "slope_in": {
+            "cn": "起始斜率",
+            "en": "Start Slope"
+          },
+          "slope_out": {
+            "cn": "结束斜率",
+            "en": "End Slope"
+          },
+          "with_pause": {
+            "cn": "附带暂停",
+            "en": "With Pause"
+          },
+          "high_resolution_swipe_fix": {
+            "cn": "高分辨率修正",
+            "en": "Hi-Res Swipe Fix"
+          },
+          "high_resolution_swipe_fix_tip": {
+            "cn": "绝大多数情况下无需开启：该修正仅针对未使用 Unity 滑动方式的界面（现阶段仅主线关卡导航的章节滑动需要），自动战斗中的滑动不涉及",
+            "en": "In most cases there is no need to enable this: the fix only applies to screens that don't use Unity swiping (currently only the chapter swiping in main story stage navigation); swiping during auto battles is never affected"
           }
         },
         "EditorActionDistance": {
@@ -1422,6 +1598,10 @@
           "name_or_location_required": {
             "cn": "类型为技能、撤退或子弹时间时，必须填写名称或位置其中一个",
             "en": "When type is Skill, Retreat, or BulletTime, you must provide either a name or location"
+          },
+          "rect_or_location_required": {
+            "cn": "类型为点击时，像素区域与位置至少需要填写其中一个",
+            "en": "When type is Click, you must provide either a pixel rect or a location"
           }
         }
       },
@@ -3222,6 +3402,18 @@
         "cn": "坐标",
         "en": "Coordinates"
       },
+      "rect": {
+        "cn": "像素区域",
+        "en": "Pixel Rect"
+      },
+      "swipe_range": {
+        "cn": "滑动范围",
+        "en": "Swipe Range"
+      },
+      "keep_kills": {
+        "cn": "保持击杀数",
+        "en": "Keep Kills"
+      },
       "direction": {
         "cn": "朝向",
         "en": "Direction"
@@ -4102,6 +4294,34 @@
           "description": {
             "cn": "仅用于引航者试炼模式中切换区域",
             "en": "Only used for switching areas in Integrated Strategies mode"
+          }
+        },
+        "click": {
+          "title": {
+            "cn": "点击",
+            "en": "Click"
+          },
+          "short_title": {
+            "cn": "点击",
+            "en": "Click"
+          },
+          "description": {
+            "cn": "直接点击像素区域或战场格子，不做任何识别，空格子也可点击；两者至少填一项，同时填写时优先使用像素区域",
+            "en": "Directly click a pixel rect or a battlefield tile without any recognition; empty tiles are clickable too. At least one of rect and location is required; when both are set, the rect takes precedence"
+          }
+        },
+        "swipe": {
+          "title": {
+            "cn": "滑动",
+            "en": "Swipe"
+          },
+          "short_title": {
+            "cn": "滑动",
+            "en": "Swipe"
+          },
+          "description": {
+            "cn": "从起点矩形滑动到终点矩形，直接下发底层滑动指令，可配置时长、补偿滑动、斜率等参数",
+            "en": "Swipe from the begin rect to the end rect, sending the raw controller swipe command, with optional duration, extra swipe, slopes and more"
           }
         },
         "skill_daemon": {

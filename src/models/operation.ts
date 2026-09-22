@@ -36,3 +36,24 @@ export type CopilotType = (typeof CopilotType)[keyof typeof CopilotType]
 export enum MinimumRequired {
   V4_0_0 = 'v6.0.0',
 }
+
+/** 比较两个 `vX.Y.Z(-prerelease)` 版本串，返回 -1/0/1；格式不合法按相等处理 */
+export function compareVersions(a: string, b: string): number {
+  const parse = (v: string) => {
+    const m = v.match(/^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z][0-9A-Za-z.-]*))?/)
+    if (!m) return null
+    return { major: +m[1], minor: +m[2], patch: +m[3], prerelease: m[4] }
+  }
+  const pa = parse(a)
+  const pb = parse(b)
+  if (!pa || !pb) return 0
+  for (const key of ['major', 'minor', 'patch'] as const) {
+    if (pa[key] !== pb[key]) return pa[key] < pb[key] ? -1 : 1
+  }
+  // 无预发布段 > 有预发布段（6.18.0 > 6.18.0-beta.3）
+  if (!pa.prerelease || !pb.prerelease) {
+    if (pa.prerelease !== pb.prerelease) return pa.prerelease ? -1 : 1
+    return 0
+  }
+  return pa.prerelease < pb.prerelease ? -1 : pa.prerelease > pb.prerelease ? 1 : 0
+}

@@ -1,7 +1,7 @@
 import { compact, uniqueId } from 'lodash-es'
 import { DeepPartial, FieldArrayWithId } from 'react-hook-form'
 
-import type { CopilotDocV1 } from 'models/copilot.schema'
+import { CopilotDocV1, minimumRequiredForActions } from 'models/copilot.schema'
 import { MinimumRequired } from 'models/operation'
 
 import { findOperatorDirection } from '../../models/operator'
@@ -75,6 +75,11 @@ export function toMaaOperation(
   operation = removeNullFields(JSON.parse(JSON.stringify(operation))) as DeepPartial<CopilotDocV1.Operation>
 
   operation.minimumRequired ||= MinimumRequired.V4_0_0
+
+  // 含仅新版协议支持的动作/字段时按特性注册表抬升 minimum_required（见 PROTOCOL_FEATURE_MINIMUMS），
+  // 已声明更高版本时保持不降级
+  operation.minimumRequired =
+    minimumRequiredForActions(operation.actions ?? [], operation.minimumRequired) ?? operation.minimumRequired
 
   // strip IDs
   compact(

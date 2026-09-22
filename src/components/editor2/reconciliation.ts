@@ -4,7 +4,7 @@ import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
 import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
-import { CopilotDocV1 } from '../../models/copilot.schema'
+import { CopilotDocV1, minimumRequiredForActions } from '../../models/copilot.schema'
 import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
@@ -12,19 +12,14 @@ import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
 import { CopilotOperationLoose } from './validation/schema'
 
-export type WithPartialCoordinates<T> = T extends {
-  location?: [number, number]
+// Coordinates (location/distance 2-tuples and rect/begin/end 4-tuples) are edited
+// element by element in the UI, so each element must be individually nullable
+// while the user has only filled in part of the tuple.
+type WithPartialCoordinateElements<V> = V extends [number, ...number[]] ? { [I in keyof V]: V[I] | undefined } : V
+
+export type WithPartialCoordinates<T> = {
+  [K in keyof T]: WithPartialCoordinateElements<T[K]>
 }
-  ? Omit<T, 'location'> & {
-      location?: [number | undefined, number | undefined]
-    }
-  : T extends {
-        distance?: [number, number]
-      }
-    ? Omit<T, 'distance'> & {
-        distance?: [number | undefined, number | undefined]
-      }
-    : T
 
 export type WithId<T = {}> = T extends never ? never : T & { id: string }
 
@@ -287,6 +282,13 @@ export function toMaaOperation(operation: EditorOperation): CopilotOperationLoos
     ) {
       converted.version = CopilotDocV1.VERSION
     }
+  }
+
+  // 含仅新版协议支持的动作/字段时按特性注册表抬升 minimum_required（见 PROTOCOL_FEATURE_MINIMUMS），
+  // 已声明更高版本时保持不降级
+  const minimumRequired = minimumRequiredForActions(converted.actions, converted.minimumRequired)
+  if (minimumRequired !== undefined) {
+    converted.minimumRequired = minimumRequired
   }
 
   return snakeCaseKeysUnicode(converted, { deep: true })
