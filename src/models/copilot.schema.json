@@ -230,8 +230,8 @@
         "location": {
           "type": "array",
           "description": "Position for deployment. Required when `type` is \"Deploy (部署)\".  Optional when `type` is \"Retreat (撤退)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators. When `type` is \"Click (点击)\", at least one of `rect` and `location` is required (failing to provide either fails to load the operation); when both are set, `rect` takes precedence with a warning. Any legal tile (including [0, 0]) can be clicked.",
-          "minLength": 2,
-          "maxLength": 2,
+          "minItems": 2,
+          "maxItems": 2,
           "items": {
             "type": "integer",
             "minimum": 0
@@ -240,8 +240,8 @@
         "rect": {
           "type": "array",
           "description": "720p-based pixel rect [x, y, w, h] to click when `type` is \"Click (点击)\". A random point inside the rect is picked and scaled to the actual resolution. At least one of `rect` and `location` is required; when both are set, `rect` takes precedence with a warning.",
-          "minLength": 4,
-          "maxLength": 4,
+          "minItems": 4,
+          "maxItems": 4,
           "items": {
             "type": "integer",
             "minimum": 0
@@ -285,8 +285,8 @@
         "begin": {
           "type": "array",
           "description": "Swipe begin rect, required when `type` is \"Swipe (滑动)\". 720p-based pixel rect [x, y, w, h]; the begin point is picked randomly inside the rect and scaled to the actual resolution.",
-          "minLength": 4,
-          "maxLength": 4,
+          "minItems": 4,
+          "maxItems": 4,
           "items": {
             "type": "integer",
             "minimum": 0
@@ -295,8 +295,8 @@
         "end": {
           "type": "array",
           "description": "Swipe end rect, required when `type` is \"Swipe (滑动)\". 720p-based pixel rect [x, y, w, h]; the end point is picked randomly inside the rect and scaled to the actual resolution.",
-          "minLength": 4,
-          "maxLength": 4,
+          "minItems": 4,
+          "maxItems": 4,
           "items": {
             "type": "integer",
             "minimum": 0
