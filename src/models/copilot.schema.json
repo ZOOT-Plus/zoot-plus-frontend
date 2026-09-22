@@ -183,7 +183,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "Action type, \"Deploy (部署)\" by default. \"Deploy (部署)\" will wait until the cost is enough (unless timeout). \"Skill (技能)\" will wait until the skill is ready (unless timeout). \"SpeedUp (二倍速)\" is switchable, i.e. after using it will become 2x speed, and using it again will make it back to normal speed. \"BulletTime (子弹时间)\" is the 1/5 speed after clicking any operator. Proceeding with any other action will make it back to normal speed. \"Output\" will just print anything in doc on the UI. \"SkillDaemon\" will only use \"Use when Prepared\" skill, and do nothing until battle finished.",
+          "description": "Action type, \"Deploy (部署)\" by default. \"Deploy (部署)\" will wait until the cost is enough (unless timeout). \"Skill (技能)\" will wait until the skill is ready (unless timeout). \"SpeedUp (二倍速)\" is switchable, i.e. after using it will become 2x speed, and using it again will make it back to normal speed. \"BulletTime (子弹时间)\" is the 1/5 speed after clicking any operator. Proceeding with any other action will make it back to normal speed. \"Output\" will just print anything in doc on the UI. \"SkillDaemon\" will only use \"Use when Prepared\" skill, and do nothing until battle finished. \"SetUnitLocation (设置单位坐标)\" sets the tile coordinates of a battlefield unit (an operator, a summon, or a device) in the internal location table only, without performing any actual action in the game.",
           "enum": [
             "部署",
             "技能",
@@ -227,11 +227,11 @@
         },
         "name": {
           "type": "string",
-          "description": "Operator/group name, required when `type` is one of \"Deploy (部署)\" | \"Skill (技能)\" | \"Retreat (撤退)\"."
+          "description": "Operator/group name, required when `type` is one of \"Deploy (部署)\" | \"Skill (技能)\" | \"Retreat (撤退)\" | \"SetUnitLocation (设置单位坐标)\"; for \"SetUnitLocation (设置单位坐标)\" it can be any battlefield unit, e.g. an operator, a summon, or a device."
         },
         "location": {
           "type": "array",
-          "description": "Position for deployment. Required when `type` is \"Deploy (部署)\".  Optional when `type` is \"Retreat (撤退)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators. When `type` is \"Click (点击)\", at least one of `rect` and `location` is required (failing to provide either fails to load the operation); when both are set, `rect` takes precedence with a warning. Any legal tile (including [0, 0]) can be clicked.",
+          "description": "Position for deployment. Required when `type` is \"Deploy (部署)\" or \"SetUnitLocation (设置单位坐标)\".  Optional when `type` is \"Retreat (撤退)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators. When `type` is \"Click (点击)\", at least one of `rect` and `location` is required (failing to provide either fails to load the operation); when both are set, `rect` takes precedence with a warning. Any legal tile (including [0, 0]) can be clicked.",
           "minItems": 2,
           "maxItems": 2,
           "items": {
