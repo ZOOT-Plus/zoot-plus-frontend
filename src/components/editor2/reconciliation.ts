@@ -220,6 +220,10 @@ export function toEditorOperation(source: CopilotOperationLoose): EditorOperatio
       if (preDelay !== undefined) {
         newAction.intermediatePostDelay = preDelay
       }
+      // role 为空串视为未填写，导入即清掉，避免原样导出
+      if ('role' in newAction && !(newAction as CopilotDocV1.ActionSetUnitLocation).role) {
+        delete (newAction as Partial<CopilotDocV1.ActionSetUnitLocation>).role
+      }
       if (index > 0) {
         // intermediatePreDelay 等于前一个动作的 postDelay
         const prevAction = operation.actions![index - 1]

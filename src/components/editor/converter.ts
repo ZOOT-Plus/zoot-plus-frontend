@@ -52,6 +52,11 @@ export function toEditableOperation(
       action!.type = type.value
     }
 
+    // role 为空串视为未填写，导入即清掉，避免原样导出
+    if ('role' in action! && !(action as CopilotDocV1.ActionSetUnitLocation).role) {
+      delete (action as Partial<CopilotDocV1.ActionSetUnitLocation>).role
+    }
+
     if (type.value === 'Deploy') {
       const deployAction = action as CopilotDocV1.ActionDeploy
       const direction = findOperatorDirection(deployAction.direction).value
