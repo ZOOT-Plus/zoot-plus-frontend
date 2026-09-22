@@ -187,10 +187,9 @@ export const EditorActionAdd = ({
         if ('keepKills' in editingAction) {
           setValue('keepKills', (editingAction as CopilotDocV1.ActionMoveCamera).keepKills)
         }
-        // role 无对应表单控件，但保存时整条动作被表单值替换，不回填会静默丢失（SetUnitLocation 及导入时带 role 的其他动作）
-        if ('role' in editingAction) {
-          setValue('role', (editingAction as CopilotDocV1.ActionSetUnitLocation).role)
-        }
+        // role 无对应表单控件，但保存时整条动作被表单值替换，不回填会静默丢失；直接切换编辑目标
+        // 不会重置表单，原动作无 role 或值为空串时也要覆盖为 undefined，避免带到下一个动作上
+        setValue('role', 'role' in editingAction ? editingAction.role || undefined : undefined)
       }, 0)
     } else {
       reset(resettingValues)
