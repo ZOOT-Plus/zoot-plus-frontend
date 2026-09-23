@@ -235,7 +235,7 @@ const unknownSkillUsage: DetailedOperatorSkillUsage = {
   icon: 'error',
   title: i18nDefer.models.operator.skill_usage.unknown.title,
   altTitle: i18nDefer.models.operator.skill_usage.unknown.title,
-  value: -1,
+  value: -999,
   description: () => '',
 }
 

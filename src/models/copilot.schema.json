@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Copilot Operation",
   "type": "object",
   "properties": {
@@ -162,24 +162,6 @@
     "action": {
       "type": "object",
       "description": "One action to be executed.",
-      "if": {
-        "properties": {
-          "type": {
-            "enum": ["SetUnitLocation", "设置单位坐标"]
-          }
-        },
-        "required": ["type"]
-      },
-      "then": {
-        "type": "object",
-        "required": ["name", "location"],
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      },
       "properties": {
         "type": {
           "type": "string",

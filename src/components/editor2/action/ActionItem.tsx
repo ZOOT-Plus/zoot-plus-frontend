@@ -1,6 +1,5 @@
 import {
   Button,
-  Callout,
   Card,
   Classes,
   Divider,
@@ -17,7 +16,7 @@ import { Draft } from 'immer'
 import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
 import { selectAtom } from 'jotai/utils'
-import { FC, Fragment, ReactNode, memo, useEffect, useRef, useState } from 'react'
+import { FC, Fragment, memo, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
@@ -30,15 +29,16 @@ import {
   getSkillUsageAltTitle,
 } from '../../../models/operator'
 import { findActionType } from '../../../models/types'
-import { OperatorAvatar } from '../../OperatorAvatar'
-import { Select } from '../../Select'
 import { SortableItemProps } from '../../dnd'
 import { DetailedSelect } from '../../editor/DetailedSelect'
 import { NumericInput2 } from '../../editor/NumericInput2'
-import { EditorAction, editorAtoms, useActiveState, useEdit } from '../editor-state'
+import { OperatorAvatar } from '../../OperatorAvatar'
+import { Select } from '../../Select'
+import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../editor-state'
 import { OperatorSelect } from '../operator/OperatorSelect'
 import { createAction } from '../reconciliation'
-import { useEntityErrors } from '../validation/validation'
+import { useEntityErrors, useEntityWarnings } from '../validation/validation'
+import { IssuesDisplay } from '../validation/Validator'
 import { ActionLinker } from './ActionLinker'
 
 interface ActionItemProps extends Partial<SortableItemProps> {
@@ -63,7 +63,6 @@ export const ActionItem: FC<ActionItemProps> = memo(
     const dispatchActions = useSetAtom(editorAtoms.actionAtoms as any)
     const [action, setAction] = useImmerAtom(actionAtom)
     const [active, setActive] = useActiveState(editorAtoms.activeActionIdAtom as any, action.id)
-    const errors = useEntityErrors(action.id)
     const [docDraft, setDocDraft] = useState<string | undefined>()
     const [docInput, setDocInput] = useState<HTMLInputElement | null>(null)
     const shouldFocusDocInput = useRef(false)
@@ -84,12 +83,12 @@ export const ActionItem: FC<ActionItemProps> = memo(
       action: A
       setAction: (fn: (draft: Draft<A>) => void) => void
     }
-    const renderForTypes = <T extends CopilotDocV1.Type, A extends EditorAction = Extract<EditorAction, { type: T }>>(
+    const renderForTypes = <T extends CopilotDocV1.Type>(
       types: T[],
-      render: (args: RenderArgs<A>) => ReactNode,
+      render: (args: RenderArgs<EditorActionByType<T>>) => ReactNode,
     ) => {
       if (types.includes(action.type as T)) {
-        return render({ actionAtom, action, setAction } as RenderArgs<A>)
+        return render({ actionAtom, action, setAction } as unknown as RenderArgs<EditorActionByType<T>>)
       }
       return null
     }
@@ -900,16 +899,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
               />
             </div>
           )}
-          {errors && (
-            <Callout icon={null} intent="danger" className="!p-2 !rounded-none text-xs">
-              {errors.map(({ path, message, fieldLabel }) => (
-                <p key={path.join()}>
-                  {fieldLabel && fieldLabel + ': '}
-                  {message}
-                </p>
-              ))}
-            </Callout>
-          )}
+          <ActionIssues id={action.id} />
         </Card>
       </div>
     )
@@ -1010,13 +1000,13 @@ const ActionTarget: FC<{
   )
 }
 
-type PartialRect = [number | undefined, number | undefined, number | undefined, number | undefined]
+type Rect = NonNullable<EditorActionByType<CopilotDocV1.Type.Click>['rect']>
 
 // 720p 基准像素矩形 [x, y, w, h] 的逐位输入，字号继承父容器。
 // 清空输入时 NumericInput2 回调 NaN，转成 undefined；全部清空时把整个字段置空以便 ｢未填｣ 与 ｢已填｣ 可区分
 const RectInput: FC<{
-  value: PartialRect | undefined
-  onChange: (value: PartialRect | undefined) => void
+  value: Rect | undefined
+  onChange: (value: Rect | undefined) => void
 }> = ({ value, onChange }) => (
   <>
     {[0, 1, 2, 3].map((index, i) => (
@@ -1030,7 +1020,7 @@ const RectInput: FC<{
           value={value?.[index] ?? ''}
           wheelStepSize={1}
           onValueChange={(v) => {
-            const next: PartialRect = [value?.[0], value?.[1], value?.[2], value?.[3]]
+            const next: Rect = [value?.[0], value?.[1], value?.[2], value?.[3]]
             next[index] = Number.isNaN(v) ? undefined : v
             onChange(next.every((x) => x === undefined) ? undefined : next)
           }}
@@ -1039,3 +1029,15 @@ const RectInput: FC<{
     ))}
   </>
 )
+const ActionIssues: FC<{ id: string }> = ({ id }) => {
+  const errors = useEntityErrors(id)
+  const warnings = useEntityWarnings(id)
+
+  return (
+    <IssuesDisplay
+      className="!rounded-none"
+      errors={errors?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+      warnings={warnings?.map(({ message, fieldLabel }) => (fieldLabel ? fieldLabel + ': ' : '') + message)}
+    />
+  )
+}
