@@ -1,7 +1,7 @@
 import camelcaseKeys from 'camelcase-keys'
 import { atom } from 'jotai'
 import { defaults, defaultsDeep, uniqueId } from 'lodash-es'
-import { PartialDeep, SetOptional, SetRequired } from 'type-fest'
+import { SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1, minimumRequiredForActions } from '../../models/copilot.schema'
@@ -10,18 +10,18 @@ import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
 import { EditorAction, EditorGroup, EditorOperation, EditorOperator, getEditorConfig } from './editor-state'
-import { CopilotOperationLoose } from './validation/schema'
+import { ParsedOperation } from './validation/schema'
 
 // Coordinates (location/distance 2-tuples and rect/begin/end 4-tuples) are edited
 // element by element in the UI, so each element must be individually nullable
 // while the user has only filled in part of the tuple.
 type WithPartialCoordinateElements<V> = V extends [number, ...number[]] ? { [I in keyof V]: V[I] | undefined } : V
 
-export type WithPartialCoordinates<T> = {
+export type WithLooseCoordinates<T> = {
   [K in keyof T]: WithPartialCoordinateElements<T[K]>
 }
 
-export type WithId<T = {}> = T extends never ? never : T & { id: string }
+export type WithId<T = {}> = T & { id: string }
 
 type DehydratedEditorOperation = WithoutIdDeep<EditorOperation>
 
@@ -53,7 +53,7 @@ export function createOperator(
 ): EditorOperator {
   const info = findOperatorByName(initialValues.name)
   const shouldApplyDefaultRequirements = applyDefaultRequirements && (!info || info.prof !== 'TOKEN')
-  let defaultRequirements: CopilotDocV1.Requirements | undefined
+  let defaultRequirements: EditorOperator['requirements'] | undefined
   if (shouldApplyDefaultRequirements) {
     const rarity = info?.rarity ?? 6
     const preset = getEditorConfig().operatorPreset?.byRarity?.[rarity]
@@ -63,7 +63,11 @@ export function createOperator(
         elite: preset.elite,
       }
     }
-    defaultRequirements = defaults({}, defaultRequirements, getDefaultRequirements(rarity))
+    defaultRequirements = defaults(
+      {},
+      defaultRequirements,
+      getDefaultRequirements(rarity) satisfies EditorOperator['requirements'],
+    )
   }
   const operator: EditorOperator = defaultsDeep(
     { id: uniqueId() } satisfies Omit<EditorOperator, 'name'>,
@@ -202,7 +206,7 @@ export function hydrateOperation(source: DehydratedEditorOperation): EditorOpera
   }
 }
 
-export function toEditorOperation(source: CopilotOperationLoose): EditorOperation {
+export function toEditorOperation(source: ParsedOperation): EditorOperation {
   const camelCased = camelcaseKeys(source, { deep: true })
   const operation = JSON.parse(
     JSON.stringify(migrateOperation(camelCased as CopilotDocV1.Operation)),
@@ -240,15 +244,15 @@ export function toEditorOperation(source: CopilotOperationLoose): EditorOperatio
 /**
  * To MAA's standard format. No validation is performed so it's not guaranteed to be valid.
  */
-export function toMaaOperation(operation: EditorOperation): CopilotOperationLoose {
+export function toMaaOperation(operation: EditorOperation): ParsedOperation {
   operation = JSON.parse(JSON.stringify(operation))
   const dehydrated = dehydrateOperation(operation)
   const converted = {
     ...dehydrated,
     actions: dehydrated.actions.map((action, index, actions) => {
-      type Action = PartialDeep<WithPartialCoordinates<CopilotDocV1.Action>>
-      const { _id, intermediatePreDelay, intermediatePostDelay, ...newAction }: WithoutIdDeep<EditorAction> & Action =
-        action
+      const { intermediatePreDelay, intermediatePostDelay, ...restAction } = action
+      const newAction: ParsedOperation['actions'][number] = restAction
+
       // preDelay 等于当前动作的 intermediatePostDelay
       if (intermediatePostDelay !== undefined) {
         newAction.preDelay = intermediatePostDelay
@@ -260,16 +264,6 @@ export function toMaaOperation(operation: EditorOperation): CopilotOperationLoos
           newAction.postDelay = nextAction.intermediatePreDelay
         }
       }
-
-      // 类型检查
-      newAction satisfies Action
-      // 检查多余的属性
-      '114514' as keyof typeof newAction satisfies Exclude<
-        keyof Action,
-        // TODO: 兼容性处理，等到 _id 被去掉之后就可以去掉 Exclude _id 了
-        '_id'
-      >
-
       return newAction
     }),
   }

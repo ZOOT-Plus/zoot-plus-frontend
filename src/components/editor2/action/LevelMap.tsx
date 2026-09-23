@@ -52,7 +52,8 @@ const activeActionLocationAtom = atom(
           draft.type === CopilotDocV1.Type.Deploy ||
           draft.type === CopilotDocV1.Type.Retreat ||
           draft.type === CopilotDocV1.Type.Skill ||
-          draft.type === CopilotDocV1.Type.BulletTime
+          draft.type === CopilotDocV1.Type.BulletTime ||
+          draft.type === CopilotDocV1.Type.SetUnitLocation
         ) {
           draft.location = location
         } else if (draft.type === CopilotDocV1.Type.Click) {
@@ -93,10 +94,9 @@ export const LevelMap: FC<LevelMapProps> = memo(({ className }) => {
   // update or reset the active tiles when active action's location changes
   const setMapState = useCallback(() => {
     if (iframeWindow) {
-      const activeTiles =
-        activeLocation?.[0] !== undefined && activeLocation?.[1] !== undefined
-          ? [{ x: activeLocation[0], y: activeLocation[1] }]
-          : []
+      const x = activeLocation?.[0]
+      const y = activeLocation?.[1]
+      const activeTiles = typeof x === 'number' && Number.isFinite(x) && typeof y === 'number' && Number.isFinite(y) ? [{ x, y }] : []
       sendMessage<SetMapStateMessage>(iframeWindow, MAP_ORIGIN, {
         type: 'setMapState',
         data: { activeTiles },

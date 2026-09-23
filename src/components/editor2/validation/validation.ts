@@ -1,12 +1,26 @@
 import { atom, useAtomValue } from 'jotai'
-import { findLastIndex, isNumber, isString, get as lodashGet } from 'lodash-es'
+import { isNumber, isString, get as lodashGet } from 'lodash-es'
 import { useMemo } from 'react'
+import type { ZodError } from 'zod'
 
+import { i18n } from '../../../i18n/i18n'
+import { formatError } from '../../../utils/error'
 import { editorAtoms } from '../editor-state'
 import { toMaaOperation } from '../reconciliation'
-import { ZodIssue, getLabel, operationSchema } from './schema'
+import { getLabel, operationForSubmission, operationForValidation, ZodIssue } from './schema'
 
+export type GlobalIssue = ZodIssue | SimpleIssue
+export interface SimpleIssue {
+  message: string
+  path?: (string | number)[]
+}
+
+// Entities are objects that have an `id` property and are stored in an array.
+// This includes operators, groups, and actions. For entity-specific errors,
+// we want to display them next to their associated entity instead of displaying
+// something like "Error in actions[0].name" in the global errors, which is not user-friendly.
 export type EntityIssue = ZodIssue & {
+  entityId: string
   fieldLabel?: string
 }
 
@@ -14,39 +28,102 @@ export function useEntityErrors(id: string): EntityIssue[] | undefined {
   return useAtomValue(useMemo(() => atom((get) => get(editorAtoms.visibleEntityErrors)?.[id]), [id]))
 }
 
+export function useEntityWarnings(id: string): EntityIssue[] | undefined {
+  return useAtomValue(useMemo(() => atom((get) => get(editorAtoms.visibleEntityWarnings)?.[id]), [id]))
+}
+
 export const editorValidationAtom = atom(null, (get, set) => {
   const operation = get(editorAtoms.operation)
-  const result = operationSchema.safeParse(toMaaOperation(operation))
+  const maaOperation = toMaaOperation(operation)
 
-  const globalIssues: ZodIssue[] = []
-  const entityIssues: Record<string, EntityIssue[]> = {}
+  let globalWarnings: ZodIssue[] = []
+  let entityWarnings: Record<string, EntityIssue[]> = {}
+  let globalErrors: ZodIssue[] = []
+  let entityErrors: Record<string, EntityIssue[]> = {}
 
-  if (!result.success) {
-    result.error.issues.forEach((issue) => {
-      const entityIndexIndex = findLastIndex(issue.path, isNumber)
-      if (entityIndexIndex !== -1) {
-        const entityPath = issue.path.slice(0, entityIndexIndex + 1)
-        try {
-          const maybeEntity = lodashGet(operation, entityPath)
-          if (maybeEntity && 'id' in maybeEntity && isString(maybeEntity.id)) {
-            ;(entityIssues[maybeEntity.id] ||= []).push({
-              ...issue,
-              fieldLabel: getLabel(issue.path),
-            })
-            return
+  function classifyIssues(issues: ZodIssue[]) {
+    const globalIssues: ZodIssue[] = []
+    const entityIssues: Record<string, EntityIssue[]> = {}
+
+    issues.forEach((issue) => {
+      try {
+        for (let i = issue.path.length - 1; i >= 0; i--) {
+          if (isNumber(issue.path[i])) {
+            const value = lodashGet(operation, issue.path.slice(0, i + 1))
+            if (value && 'id' in value && isString(value.id)) {
+              let fieldLabel = getLabel(i18n, issue.path)
+              // if the the full path leads to an non-entity array element, append the array index to the field label
+              if (i !== issue.path.length - 1 && isNumber(issue.path[issue.path.length - 1])) {
+                fieldLabel += `#${String(issue.path[issue.path.length - 1])}`
+              }
+              ;(entityIssues[value.id] ||= []).push({
+                ...issue,
+                entityId: value.id,
+                fieldLabel,
+              })
+              return
+            }
           }
-        } catch {
-          console.warn('Failed to get entity at', issue.path)
         }
+      } catch (e) {
+        // if failed, fall back to adding it to global issues
+        console.warn('Failed to get entity at', issue.path, e)
       }
       globalIssues.push(issue)
     })
+    return { globalIssues, entityIssues }
   }
 
-  set(editorAtoms.entityErrors, (prev) =>
-    Object.keys(entityIssues).length === 0 && Object.keys(prev).length === 0 ? prev : entityIssues,
-  )
-  set(editorAtoms.globalErrors, (prev) => (prev.length === 0 && globalIssues.length === 0 ? prev : globalIssues))
+  const validatedResult = operationForValidation.safeParse(maaOperation)
+  if (!validatedResult.success) {
+    const classified = classifyIssues(validatedResult.error.issues)
+    globalWarnings = classified.globalIssues
+    entityWarnings = classified.entityIssues
+  }
 
-  return result
+  const submittableResult = operationForSubmission.safeParse(maaOperation)
+  if (!submittableResult.success) {
+    const classified = classifyIssues(submittableResult.error.issues)
+    globalErrors = classified.globalIssues
+    entityErrors = classified.entityIssues
+  }
+
+  function isSameIssue(a: ZodIssue, b: ZodIssue) {
+    return a.code === b.code && a.path.join() === b.path.join()
+  }
+
+  // deduplicate warnings that are also errors
+  globalWarnings = globalWarnings.filter((warning) => !globalErrors.some((error) => isSameIssue(warning, error)))
+  for (const entityId in entityWarnings) {
+    entityWarnings[entityId] = entityWarnings[entityId].filter(
+      (warning) => !entityErrors[entityId]?.some((error) => isSameIssue(warning, error)),
+    )
+  }
+
+  set(editorAtoms.globalWarnings, (prev) => (prev.length === 0 && globalWarnings.length === 0 ? prev : globalWarnings))
+  set(editorAtoms.entityWarnings, (prev) =>
+    Object.keys(prev).length === 0 && Object.keys(entityWarnings).length === 0 ? prev : entityWarnings,
+  )
+  set(editorAtoms.globalErrors, (prev) => (prev.length === 0 && globalErrors.length === 0 ? prev : globalErrors))
+  set(editorAtoms.entityErrors, (prev) =>
+    Object.keys(prev).length === 0 && Object.keys(entityErrors).length === 0 ? prev : entityErrors,
+  )
+
+  return {
+    globalWarnings,
+    entityWarnings,
+    globalErrors,
+    entityErrors,
+  }
 })
+
+function isZodError(e: unknown): e is ZodError {
+  return 'issues' in (e as any) && Array.isArray((e as any).issues)
+}
+
+export function normalizeIssues(e: unknown): GlobalIssue[] {
+  if (isZodError(e)) {
+    return e.issues
+  }
+  return [{ message: formatError(e) }]
+}
