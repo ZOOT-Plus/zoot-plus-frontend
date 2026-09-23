@@ -394,7 +394,7 @@ const actionForValidation = z
       issues.push({
         code: 'custom',
         input: value,
-        message: '像素区域与位置至少需要填写一项',
+        message: i18n.components.editor2.validation.rect_or_location_required,
         continue: true,
       })
     }

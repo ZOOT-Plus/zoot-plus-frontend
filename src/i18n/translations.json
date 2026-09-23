@@ -492,6 +492,10 @@
           "cn": "对象或位置至少需要填写一项",
           "en": "Either target or location is required"
         },
+        "rect_or_location_required": {
+          "cn": "像素区域或位置至少需要填写一项",
+          "en": "Either rect or location is required"
+        },
         "action_name_not_found": {
           "cn": "\"{{name}}\" 不是已有的干员或干员组",
           "en": "\"{{name}}\" is not an existing operator or operator group"
