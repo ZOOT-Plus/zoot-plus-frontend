@@ -110,7 +110,7 @@ const Ad = () => {
       onClick={sendEvent}
     >
       <img src="/ad_mirrorchyan.webp" alt="Mirror酱" />
-      <div className="absolute bottom-2 right-2 border border-current rounded text-[10px] text-zinc-300 px-1 ">
+      <div className="absolute bottom-2 right-2 border border-current rounded text-[10px] text-zinc-500 px-1">
         {t.pages.index.advertisement}
       </div>
     </a>
