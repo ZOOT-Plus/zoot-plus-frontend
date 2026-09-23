@@ -1,47 +1,47 @@
 import {
-  Button,
-  Card,
-  Classes,
-  Divider,
-  Icon,
-  InputGroup,
-  MenuItem,
-  PopoverInteractionKind,
-  Switch,
-  Tooltip,
-} from '@blueprintjs/core'
+    Button,
+    Card,
+    Classes,
+    Divider,
+    Icon,
+    InputGroup,
+    MenuItem,
+    PopoverInteractionKind,
+    Switch,
+    Tooltip,
+} from '@blueprintjs/core';
 
-import clsx from 'clsx'
-import { Draft } from 'immer'
-import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useImmerAtom } from 'jotai-immer'
-import { selectAtom } from 'jotai/utils'
-import { FC, Fragment, memo, ReactNode, useEffect, useRef, useState } from 'react'
+import clsx from 'clsx';
+import { Draft } from 'immer';
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useImmerAtom } from 'jotai-immer';
+import { selectAtom } from 'jotai/utils';
+import { FC, Fragment, memo, ReactNode, useEffect, useRef, useState } from 'react';
 
-import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
-import { CopilotDocV1 } from '../../../models/copilot.schema'
+import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n';
+import { CopilotDocV1 } from '../../../models/copilot.schema';
 import {
-  actionDocColors,
-  alternativeOperatorSkillUsages,
-  findOperatorById,
-  findOperatorDirection,
-  findOperatorsByIdentity,
-  getLocalizedOperatorName,
-  getSkillUsageAltTitle,
-  identityFromInfo,
-} from '../../../models/operator'
-import { findActionType } from '../../../models/types'
-import { SortableItemProps } from '../../dnd'
-import { DetailedSelect } from '../../editor/DetailedSelect'
-import { NumericInput2 } from '../../editor/NumericInput2'
-import { OperatorAvatar } from '../../OperatorAvatar'
-import { Select } from '../../Select'
-import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../editor-state'
-import { OperatorSelect } from '../operator/OperatorSelect'
-import { createAction } from '../reconciliation'
-import { useEntityErrors, useEntityWarnings } from '../validation/validation'
-import { IssuesDisplay } from '../validation/Validator'
-import { ActionLinker } from './ActionLinker'
+    actionDocColors,
+    alternativeOperatorSkillUsages,
+    findOperatorById,
+    findOperatorDirection,
+    findOperatorsByIdentity,
+    getLocalizedOperatorName,
+    getSkillUsageAltTitle,
+    identityFromInfo,
+} from '../../../models/operator';
+import { findActionType } from '../../../models/types';
+import { SortableItemProps } from '../../dnd';
+import { DetailedSelect } from '../../editor/DetailedSelect';
+import { NumericInput2 } from '../../editor/NumericInput2';
+import { OperatorAvatar } from '../../OperatorAvatar';
+import { Select } from '../../Select';
+import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../editor-state';
+import { OperatorSelect } from '../operator/OperatorSelect';
+import { createAction } from '../reconciliation';
+import { useEntityErrors, useEntityWarnings } from '../validation/validation';
+import { IssuesDisplay } from '../validation/Validator';
+import { ActionLinker } from './ActionLinker';
 
 interface ActionItemProps extends Partial<SortableItemProps> {
   className?: string
@@ -972,7 +972,13 @@ const ActionTarget: FC<{
       onSelect={(name, { operatorId }) => {
         edit(() => {
           const info = operatorId ? findOperatorById(operatorId) : undefined
-          const identity = info ? identityFromInfo(info) : { name }
+          const identity = info
+            ? identityFromInfo(info)
+            : {
+                name,
+                // explicitly override the role to undefined
+                role: undefined,
+              }
           setAction((prev) => ({ ...prev, ...identity }))
           return {
             action: 'set-action-name',
