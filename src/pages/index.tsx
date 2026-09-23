@@ -102,11 +102,11 @@ const Ad = () => {
     ReactGA.event('click_ad', { ad_type: 'mirrorchyan' })
   }
   return (
-    // eslint-disable-next-line react/jsx-no-target-blank
     <a
       className="block relative dark:brightness-[85%]"
       href="https://mirrorchyan.com/zh/projects?source=prts_plus_1"
       target="_blank"
+      rel="noopener noreferrer"
       onClick={sendEvent}
     >
       <img src="/ad_mirrorchyan.webp" alt="Mirror酱" />
