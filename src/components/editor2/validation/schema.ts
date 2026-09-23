@@ -354,6 +354,7 @@ const actionForValidation = z
         ...baseActionForValidation,
         type: z.literal(CopilotDocV1.Type.SkillUsage),
         skill_usage: specializedActionForValidation.skill_usage,
+        skill_times: specializedActionForValidation.skill_times,
       }),
       false,
     ),
