@@ -7,6 +7,7 @@ import { DistributedOmit, Simplify } from 'type-fest'
 import { CamelCaseKeys } from 'camelcase-keys'
 import { CopilotDocV1 } from '../../models/copilot.schema'
 import { CopilotType } from '../../models/operation'
+import { matchOperatorIdentity } from '../../models/operator'
 import { OmitIndexSignatureDeep } from '../../types'
 import { createHistoryAtom, useHistoryEdit } from './history'
 import { WithId, toEditorOperation } from './reconciliation'
@@ -311,20 +312,34 @@ export function useActiveState(targetAtom: PrimitiveAtom<string | undefined>, id
 }
 
 export function traverseOperators<T>(
-  { opers, groups }: { opers: EditorOperator[]; groups: EditorGroup[] },
+  { opers, groups }: { opers?: EditorOperator[]; groups?: EditorGroup[] },
   fn: (oper: EditorOperator) => T,
 ): NonNullable<T> | undefined {
-  for (const oper of opers) {
-    const result = fn(oper)
-    if (result) return result
-  }
-  for (const group of groups) {
-    for (const oper of group.opers) {
+  if (opers) {
+    for (const oper of opers) {
       const result = fn(oper)
       if (result) return result
     }
   }
+  if (groups) {
+    for (const group of groups) {
+      for (const oper of group.opers) {
+        const result = fn(oper)
+        if (result) return result
+      }
+    }
+  }
   return undefined
+}
+
+export function findExistingOperator(
+  { opers, groups }: { opers?: EditorOperator[]; groups?: EditorGroup[] },
+  identity: CopilotDocV1.OperatorIdentity,
+): EditorOperator | undefined {
+  return traverseOperators({ opers, groups }, (oper) => {
+    if (matchOperatorIdentity(oper, identity)) return oper
+    return undefined
+  })
 }
 
 function getId(entity: WithId) {

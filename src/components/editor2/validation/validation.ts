@@ -7,7 +7,7 @@ import { i18n } from '../../../i18n/i18n'
 import { formatError } from '../../../utils/error'
 import { editorAtoms } from '../editor-state'
 import { toMaaOperation } from '../reconciliation'
-import { getLabel, operationForSubmission, operationForValidation, ZodIssue } from './schema'
+import { getLabel, localizeIssue, operationForSubmission, operationForValidation, ZodIssue } from './schema'
 
 export type GlobalIssue = ZodIssue | SimpleIssue
 export interface SimpleIssue {
@@ -41,11 +41,16 @@ export const editorValidationAtom = atom(null, (get, set) => {
   let globalErrors: ZodIssue[] = []
   let entityErrors: Record<string, EntityIssue[]> = {}
 
-  function classifyIssues(issues: ZodIssue[]) {
+  function parseIssues(issues: ZodIssue[]) {
     const globalIssues: ZodIssue[] = []
     const entityIssues: Record<string, EntityIssue[]> = {}
 
     issues.forEach((issue) => {
+      const localizedMessage = localizeIssue(issue)
+      if (localizedMessage) {
+        issue = { ...issue, message: localizedMessage }
+      }
+
       try {
         for (let i = issue.path.length - 1; i >= 0; i--) {
           if (isNumber(issue.path[i])) {
@@ -76,16 +81,16 @@ export const editorValidationAtom = atom(null, (get, set) => {
 
   const validatedResult = operationForValidation.safeParse(maaOperation)
   if (!validatedResult.success) {
-    const classified = classifyIssues(validatedResult.error.issues)
-    globalWarnings = classified.globalIssues
-    entityWarnings = classified.entityIssues
+    const parsed = parseIssues(validatedResult.error.issues)
+    globalWarnings = parsed.globalIssues
+    entityWarnings = parsed.entityIssues
   }
 
   const submittableResult = operationForSubmission.safeParse(maaOperation)
   if (!submittableResult.success) {
-    const classified = classifyIssues(submittableResult.error.issues)
-    globalErrors = classified.globalIssues
-    entityErrors = classified.entityIssues
+    const parsed = parseIssues(submittableResult.error.issues)
+    globalErrors = parsed.globalIssues
+    entityErrors = parsed.entityIssues
   }
 
   function isSameIssue(a: ZodIssue, b: ZodIssue) {

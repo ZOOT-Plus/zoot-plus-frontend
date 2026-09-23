@@ -1,11 +1,13 @@
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 
-import { OperatorInfo, findOperatorById, findOperatorByName } from '../models/operator'
+import { CopilotDocV1 } from '../models/copilot.schema'
+import { OperatorInfo, findOperatorById, findOperatorByName, findOperatorsByIdentity } from '../models/operator'
 
 interface OperatorAvatarProps {
   id?: string
   name?: string
+  identity?: CopilotDocV1.OperatorIdentity
   rarity?: number
   size?: 'small' | 'medium' | 'large'
   sourceSize?: 32 | 96
@@ -16,6 +18,7 @@ interface OperatorAvatarProps {
 export function OperatorAvatar({
   id,
   name,
+  identity,
   rarity,
   size,
   fallback = '?',
@@ -26,8 +29,9 @@ export function OperatorAvatar({
   if (id) {
     info = findOperatorById(id)
     name = info?.name
-  } else if (name) {
-    info = findOperatorByName(name)
+  } else {
+    if (identity) info = findOperatorsByIdentity(identity)[0]
+    else if (name) info = findOperatorByName(name)
     id = info?.id
   }
   rarity ??= info?.rarity

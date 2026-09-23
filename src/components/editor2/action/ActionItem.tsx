@@ -1,45 +1,47 @@
 import {
-  Button,
-  Card,
-  Classes,
-  Divider,
-  Icon,
-  InputGroup,
-  MenuItem,
-  PopoverInteractionKind,
-  Switch,
-  Tooltip,
-} from '@blueprintjs/core'
+    Button,
+    Card,
+    Classes,
+    Divider,
+    Icon,
+    InputGroup,
+    MenuItem,
+    PopoverInteractionKind,
+    Switch,
+    Tooltip,
+} from '@blueprintjs/core';
 
-import clsx from 'clsx'
-import { Draft } from 'immer'
-import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useImmerAtom } from 'jotai-immer'
-import { selectAtom } from 'jotai/utils'
-import { FC, Fragment, memo, ReactNode, useEffect, useRef, useState } from 'react'
+import clsx from 'clsx';
+import { Draft } from 'immer';
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useImmerAtom } from 'jotai-immer';
+import { selectAtom } from 'jotai/utils';
+import { FC, Fragment, memo, ReactNode, useEffect, useRef, useState } from 'react';
 
-import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n'
-import { CopilotDocV1 } from '../../../models/copilot.schema'
+import { i18n, languageAtom, useTranslation } from '../../../i18n/i18n';
+import { CopilotDocV1 } from '../../../models/copilot.schema';
 import {
-  actionDocColors,
-  alternativeOperatorSkillUsages,
-  findOperatorByName,
-  findOperatorDirection,
-  getLocalizedOperatorName,
-  getSkillUsageAltTitle,
-} from '../../../models/operator'
-import { findActionType } from '../../../models/types'
-import { SortableItemProps } from '../../dnd'
-import { DetailedSelect } from '../../editor/DetailedSelect'
-import { NumericInput2 } from '../../editor/NumericInput2'
-import { OperatorAvatar } from '../../OperatorAvatar'
-import { Select } from '../../Select'
-import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../editor-state'
-import { OperatorSelect } from '../operator/OperatorSelect'
-import { createAction } from '../reconciliation'
-import { useEntityErrors, useEntityWarnings } from '../validation/validation'
-import { IssuesDisplay } from '../validation/Validator'
-import { ActionLinker } from './ActionLinker'
+    actionDocColors,
+    alternativeOperatorSkillUsages,
+    findOperatorById,
+    findOperatorDirection,
+    findOperatorsByIdentity,
+    getLocalizedOperatorName,
+    getSkillUsageAltTitle,
+    identityFromInfo,
+} from '../../../models/operator';
+import { findActionType } from '../../../models/types';
+import { SortableItemProps } from '../../dnd';
+import { DetailedSelect } from '../../editor/DetailedSelect';
+import { NumericInput2 } from '../../editor/NumericInput2';
+import { OperatorAvatar } from '../../OperatorAvatar';
+import { Select } from '../../Select';
+import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../editor-state';
+import { OperatorSelect } from '../operator/OperatorSelect';
+import { createAction } from '../reconciliation';
+import { useEntityErrors, useEntityWarnings } from '../validation/validation';
+import { IssuesDisplay } from '../validation/Validator';
+import { ActionLinker } from './ActionLinker';
 
 interface ActionItemProps extends Partial<SortableItemProps> {
   className?: string
@@ -908,7 +910,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
 ActionItem.displayName = 'ActionItem'
 
 const groupNamesAtom = selectAtom(
-  editorAtoms.groups,
+  editorAtoms.baseGroups,
   (groups) => groups.map((g) => g.name),
   (a, b) => a.join() === b.join(),
 )
@@ -932,22 +934,26 @@ const ActionTarget: FC<{
   const language = useAtomValue(languageAtom)
   const t = useTranslation()
   const edit = useEdit()
-  const [{ name }, setAction] = useAtom(actionAtom)
+  const [action, setAction] = useAtom(actionAtom)
+  const name = action.name
   const groupNames = useAtomValue(groupNamesAtom)
-
-  const isGroup = (name?: string) => name !== undefined && groupNames.includes(name)
+  const isGroup = name !== undefined && groupNames.includes(name)
 
   let displayName: string | undefined
   let subtitle = '<<<'
+  let operatorId: string | undefined
 
   if (name !== undefined) {
-    if (isGroup(name)) {
+    if (isGroup) {
       displayName = name || t.components.editor2.ActionItem.unnamed_group
       subtitle = t.components.editor2.label.operation.groups._item
     } else {
       displayName = getLocalizedOperatorName(name, language)
-
-      const operatorInfo = findOperatorByName(name)
+      const operatorInfo = findOperatorsByIdentity({
+        name,
+        role: 'role' in action ? action.role : undefined,
+      })[0]
+      operatorId = operatorInfo?.id
       subtitle = operatorInfo
         ? operatorInfo.prof === 'TOKEN'
           ? t.components.editor2.ActionItem.token
@@ -959,12 +965,21 @@ const ActionTarget: FC<{
 
   return (
     <OperatorSelect
-      liftPicked
+      showCandidates
       className="shrink-0"
+      operatorId={operatorId}
       value={name}
-      onSelect={(name) => {
+      onSelect={(name, { operatorId }) => {
         edit(() => {
-          setAction((prev) => ({ ...prev, name }))
+          const info = operatorId ? findOperatorById(operatorId) : undefined
+          const identity = info
+            ? identityFromInfo(info)
+            : {
+                name,
+                // explicitly override the role to undefined
+                role: undefined,
+              }
+          setAction((prev) => ({ ...prev, ...identity }))
           return {
             action: 'set-action-name',
             desc: i18n.actions.editor2.set_action_target,
@@ -976,8 +991,9 @@ const ActionTarget: FC<{
         <div className="flex items-center">
           <OperatorAvatar
             className="w-16 h-16"
-            name={isGroup(name) ? undefined : name}
-            fallback={isGroup(name) ? <Icon icon="people" size={32} /> : name}
+            id={operatorId}
+            name={isGroup ? undefined : name}
+            fallback={isGroup ? <Icon icon="people" size={32} /> : name}
             sourceSize={96}
           />
           <div className="ml-1 w-[6.5em]">
