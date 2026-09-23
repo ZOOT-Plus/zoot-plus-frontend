@@ -20,7 +20,7 @@ import { IssuesDisplay } from '../validation/Validator'
 import { useEntityErrors, useEntityWarnings } from '../validation/validation'
 import { OperatorItem } from './OperatorItem'
 import { OperatorSelect } from './OperatorSelect'
-import { useAddOperator } from './useAddOperator'
+import { useOperatorControl } from './operator-control'
 
 interface GroupItemProps {
   baseGroupAtom: PrimitiveAtom<BaseEditorGroup>
@@ -40,7 +40,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
   }, [baseGroup.opersAtom])
   const [active, setActive] = useActiveState(editorAtoms.activeGroupIdAtom as any, baseGroup.id)
   const operatorIds = useAtomValue(operatorIdsAtom)
-  const addOperator = useAddOperator()
+  const { addOperatorById, addOperatorByName } = useOperatorControl()
   const t = useTranslation()
 
   const actionContainerRef = useRef<HTMLDivElement>(null)
@@ -227,8 +227,12 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           {!active && (
             <OperatorSelect
               markPicked
-              onSelect={(name) => {
-                addOperator(createOperator({ name }), baseGroup.id)
+              onSelect={(name, { operatorId }) => {
+                if (operatorId) {
+                  addOperatorById(operatorId, baseGroup.id)
+                } else {
+                  addOperatorByName(name, baseGroup.id)
+                }
               }}
             >
               <Button

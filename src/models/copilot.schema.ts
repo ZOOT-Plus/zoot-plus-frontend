@@ -168,7 +168,12 @@ export namespace CopilotDocV1 {
     opers?: Operator[]
   }
 
-  export interface Operator {
+  export interface OperatorIdentity {
+    name: string
+    role?: string
+  }
+
+  export interface Operator extends OperatorIdentity {
     /** Required in editor; should be stripped when exporting. */
     _id?: string
     /**
@@ -185,6 +190,20 @@ export namespace CopilotDocV1 {
      * 技能使用次数，可选，默认为 1
      */
     skillTimes?: number
+  }
+
+  export enum Role {
+    Unknown = 'Unknown',
+    Pioneer = 'Pioneer', // 先锋
+    Warrior = 'Warrior', // 近卫
+    Tank = 'Tank', // 重装
+    Sniper = 'Sniper', // 狙击
+    Caster = 'Caster', // 术士
+    Medic = 'Medic', // 医疗
+    Support = 'Support', // 辅助
+    Special = 'Special', // 特种
+    Token = 'Token', // 召唤物
+    Trap = 'Trap', // 装置
   }
 
   export enum SkillUsageType {

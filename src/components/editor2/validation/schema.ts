@@ -1,13 +1,15 @@
 import { produce } from 'immer'
+import { locales, Params } from 'zod/v4/core'
+
 import { get, isNumber, isObject, isString } from 'lodash-es'
 import { Primitive } from 'type-fest'
 import * as z from 'zod'
-import { locales } from 'zod/v4/core'
 
 import { i18n, I18NTranslations, Language, languageChangeEmitter } from '../../../i18n/i18n'
 import { CopilotDocV1 } from '../../../models/copilot.schema'
 import JSON_SCHEMA from '../../../models/copilot.schema.json'
 import { OpDifficulty } from '../../../models/operation'
+import { getRolesByName, matchOperatorIdentity } from '../../../models/operator'
 
 export type ZodIssue = z.core.$ZodIssue
 
@@ -61,35 +63,79 @@ const requirementsForValidation = z.looseObject({
   potentiality: requirementsForParsing.shape.potentiality.unwrap().min(0).max(6).optional(),
 })
 
-const operatorForParsing = z.looseObject({
+const operatorIdentityForParsing = z.looseObject({
   name: z.string(),
+  role: z.string().optional(),
+})
+const baseOperatorIdentityForValidation = z.looseObject({
+  ...operatorIdentityForParsing.shape,
+  name: operatorIdentityForParsing.shape.name.min(1),
+  role: z
+    .enum(
+      CopilotDocV1.Role,
+      localizeValues((value) => (isString(value) && i18n.models.operator.role[value]) || value),
+    )
+    .optional(),
+})
+function withOperatorIdentityForValidation<
+  T extends z.core.$ZodShape,
+  U extends z.core.$ZodObjectConfig,
+  O extends boolean,
+>(schema: z.ZodObject<T, U>, optional: O) {
+  const isAction = !!schema.shape.type
+  const refinement: Parameters<typeof z.superRefine<unknown>>[0] = (value, ctx) => {
+    const identity = baseOperatorIdentityForValidation.safeParse(value).data
+    if (!identity) return
+    const roles = getRolesByName(identity.name)
+    // 进一步检查 role 是否为 name 对应的可用值
+    const validRole = z.enum(
+      roles,
+      localizeValues((value) => (isString(value) && i18n.models.operator.role[value]) || value),
+    )
+    const invalidRoleError = z.looseObject({ role: validRole.optional() }).safeParse(value).error
+    if (invalidRoleError) {
+      ctx.issues.push(...(invalidRoleError.issues as typeof ctx.issues))
+      return
+    }
+    // 检查是否有歧义：name 对应的干员有多个角色，但 role 没有指定
+    if (roles.length > 1 && !identity.role) {
+      const rolesString = roles.map((r) => `"${i18n.models.operator.role[r] || r}"`).join(' / ')
+      ctx.addIssue({
+        code: 'custom',
+        input: value,
+        path: ['name'],
+        message: `${i18n.components.editor2.validation.role_ambiguous({ name: identity.name, roles: rolesString })} (${isAction ? i18n.components.editor2.validation.role_fix_action : i18n.components.editor2.validation.role_fix})`,
+      })
+    }
+  }
+  const requiredSchema = schema
+    .extend(baseOperatorIdentityForValidation.shape)
+    .superRefine(refinement, { when: () => true })
+  const optionalSchema = schema
+    .extend(baseOperatorIdentityForValidation.partial().shape)
+    .superRefine(refinement, { when: () => true })
+  return (optional ? optionalSchema : requiredSchema) as O extends true ? typeof optionalSchema : typeof requiredSchema
+}
+
+const operatorForParsing = z.looseObject({
+  ...operatorIdentityForParsing.shape,
   skill: z.number().int().optional(),
   skill_usage: z.number().int().optional(),
   skill_times: z.number().int().optional(),
   requirements: requirementsForParsing.optional(),
 })
-const operatorForValidationWithoutRefine = z.looseObject({
+const baseOperatorForValidation = z.looseObject({
   ...operatorForParsing.shape,
-  name: operatorForParsing.shape.name.min(1),
   skill: operatorForParsing.shape.skill.unwrap().min(0).max(3).optional(),
   skill_usage: z.enum(CopilotDocV1.SkillUsageType).optional(),
   skill_times: operatorForParsing.shape.skill_times.unwrap().min(0).optional(),
   requirements: requirementsForValidation.optional(),
 })
-const operatorForValidation = operatorForValidationWithoutRefine.superRefine(
+const operatorForValidation = withOperatorIdentityForValidation(baseOperatorForValidation, true).superRefine(
   (value, ctx) => {
-    if (
-      !operatorForValidationWithoutRefine
-        .pick({
-          name: true,
-          skill: true,
-          requirements: true,
-        })
-        .safeParse(value).success
-    )
-      return
-    const { name, skill, requirements } = value
-    if (name && requirements?.elite !== undefined && skill !== undefined) {
+    if (!baseOperatorForValidation.pick({ skill: true, requirements: true }).safeParse(value).success) return
+    const { skill, requirements } = value
+    if (requirements?.elite !== undefined && skill !== undefined) {
       if (requirements.elite + 1 < skill) {
         ctx.addIssue({
           code: 'custom',
@@ -179,7 +225,6 @@ const looseRect = z.tuple([
 const rect = z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int()])
 
 const specializedActionForParsing = {
-  name: z.string(),
   direction: z.string(),
   // JSON 序列化会把 undefined 转为 null，所以这里允许 null
   location: looseCoordinate,
@@ -199,13 +244,12 @@ const specializedActionForParsing = {
 }
 const specializedActionForValidation = {
   ...specializedActionForParsing,
-  name: specializedActionForParsing.name.min(1),
   direction: z.enum(CopilotDocV1.Direction),
   location: coordinate,
   distance: vector,
   keep_kills: z.boolean(),
-  skill_usage: operatorForValidation.shape.skill_usage.unwrap(),
-  skill_times: operatorForValidation.shape.skill_times.unwrap(),
+  skill_usage: baseOperatorForValidation.shape.skill_usage.unwrap(),
+  skill_times: baseOperatorForValidation.shape.skill_times.unwrap(),
   rect: rect,
   begin: rect,
   end: rect,
@@ -219,34 +263,34 @@ const specializedActionForValidation = {
 const actionForParsing = z.discriminatedUnion('type', [
   z.looseObject({
     ...baseActionForParsing,
+    ...operatorIdentityForParsing.partial().shape,
     type: z.literal(CopilotDocV1.Type.Deploy),
-    name: specializedActionForParsing.name.optional(),
     location: specializedActionForParsing.location.optional(),
     direction: specializedActionForParsing.direction.optional(),
   }),
   z.looseObject({
     ...baseActionForParsing,
+    ...operatorIdentityForParsing.partial().shape,
     type: z.literal(CopilotDocV1.Type.SkillUsage),
-    name: specializedActionForParsing.name.optional(),
     skill_usage: specializedActionForParsing.skill_usage.optional(),
     skill_times: specializedActionForParsing.skill_times.optional(),
   }),
   z.looseObject({
     ...baseActionForParsing,
+    ...operatorIdentityForParsing.partial().shape,
     type: z.literal(CopilotDocV1.Type.Skill),
-    name: specializedActionForParsing.name.optional(),
     location: specializedActionForParsing.location.optional(),
   }),
   z.looseObject({
     ...baseActionForParsing,
+    ...operatorIdentityForParsing.partial().shape,
     type: z.literal(CopilotDocV1.Type.Retreat),
-    name: specializedActionForParsing.name.optional(),
     location: specializedActionForParsing.location.optional(),
   }),
   z.looseObject({
     ...baseActionForParsing,
+    ...operatorIdentityForParsing.partial().shape,
     type: z.literal(CopilotDocV1.Type.BulletTime),
-    name: specializedActionForParsing.name.optional(),
     location: specializedActionForParsing.location.optional(),
   }),
   z.looseObject({
@@ -277,8 +321,8 @@ const actionForParsing = z.discriminatedUnion('type', [
   }),
   z.looseObject({
     ...baseActionForParsing,
+    ...operatorIdentityForParsing.partial().shape,
     type: z.literal(CopilotDocV1.Type.SetUnitLocation),
-    name: specializedActionForParsing.name.optional(),
     location: specializedActionForParsing.location.optional(),
   }),
   z.looseObject({
@@ -296,38 +340,47 @@ const actionForParsing = z.discriminatedUnion('type', [
 ])
 const actionForValidation = z
   .discriminatedUnion('type', [
-    z.looseObject({
-      ...baseActionForValidation,
-      type: z.literal(CopilotDocV1.Type.Deploy),
-      name: specializedActionForValidation.name,
-      location: specializedActionForValidation.location,
-      direction: specializedActionForValidation.direction,
-    }),
-    z.looseObject({
-      ...baseActionForValidation,
-      type: z.literal(CopilotDocV1.Type.SkillUsage),
-      name: specializedActionForValidation.name,
-      skill_usage: specializedActionForValidation.skill_usage,
-      skill_times: specializedActionForValidation.skill_times,
-    }),
-    z.looseObject({
-      ...baseActionForValidation,
-      type: z.literal(CopilotDocV1.Type.Skill),
-      name: specializedActionForValidation.name.optional(),
-      location: specializedActionForValidation.location.optional(),
-    }),
-    z.looseObject({
-      ...baseActionForValidation,
-      type: z.literal(CopilotDocV1.Type.Retreat),
-      name: specializedActionForValidation.name.optional(),
-      location: specializedActionForValidation.location.optional(),
-    }),
-    z.looseObject({
-      ...baseActionForValidation,
-      type: z.literal(CopilotDocV1.Type.BulletTime),
-      name: specializedActionForValidation.name.optional(),
-      location: specializedActionForValidation.location.optional(),
-    }),
+    withOperatorIdentityForValidation(
+      z.looseObject({
+        ...baseActionForValidation,
+        type: z.literal(CopilotDocV1.Type.Deploy),
+        location: specializedActionForValidation.location,
+        direction: specializedActionForValidation.direction,
+      }),
+      false,
+    ),
+    withOperatorIdentityForValidation(
+      z.looseObject({
+        ...baseActionForValidation,
+        type: z.literal(CopilotDocV1.Type.SkillUsage),
+        skill_usage: specializedActionForValidation.skill_usage,
+      }),
+      false,
+    ),
+    withOperatorIdentityForValidation(
+      z.looseObject({
+        ...baseActionForValidation,
+        type: z.literal(CopilotDocV1.Type.Skill),
+        location: specializedActionForValidation.location.optional(),
+      }),
+      true,
+    ),
+    withOperatorIdentityForValidation(
+      z.looseObject({
+        ...baseActionForValidation,
+        type: z.literal(CopilotDocV1.Type.Retreat),
+        location: specializedActionForValidation.location.optional(),
+      }),
+      true,
+    ),
+    withOperatorIdentityForValidation(
+      z.looseObject({
+        ...baseActionForValidation,
+        type: z.literal(CopilotDocV1.Type.BulletTime),
+        location: specializedActionForValidation.location.optional(),
+      }),
+      true,
+    ),
     z.looseObject({
       ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.MoveCamera),
@@ -357,7 +410,7 @@ const actionForValidation = z
     z.looseObject({
       ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.SetUnitLocation),
-      name: specializedActionForValidation.name,
+      name: z.string().min(1),
       location: specializedActionForValidation.location,
     }),
     z.looseObject({
@@ -385,7 +438,6 @@ const actionForValidation = z
         code: 'custom',
         input: value,
         message: i18n.components.editor2.validation.name_or_location_required,
-        continue: true,
       })
     }
     // Click 的 rect 与 location 至少填一项，都不填会导致 MAA 加载作业失败；
@@ -424,26 +476,36 @@ export const operationForValidation = z
     (value, ctx) => {
       if (!isObject(value)) return
       if (!Array.isArray(value.actions)) return
-      const validatedOpers = Array.isArray(value.opers)
-        ? value.opers.filter((o) => operatorForParsing.pick({ name: true }).safeParse(o).success)
-        : []
-      const validatedGroups = Array.isArray(value.groups)
-        ? value.groups.filter((g) => groupForParsing.pick({ name: true }).safeParse(g).success)
-        : []
+      const validatedOpers: CopilotDocV1.OperatorIdentity[] = []
+      if (Array.isArray(value.opers)) {
+        value.opers.forEach((o) => {
+          const parsed = operatorIdentityForParsing.safeParse(o).data
+          if (parsed) validatedOpers.push(parsed)
+        })
+      }
+      const validatedGroups: { name: string }[] = []
+      if (Array.isArray(value.groups)) {
+        value.groups.forEach((g) => {
+          const parsed = groupForParsing.pick({ name: true }).safeParse(g).data
+          if (parsed) validatedGroups.push(parsed)
+        })
+      }
       value.actions.forEach((action, index) => {
-        const actionName = specializedActionForParsing.name.safeParse(action)?.data
-        if (!actionName) return
-        if (
-          !validatedOpers.some((oper) => oper.name === actionName) &&
-          !validatedGroups.some((group) => group.name === actionName)
-        ) {
-          ctx.addIssue({
-            code: 'custom',
-            input: actionName,
-            path: ['actions', index, 'name'],
-            message: i18n.components.editor2.validation.action_name_not_found({ name: actionName }),
-          })
-        }
+        // 检查有没有 name，没有就跳过
+        const actionWithIdentity = baseOperatorIdentityForValidation.safeParse(action).data
+        if (!actionWithIdentity) return
+        // 检查 name 是否对应到干员组，有就跳过
+        const matchingGroup = validatedGroups.find((g) => g.name === actionWithIdentity.name)
+        if (matchingGroup) return
+        // 检查 name 是否对应到干员，没有就报错
+        const matchingOperator = validatedOpers.find((o) => matchOperatorIdentity(actionWithIdentity, o))
+        if (matchingOperator) return
+        ctx.addIssue({
+          code: 'custom',
+          input: actionWithIdentity.name,
+          path: ['actions', index, 'name'],
+          message: i18n.components.editor2.validation.action_name_not_found({ name: actionWithIdentity.name }),
+        })
       })
     },
     { when: () => true },
@@ -499,6 +561,29 @@ export function getLabeledPath(i18n: I18NTranslations, path: PropertyKey[]): str
   return [getLabeledPath(i18n, path.slice(0, -1)), label].filter(Boolean).join('/')
 }
 
+interface LocalizableIssue {
+  localize?: () => string | undefined
+}
+
+function localizeValues(localize: (value: unknown) => string | undefined): Params<any, any> {
+  return {
+    error: (issue) => {
+      ;(issue as LocalizableIssue).localize = () => {
+        const localized = currentLocale.localeError({
+          ...issue,
+          input: issue.input && (localize(issue.input) ?? issue.input),
+          values: issue.values?.map((v: unknown) => localize(v) ?? v),
+        } as any)
+        return isString(localized) ? localized : localized?.message
+      }
+    },
+  }
+}
+
+export function localizeIssue(issue: ZodIssue): string | undefined {
+  return (issue as LocalizableIssue).localize?.()
+}
+
 z.config({
   customError: (issue) => {
     // the default error message for missing fields is not very user-friendly
@@ -513,19 +598,22 @@ z.config({
   },
 })
 
+// the en locale is already automatically loaded by zod
+let currentLocale = locales.en()
+
 async function loadLocale(lang: Language) {
   try {
     if (lang === 'cn') {
       const locale = await import('zod/v4/locales/zh-CN.js')
 
       // check language again to avoid race condition
-      if (lang === i18n.currentLanguage) {
-        z.config(locale.default())
-      }
+      if (lang !== i18n.currentLanguage) return
+
+      currentLocale = locale.default()
     } else {
-      // the en locale is already automatically loaded by zod, so we don't need to lazily load it
-      z.config(locales.en())
+      currentLocale = locales.en()
     }
+    z.config(currentLocale)
     languageChangeEmitter.emit('localeLoadedForZod')
   } catch (e) {
     console.error('Failed to load zod locale', lang, e)

@@ -4,7 +4,7 @@ import { CopilotInfo } from 'zoot-plus-client'
 import { CopilotDocV1 } from 'models/copilot.schema'
 
 import { i18n } from '../i18n/i18n'
-import { findOperatorByName } from './operator'
+import { findOperatorsByIdentity } from './operator'
 
 export function toCopilotOperation(apiOperation: CopilotInfo): CopilotDocV1.Operation {
   try {
@@ -63,7 +63,7 @@ function migrateOperatorsModule(opers?: CopilotDocV1.Operator[]): CopilotDocV1.O
     if (operator.requirements?.module === undefined) {
       return operator
     }
-    const modules = findOperatorByName(operator.name)?.modules
+    const modules = findOperatorsByIdentity(operator)[0]?.modules
     if (!modules) {
       return operator
     }
