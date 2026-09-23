@@ -1,4 +1,4 @@
-import semver from 'semver'
+import SemVer from 'semver/classes/semver'
 
 import { ArkLevelInfo, CopilotInfo } from 'zoot-plus-client'
 
@@ -41,8 +41,9 @@ export enum MinimumRequired {
 
 /** 比较两个 `vX.Y.Z(-prerelease)` 版本串，返回 -1/0/1；格式不合法按相等处理 */
 export function compareVersions(a: string, b: string): number {
-  const pa = semver.parse(a)
-  const pb = semver.parse(b)
-  if (!pa || !pb) return 0
-  return pa.compare(pb)
+  try {
+    return new SemVer(a, true).compare(new SemVer(b, true))
+  } catch {
+    return 0
+  }
 }
