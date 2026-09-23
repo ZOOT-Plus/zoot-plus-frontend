@@ -124,6 +124,7 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                     {avatarNames.slice(0, 3).map((name) => (
                       <OperatorAvatar
                         key={name}
+                        name={action.name}
                         identity={action as SetRequired<typeof action, 'name'>}
                         size="large"
                         sourceSize={32}
