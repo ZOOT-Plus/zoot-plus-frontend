@@ -1,6 +1,5 @@
 import { Card } from '@blueprintjs/core'
 
-import dayjs from 'dayjs'
 import { useLinks } from 'hooks/useLinks'
 import { ComponentType } from 'react'
 import { ReactGA } from 'utils/react-ga'
@@ -97,25 +96,23 @@ export const IndexPage: ComponentType = withGlobalErrorBoundary(() => {
   )
 })
 
-const Ad = dayjs().isBefore('2025-09-08 00:00:00+8')
-  ? () => {
-      const t = useTranslation()
-      const sendEvent = () => {
-        ReactGA.event('click_ad', { ad_type: 'ld' })
-      }
-      return (
-        // eslint-disable-next-line react/jsx-no-target-blank
-        <a
-          className="block relative dark:brightness-[85%]"
-          href="https://lddl01.ldmnq.com/downloader/ldplayerinst9.exe?n=LDplayer9_ld_406237_3586_ld.exe"
-          target="_blank"
-          onClick={sendEvent}
-        >
-          <img src="/ad_leidian.webp" alt="雷电模拟器" />
-          <div className="absolute bottom-2 right-2 border border-current rounded text-[10px] text-zinc-300 px-1 ">
-            {t.pages.index.advertisement}
-          </div>
-        </a>
-      )
-    }
-  : () => null
+const Ad = () => {
+  const t = useTranslation()
+  const sendEvent = () => {
+    ReactGA.event('click_ad', { ad_type: 'mirrorchyan' })
+  }
+  return (
+    // eslint-disable-next-line react/jsx-no-target-blank
+    <a
+      className="block relative dark:brightness-[85%]"
+      href="https://mirrorchyan.com/zh/projects?source=prts_plus_1"
+      target="_blank"
+      onClick={sendEvent}
+    >
+      <img src="/ad_mirrorchyan.webp" alt="Mirror酱" />
+      <div className="absolute bottom-2 right-2 border border-current rounded text-[10px] text-zinc-300 px-1 ">
+        {t.pages.index.advertisement}
+      </div>
+    </a>
+  )
+}
