@@ -52,7 +52,8 @@ const activeActionLocationAtom = atom(
           draft.type === CopilotDocV1.Type.Deploy ||
           draft.type === CopilotDocV1.Type.Retreat ||
           draft.type === CopilotDocV1.Type.Skill ||
-          draft.type === CopilotDocV1.Type.BulletTime
+          draft.type === CopilotDocV1.Type.BulletTime ||
+          draft.type === CopilotDocV1.Type.SetUnitLocation
         ) {
           draft.location = location
         } else if (draft.type === CopilotDocV1.Type.Click) {

@@ -91,6 +91,16 @@ export namespace CopilotDocV1 {
     location?: [number, number]
   }
 
+  export interface ActionSetUnitLocation extends ActionBase {
+    type: Type.SetUnitLocation
+    /** 目标单位名（干员、召唤物或装置等战场单位），必填 */
+    name: string
+    /** 战场格子坐标，任意合法格子（含 [0, 0]），必填 */
+    location: [number, number]
+    /** 目标职业，可选，用于区分同名单位；缺省时不导出 */
+    role?: string
+  }
+
   export interface ActionSwipe extends ActionBase {
     type: Type.Swipe
     /** 滑动起点矩形，720p 基准像素矩形 [x, y, w, h]，起点在区域内随机取点 */
@@ -119,6 +129,7 @@ export namespace CopilotDocV1 {
     | ActionMoveCamera
     | ActionClick
     | ActionSwipe
+    | ActionSetUnitLocation
 
   export enum Direction {
     Left = 'Left',
@@ -140,6 +151,7 @@ export namespace CopilotDocV1 {
     MoveCamera = 'MoveCamera',
     Click = 'Click',
     Swipe = 'Swipe',
+    SetUnitLocation = 'SetUnitLocation',
   }
 
   export interface Doc {
@@ -232,6 +244,11 @@ export const PROTOCOL_FEATURE_MINIMUMS: ReadonlyArray<{
       action.type === CopilotDocV1.Type.Click ||
       action.type === CopilotDocV1.Type.Swipe ||
       (action.type === CopilotDocV1.Type.MoveCamera && action.keepKills === true),
+  },
+  {
+    // SetUnitLocation 动作自 v6.18.0 起进入协议
+    version: 'v6.18.0',
+    uses: (action) => action.type === CopilotDocV1.Type.SetUnitLocation,
   },
 ]
 

@@ -28,7 +28,7 @@ export const EditorActionOperatorLocation = ({
   ...controllerProps
 }: EditorActionOperatorLocationProps) => {
   const t = useTranslation()
-  const isRequired = actionType === 'Deploy'
+  const isRequired = actionType === 'Deploy' || actionType === 'SetUnitLocation'
 
   const {
     field: { onChange, value },

@@ -1,6 +1,7 @@
 import { compact, uniqueId } from 'lodash-es'
 import { DeepPartial, FieldArrayWithId } from 'react-hook-form'
 
+import { stripEmptyRole } from 'models/converter'
 import { CopilotDocV1, minimumRequiredForActions } from 'models/copilot.schema'
 import { MinimumRequired } from 'models/operation'
 
@@ -51,6 +52,9 @@ export function toEditableOperation(
     if (type.value !== 'Unknown') {
       action!.type = type.value
     }
+
+    // role 为空串视为未填写，导入即清掉，避免原样导出
+    stripEmptyRole(action!)
 
     if (type.value === 'Deploy') {
       const deployAction = action as CopilotDocV1.ActionDeploy

@@ -187,6 +187,9 @@ export const EditorActionAdd = ({
         if ('keepKills' in editingAction) {
           setValue('keepKills', (editingAction as CopilotDocV1.ActionMoveCamera).keepKills)
         }
+        // role 无对应表单控件，但保存时整条动作被表单值替换，不回填会静默丢失；直接切换编辑目标
+        // 不会重置表单，原动作无 role 或值为空串时也要覆盖为 undefined，避免带到下一个动作上
+        setValue('role', 'role' in editingAction ? editingAction.role || undefined : undefined)
       }, 0)
     } else {
       reset(resettingValues)
@@ -326,6 +329,40 @@ export const EditorActionAdd = ({
                 label={t.components.editor.action.EditorActionAdd.pixel_rect}
                 control={control}
                 name="rect"
+              />
+            </div>
+          </>
+        )}
+
+        {type === 'SetUnitLocation' && (
+          <>
+            <Callout className="mb-2">{t.components.editor.action.EditorActionAdd.set_unit_location_hint}</Callout>
+            <div className="flex">
+              <FormField2<CopilotDocV1.ActionSetUnitLocation>
+                label={t.components.editor.action.EditorActionAdd.operator_group_name}
+                field="name"
+                error={(errors as FieldErrors<CopilotDocV1.ActionSetUnitLocation>).name}
+                asterisk
+              >
+                <EditorOperatorName
+                  shouldUnregister
+                  groups={operatorGroups}
+                  operators={operators}
+                  control={control}
+                  name="name"
+                  rules={{
+                    required: t.components.editor.action.EditorActionAdd.operator_required,
+                  }}
+                />
+              </FormField2>
+            </div>
+            <div className="flex">
+              <EditorActionOperatorLocation
+                shouldUnregister
+                actionType={type}
+                level={level}
+                control={control}
+                name="location"
               />
             </div>
           </>

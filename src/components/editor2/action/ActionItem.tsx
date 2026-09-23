@@ -140,6 +140,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                 CopilotDocV1.Type.Skill,
                 CopilotDocV1.Type.SkillUsage,
                 CopilotDocV1.Type.BulletTime,
+                CopilotDocV1.Type.SetUnitLocation,
               ],
               ({ actionAtom }) => (
                 <ActionTarget actionAtom={actionAtom} />
@@ -151,6 +152,7 @@ export const ActionItem: FC<ActionItemProps> = memo(
                 CopilotDocV1.Type.Retreat,
                 CopilotDocV1.Type.Skill,
                 CopilotDocV1.Type.BulletTime,
+                CopilotDocV1.Type.SetUnitLocation,
               ],
               ({ action, setAction }) => (
                 <>
@@ -932,6 +934,7 @@ const ActionTarget: FC<{
           | CopilotDocV1.Type.Skill
           | CopilotDocV1.Type.SkillUsage
           | CopilotDocV1.Type.BulletTime
+          | CopilotDocV1.Type.SetUnitLocation
       }
     >
   >
