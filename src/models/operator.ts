@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/core'
 
 import { useAtomValue } from 'jotai'
-import { clamp, mapValues } from 'lodash-es'
+import { clamp, mapValues, uniq } from 'lodash-es'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
@@ -11,7 +11,8 @@ import { OPERATORS, PROFESSIONS } from '../models/generated/operators.json'
 
 export { OPERATORS, PROFESSIONS }
 
-export type OperatorInfo = (typeof OPERATORS)[number]
+type NonDiscriminative<T, K extends keyof T = keyof T> = { [P in K]: T[P] }
+export type OperatorInfo = NonDiscriminative<(typeof OPERATORS)[number]>
 export type Profession = (typeof PROFESSIONS)[number]
 
 const OPERATORS_BY_ID = Object.fromEntries(OPERATORS.map((operator) => [operator.id, operator]))
@@ -19,9 +20,97 @@ export function findOperatorById(id: string): OperatorInfo | undefined {
   return OPERATORS_BY_ID[id]
 }
 
-const OPERATORS_BY_NAME = Object.fromEntries(OPERATORS.map((operator) => [operator.name, operator]))
-export function findOperatorByName(name: string): OperatorInfo | undefined {
+interface StackedOperatorInfo extends OperatorInfo {
+  duplicates?: OperatorInfo[]
+}
+const OPERATORS_BY_NAME = OPERATORS.reduce<Record<string, StackedOperatorInfo>>((acc, operator) => {
+  if (acc[operator.name]) {
+    if (!acc[operator.name].duplicates) {
+      // 把 info 复制一份，避免修改原始数据
+      acc[operator.name] = { ...acc[operator.name], duplicates: [] }
+    }
+    acc[operator.name].duplicates!.push(operator)
+  } else {
+    acc[operator.name] = operator
+  }
+  return acc
+}, {})
+export function findOperatorByName(name: string): StackedOperatorInfo | undefined {
   return OPERATORS_BY_NAME[name]
+}
+
+export function findOperatorsByIdentity({ name, role }: CopilotDocV1.OperatorIdentity): OperatorInfo[] {
+  const info = findOperatorByName(name)
+  if (!info) {
+    return []
+  }
+  if (!info.duplicates?.length) {
+    return [info]
+  }
+  const operators = [info, ...info.duplicates]
+  if (!role) {
+    return operators
+  }
+  return operators.filter((op) => getRoleByInfo(op) === role)
+}
+
+/**
+ * @example
+ * // 阿米娅只有一个角色 Caster，允许其中一边的角色为空
+ * matchOperatorIdentity({ name: '阿米娅', role: 'Caster' }, { name: '阿米娅', role: 'Caster' }) // true
+ * matchOperatorIdentity({ name: '阿米娅', role: 'Caster' }, { name: '阿米娅', role: 'Guard' }) // false
+ * matchOperatorIdentity({ name: '阿米娅', role: 'Caster' }, { name: '阿米娅' }) // true
+ * matchOperatorIdentity({ name: '阿米娅' }, { name: '阿米娅', role: 'Caster' }) // true
+ * matchOperatorIdentity({ name: '阿米娅' }, { name: '阿米娅', role: 'Guard' }) // false
+ * matchOperatorIdentity({ name: '阿米娅' }, { name: '阿米娅' }) // true
+ *
+ * // Mon3tr 有两个角色 Medic 和 Drone，两边的角色必须完全匹配
+ * matchOperatorIdentity({ name: 'Mon3tr', role: 'Medic' }, { name: 'Mon3tr', role: 'Medic' }) // true
+ * matchOperatorIdentity({ name: 'Mon3tr', role: 'Medic' }, { name: 'Mon3tr' }) // false
+ * matchOperatorIdentity({ name: 'Mon3tr' }, { name: 'Mon3tr', role: 'Medic' }) // false
+ * matchOperatorIdentity({ name: 'Mon3tr' }, { name: 'Mon3tr' }) // true
+ */
+export function matchOperatorIdentity(a: CopilotDocV1.OperatorIdentity, b: CopilotDocV1.OperatorIdentity): boolean {
+  if (a.name !== b.name) return false
+  if (b.role === a.role) return true
+  if (!b.role && !a.role) return true
+  // 兜底：如果只有其中一边指定了角色，但该干员本身也只有这一个角色可选，也算匹配
+  if (!(b.role && a.role)) {
+    const roles = getRolesByName(a.name)
+    if (roles.length === 0 || (roles.length === 1 && roles[0] === (b.role || a.role))) {
+      return true
+    }
+  }
+  return false
+}
+
+export function identityFromInfo(info: OperatorInfo): CopilotDocV1.OperatorIdentity {
+  const identity: CopilotDocV1.OperatorIdentity = { name: info.name }
+  // 只有在 name 对应多个干员时才需要指定 role
+  if (getRolesByName(info.name).length > 1) {
+    identity.role = getRoleByInfo(info)
+  }
+  return identity
+}
+
+export function getRolesByName(name: string): CopilotDocV1.Role[] {
+  return uniq(findOperatorsByIdentity({ name }).map((op) => getRoleByInfo(op)))
+}
+
+export function getRoleByInfo(info: OperatorInfo) {
+  const profToRole: Record<string, CopilotDocV1.Role> = {
+    PIONEER: CopilotDocV1.Role.Pioneer,
+    WARRIOR: CopilotDocV1.Role.Warrior,
+    TANK: CopilotDocV1.Role.Tank,
+    SNIPER: CopilotDocV1.Role.Sniper,
+    CASTER: CopilotDocV1.Role.Caster,
+    MEDIC: CopilotDocV1.Role.Medic,
+    SUPPORT: CopilotDocV1.Role.Support,
+    SPECIAL: CopilotDocV1.Role.Special,
+    TOKEN: CopilotDocV1.Role.Token,
+    TRAP: CopilotDocV1.Role.Trap,
+  }
+  return profToRole[info.prof] ?? CopilotDocV1.Role.Unknown
 }
 
 export const MODULE_ALT_NAMES = {

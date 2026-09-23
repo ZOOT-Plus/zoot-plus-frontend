@@ -2,21 +2,21 @@ import { Button, Card, Classes, Icon, Menu, MenuItem, PopoverNext } from '@bluep
 
 import clsx from 'clsx'
 import { useAtom, useSetAtom } from 'jotai'
-import { clamp } from 'lodash-es'
+import { clamp, uniq } from 'lodash-es'
 import { FC, memo } from 'react'
 
 import { CopilotDocV1 } from 'models/copilot.schema'
 
-import { SetRequired } from 'type-fest'
 import { i18n, useTranslation } from '../../../i18n/i18n'
 import {
   OperatorInfo,
   adjustOperatorLevel,
   alternativeOperatorSkillUsages,
-  findOperatorByName,
+  findOperatorsByIdentity,
   getDefaultRequirements,
   getEliteIconUrl,
   getModuleName,
+  getRolesByName,
   getSkillCount,
   getSkillUsageAltTitle,
   useLocalizedOperatorName,
@@ -47,10 +47,8 @@ const skillUsageClasses: Record<CopilotDocV1.SkillUsageType, string> = {
 
 export const OperatorItem: FC<OperatorItemProps> = memo(
   ({ operator, onChange, onRemove, onOverlay, isDragging, isSorting, attributes, listeners }) => {
-    const t = useTranslation()
     const displayName = useLocalizedOperatorName(operator.name)
-    const setFavOperators = useSetAtom(editorFavOperatorsAtom)
-    const info = findOperatorByName(operator.name)
+    const info = findOperatorsByIdentity(operator)[0]
     const controlsEnabled = !onOverlay && !isDragging && !isSorting
 
     return (
@@ -58,22 +56,7 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
         <div className="relative">
           <PopoverNext
             placement="top"
-            content={
-              <Menu>
-                <MenuItem
-                  icon="star"
-                  text={t.components.editor2.OperatorItem.add_to_favorites}
-                  onClick={() => {
-                    setFavOperators((prev) => [...prev, operator])
-                    AppToaster.show({
-                      message: t.components.editor2.OperatorItem.added_to_favorites,
-                      intent: 'success',
-                    })
-                  }}
-                />
-                <MenuItem icon="trash" text={t.common.delete} intent="danger" onClick={onRemove} />
-              </Menu>
-            }
+            content={<OperatorMenu operator={operator} onChange={onChange} onRemove={onRemove} />}
           >
             <Card
               interactive
@@ -122,12 +105,82 @@ export const OperatorItem: FC<OperatorItemProps> = memo(
 )
 OperatorItem.displayName = 'OperatorItem'
 
+const OperatorMenu: FC<{
+  operator: EditorOperator
+  onChange?: (operator: EditorOperator) => void
+  onRemove?: () => void
+}> = memo(({ operator, onChange, onRemove }) => {
+  const t = useTranslation()
+  const edit = useEdit()
+  const setFavOperators = useSetAtom(editorFavOperatorsAtom)
+  const roles = uniq([operator.role, ...getRolesByName(operator.name)]).filter((r): r is string => r !== undefined)
+  return (
+    <Menu>
+      <MenuItem
+        icon="star"
+        text={t.components.editor2.OperatorItem.add_to_favorites}
+        onClick={() => {
+          setFavOperators((prev) => [...prev, operator])
+          AppToaster.show({
+            message: t.components.editor2.OperatorItem.added_to_favorites,
+            intent: 'success',
+          })
+        }}
+      />
+      {(roles.length > 1 || operator.role !== undefined) && (
+        <MenuItem icon="team" text={t.components.editor2.OperatorItem.select_role}>
+          {roles.map((role) => (
+            <MenuItem
+              key={role}
+              text={t.models.operator.role[role] || role}
+              roleStructure="listoption"
+              selected={operator.role === role}
+              onClick={() => {
+                edit(() => {
+                  onChange?.({
+                    ...operator,
+                    role,
+                  })
+                  return {
+                    action: 'set-operator-role',
+                    desc: i18n.actions.editor2.set_operator_role,
+                  }
+                })
+              }}
+            />
+          ))}
+          <MenuItem
+            key="unset"
+            text={t.components.editor2.OperatorItem.unset_role}
+            roleStructure="listoption"
+            selected={operator.role === undefined}
+            onClick={() => {
+              edit(() => {
+                onChange?.({
+                  ...operator,
+                  role: undefined,
+                })
+                return {
+                  action: 'set-operator-role',
+                  desc: i18n.actions.editor2.set_operator_role,
+                }
+              })
+            }}
+          />
+        </MenuItem>
+      )}
+      <MenuItem icon="trash" text={t.common.delete} intent="danger" onClick={onRemove} />
+    </Menu>
+  )
+})
+OperatorMenu.displayName = 'OperatorMenu'
+
 const OperatorLevel: FC<{
   operator: EditorOperator
   onChange?: (operator: EditorOperator) => void
 }> = memo(({ operator, onChange }) => {
   const edit = useEdit()
-  const info = findOperatorByName(operator.name)
+  const info = findOperatorsByIdentity(operator)[0]
   const requirements = operator.requirements
 
   return (
@@ -334,7 +387,7 @@ const OperatorSkill: FC<{
   const edit = useEdit()
   // 覆盖值：当用户选中了某个技能并设置了等级，这个等级会暂存在这里，以便在切换到其他技能再切换回来时还原出来
   const [skillLevels, setSkillLevels] = useAtom(editorAtoms.skillLevelOverrides(operator.id))
-  const info = findOperatorByName(operator.name)
+  const info = findOperatorsByIdentity(operator)[0]
   const requirements = operator.requirements
   // 如果没有设置精英化等级，则默认当作精2，也就是允许使用任何技能
   const normalizedElite = requirements?.elite ?? 2
@@ -477,7 +530,7 @@ OperatorSkill.displayName = 'OperatorSkills'
 
 const OperatorModule: FC<{
   operator: EditorOperator
-  info: SetRequired<OperatorInfo, 'modules'>
+  info: OperatorInfo
   onChange?: (operator: EditorOperator) => void
 }> = memo(({ operator, info, onChange }) => {
   const t = useTranslation()
@@ -485,6 +538,7 @@ const OperatorModule: FC<{
   const requirements = operator.requirements
   const normalizedModule = requirements?.module ?? CopilotDocV1.Module.Default
 
+  if (!info.modules) return null
   return (
     <Select
       className="row-start-4"

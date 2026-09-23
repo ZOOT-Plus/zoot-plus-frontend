@@ -209,6 +209,10 @@
         "cn": "移动干员",
         "en": "Move Operator"
       },
+      "set_operator_role": {
+        "cn": "修改干员角色",
+        "en": "Change Operator Role"
+      },
       "set_operator_level": {
         "cn": "修改干员等级",
         "en": "Change Operator Level"
@@ -328,6 +332,10 @@
               "cn": "对象",
               "en": "Target"
             },
+            "role": {
+              "cn": "角色",
+              "en": "Role"
+            },
             "location": {
               "cn": "位置",
               "en": "Location"
@@ -439,6 +447,10 @@
             "cn": "名称",
             "en": "Name"
           },
+          "role": {
+            "cn": "角色",
+            "en": "Role"
+          },
           "skill": {
             "cn": "技能",
             "en": "Skill"
@@ -479,6 +491,18 @@
         "required": {
           "cn": "必填",
           "en": "Required"
+        },
+        "role_ambiguous": {
+          "cn": "\"{{name}}\" 对应的干员不唯一，可能是 {{roles}}，请指定角色",
+          "en": "\"{{name}}\" corresponds to multiple operators, possibly {{roles}}. Please specify the role."
+        },
+        "role_fix": {
+          "cn": "点击干员 -> 选择角色",
+          "en": "Click the operator -> Select Role"
+        },
+        "role_fix_action": {
+          "cn": "重新选择干员",
+          "en": "Re-select the operator"
         },
         "skill_locked": {
           "cn": "技能 {{skill}} 在精 {{elite}} 时尚未解锁",
@@ -985,6 +1009,14 @@
         "added_to_favorites": {
           "cn": "已添加到收藏",
           "en": "Added to favorites"
+        },
+        "select_role": {
+          "cn": "选择角色",
+          "en": "Select Role"
+        },
+        "unset_role": {
+          "cn": "不指定",
+          "en": "Don't Specify"
         },
         "elite": {
           "cn": "精英{{level}}",
@@ -4035,6 +4067,52 @@
       "elite": {
         "cn": "精英{{level}}",
         "en": "Elite {{level}}"
+      },
+      "role": {
+        "Unknown": {
+          "cn": "未知",
+          "en": "Unknown"
+        },
+        "Pioneer": {
+          "cn": "先锋",
+          "en": "Pioneer"
+        },
+        "Warrior": {
+          "cn": "近卫",
+          "en": "Warrior"
+        },
+        "Tank": {
+          "cn": "重装",
+          "en": "Tank"
+        },
+        "Sniper": {
+          "cn": "狙击",
+          "en": "Sniper"
+        },
+        "Caster": {
+          "cn": "术士",
+          "en": "Caster"
+        },
+        "Medic": {
+          "cn": "医疗",
+          "en": "Medic"
+        },
+        "Support": {
+          "cn": "辅助",
+          "en": "Support"
+        },
+        "Special": {
+          "cn": "特种",
+          "en": "Special"
+        },
+        "Token": {
+          "cn": "召唤物",
+          "en": "Summon (Token)"
+        },
+        "Trap": {
+          "cn": "装置",
+          "en": "Device (Trap)"
+        }
       },
       "skill_usage": {
         "none": {

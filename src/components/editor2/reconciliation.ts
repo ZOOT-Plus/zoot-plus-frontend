@@ -5,7 +5,7 @@ import { SetOptional, SetRequired } from 'type-fest'
 
 import { migrateOperation } from '../../models/converter'
 import { CopilotDocV1, minimumRequiredForActions } from '../../models/copilot.schema'
-import { findOperatorByName, getDefaultRequirements } from '../../models/operator'
+import { findOperatorsByIdentity, getDefaultRequirements } from '../../models/operator'
 import { FavGroup, favGroupAtom } from '../../store/useFavGroups'
 import { FavOperator, favOperatorAtom } from '../../store/useFavOperators'
 import { snakeCaseKeysUnicode } from '../../utils/object'
@@ -51,8 +51,8 @@ export function createOperator(
   initialValues: Omit<EditorOperator, 'id'>,
   applyDefaultRequirements = true,
 ): EditorOperator {
-  const info = findOperatorByName(initialValues.name)
-  const shouldApplyDefaultRequirements = applyDefaultRequirements && (!info || info.prof !== 'TOKEN')
+  const info = findOperatorsByIdentity(initialValues)[0]
+  const shouldApplyDefaultRequirements = applyDefaultRequirements && info && info.prof !== 'TOKEN'
   let defaultRequirements: EditorOperator['requirements'] | undefined
   if (shouldApplyDefaultRequirements) {
     const rarity = info?.rarity ?? 6

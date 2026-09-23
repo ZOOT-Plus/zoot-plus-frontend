@@ -23,13 +23,13 @@ import { getLocalizedOperatorName, preloadEliteIcons } from '../../../models/ope
 import { Droppable, Sortable } from '../../dnd'
 import { AtomRenderer } from '../AtomRenderer'
 import { EditorOperator, editorAtoms, traverseOperators, useEdit } from '../editor-state'
-import { createGroup, createOperator } from '../reconciliation'
+import { createGroup } from '../reconciliation'
 import { EntityIssue } from '../validation/validation'
 import { IssuesDisplay } from '../validation/Validator'
+import { useOperatorControl } from './operator-control'
 import { GroupItem } from './GroupItem'
 import { OperatorItem } from './OperatorItem'
 import { OperatorSelect } from './OperatorSelect'
-import { useAddOperator } from './useAddOperator'
 
 const globalContainerId = 'global'
 
@@ -203,13 +203,17 @@ export const OperatorEditor: FC = memo(() => {
 OperatorEditor.displayName = 'OperatorPanel'
 
 const CreateOperatorButton: FC<{}> = () => {
-  const addOperator = useAddOperator()
+  const { addOperatorById, addOperatorByName } = useOperatorControl()
   const t = useTranslation()
   return (
     <OperatorSelect
       markPicked
-      onSelect={(name) => {
-        addOperator(createOperator({ name }))
+      onSelect={(name, { operatorId }) => {
+        if (operatorId) {
+          addOperatorById(operatorId)
+        } else {
+          addOperatorByName(name)
+        }
       }}
     >
       <Button minimal intent="primary" className="!py-1.5" icon="plus">

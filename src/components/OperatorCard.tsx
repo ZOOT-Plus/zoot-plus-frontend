@@ -5,7 +5,13 @@ import { FC } from 'react'
 
 import { useTranslation } from 'i18n/i18n'
 import { CopilotDocV1 } from 'models/copilot.schema'
-import { OPERATORS, getEliteIconUrl, getModuleName, getSkillCount, useLocalizedOperatorName } from 'models/operator'
+import {
+  findOperatorsByIdentity,
+  getEliteIconUrl,
+  getModuleName,
+  getSkillCount,
+  useLocalizedOperatorName,
+} from 'models/operator'
 
 import { MasteryIcon } from './MasteryIcon'
 import { OperatorAvatar } from './OperatorAvatar'
@@ -22,7 +28,7 @@ export const OperatorCard: FC<{
 }> = ({ operator, skills, modules }) => {
   const t = useTranslation()
   const displayName = useLocalizedOperatorName(operator.name)
-  const info = OPERATORS.find((o) => o.name === operator.name)
+  const info = findOperatorsByIdentity(operator)[0]
   const { level, elite, skillLevel, module } = operator.requirements ?? {}
   const selectedSkills =
     skills ?? (operator.skill === undefined ? [] : [{ skill: operator.skill, skillLevel } satisfies OperatorCardSkill])
