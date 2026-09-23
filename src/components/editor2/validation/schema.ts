@@ -407,12 +407,14 @@ const actionForValidation = z
       with_pause: specializedActionForValidation.with_pause.optional(),
       high_resolution_swipe_fix: specializedActionForValidation.high_resolution_swipe_fix.optional(),
     }),
-    z.looseObject({
-      ...baseActionForValidation,
-      type: z.literal(CopilotDocV1.Type.SetUnitLocation),
-      name: z.string().min(1),
-      location: specializedActionForValidation.location,
-    }),
+    withOperatorIdentityForValidation(
+      z.looseObject({
+        ...baseActionForValidation,
+        type: z.literal(CopilotDocV1.Type.SetUnitLocation),
+        location: specializedActionForValidation.location,
+      }),
+      false,
+    ),
     z.looseObject({
       ...baseActionForValidation,
       type: z.literal(CopilotDocV1.Type.SpeedUp),
