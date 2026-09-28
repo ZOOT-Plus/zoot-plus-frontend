@@ -16,6 +16,10 @@
       "cn": "刷新页面",
       "en": "Refreshing the Page"
     },
+    "new_version_available": {
+      "cn": "新版本可用",
+      "en": "A new version is available"
+    },
     "translations_not_loaded": {
       "cn": "翻译未加载",
       "en": "Translations have not been loaded."
@@ -792,7 +796,7 @@
           "cn": "提交",
           "en": "Submit"
         },
-        "recovery_note":{
+        "recovery_note": {
           "cn": "作业解析失败，无法进行编辑。请修正 JSON 后提交以恢复编辑器状态。",
           "en": "Failed to parse operation, cannot edit. Please fix the JSON and submit to recover the editor state."
         },

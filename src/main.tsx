@@ -10,9 +10,14 @@ import ReactDOM from 'react-dom/client'
 import { ReactGA } from 'utils/react-ga'
 import { Route, Routes } from 'react-router-dom'
 
+import { registerSW } from 'virtual:pwa-register'
+
 import { withSuspensable } from 'components/Suspensable'
+import { AppToaster } from 'components/Toaster'
 import { ViewPage } from 'pages/view'
 import { clearOutdatedSwrCache } from 'utils/swr'
+
+import { i18n } from './i18n/i18n'
 
 import { App } from './App'
 import { AppLayout } from './layouts/AppLayout'
@@ -46,6 +51,29 @@ if (navigator.userAgent.includes('Win')) {
   document.documentElement.classList.add('platform--windows')
 } else {
   document.documentElement.classList.add('platform--non-windows')
+}
+
+// ServiceWorker：纯在线性能缓存层（零预缓存、无离线兜底，配置见 vite.config.ts 的 VitePWA）。
+// 更新采用 prompt 模式——新版本就绪时弹 Toast 由用户手动刷新，而非 autoUpdate 的自动刷新，
+// 避免打断正在编辑器里作业的用户（editor2 自动存档间隔 5 分钟，未存档增量会丢失）
+if (import.meta.env.PROD) {
+  const updateSW = registerSW({
+    onNeedRefresh: () => {
+      AppToaster.show({
+        intent: 'primary',
+        // prompt 模式下同一 waiting SW 只提示一次，Toast 必须常驻到用户处理为止：
+        // 默认 5 秒超时会让用户错过入口，错过就只能等所有标签页关闭后新 SW 才能接管。
+        // Blueprint 虽对 timeout<=0 标注 discouraged，但此处是必须由用户决策的持久提示，
+        // 且 isCloseButtonShown 默认 true、action 点击自动关闭，均保留手动关闭途径
+        timeout: 0,
+        message: i18n.essentials.new_version_available,
+        action: {
+          text: i18n.essentials.refresh_page,
+          onClick: () => updateSW(true),
+        },
+      })
+    },
+  })
 }
 
 clearOutdatedSwrCache()
