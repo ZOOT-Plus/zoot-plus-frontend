@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "pnpm generate:i18n && tsc --noEmit && vite build",
     "build:fast": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "pnpm generate:i18n && tsc --noEmit",
     "generate:i18n": "tsx scripts/generate-i18n.ts",
     "build:azure": "pnpm build:fast && node post-build.mjs",
@@ -72,6 +74,7 @@
   },
   "devDependencies": {
     "@hookform/devtools": "^4.4.0",
+    "@testing-library/react": "^16.3.3",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^24.13.3",
     "@types/react": "^18.3.31",
@@ -79,6 +82,7 @@
     "@types/semver": "^7.8.0",
     "@vitejs/plugin-react": "^6.0.5",
     "autoprefixer": "^10.5.4",
+    "happy-dom": "^20.14.5",
     "less": "^4.9.0",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
@@ -90,7 +94,8 @@
     "tailwindcss": "^3.4.19",
     "tsx": "^4.23.12",
     "typescript": "7.0.2",
-    "vite": "^8.2.1"
+    "vite": "^8.2.1",
+    "vitest": "^5.0.2"
   },
   "packageManager": "pnpm@12.0.0-rc.7"
 }
