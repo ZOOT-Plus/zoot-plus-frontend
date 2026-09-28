@@ -64,13 +64,15 @@ export default defineConfig(({ command, mode }) => {
                 cacheableResponse: { statuses: [200] },
               },
             },
-            // index.html 引用的 cdnjs 跨域样式（SRI 固定版本，内容不变）
+            // cdnjs 全域：当前仅 index.html 引用的 github-markdown CSS（SRI 固定版本），
+            // 有意保持全域匹配——未来新增的 cdnjs 脚本/字体等同样受益；缓存名与容量
+            // 上限按通用资源设定（当前 1 个资源，maxEntries 20 由 LRU 兜底）
             {
               urlPattern: /^https:\/\/cdnjs\.cloudflare\.com\//,
               handler: 'CacheFirst',
               options: {
-                cacheName: 'cdnjs-stylesheets',
-                expiration: { maxAgeSeconds: 60 * 60 * 24 * 30 },
+                cacheName: 'cdnjs',
+                expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 30, purgeOnQuotaError: true },
                 cacheableResponse: { statuses: [200] },
               },
             },

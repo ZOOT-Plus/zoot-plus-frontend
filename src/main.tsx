@@ -61,6 +61,11 @@ if (import.meta.env.PROD) {
     onNeedRefresh: () => {
       AppToaster.show({
         intent: 'primary',
+        // prompt 模式下同一 waiting SW 只提示一次，Toast 必须常驻到用户处理为止：
+        // 默认 5 秒超时会让用户错过入口，错过就只能等所有标签页关闭后新 SW 才能接管。
+        // Blueprint 虽对 timeout<=0 标注 discouraged，但此处是必须由用户决策的持久提示，
+        // 且 isCloseButtonShown 默认 true、action 点击自动关闭，均保留手动关闭途径
+        timeout: 0,
         message: i18n.essentials.new_version_available,
         action: {
           text: i18n.essentials.refresh_page,
