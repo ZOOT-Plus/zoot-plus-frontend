@@ -10,7 +10,7 @@ import { EditorAction, editorAtoms, useEdit } from '../editor-state'
 
 export function createAction(initialValues: SetRequired<Partial<Omit<EditorAction, 'id'>>, 'type'>) {
   const action: EditorAction = defaults({ id: uniqueId() }, initialValues)
-  if (action.type === CopilotDocV1.Type.SkillUsage) {
+  if (action.type === CopilotDocV1.Type.SkillUsage && action.skillUsage === undefined) {
     action.skillUsage = CopilotDocV1.SkillUsageType.ReadyToUse
   }
   return action
