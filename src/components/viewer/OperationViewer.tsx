@@ -455,19 +455,17 @@ function OperationViewerInner({
       <div className="h-[1px] w-full bg-gray-200 mt-4 mb-6" />
 
       <div className="mb-6">
-        <H4 className="mb-4" id="comment">
-          {operation.commentStatus === BanCommentsStatusEnum.Disabled
-            ? t.components.viewer.OperationViewer.comments
-            : t.components.viewer.OperationViewer.comments_count({
-                count: operation.commentsCount,
-              })}
-        </H4>
         {operation.commentStatus === BanCommentsStatusEnum.Disabled ? (
-          <NonIdealState
-            icon="tree"
-            title={t.components.viewer.OperationViewer.comments_closed}
-            description={t.components.viewer.OperationViewer.comments_closed_note}
-          />
+          <>
+            <H4 className="mb-4" id="comment">
+              {t.components.viewer.OperationViewer.comments}
+            </H4>
+            <NonIdealState
+              icon="tree"
+              title={t.components.viewer.OperationViewer.comments_closed}
+              description={t.components.viewer.OperationViewer.comments_closed_note}
+            />
+          </>
         ) : (
           <CommentArea operationId={operation.id} />
         )}
