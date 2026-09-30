@@ -255,7 +255,13 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
       const text = await file.text()
       // 去掉可能存在的 UTF-8 BOM
       const normalized = text.replace(/^\uFEFF/, '')
-      const raw = JSON.parse(normalized) as OpenApiResult | { data?: unknown }
+      let raw: OpenApiResult | { data?: unknown }
+      try {
+        raw = JSON.parse(normalized) as OpenApiResult | { data?: unknown }
+      } catch {
+        setError(t.components.OperatorMatcher.invalid_file)
+        return
+      }
 
       const data = (raw as OpenApiResult).data ?? raw
       const operators = normalizeYituliuOwnedOperators(data)
