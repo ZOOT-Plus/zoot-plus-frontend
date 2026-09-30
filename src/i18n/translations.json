@@ -792,7 +792,7 @@
           "cn": "提交",
           "en": "Submit"
         },
-        "recovery_note":{
+        "recovery_note": {
           "cn": "作业解析失败，无法进行编辑。请修正 JSON 后提交以恢复编辑器状态。",
           "en": "Failed to parse operation, cannot edit. Please fix the JSON and submit to recover the editor state."
         },
@@ -3779,6 +3779,18 @@
       "token_required": {
         "cn": "请输入 Token",
         "en": "Enter a token first"
+      },
+      "import_local": {
+        "cn": "本地导入 JSON",
+        "en": "Import local JSON"
+      },
+      "local_import_help": {
+        "cn": "如不想使用 Token 拉取，也可以使用 MAA 导出干员的 JSON 数据。",
+        "en": "If you prefer not to fetch with a token, you can also use the operator JSON data exported from MAA."
+      },
+      "invalid_file": {
+        "cn": "JSON 文件格式不正确，无法解析出干员数据。",
+        "en": "The JSON file is invalid and no operator data could be parsed."
       },
       "fetch_failed": {
         "cn": "获取干员数据失败",
