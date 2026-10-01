@@ -209,6 +209,10 @@
         "cn": "移动干员",
         "en": "Move Operator"
       },
+      "set_operator_role": {
+        "cn": "修改干员角色",
+        "en": "Change Operator Role"
+      },
       "set_operator_level": {
         "cn": "修改干员等级",
         "en": "Change Operator Level"
@@ -328,6 +332,10 @@
               "cn": "对象",
               "en": "Target"
             },
+            "role": {
+              "cn": "角色",
+              "en": "Role"
+            },
             "location": {
               "cn": "位置",
               "en": "Location"
@@ -439,6 +447,10 @@
             "cn": "名称",
             "en": "Name"
           },
+          "role": {
+            "cn": "角色",
+            "en": "Role"
+          },
           "skill": {
             "cn": "技能",
             "en": "Skill"
@@ -479,6 +491,18 @@
         "required": {
           "cn": "必填",
           "en": "Required"
+        },
+        "role_ambiguous": {
+          "cn": "\"{{name}}\" 对应的干员不唯一，可能是 {{roles}}，请指定角色",
+          "en": "\"{{name}}\" corresponds to multiple operators, possibly {{roles}}. Please specify the role."
+        },
+        "role_fix": {
+          "cn": "点击干员 -> 选择角色",
+          "en": "Click the operator -> Select Role"
+        },
+        "role_fix_action": {
+          "cn": "重新选择干员",
+          "en": "Re-select the operator"
         },
         "skill_locked": {
           "cn": "技能 {{skill}} 在精 {{elite}} 时尚未解锁",
@@ -768,7 +792,7 @@
           "cn": "提交",
           "en": "Submit"
         },
-        "recovery_note":{
+        "recovery_note": {
           "cn": "作业解析失败，无法进行编辑。请修正 JSON 后提交以恢复编辑器状态。",
           "en": "Failed to parse operation, cannot edit. Please fix the JSON and submit to recover the editor state."
         },
@@ -985,6 +1009,14 @@
         "added_to_favorites": {
           "cn": "已添加到收藏",
           "en": "Added to favorites"
+        },
+        "select_role": {
+          "cn": "选择角色",
+          "en": "Select Role"
+        },
+        "unset_role": {
+          "cn": "不指定",
+          "en": "Don't Specify"
         },
         "elite": {
           "cn": "精英{{level}}",
@@ -3748,6 +3780,18 @@
         "cn": "请输入 Token",
         "en": "Enter a token first"
       },
+      "import_local": {
+        "cn": "本地导入 JSON",
+        "en": "Import local JSON"
+      },
+      "local_import_help": {
+        "cn": "如不想使用 Token 拉取，也可以使用 MAA 导出干员的 JSON 数据。",
+        "en": "If you prefer not to fetch with a token, you can also use the operator JSON data exported from MAA."
+      },
+      "invalid_file": {
+        "cn": "JSON 文件格式不正确，无法解析出干员数据。",
+        "en": "The JSON file is invalid and no operator data could be parsed."
+      },
       "fetch_failed": {
         "cn": "获取干员数据失败",
         "en": "Failed to fetch operator data"
@@ -4035,6 +4079,52 @@
       "elite": {
         "cn": "精英{{level}}",
         "en": "Elite {{level}}"
+      },
+      "role": {
+        "Unknown": {
+          "cn": "未知",
+          "en": "Unknown"
+        },
+        "Pioneer": {
+          "cn": "先锋",
+          "en": "Pioneer"
+        },
+        "Warrior": {
+          "cn": "近卫",
+          "en": "Warrior"
+        },
+        "Tank": {
+          "cn": "重装",
+          "en": "Tank"
+        },
+        "Sniper": {
+          "cn": "狙击",
+          "en": "Sniper"
+        },
+        "Caster": {
+          "cn": "术士",
+          "en": "Caster"
+        },
+        "Medic": {
+          "cn": "医疗",
+          "en": "Medic"
+        },
+        "Support": {
+          "cn": "辅助",
+          "en": "Support"
+        },
+        "Special": {
+          "cn": "特种",
+          "en": "Special"
+        },
+        "Token": {
+          "cn": "召唤物",
+          "en": "Summon (Token)"
+        },
+        "Trap": {
+          "cn": "装置",
+          "en": "Device (Trap)"
+        }
       },
       "skill_usage": {
         "none": {

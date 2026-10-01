@@ -7,6 +7,7 @@ import { CSSProperties, FC } from 'react'
 import { CopilotDocV1 } from 'models/copilot.schema'
 import { findActionType } from 'models/types'
 
+import { SetRequired } from 'type-fest'
 import { languageAtom, useTranslation } from '../i18n/i18n'
 import { findOperatorDirection, getLocalizedOperatorName, getSkillUsageTitle } from '../models/operator'
 import { formatDuration } from '../utils/times'
@@ -123,7 +124,8 @@ export const ActionTimelineItem: FC<ActionTimelineItemProps> = ({
                     {avatarNames.slice(0, 3).map((name) => (
                       <OperatorAvatar
                         key={name}
-                        name={name}
+                        name={action.name}
+                        identity={action as SetRequired<typeof action, 'name'>}
                         size="large"
                         sourceSize={32}
                         className="ring-[1.5px] ring-white dark:ring-[#2F343C] w-8 h-8"

@@ -45,7 +45,7 @@ export const CommentAreaContext = createContext<CommentAreaContext>({} as any)
 
 export const CommentArea = withSuspensable(function ViewerComments({ operationId }: CommentAreaProps) {
   const t = useTranslation()
-  const { comments, isValidating, isReachingEnd, setSize, mutate } = useComments({
+  const { comments, total, isValidating, isReachingEnd, setSize, mutate } = useComments({
     operationId,
     suspense: true,
   })
@@ -80,6 +80,9 @@ export const CommentArea = withSuspensable(function ViewerComments({ operationId
   return (
     <CommentAreaContext.Provider value={contextValue}>
       <div>
+        <H4 className="mb-4" id="comment">
+          {t.components.viewer.OperationViewer.comments_count({ count: total })}
+        </H4>
         <CommentForm primary className="mb-6" maxLength={maxLength} />
         {comments?.map((comment) => (
           <MainComment key={comment.commentId} className="mt-3" comment={comment}>

@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   check:
-    name: Typecheck & Lint
+    name: Typecheck, Test, Lint & Build
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -37,6 +37,9 @@ jobs:
       # on a clean checkout. Enforced gate: type errors fail the job.
       - name: Type check
         run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
 
       # Lint is an enforced gate: errors fail the job. Warnings do not fail
       # oxlint, so the remaining warnings stay visible without blocking.

@@ -1,4 +1,4 @@
-import { OpDifficulty, compareVersions } from './operation'
+import { OpDifficulty, compareVersions } from './operation';
 
 /**
  * 战斗流程协议 v1
@@ -38,37 +38,27 @@ export namespace CopilotDocV1 {
     postDelay?: number
   }
 
-  export interface ActionDeploy extends ActionBase {
-    direction: Direction
-    // location: any[]
-    // should be
-    location: [number, number]
-    name: string
+  export interface ActionDeploy extends ActionBase, OperatorIdentity {
     type: Type.Deploy
+    direction: Direction
+    location: [number, number]
   }
 
   export type ActionSkillOrRetreatOrBulletTime = ActionBase &
     (
-      | {
-          // location: any[]
-          // should be
+      | ({
           location: [number, number]
-          name?: string
           type: Type.Skill | Type.Retreat | Type.BulletTime
-        }
-      | {
-          // location?: any[]
-          // should be
+        } & Partial<OperatorIdentity>)
+      | ({
           location?: [number, number]
-          name: string
           type: Type.Skill | Type.Retreat | Type.BulletTime
-        }
+        } & OperatorIdentity)
     )
 
-  export interface ActionSkillUsage extends ActionBase {
-    name: string
-    skillUsage: SkillUsageType
+  export interface ActionSkillUsage extends ActionBase, OperatorIdentity {
     type: Type.SkillUsage
+    skillUsage: SkillUsageType
     skillTimes?: number
   }
 
@@ -91,14 +81,10 @@ export namespace CopilotDocV1 {
     location?: [number, number]
   }
 
-  export interface ActionSetUnitLocation extends ActionBase {
+  export interface ActionSetUnitLocation extends ActionBase, OperatorIdentity {
     type: Type.SetUnitLocation
-    /** 目标单位名（干员、召唤物或装置等战场单位），必填 */
-    name: string
     /** 战场格子坐标，任意合法格子（含 [0, 0]），必填 */
     location: [number, number]
-    /** 目标职业，可选，用于区分同名单位；缺省时不导出 */
-    role?: string
   }
 
   export interface ActionSwipe extends ActionBase {
@@ -168,13 +154,15 @@ export namespace CopilotDocV1 {
     opers?: Operator[]
   }
 
-  export interface Operator {
+  export interface OperatorIdentity {
+    name: string
+    role?: string
+  }
+
+  export interface Operator extends OperatorIdentity {
     /** Required in editor; should be stripped when exporting. */
     _id?: string
-    /**
-     * 必填
-     */
-    name: string
+
     requirements?: Requirements
     /**
      * 可选，默认 1，取值范围 [1, 3]
@@ -185,6 +173,20 @@ export namespace CopilotDocV1 {
      * 技能使用次数，可选，默认为 1
      */
     skillTimes?: number
+  }
+
+  export enum Role {
+    Unknown = 'Unknown',
+    Pioneer = 'Pioneer', // 先锋
+    Warrior = 'Warrior', // 近卫
+    Tank = 'Tank', // 重装
+    Sniper = 'Sniper', // 狙击
+    Caster = 'Caster', // 术士
+    Medic = 'Medic', // 医疗
+    Support = 'Support', // 辅助
+    Special = 'Special', // 特种
+    Token = 'Token', // 召唤物
+    Trap = 'Trap', // 装置
   }
 
   export enum SkillUsageType {

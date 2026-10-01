@@ -58,9 +58,11 @@ export function useComments({ operationId, descending = true, orderBy, suspense 
   const isReachingEnd = pages?.some((page) => !page.hasNext)
 
   const comments = pages?.map((el) => el.data).flat()
+  const total = pages?.[0]?.total ?? 0
 
   return {
     comments,
+    total,
     setSize,
     mutate,
     isValidating,
