@@ -31,6 +31,9 @@ import { useTranslation } from '../i18n/i18n'
 const YITULIU_OPERATOR_API_URL = 'https://backend.yituliu.cn/open-api/operator/info'
 const OPERATOR_DATA_STALE_AFTER_MS = 33 * 24 * 60 * 60 * 1000
 
+/**
+ * 判断干员数据是否过期。
+ */
 function isOperatorDataStale(lastChangedAt: string | undefined) {
   if (!lastChangedAt) {
     return false
@@ -40,11 +43,19 @@ function isOperatorDataStale(lastChangedAt: string | undefined) {
   return Number.isFinite(time) && Date.now() - time > OPERATOR_DATA_STALE_AFTER_MS
 }
 
+/**
+ * 一图流 OpenAPI 返回结构
+ */
 interface OpenApiResult {
   code?: number
   data?: unknown
   message?: string
 }
+
+/**
+ * 规范化后的干员列表类型
+ */
+type NormalizedOperators = ReturnType<typeof normalizeYituliuOwnedOperators>
 
 interface OperatorMatcherProps {
   onChange: (matcher: OperatorMatcherFilter | undefined) => void
@@ -58,6 +69,8 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const autoSyncAttempted = useRef(false)
+  // 隐藏的文件选择器 ref
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const closeDialog = () => {
     setDialogOpen(false)
@@ -85,6 +98,47 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
   useEffect(() => {
     onChange(matcher)
   }, [matcher, onChange])
+
+  /**
+   * 把一组规范化后的干员数据写入 settings。
+   * 网络同步和本地导入都走这里，保证两边的更新/合并/过期逻辑一致。
+   * - options.enableMatching 为 true 时强制启用匹配
+   * - options.token 传入时更新 token；本地导入不传，保留原有 token
+   */
+  const applyOperators = useCallback(
+    (
+      operators: NormalizedOperators,
+      options: { enableMatching: boolean; token?: string },
+    ) => {
+      setSettings((current) => {
+        const dataChanged = hasOwnedOperatorDataChanged(current.ownedOperators, operators)
+        const enableMatching = options.enableMatching ? true : current.enabled
+        const modes = current.modes.length > 0 ? current.modes : [...DEFAULT_OPERATOR_MATCH_MODES]
+        const shouldSetLastChangedAt = dataChanged || !current.lastChangedAt
+        const nextToken = options.token ?? current.token
+
+        if (
+          !dataChanged &&
+          !shouldSetLastChangedAt &&
+          current.enabled === enableMatching &&
+          current.token === nextToken &&
+          current.modes.length > 0
+        ) {
+          return current
+        }
+
+        return {
+          ...current,
+          enabled: enableMatching,
+          token: nextToken,
+          ownedOperators: dataChanged ? operators : current.ownedOperators,
+          modes,
+          ...(shouldSetLastChangedAt ? { lastChangedAt: new Date().toISOString() } : {}),
+        }
+      })
+    },
+    [setSettings],
+  )
 
   const syncOperators = useCallback(
     async (
@@ -128,30 +182,9 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
           throw new Error(t.components.OperatorMatcher.no_operators)
         }
 
-        setSettings((current) => {
-          const dataChanged = hasOwnedOperatorDataChanged(current.ownedOperators, operators)
-          const enableMatching = options.enableMatching ? true : current.enabled
-          const modes = current.modes.length > 0 ? current.modes : [...DEFAULT_OPERATOR_MATCH_MODES]
-          const shouldSetLastChangedAt = dataChanged || !current.lastChangedAt
-
-          if (
-            !dataChanged &&
-            !shouldSetLastChangedAt &&
-            current.enabled === enableMatching &&
-            current.token === normalizedToken &&
-            current.modes.length > 0
-          ) {
-            return current
-          }
-
-          return {
-            ...current,
-            enabled: enableMatching,
-            token: normalizedToken,
-            ownedOperators: dataChanged ? operators : current.ownedOperators,
-            modes,
-            ...(shouldSetLastChangedAt ? { lastChangedAt: new Date().toISOString() } : {}),
-          }
+        applyOperators(operators, {
+          enableMatching: options.enableMatching,
+          token: normalizedToken,
         })
 
         if (options.showSuccess) {
@@ -173,7 +206,7 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
         setLoading(false)
       }
     },
-    [setSettings, t],
+    [applyOperators, t],
   )
 
   useEffect(() => {
@@ -199,6 +232,57 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
 
     if (imported) {
       closeDialog()
+    }
+  }
+
+  /**
+   * 从本地 JSON 文件导入干员数据。
+   * 兼容两种结构：
+   * 1) 完整 OpenAPI 响应：{ code, data, message }
+   * 2) 只有 data 部分的对象
+   */
+  const importFromFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0]
+    // 立刻清空，保证同一文件再次选择仍能触发 change
+    event.currentTarget.value = ''
+    if (!file) {
+      return
+    }
+
+    setError('')
+
+    try {
+      const text = await file.text()
+      // 去掉可能存在的 UTF-8 BOM
+      const normalized = text.replace(/^\uFEFF/, '')
+      let raw: OpenApiResult | { data?: unknown }
+      try {
+        raw = JSON.parse(normalized) as OpenApiResult | { data?: unknown }
+      } catch {
+        setError(t.components.OperatorMatcher.invalid_file)
+        return
+      }
+
+      const data = (raw as OpenApiResult).data ?? raw
+      const operators = normalizeYituliuOwnedOperators(data)
+
+      if (operators.length === 0) {
+        throw new Error(t.components.OperatorMatcher.no_operators)
+      }
+
+      // 本地导入不改动 token，用户下次仍可用原 token 同步
+      applyOperators(operators, { enableMatching: true })
+
+      AppToaster.show({
+        intent: 'success',
+        message: t.components.OperatorMatcher.imported({
+          count: operators.length,
+        }),
+      })
+
+      closeDialog()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t.components.OperatorMatcher.invalid_file)
     }
   }
 
@@ -270,6 +354,12 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
               ),
             })}
           </Callout>
+
+          {/* 本地导入说明 */}
+          <Callout className="mb-4" icon="document-open">
+            {t.components.OperatorMatcher.local_import_help}
+          </Callout>
+
           {settings.ownedOperators.length > 0 && (
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <Tag minimal intent={settings.enabled ? 'primary' : 'none'}>
@@ -279,6 +369,7 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
               </Tag>
             </div>
           )}
+
           <InputGroup
             fill
             large
@@ -292,12 +383,14 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
               }
             }}
           />
+
           {error && (
             <Callout className="mt-3" intent="danger">
               {error}
             </Callout>
           )}
         </DialogBody>
+
         <DialogFooter
           actions={
             <>
@@ -317,6 +410,21 @@ export const OperatorMatcher: FC<OperatorMatcherProps> = ({ onChange }) => {
                   <p>{t.components.OperatorMatcher.clear_message}</p>
                 </Confirm>
               )}
+
+              {/* 本地导入按钮 */}
+              <Button minimal icon="document-open" onClick={() => fileInputRef.current?.click()}>
+                {t.components.OperatorMatcher.import_local}
+              </Button>
+
+              {/* 隐藏的文件选择器 */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={(event) => void importFromFile(event)}
+              />
+
               <Button intent="primary" icon="download" loading={loading} onClick={() => void importOperators()}>
                 {settings.ownedOperators.length > 0
                   ? t.components.OperatorMatcher.sync
