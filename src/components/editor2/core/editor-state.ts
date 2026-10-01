@@ -169,6 +169,7 @@ const editorAtom = atom(
 interface EditorConfig {
   showLinkerButtons: boolean
   toggleSelectorPanel: boolean
+  legacyUI: boolean
   historyLimit: number
   showErrorsByDefault: boolean
   sourceEditorSyncTimeout: number
@@ -184,6 +185,7 @@ interface OperatorPresetPerRarity {
 const defaultConfig: EditorConfig = {
   showLinkerButtons: false,
   toggleSelectorPanel: true,
+  legacyUI: false,
   historyLimit: 20,
   showErrorsByDefault: false,
   sourceEditorSyncTimeout: 1000,

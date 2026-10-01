@@ -705,6 +705,10 @@
           "cn": "默认显示验证错误",
           "en": "Show Validation Errors by Default"
         },
+        "legacy_ui": {
+          "cn": "使用旧版编辑器布局",
+          "en": "Use Legacy Editor Layout"
+        },
         "operator_presets": {
           "cn": "干员预设",
           "en": "Operator Presets"
@@ -792,7 +796,7 @@
           "cn": "提交",
           "en": "Submit"
         },
-        "recovery_note":{
+        "recovery_note": {
           "cn": "作业解析失败，无法进行编辑。请修正 JSON 后提交以恢复编辑器状态。",
           "en": "Failed to parse operation, cannot edit. Please fix the JSON and submit to recover the editor state."
         },
