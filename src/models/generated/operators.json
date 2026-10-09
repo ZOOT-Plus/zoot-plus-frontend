@@ -1133,6 +1133,20 @@
       ]
     },
     {
+      "id": "char_393_toledo",
+      "prof": "SUPPORT",
+      "subProf": "underminer",
+      "name_en": "de Toledo",
+      "name": "德·托莱多",
+      "alias": "de·tuolaiduo d·tld 德·托萊多",
+      "rarity": 5,
+      "alt_name": "de Toledo",
+      "modules": [
+        "",
+        "Y"
+      ]
+    },
+    {
       "id": "char_102_texas",
       "prof": "PIONEER",
       "subProf": "pioneer",
@@ -2677,6 +2691,16 @@
       "alt_name": "Reliable Battery"
     },
     {
+      "id": "char_4231_clemnt",
+      "prof": "WARRIOR",
+      "subProf": "primguard",
+      "name_en": "Clementia",
+      "name": "克莱门莎",
+      "alias": "kelaimensha kelaimensuo klms 克萊門莎",
+      "rarity": 6,
+      "alt_name": "Clementia"
+    },
+    {
       "id": "char_4228_closur",
       "prof": "PIONEER",
       "subProf": "tactician",
@@ -3290,6 +3314,20 @@
       "alias": "longteng.L lt.L 龍騰.L",
       "rarity": 0,
       "alt_name": "DDF Type-L"
+    },
+    {
+      "id": "char_4232_hbound",
+      "prof": "SPECIAL",
+      "subProf": "alchemist",
+      "name_en": "Homebound",
+      "name": "旅骨",
+      "alias": "lvgu lg 旅骨",
+      "rarity": 5,
+      "alt_name": "Homebound",
+      "modules": [
+        "",
+        "X"
+      ]
     },
     {
       "id": "char_4130_luton",
@@ -4749,7 +4787,8 @@
       "alt_name": "Shu",
       "modules": [
         "",
-        "X"
+        "X",
+        "Y"
       ]
     },
     {
@@ -5449,7 +5488,8 @@
       "alt_name": "Ulpianus",
       "modules": [
         "",
-        "X"
+        "X",
+        "Y"
       ]
     },
     {
@@ -6788,6 +6828,16 @@
         "",
         "X"
       ]
+    },
+    {
+      "id": "token_10067_toledo_tldptm",
+      "prof": "TOKEN",
+      "subProf": "notchar1",
+      "name_en": "Legend of the Conquerors",
+      "name": "征服者传说",
+      "alias": "zhengfuzhechuanshuo zhengfuzhechuanshui zhengfuzhechuanyue zhengfuzhezhuanshuo zhengfuzhezhuanshui zhengfuzhezhuanyue zfzcs zfzcy zfzzs zfzzy 征服者傳說",
+      "rarity": 0,
+      "alt_name": "Legend of the Conquerors"
     },
     {
       "id": "char_4000_jnight",
