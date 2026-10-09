@@ -155,6 +155,84 @@ describe('recommendation filters', () => {
   })
 })
 
+describe('recommendation rarity groups', () => {
+  it('separates all one to three star operators while preserving each group order and filters', () => {
+    const operators = [
+      { id: 'char_120_hibisc', name: '芙蓉', role: 'Medic', rarity: 3 },
+      { id: 'char_103_angel', name: '能天使', role: 'Sniper', rarity: 6 },
+      { id: 'char_285_medic2', name: 'Lancet-2', role: 'Medic', rarity: 1 },
+      { id: 'char_196_sunbr', name: '古米', role: 'Tank', rarity: 4 },
+      { id: 'char_501_durin', name: '杜林', role: 'Caster', rarity: 2 },
+      { id: 'char_128_plosis', name: '白面鸮', role: 'Medic', rarity: 5 },
+    ]
+    mock.useRecommendations.mockReturnValue({
+      data: {
+        ...data,
+        recommendations: operators.map((operator, index) => ({
+          ...data.recommendations[0],
+          operator,
+          score: 60 - index,
+        })),
+      },
+      isLoading: false,
+    })
+    mount()
+    const higher = screen.getByRole('region', { name: '4 stars and above' })
+    const lower = screen.getByRole('region', { name: '3 stars and below' })
+    expect(
+      within(higher)
+        .getAllByRole('article')
+        .map((item) => item.getAttribute('aria-label')),
+    ).toEqual(['Exusiai', 'Gummy', 'Ptilopsis'])
+    expect(
+      within(lower)
+        .getAllByRole('article')
+        .map((item) => item.getAttribute('aria-label')),
+    ).toEqual(['Hibiscus', 'Lancet-2', 'Durin'])
+    expect(screen.getByText('6 operators')).toBeTruthy()
+
+    fireEvent.change(screen.getByLabelText('Class'), { target: { value: 'Medic' } })
+    expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(1)
+    expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(2)
+    fireEvent.change(screen.getByLabelText('Rarity'), { target: { value: '3' } })
+    expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
+    expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(1)
+    fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'Hibiscus' } })
+    expect(screen.getByRole('article', { name: 'Hibiscus' })).toBeTruthy()
+    fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'does-not-exist' } })
+    expect(screen.getByText('No recommendations match these filters')).toBeTruthy()
+    expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
+  })
+
+  it('paginates both groups independently and resets pagination when filters change', () => {
+    mock.useRecommendations.mockReturnValue({
+      data: {
+        ...data,
+        recommendations: [6, 3].flatMap((rarity) =>
+          Array.from({ length: 31 }, (_, index) => ({
+            ...data.recommendations[0],
+            operator: { ...data.recommendations[0].operator, id: `test-${rarity}-${index}`, rarity },
+          })),
+        ),
+      },
+      isLoading: false,
+    })
+    mount()
+    const higher = screen.getByRole('region', { name: '4 stars and above' })
+    const lower = screen.getByRole('region', { name: '3 stars and below' })
+    expect(within(higher).getAllByRole('article')).toHaveLength(30)
+    expect(within(lower).getAllByRole('article')).toHaveLength(30)
+    fireEvent.click(within(higher).getByRole('button', { name: 'Show more' }))
+    expect(within(higher).getAllByRole('article')).toHaveLength(31)
+    expect(within(lower).getAllByRole('article')).toHaveLength(30)
+    fireEvent.click(within(lower).getByRole('button', { name: 'Show more' }))
+    expect(within(lower).getAllByRole('article')).toHaveLength(31)
+    fireEvent.change(screen.getByLabelText('Class'), { target: { value: 'Sniper' } })
+    expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(30)
+    expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(30)
+  })
+})
+
 describe('recommendation evidence', () => {
   it('shows unknown module type and links to the source without inventing module levels', () => {
     mount()

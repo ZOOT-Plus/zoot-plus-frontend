@@ -20,11 +20,9 @@ export const RecommendationsPage = () => {
   const [search, setSearch] = useSearchParams()
   const params = recommendationParams(search)
   const { data, error, isLoading, isValidating, mutate } = useRecommendations(params)
-  const [visible, setVisible] = useState(30)
   const [filtersVisible, setFiltersVisible] = useState(false)
   const filterPanelId = useId()
   const patch = (key: string, value: string) => {
-    setVisible(30)
     setSearch(
       (previous) => {
         const next = new URLSearchParams(previous)
@@ -153,14 +151,7 @@ export const RecommendationsPage = () => {
               >
                 {t.uncertain}
               </Checkbox>
-              <Button
-                minimal
-                icon="reset"
-                onClick={() => {
-                  setSearch({})
-                  setVisible(30)
-                }}
-              >
+              <Button minimal icon="reset" onClick={() => setSearch({})}>
                 {t.reset}
               </Button>
             </div>
@@ -219,16 +210,22 @@ export const RecommendationsPage = () => {
                 {recommendations.length === 0 ? (
                   <Callout title={t.empty}>{t.empty_help}</Callout>
                 ) : (
-                  <div className="divide-y divide-zinc-200 dark:divide-slate-700 border-y border-zinc-200 dark:border-slate-700">
-                    {recommendations.slice(0, visible).map((item) => (
-                      <RecommendationRow key={item.operator.id} item={item} />
-                    ))}
+                  <div className="space-y-8">
+                    {[
+                      {
+                        title: t.four_stars_and_above,
+                        items: recommendations.filter((item) => item.operator.rarity > 3),
+                      },
+                      {
+                        title: t.three_stars_and_below,
+                        items: recommendations.filter((item) => item.operator.rarity <= 3),
+                      },
+                    ]
+                      .filter((group) => group.items.length > 0)
+                      .map((group) => (
+                        <RecommendationGroup key={`${group.title}:${search}`} title={group.title} items={group.items} />
+                      ))}
                   </div>
-                )}
-                {recommendations.length > visible && (
-                  <Button className="mt-4" onClick={() => setVisible((value) => value + 30)}>
-                    {t.show_more}
-                  </Button>
                 )}
                 <p className="text-xs text-zinc-500 dark:text-slate-400 mt-5">
                   {t.updated({ time: data.generatedAt.replace('T', ' ').slice(0, 19) })}
@@ -354,6 +351,32 @@ const SearchFilter = ({
   )
 }
 
+const RecommendationGroup = ({ title, items }: { title: string; items: OperatorRecommendation[] }) => {
+  const t = useTranslation().pages.recommendations
+  const headingId = useId()
+  const [visible, setVisible] = useState(30)
+  return (
+    <section aria-labelledby={headingId}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+        <h2 id={headingId} className="text-lg font-semibold break-words">
+          {title}
+        </h2>
+        <span className="text-sm text-zinc-500 dark:text-slate-400">{t.results({ count: items.length })}</span>
+      </div>
+      <div className="divide-y divide-zinc-200 dark:divide-slate-700 border-y border-zinc-200 dark:border-slate-700">
+        {items.slice(0, visible).map((item) => (
+          <RecommendationRow key={item.operator.id} item={item} />
+        ))}
+      </div>
+      {items.length > visible && (
+        <Button className="mt-4" onClick={() => setVisible((value) => value + 30)}>
+          {t.show_more}
+        </Button>
+      )}
+    </section>
+  )
+}
+
 const RecommendationRow = ({ item }: { item: OperatorRecommendation }) => {
   const t = useTranslation().pages.recommendations
   const name = useLocalizedOperatorName(item.operator.name)
@@ -380,7 +403,7 @@ const RecommendationRow = ({ item }: { item: OperatorRecommendation }) => {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap gap-2 items-center mb-2">
-            <h2 className="text-lg font-semibold break-words">{name}</h2>
+            <h3 className="text-lg font-semibold break-words">{name}</h3>
             <Tag minimal intent={item.status === 'CURRENT' ? 'success' : undefined}>
               {t.status[item.status]}
             </Tag>
@@ -408,7 +431,7 @@ const RecommendationRow = ({ item }: { item: OperatorRecommendation }) => {
             </div>
           ))}
         </div>
-        <h3 className="text-sm font-semibold mt-5 mb-2">{t.sources}</h3>
+        <h4 className="text-sm font-semibold mt-5 mb-2">{t.sources}</h4>
         <ul className="space-y-3">
           {item.sources.map((source) => (
             <li key={source.id} className="text-sm min-w-0">
