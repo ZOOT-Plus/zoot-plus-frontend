@@ -4584,6 +4584,107 @@
     }
   },
   "pages": {
+    "recommendations": {
+      "title": { "cn": "干员养成推荐", "en": "Operator training" },
+      "intro": {
+        "cn": "根据公开自动作业，查看值得培养的干员、常用练度和适用关卡。",
+        "en": "Find operators to train, common requirements, and supported stages from public automatic operations."
+      },
+      "note": {
+        "cn": "练度来自作者填写的作业要求，不代表最低通关练度。模组暂只推荐类型。",
+        "en": "Targets reflect author-specified requirements, not verified minimum clear requirements. Modules are recommended by type only."
+      },
+      "filters": { "cn": "推荐筛选", "en": "Recommendation filters" },
+      "scope": { "cn": "推荐用途", "en": "Use case" },
+      "scopes": {
+        "RECENT": { "cn": "近期通用", "en": "Current use" },
+        "PERMANENT": { "cn": "常驻关卡", "en": "Permanent stages" },
+        "HISTORY": { "cn": "历史参考", "en": "Historical reference" }
+      },
+      "days": { "cn": "作业时间范围", "en": "Publication window" },
+      "day_count": { "cn": "近 {{count}} 天", "en": "Last {{count}} days" },
+      "all_time": { "cn": "全部时间", "en": "All time" },
+      "coverage": { "cn": "培养目标", "en": "Training target" },
+      "basic": { "cn": "基础参考", "en": "Basic" },
+      "practical": { "cn": "实用推荐", "en": "Practical" },
+      "extensive": { "cn": "高覆盖", "en": "Broad coverage" },
+      "category": { "cn": "关卡类型", "en": "Stage category" },
+      "activity": { "cn": "活动或章节", "en": "Event or chapter" },
+      "stage": { "cn": "指定关卡", "en": "Stage" },
+      "activity_search": { "cn": "搜索活动或章节名称", "en": "Search event or chapter names" },
+      "stage_search": { "cn": "搜索关卡编号、名称或 ID", "en": "Search stage code, name, or ID" },
+      "no_matches": { "cn": "未找到匹配项，请尝试其他关键词", "en": "No matches. Try another search." },
+      "refine_search": { "cn": "仅显示前 50 项，请输入更多关键词", "en": "Showing the first 50 matches. Refine your search." },
+      "clear_filter": { "cn": "清除{{filter}}筛选", "en": "Clear {{filter}} filter" },
+      "all": { "cn": "全部", "en": "All" },
+      "closed": { "cn": "包含已关闭内容", "en": "Include closed content" },
+      "alternatives": { "cn": "包含可替代干员", "en": "Include alternatives" },
+      "uncertain": { "cn": "包含待观察干员", "en": "Include operators with limited evidence" },
+      "search": { "cn": "搜索干员", "en": "Search operators" },
+      "profession": { "cn": "职业", "en": "Class" },
+      "rarity": { "cn": "星级", "en": "Rarity" },
+      "stars": { "cn": "{{count}} 星", "en": "{{count}} stars" },
+      "four_stars_and_above": { "cn": "四星及以上", "en": "4 stars and above" },
+      "three_stars_and_below": { "cn": "三星及以下", "en": "3 stars and below" },
+      "reset": { "cn": "重置筛选", "en": "Reset filters" },
+      "error": { "cn": "暂时无法获取推荐，请重试。", "en": "Recommendations could not be loaded. Please retry." },
+      "retry": { "cn": "重试", "en": "Retry" },
+      "empty": { "cn": "当前条件下没有推荐", "en": "No recommendations match these filters" },
+      "empty_help": {
+        "cn": "可以扩大时间范围、选择历史参考，或包含待观察干员。",
+        "en": "Try a wider time window, historical reference, or operators with limited evidence."
+      },
+      "results": { "cn": "{{count}} 名干员", "en": "{{count}} operators" },
+      "summary": {
+        "cn": "统计了 {{operations}} 份自动作业、{{families}} 个独立打法",
+        "en": "Based on {{operations}} automatic operations and {{families}} independent strategies"
+      },
+      "updated": { "cn": "统计时间：{{time}}", "en": "Calculated at {{time}}" },
+      "invalid": {
+        "cn": "另有 {{count}} 份作业缺少可识别的有效数据，未参与计算。",
+        "en": "{{count}} other operations lacked recognizable valid data and were excluded."
+      },
+      "status": {
+        "CURRENT": { "cn": "近期适用", "en": "Current use" },
+        "LIMITED": { "cn": "适用范围有限", "en": "Limited use" },
+        "HISTORICAL": { "cn": "历史适用", "en": "Historical use" },
+        "INSUFFICIENT": { "cn": "反馈不足", "en": "Limited feedback" }
+      },
+      "evidence": {
+        "cn": "覆盖 {{stages}} 个关卡 · {{families}} 个独立打法",
+        "en": "{{stages}} stages · {{families}} independent strategies"
+      },
+      "recent_evidence": {
+        "cn": "近期支持：{{stages}} 个关卡 · {{families}} 个打法",
+        "en": "Recent support: {{stages}} stages · {{families}} strategies"
+      },
+      "elite_level": { "cn": "精{{elite}} Lv.{{level}}", "en": "E{{elite}} Lv.{{level}}" },
+      "elite_only": { "cn": "精{{elite}} · 等级未注明", "en": "E{{elite}} · level unspecified" },
+      "level_only": { "cn": "Lv.{{level}} · 精英化未注明", "en": "Lv.{{level}} · elite phase unspecified" },
+      "level_unknown": { "cn": "精英化与等级未注明", "en": "Elite phase and level unspecified" },
+      "skill_target": { "cn": "{{skill}} 技能 · {{level}}", "en": "Skill {{skill}} · {{level}}" },
+      "skill_level": { "cn": "{{level}} 级", "en": "Level {{level}}" },
+      "mastery_level": { "cn": "专精 {{level}}", "en": "Mastery {{level}}" },
+      "unspecified": { "cn": "等级未注明", "en": "Level unspecified" },
+      "no_skill": { "cn": "无主动技能", "en": "No active skill" },
+      "module_target": { "cn": "{{name}} 模组", "en": "Module {{name}}" },
+      "module_none": { "cn": "初始模组", "en": "Original module" },
+      "module_unknown": { "cn": "模组未注明", "en": "Module unspecified" },
+      "branch_share": {
+        "cn": "需求占比 {{share}}% · 本分支覆盖 {{coverage}}%",
+        "en": "{{share}}% of demand · {{coverage}}% branch coverage"
+      },
+      "completeness": {
+        "cn": "已注明数据：精英化与等级 {{level}}% · 技能等级 {{skill}}% · 模组类型 {{module}}%",
+        "en": "Specified data: elite and level {{level}}% · skill level {{skill}}% · module type {{module}}%"
+      },
+      "details": { "cn": "查看养成分支与代表作业", "en": "Training branches and source operations" },
+      "sources": { "cn": "代表作业", "en": "Source operations" },
+      "votes": { "cn": "{{likes}} 好评 / {{dislikes}} 差评", "en": "{{likes}} likes / {{dislikes}} dislikes" },
+      "views": { "cn": "{{count}} 浏览", "en": "{{count}} views" },
+      "alternative_source": { "cn": "群组备选", "en": "Group alternative" },
+      "show_more": { "cn": "显示更多", "en": "Show more" }
+    },
     "_404": {
       "page_not_found": {
         "cn": "未找到页面",
@@ -4854,6 +4955,7 @@
     }
   },
   "links": {
+    "recommendations": { "cn": "养成推荐", "en": "Training" },
     "home": {
       "cn": "首页",
       "en": "Home"
