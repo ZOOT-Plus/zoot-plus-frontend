@@ -4626,6 +4626,7 @@
       "search": { "cn": "搜索干员", "en": "Search operators" },
       "profession": { "cn": "职业", "en": "Class" },
       "rarity": { "cn": "星级", "en": "Rarity" },
+      "default": { "cn": "默认", "en": "Default" },
       "stars": { "cn": "{{count}} 星", "en": "{{count}} stars" },
       "four_stars_and_above": { "cn": "四星及以上", "en": "4 stars and above" },
       "three_stars_and_below": { "cn": "三星及以下", "en": "3 stars and below" },

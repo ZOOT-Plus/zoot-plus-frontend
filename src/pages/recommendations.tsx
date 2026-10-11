@@ -62,7 +62,7 @@ export const RecommendationsPage = () => {
         .filter(
           ({ item, text }) =>
             (!role || item.operator.role === role) &&
-            (!rarity || item.operator.rarity === Number(rarity)) &&
+            (rarity ? item.operator.rarity === Number(rarity) : item.operator.rarity > 3) &&
             (!query || text.includes(query)),
         )
         .map(({ item }) => item),
@@ -236,7 +236,7 @@ export const RecommendationsPage = () => {
             <Filter label={t.rarity}>
               <FilterSelect
                 items={[
-                  { id: '', name: t.all },
+                  { id: '', name: t.default },
                   ...[1, 2, 3, 4, 5, 6].map((rarity) => ({ id: String(rarity), name: t.stars({ count: rarity }) })),
                 ]}
                 value={rarity}
@@ -350,7 +350,7 @@ const FilterSelect = ({
     const words = query.trim().toLowerCase().split(/\s+/)
     return items.filter((item) => words.every((word) => `${item.name} ${item.id}`.toLowerCase().includes(word)))
   }, [items, query])
-  const selected = value ? (items.find((item) => item.id === value) ?? { id: value, name: value }) : undefined
+  const selected = items.find((item) => item.id === value) ?? (value ? { id: value, name: value } : undefined)
   return (
     <Select
       fill
