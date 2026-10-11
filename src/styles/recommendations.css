@@ -77,6 +77,15 @@ body .recommendations-popover .bp6-input {
   background-image: none;
 }
 
+.dark #recommendations .bp6-html-select select {
+  color-scheme: dark;
+}
+
+#recommendations .bp6-html-select option {
+  background: var(--recommendations-surface);
+  color: var(--recommendations-ink);
+}
+
 #recommendations .bp6-button:not(:disabled):hover,
 #recommendations .bp6-html-select select:hover {
   border-color: var(--recommendations-focus);
