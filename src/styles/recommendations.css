@@ -5,6 +5,7 @@
   --recommendations-muted: theme('colors.zinc.50');
   --recommendations-border: theme('colors.zinc.200');
   --recommendations-ink: theme('colors.slate.800');
+  --recommendations-secondary: theme('colors.zinc.600');
   --recommendations-accent: theme('colors.violet.600');
   --recommendations-accent-soft: theme('colors.violet.50');
   --recommendations-focus: theme('colors.violet.500');
@@ -16,6 +17,7 @@
   --recommendations-muted: theme('colors.slate.900');
   --recommendations-border: theme('colors.slate.700');
   --recommendations-ink: theme('colors.slate.100');
+  --recommendations-secondary: theme('colors.slate.400');
   --recommendations-accent: theme('colors.violet.300');
   --recommendations-accent-soft: theme('colors.violet.950');
   --recommendations-focus: theme('colors.violet.400');
@@ -102,11 +104,14 @@ body .recommendations-popover .bp6-input:focus,
   box-shadow: none;
 }
 
-#recommendations .bp6-input::placeholder {
+#recommendations .bp6-input::placeholder,
+body .recommendations-popover .bp6-input::placeholder {
+  color: var(--recommendations-secondary);
   font-style: normal;
 }
 
 #recommendations .bp6-input-group > .bp6-icon {
+  color: var(--recommendations-secondary);
   margin: 0 10px;
 }
 
@@ -161,6 +166,10 @@ body .recommendations-popover .bp6-input:focus,
   display: none;
 }
 
+.recommendations-details summary > .text-xs {
+  color: var(--recommendations-secondary);
+}
+
 .recommendations-details summary:hover,
 .recommendations-details[open] summary {
   background: var(--recommendations-accent-soft);
@@ -179,7 +188,7 @@ body .recommendations-popover .bp6-input:focus,
   color: var(--recommendations-accent);
 }
 
-body .recommendations-popover .bp6-popover-content,
+body .bp6-popover.recommendations-popover .bp6-popover-content,
 body .recommendations-popover .bp6-menu {
   background: var(--recommendations-surface);
   color: var(--recommendations-ink);
@@ -190,9 +199,62 @@ body .recommendations-popover .bp6-menu-item {
   border-radius: 6px;
 }
 
+body .recommendations-popover .bp6-menu-item:hover,
+body .recommendations-popover .bp6-menu-item.bp6-active,
+body .recommendations-popover .bp6-menu-item.bp6-selected {
+  background: var(--recommendations-accent-soft);
+  color: var(--recommendations-ink);
+}
+
 .high-contrast-theme .recommendations-page,
 .high-contrast-theme .recommendations-popover {
-  --recommendations-border: theme('colors.slate.500');
+  --recommendations-surface: #232326;
+  --recommendations-muted: #2d2d30;
+  --recommendations-border: theme('colors.zinc.500');
+  --recommendations-ink: theme('colors.slate.50');
+  --recommendations-secondary: theme('colors.slate.300');
+  --recommendations-success: theme('colors.emerald.300');
+  --recommendations-success-soft: theme('colors.emerald.950');
+}
+
+/* The global high-contrast theme forces Blueprint styles with !important. */
+body.high-contrast-theme #recommendations .bp6-input,
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group .bp6-input {
+  background: var(--recommendations-surface) !important;
+  color: var(--recommendations-ink) !important;
+  border-color: var(--recommendations-border) !important;
+  box-shadow: none !important;
+}
+
+body.high-contrast-theme #recommendations .bp6-input::placeholder,
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group .bp6-input::placeholder {
+  color: var(--recommendations-secondary) !important;
+}
+
+body.high-contrast-theme #recommendations .bp6-input:focus,
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group .bp6-input:focus {
+  outline: 2px solid var(--recommendations-focus) !important;
+  border-color: var(--recommendations-accent) !important;
+}
+
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-popover-content {
+  background: var(--recommendations-surface) !important;
+  color: var(--recommendations-ink) !important;
+  border-color: var(--recommendations-border) !important;
+}
+
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group > .bp6-icon {
+  color: var(--recommendations-secondary);
+}
+
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-menu-item.bp6-selected {
+  background: var(--recommendations-accent-soft) !important;
+}
+
+body.high-contrast-theme #recommendations .recommendations-status.bp6-intent-success {
+  background: var(--recommendations-success-soft) !important;
+  color: var(--recommendations-success) !important;
+  border-color: var(--recommendations-success) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
