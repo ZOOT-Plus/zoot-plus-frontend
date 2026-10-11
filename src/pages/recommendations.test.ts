@@ -119,7 +119,7 @@ describe('recommendation filters', () => {
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ stageId: undefined }))
   })
 
-  it('searches events, reports no matches, and clears only the selected event', async () => {
+  it('searches events and resets the selected stage when choosing another event', async () => {
     mount('/recommendations?stageId=s1')
     fireEvent.click(screen.getByLabelText('Event or chapter'))
     const input = await screen.findByRole('combobox', { name: 'Search event or chapter names' })
@@ -129,11 +129,11 @@ describe('recommendation filters', () => {
     const option = await screen.findByRole('option', { name: '第一章' })
     fireEvent.click(option.querySelector('a')!)
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(
-      expect.objectContaining({ activity: '第一章', stageId: 's1' }),
+      expect.objectContaining({ activity: '第一章', stageId: undefined }),
     )
     fireEvent.click(screen.getByRole('button', { name: 'Clear Event or chapter filter' }))
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(
-      expect.objectContaining({ activity: undefined, stageId: 's1' }),
+      expect.objectContaining({ activity: undefined, stageId: undefined }),
     )
   })
 
@@ -152,6 +152,33 @@ describe('recommendation filters', () => {
     fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'does-not-exist' } })
     expect(screen.getByText('No recommendations match these filters')).toBeTruthy()
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ scope: 'RECENT', days: 180 }))
+  })
+
+  it('limits event and stage choices to their parent filters and clears incompatible selections', async () => {
+    mock.useRecommendations.mockReturnValue({
+      data: {
+        ...data,
+        categories: ['主题曲', '活动关卡'],
+        activities: ['第一章', '新活动'],
+        stages: [
+          { id: 's1', name: '1-7', category: '主题曲', activity: '第一章' },
+          { id: 's2', name: 'EV-1', category: '活动关卡', activity: '新活动' },
+        ],
+      },
+    })
+    mount('/recommendations?category=主题曲&activity=第一章&stageId=s1')
+    fireEvent.change(screen.getByLabelText('Stage category'), { target: { value: '活动关卡' } })
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ category: '活动关卡', activity: undefined, stageId: undefined }),
+    )
+    fireEvent.click(screen.getByLabelText('Event or chapter'))
+    const option = await screen.findByRole('option', { name: '新活动' })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(1)
+    fireEvent.click(option.querySelector('a')!)
+    await waitFor(() => expect(screen.queryByRole('option', { name: '新活动' })).toBeNull())
+    fireEvent.click(screen.getByLabelText('Stage'))
+    await screen.findByRole('option', { name: /EV-1/ })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(1)
   })
 })
 
@@ -234,13 +261,36 @@ describe('recommendation rarity groups', () => {
 })
 
 describe('recommendation evidence', () => {
-  it('shows unknown module type and links to the source without inventing module levels', () => {
+  it('renders sources on expansion and retains the row while searching', async () => {
     mount()
     expect(screen.getAllByText(/Module unspecified/).length).toBeGreaterThan(0)
+    expect(screen.queryByText('Source operation')).toBeNull()
+    const article = screen.getByRole('article')
+    const details = article.querySelector('details')!
+    details.open = true
+    fireEvent(details, new Event('toggle'))
+    await screen.findByText('Source operation')
     expect(screen.getByText('Source operation').closest('a')?.getAttribute('href')).toBe('/operation/123')
+    fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'Exusiai' } })
+    expect(screen.getByRole('article')).toBe(article)
+    expect(details.open).toBe(true)
+    expect(screen.getByText('Source operation')).toBeTruthy()
     expect(screen.queryByText(/Module level/)).toBeNull()
     expect(screen.getByText(/100 automatic operations and 10 independent strategies/)).toBeTruthy()
     expect(screen.getByText(/1 other operations lacked/)).toBeTruthy()
+  })
+
+  it('keeps previous results visible during loading and after a refresh failure', () => {
+    mock.useRecommendations.mockReturnValue({ data, isLoading: true, isValidating: true, mutate: mock.retry })
+    const view = mount()
+    expect(screen.getByRole('article')).toBeTruthy()
+    expect(screen.getByText(/Updating recommendations/)).toBeTruthy()
+    mock.useRecommendations.mockReturnValue({ data, error: new Error('offline'), mutate: mock.retry })
+    view.rerender(createElement(MemoryRouter, {}, createElement(RecommendationsPage)))
+    expect(screen.getByRole('article')).toBeTruthy()
+    expect(screen.getByText(/Previous results are still shown/)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    expect(mock.retry).toHaveBeenCalled()
   })
 
   it('provides an actionable retry after an API error', () => {

@@ -1,9 +1,9 @@
 import { Button, Callout, Checkbox, HTMLSelect, InputGroup, Menu, MenuItem, Spinner, Tag } from '@blueprintjs/core'
-import { cloneElement, ReactElement, useId, useMemo, useState } from 'react'
+import { cloneElement, memo, ReactElement, useDeferredValue, useId, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 
 import { useRecommendations } from 'apis/recommendation'
-import { OperatorCard } from 'components/OperatorCard'
+import { OperatorAvatar } from 'components/OperatorAvatar'
 import { Select } from 'components/Select'
 import { useTranslation } from 'i18n/i18n'
 import { CopilotDocV1 } from 'models/copilot.schema'
@@ -29,29 +29,77 @@ export const RecommendationsPage = () => {
         if (value) next.set(key, value)
         else next.delete(key)
         if (key === 'scope' && value !== 'HISTORY' && next.get('days') === '0') next.delete('days')
+        if (key === 'category') {
+          next.delete('activity')
+          next.delete('stageId')
+        }
+        if (key === 'activity' && value) next.delete('stageId')
         return next
       },
       { replace: true },
     )
   }
-  const query = search.get('q')?.trim().toLowerCase() ?? ''
+  const query = useDeferredValue(search.get('q')?.trim().toLowerCase() ?? '')
   const role = search.get('role') ?? ''
   const rarity = search.get('rarity') ?? ''
+  const searchable = useMemo(
+    () =>
+      data?.recommendations.map((item) => {
+        const info = findOperatorById(item.operator.id)
+        return {
+          item,
+          text: [item.operator.name, info?.name_en, info?.alias, info?.alt_name]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase(),
+        }
+      }) ?? [],
+    [data?.recommendations],
+  )
   const recommendations = useMemo(
     () =>
-      data?.recommendations.filter((item) => {
-        const info = findOperatorById(item.operator.id)
-        return (
-          (!role || item.operator.role === role) &&
-          (!rarity || item.operator.rarity === Number(rarity)) &&
-          (!query ||
-            [item.operator.name, info?.name_en, info?.alias, info?.alt_name].some((name) =>
-              name?.toLowerCase().includes(query),
-            ))
+      searchable
+        .filter(
+          ({ item, text }) =>
+            (!role || item.operator.role === role) &&
+            (!rarity || item.operator.rarity === Number(rarity)) &&
+            (!query || text.includes(query)),
         )
-      }) ?? [],
-    [data, role, rarity, query],
+        .map(({ item }) => item),
+    [searchable, role, rarity, query],
   )
+  const groups = useMemo(
+    () => [
+      { id: 'higher', items: recommendations.filter((item) => item.operator.rarity > 3) },
+      { id: 'lower', items: recommendations.filter((item) => item.operator.rarity <= 3) },
+    ],
+    [recommendations],
+  )
+  const stages = useMemo(
+    () =>
+      data?.stages.filter(
+        (stage) =>
+          (!params.category || !stage.category || stage.category === params.category) &&
+          (!params.activity || !stage.activity || stage.activity === params.activity),
+      ) ?? [],
+    [data?.stages, params.category, params.activity],
+  )
+  const activities = useMemo(() => {
+    const names =
+      params.category && data?.stages.some((stage) => stage.category)
+        ? [
+            ...new Set(
+              data.stages
+                .filter((stage) => stage.category === params.category)
+                .map((stage) => stage.activity)
+                .filter((value): value is string => !!value),
+            ),
+          ].sort()
+        : (data?.activities ?? [])
+    return names.map((name) => ({ id: name, name }))
+  }, [data?.activities, data?.stages, params.category])
+  const stageNames = useMemo(() => new Map(data?.stages.map((stage) => [stage.id, stage.name])), [data?.stages])
+  const filterKey = JSON.stringify([params, query, role, rarity])
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 min-w-0">
@@ -73,7 +121,7 @@ export const RecommendationsPage = () => {
           </Button>
           <div
             id={filterPanelId}
-            className={`${filtersVisible ? 'grid mt-3 lg:mt-0' : 'hidden lg:grid'} grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 p-4 bg-white dark:bg-slate-800 border border-zinc-200 dark:border-slate-700 rounded`}
+            className={`${filtersVisible ? 'grid mt-3 lg:mt-0' : 'hidden lg:grid'} grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 p-4 bg-white dark:bg-slate-800 border border-zinc-200 dark:border-slate-700 rounded lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto`}
           >
             <Filter label={t.scope}>
               <HTMLSelect fill value={params.scope} onChange={(event) => patch('scope', event.target.value)}>
@@ -116,7 +164,7 @@ export const RecommendationsPage = () => {
             </Filter>
             <Filter label={t.activity}>
               <SearchFilter
-                items={data?.activities.map((activity) => ({ id: activity, name: activity })) ?? []}
+                items={activities}
                 value={params.activity ?? ''}
                 onChange={(value) => patch('activity', value)}
                 placeholder={t.activity_search}
@@ -125,7 +173,7 @@ export const RecommendationsPage = () => {
             </Filter>
             <Filter label={t.stage}>
               <SearchFilter
-                items={data?.stages ?? []}
+                items={stages}
                 value={params.stageId ?? ''}
                 onChange={(value) => patch('stageId', value)}
                 placeholder={t.stage_search}
@@ -190,53 +238,57 @@ export const RecommendationsPage = () => {
             </Filter>
           </div>
           <p className="text-sm text-zinc-600 dark:text-slate-300 mb-5 leading-relaxed">{t.note}</p>
-          {error ? (
-            <Callout intent="danger" title={t.error}>
+          {error && (
+            <Callout className="mb-4" intent="danger" title={t.error}>
+              {data && <p className="mb-2">{t.previous_results}</p>}
               <Button onClick={() => mutate()}>{t.retry}</Button>
             </Callout>
-          ) : isLoading ? (
+          )}
+          {!data && !error && (
             <output className="block py-16" aria-label={translations.common.loading}>
               <Spinner />
             </output>
-          ) : (
-            data && (
-              <>
-                <div className="flex flex-wrap justify-between gap-2 text-sm mb-4" aria-live="polite">
-                  <strong>{t.results({ count: recommendations.length })}</strong>
-                  <span className="text-zinc-500 dark:text-slate-400">
-                    {t.summary({ operations: data.operationCount, families: data.familyCount })}
-                  </span>
+          )}
+          {data && (
+            <>
+              {(isLoading || isValidating) && (
+                <output className="flex items-center gap-2 text-sm mb-4 text-zinc-600 dark:text-slate-300">
+                  <Spinner size={16} />
+                  {t.updating}
+                </output>
+              )}
+              <div className="flex flex-wrap justify-between gap-2 text-sm mb-4" aria-live="polite">
+                <strong>{t.results({ count: recommendations.length })}</strong>
+                <span className="text-zinc-500 dark:text-slate-400">
+                  {t.summary({ operations: data.operationCount, families: data.familyCount })}
+                </span>
+              </div>
+              {recommendations.length === 0 ? (
+                <Callout title={t.empty}>{t.empty_help}</Callout>
+              ) : (
+                <div className="space-y-8">
+                  {groups
+                    .filter((group) => group.items.length > 0)
+                    .map((group) => (
+                      <RecommendationGroup
+                        key={group.id}
+                        title={group.id === 'higher' ? t.four_stars_and_above : t.three_stars_and_below}
+                        items={group.items}
+                        filterKey={filterKey}
+                        stageNames={stageNames}
+                      />
+                    ))}
                 </div>
-                {recommendations.length === 0 ? (
-                  <Callout title={t.empty}>{t.empty_help}</Callout>
-                ) : (
-                  <div className="space-y-8">
-                    {[
-                      {
-                        title: t.four_stars_and_above,
-                        items: recommendations.filter((item) => item.operator.rarity > 3),
-                      },
-                      {
-                        title: t.three_stars_and_below,
-                        items: recommendations.filter((item) => item.operator.rarity <= 3),
-                      },
-                    ]
-                      .filter((group) => group.items.length > 0)
-                      .map((group) => (
-                        <RecommendationGroup key={`${group.title}:${search}`} title={group.title} items={group.items} />
-                      ))}
-                  </div>
-                )}
-                <p className="text-xs text-zinc-500 dark:text-slate-400 mt-5">
-                  {t.updated({ time: data.generatedAt.replace('T', ' ').slice(0, 19) })}
+              )}
+              <p className="text-xs text-zinc-500 dark:text-slate-400 mt-5">
+                {t.updated({ time: data.generatedAt.replace('T', ' ').slice(0, 19) })}
+              </p>
+              {data.invalidCount > 0 && (
+                <p className="text-xs text-zinc-500 dark:text-slate-400 mt-2">
+                  {t.invalid({ count: data.invalidCount })}
                 </p>
-                {data.invalidCount > 0 && (
-                  <p className="text-xs text-zinc-500 dark:text-slate-400 mt-2">
-                    {t.invalid({ count: data.invalidCount })}
-                  </p>
-                )}
-              </>
-            )
+              )}
+            </>
           )}
         </section>
       </div>
@@ -253,7 +305,7 @@ const Filter = ({
 }) => {
   const id = useId()
   return (
-    <div className="block min-w-0">
+    <div className="block min-w-0 [&_input]:!h-11 [&_select]:!h-11 [&_.bp6-input-group>.bp6-icon]:!my-3.5">
       <label id={`${id}-label`} htmlFor={id} className="block text-sm font-medium mb-1.5">
         {label}
       </label>
@@ -351,10 +403,22 @@ const SearchFilter = ({
   )
 }
 
-const RecommendationGroup = ({ title, items }: { title: string; items: OperatorRecommendation[] }) => {
+const RecommendationGroup = ({
+  title,
+  items,
+  filterKey,
+  stageNames,
+}: {
+  title: string
+  items: OperatorRecommendation[]
+  filterKey: string
+  stageNames: Map<string, string>
+}) => {
   const t = useTranslation().pages.recommendations
   const headingId = useId()
-  const [visible, setVisible] = useState(30)
+  const [pagination, setPagination] = useState({ key: filterKey, visible: 30 })
+  const visible = pagination.key === filterKey ? pagination.visible : 30
+  if (pagination.key !== filterKey) setPagination({ key: filterKey, visible: 30 })
   return (
     <section aria-labelledby={headingId}>
       <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
@@ -365,11 +429,11 @@ const RecommendationGroup = ({ title, items }: { title: string; items: OperatorR
       </div>
       <div className="divide-y divide-zinc-200 dark:divide-slate-700 border-y border-zinc-200 dark:border-slate-700">
         {items.slice(0, visible).map((item) => (
-          <RecommendationRow key={item.operator.id} item={item} />
+          <RecommendationRow key={item.operator.id} item={item} stageNames={stageNames} />
         ))}
       </div>
       {items.length > visible && (
-        <Button className="mt-4" onClick={() => setVisible((value) => value + 30)}>
+        <Button className="mt-4 !min-h-11" onClick={() => setPagination({ key: filterKey, visible: visible + 30 })}>
           {t.show_more}
         </Button>
       )}
@@ -377,81 +441,90 @@ const RecommendationGroup = ({ title, items }: { title: string; items: OperatorR
   )
 }
 
-const RecommendationRow = ({ item }: { item: OperatorRecommendation }) => {
-  const t = useTranslation().pages.recommendations
-  const name = useLocalizedOperatorName(item.operator.name)
-  const primary = item.branches[0]?.target
-  return (
-    <article className="py-6 min-w-0" aria-label={name}>
-      <div className="flex gap-4 sm:gap-6 items-start min-w-0">
-        <div className="pt-3 pl-3 shrink-0">
-          <OperatorCard
-            operator={{
-              name: item.operator.name,
-              role: item.operator.role,
-              skill: primary?.skill,
-              requirements: primary
-                ? {
-                    elite: primary.elite ?? undefined,
-                    level: primary.level ?? undefined,
-                    skillLevel: primary.skillLevel ?? undefined,
-                    module: (primary.module ?? undefined) as CopilotDocV1.Module | undefined,
-                  }
-                : undefined,
-            }}
+const RecommendationRow = memo(
+  ({ item, stageNames }: { item: OperatorRecommendation; stageNames: Map<string, string> }) => {
+    const translations = useTranslation()
+    const t = translations.pages.recommendations
+    const name = useLocalizedOperatorName(item.operator.name)
+    const [expanded, setExpanded] = useState(false)
+    return (
+      <article className="py-6 min-w-0" aria-label={name}>
+        <div className="flex gap-4 sm:gap-5 items-start min-w-0">
+          <OperatorAvatar
+            id={item.operator.id}
+            rarity={item.operator.rarity}
+            fallback={name}
+            sourceSize={96}
+            className="!w-14 !h-14 sm:!w-16 sm:!h-16 shrink-0"
           />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap gap-2 items-center mb-2">
-            <h3 className="text-lg font-semibold break-words">{name}</h3>
-            <Tag minimal intent={item.status === 'CURRENT' ? 'success' : undefined}>
-              {t.status[item.status]}
-            </Tag>
-          </div>
-          {item.branches[0] && <Branch branch={item.branches[0]} />}
-          <p className="text-sm mt-3 text-zinc-600 dark:text-slate-300">
-            {t.evidence({ stages: item.stageCount, families: item.familyCount })}
-          </p>
-          <p className="text-xs mt-1 text-zinc-500 dark:text-slate-400">
-            {t.recent_evidence({ stages: item.recentStageCount, families: item.recentFamilyCount })}
-          </p>
-        </div>
-      </div>
-      <details className="mt-4 min-w-0">
-        <summary className="cursor-pointer text-sm font-medium py-2 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-          {t.details}
-        </summary>
-        <div className="grid gap-3 mt-2 sm:grid-cols-2">
-          {item.branches.map((branch, index) => (
-            <div
-              key={index}
-              className="p-3 bg-white dark:bg-slate-800 border border-zinc-200 dark:border-slate-700 rounded min-w-0"
-            >
-              <Branch branch={branch} detailed />
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap gap-2 items-center mb-2">
+              <h3 className="text-lg font-semibold break-words">{name}</h3>
+              <Tag minimal intent={item.status === 'CURRENT' ? 'success' : undefined}>
+                {t.status[item.status]}
+              </Tag>
             </div>
-          ))}
+            <p className="text-xs mb-3 text-zinc-500 dark:text-slate-400">
+              {translations.models.operator.role[
+                item.operator.role as keyof typeof translations.models.operator.role
+              ] ?? item.operator.role}
+              {' · '}
+              {t.stars({ count: item.operator.rarity })}
+            </p>
+            {item.branches[0] && <Branch branch={item.branches[0]} />}
+            <p className="text-sm mt-3 text-zinc-600 dark:text-slate-300">
+              {t.evidence({ stages: item.stageCount, families: item.familyCount })}
+            </p>
+          </div>
         </div>
-        <h4 className="text-sm font-semibold mt-5 mb-2">{t.sources}</h4>
-        <ul className="space-y-3">
-          {item.sources.map((source) => (
-            <li key={source.id} className="text-sm min-w-0">
-              <Link to={`/operation/${source.id}`} className="break-words underline underline-offset-2">
-                {source.title || `#${source.id}`}
-              </Link>
-              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs mt-1 text-zinc-500 dark:text-slate-400">
-                <span>{source.stageId}</span>
-                <time dateTime={source.firstPublishedAt}>{source.firstPublishedAt.slice(0, 10)}</time>
-                <span>{t.votes({ likes: source.likes, dislikes: source.dislikes })}</span>
-                <span>{t.views({ count: source.views })}</span>
-                {source.alternative && <span>{t.alternative_source}</span>}
+        <details className="mt-3 min-w-0" onToggle={(event) => setExpanded(event.currentTarget.open)}>
+          <summary className="cursor-pointer text-sm font-medium py-3 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+            {t.details}
+            {item.branches.length > 1 && (
+              <span className="ml-2 text-xs text-zinc-500 dark:text-slate-400">
+                {t.target_count({ count: item.branches.length })}
+              </span>
+            )}
+          </summary>
+          {expanded && (
+            <>
+              <p className="text-xs mt-1 text-zinc-500 dark:text-slate-400">
+                {t.recent_evidence({ stages: item.recentStageCount, families: item.recentFamilyCount })}
+              </p>
+              <div className="grid gap-3 mt-2 sm:grid-cols-2">
+                {item.branches.map((branch, index) => (
+                  <div
+                    key={index}
+                    className="p-3 bg-white dark:bg-slate-800 border border-zinc-200 dark:border-slate-700 rounded min-w-0"
+                  >
+                    <Branch branch={branch} detailed />
+                  </div>
+                ))}
               </div>
-            </li>
-          ))}
-        </ul>
-      </details>
-    </article>
-  )
-}
+              <h4 className="text-sm font-semibold mt-5 mb-2">{t.sources}</h4>
+              <ul className="space-y-3">
+                {item.sources.map((source) => (
+                  <li key={source.id} className="text-sm min-w-0">
+                    <Link to={`/operation/${source.id}`} className="break-words underline underline-offset-2">
+                      {source.title || `#${source.id}`}
+                    </Link>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs mt-1 text-zinc-500 dark:text-slate-400">
+                      <span title={source.stageId}>{stageNames.get(source.stageId) || source.stageId}</span>
+                      <time dateTime={source.firstPublishedAt}>{source.firstPublishedAt.slice(0, 10)}</time>
+                      <span>{t.votes({ likes: source.likes, dislikes: source.dislikes })}</span>
+                      <span>{t.views({ count: source.views })}</span>
+                      {source.alternative && <span>{t.alternative_source}</span>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </details>
+      </article>
+    )
+  },
+)
 
 const Branch = ({ branch, detailed }: { branch: TrainingBranch; detailed?: boolean }) => {
   const t = useTranslation().pages.recommendations

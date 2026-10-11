@@ -4591,8 +4591,8 @@
         "en": "Find operators to train, common requirements, and supported stages from public automatic operations."
       },
       "note": {
-        "cn": "练度来自作者填写的作业要求，不代表最低通关练度。模组暂只推荐类型。",
-        "en": "Targets reflect author-specified requirements, not verified minimum clear requirements. Modules are recommended by type only."
+        "cn": "练度取自作业要求，模组建议显示类型。",
+        "en": "Training targets use the requirements in source operations. Module suggestions show the type."
       },
       "filters": { "cn": "推荐筛选", "en": "Recommendation filters" },
       "scope": { "cn": "推荐用途", "en": "Use case" },
@@ -4614,7 +4614,10 @@
       "activity_search": { "cn": "搜索活动或章节名称", "en": "Search event or chapter names" },
       "stage_search": { "cn": "搜索关卡编号、名称或 ID", "en": "Search stage code, name, or ID" },
       "no_matches": { "cn": "未找到匹配项，请尝试其他关键词", "en": "No matches. Try another search." },
-      "refine_search": { "cn": "仅显示前 50 项，请输入更多关键词", "en": "Showing the first 50 matches. Refine your search." },
+      "refine_search": {
+        "cn": "仅显示前 50 项，请输入更多关键词",
+        "en": "Showing the first 50 matches. Refine your search."
+      },
       "clear_filter": { "cn": "清除{{filter}}筛选", "en": "Clear {{filter}} filter" },
       "all": { "cn": "全部", "en": "All" },
       "closed": { "cn": "包含已关闭内容", "en": "Include closed content" },
@@ -4629,6 +4632,15 @@
       "reset": { "cn": "重置筛选", "en": "Reset filters" },
       "error": { "cn": "暂时无法获取推荐，请重试。", "en": "Recommendations could not be loaded. Please retry." },
       "retry": { "cn": "重试", "en": "Retry" },
+      "updating": {
+        "cn": "正在更新推荐，暂时显示上次结果…",
+        "en": "Updating recommendations. Showing the previous results…"
+      },
+      "previous_results": {
+        "cn": "已保留上次结果，请重试以获取当前筛选的推荐。",
+        "en": "Previous results are still shown. Retry to load recommendations for the current filters."
+      },
+      "target_count": { "cn": "{{count}} 种配置", "en": "{{count}} targets" },
       "empty": { "cn": "当前条件下没有推荐", "en": "No recommendations match these filters" },
       "empty_help": {
         "cn": "可以扩大时间范围、选择历史参考，或包含待观察干员。",
@@ -4678,7 +4690,7 @@
         "cn": "已注明数据：精英化与等级 {{level}}% · 技能等级 {{skill}}% · 模组类型 {{module}}%",
         "en": "Specified data: elite and level {{level}}% · skill level {{skill}}% · module type {{module}}%"
       },
-      "details": { "cn": "查看养成分支与代表作业", "en": "Training branches and source operations" },
+      "details": { "cn": "练度与来源", "en": "Targets and sources" },
       "sources": { "cn": "代表作业", "en": "Source operations" },
       "votes": { "cn": "{{likes}} 好评 / {{dislikes}} 差评", "en": "{{likes}} likes / {{dislikes}} dislikes" },
       "views": { "cn": "{{count}} 浏览", "en": "{{count}} views" },

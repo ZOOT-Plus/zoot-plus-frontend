@@ -63,7 +63,7 @@ export interface RecommendationResult {
   invalidCount: number
   categories: string[]
   activities: string[]
-  stages: { id: string; name: string }[]
+  stages: { id: string; name: string; category?: string | null; activity?: string | null }[]
   recommendations: OperatorRecommendation[]
 }
 
