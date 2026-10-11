@@ -4,6 +4,7 @@
   --recommendations-surface: theme('colors.white');
   --recommendations-muted: theme('colors.zinc.50');
   --recommendations-border: theme('colors.zinc.200');
+  --recommendations-checkbox-border: theme('colors.zinc.500');
   --recommendations-ink: theme('colors.slate.800');
   --recommendations-secondary: theme('colors.zinc.600');
   --recommendations-accent: theme('colors.violet.600');
@@ -16,6 +17,7 @@
   --recommendations-surface: theme('colors.slate.800');
   --recommendations-muted: theme('colors.slate.900');
   --recommendations-border: theme('colors.slate.700');
+  --recommendations-checkbox-border: theme('colors.slate.500');
   --recommendations-ink: theme('colors.slate.100');
   --recommendations-secondary: theme('colors.slate.400');
   --recommendations-accent: theme('colors.violet.300');
@@ -145,15 +147,80 @@ body .recommendations-popover .bp6-input::placeholder {
   font-weight: 500;
 }
 
-#recommendations .bp6-control {
-  margin-bottom: 12px;
-  font-size: 13px;
-  line-height: 20px;
+.dark #recommendations .bp6-button.recommendations-reset {
+  color: var(--recommendations-secondary);
+  background: transparent;
+  border-color: transparent;
+  font-weight: 400;
 }
 
-#recommendations .bp6-control-indicator {
-  border: 1px solid var(--recommendations-focus);
+.dark #recommendations .bp6-button.recommendations-reset:not(:disabled):hover {
+  color: var(--recommendations-ink);
+  background: var(--recommendations-muted);
+}
+
+#recommendations .bp6-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  transition: background-color 150ms;
+}
+
+#recommendations .bp6-checkbox:not(.bp6-disabled):hover {
+  background: var(--recommendations-muted);
+}
+
+#recommendations .bp6-checkbox .bp6-control-indicator {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid var(--recommendations-checkbox-border);
+  border-radius: 5px;
+  background: var(--recommendations-surface);
   box-shadow: none;
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+
+#recommendations .bp6-checkbox:hover input:not(:disabled) ~ .bp6-control-indicator {
+  border-color: var(--recommendations-accent);
+}
+
+#recommendations .bp6-checkbox input:checked ~ .bp6-control-indicator {
+  background: var(--recommendations-accent);
+  border-color: var(--recommendations-accent);
+  color: var(--recommendations-surface);
+}
+
+#recommendations .bp6-checkbox input:checked ~ .bp6-control-indicator::before {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  background-image: none;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 8 3 3 6-6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+#recommendations .bp6-checkbox input:focus ~ .bp6-control-indicator {
+  outline: none;
+}
+
+#recommendations .bp6-checkbox input:focus-visible ~ .bp6-control-indicator {
+  outline: 2px solid var(--recommendations-focus);
+  outline-offset: 2px;
+}
+
+#recommendations .bp6-checkbox.bp6-disabled .bp6-control-indicator {
+  opacity: 0.5;
 }
 
 #recommendations .recommendations-status {
@@ -220,6 +287,7 @@ body .recommendations-popover .bp6-menu-item.bp6-selected {
   --recommendations-surface: #232326;
   --recommendations-muted: #2d2d30;
   --recommendations-border: theme('colors.zinc.500');
+  --recommendations-checkbox-border: theme('colors.zinc.500');
   --recommendations-ink: theme('colors.slate.50');
   --recommendations-secondary: theme('colors.slate.300');
   --recommendations-success: theme('colors.emerald.300');
@@ -271,7 +339,23 @@ body.high-contrast-theme #recommendations .recommendations-status.bp6-intent-suc
   #recommendations .bp6-html-select select,
   #recommendations .bp6-input,
   body .recommendations-popover .bp6-input,
+  #recommendations .bp6-checkbox,
+  #recommendations .bp6-checkbox .bp6-control-indicator,
   .recommendations-details summary {
     transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  #recommendations .bp6-checkbox .bp6-control-indicator {
+    forced-color-adjust: none;
+    background: Canvas;
+    border-color: ButtonText;
+  }
+
+  #recommendations .bp6-checkbox input:checked ~ .bp6-control-indicator {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
   }
 }
