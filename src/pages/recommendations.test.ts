@@ -223,7 +223,7 @@ describe('recommendation rarity groups', () => {
       [3, 'Hibiscus'],
     ] as const) {
       fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-      fireEvent.click(screen.getByRole('option', { name: `${stars} stars` }).querySelector('a')!)
+      fireEvent.click(screen.getByRole('option', { name: String(stars) }).querySelector('a')!)
       expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
       expect(screen.getAllByRole('article').map((item) => item.getAttribute('aria-label'))).toEqual([name])
     }
@@ -235,7 +235,7 @@ describe('recommendation rarity groups', () => {
     expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(1)
     expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-    fireEvent.click(screen.getByRole('option', { name: '3 stars' }).querySelector('a')!)
+    fireEvent.click(screen.getByRole('option', { name: '3' }).querySelector('a')!)
     expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
     expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(1)
     fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'Hibiscus' } })
@@ -265,7 +265,7 @@ describe('recommendation rarity groups', () => {
     fireEvent.click(within(higher).getByRole('button', { name: 'Show more' }))
     expect(within(higher).getAllByRole('article')).toHaveLength(31)
     fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-    fireEvent.click(screen.getByRole('option', { name: '3 stars' }).querySelector('a')!)
+    fireEvent.click(screen.getByRole('option', { name: '3' }).querySelector('a')!)
     expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
     const lower = screen.getByRole('region', { name: '3 stars and below' })
     expect(within(lower).getAllByRole('article')).toHaveLength(30)

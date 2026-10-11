@@ -315,7 +315,7 @@ body .recommendations-popover .bp6-menu {
 }
 
 body .bp6-popover.recommendations-popover {
-  min-width: 0;
+  min-width: 10rem;
   max-width: calc(100vw - 32px);
   border: 1px solid var(--recommendations-border);
   box-shadow: var(--recommendations-menu-shadow);

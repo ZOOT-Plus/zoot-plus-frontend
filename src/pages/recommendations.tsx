@@ -237,7 +237,7 @@ export const RecommendationsPage = () => {
               <FilterSelect
                 items={[
                   { id: '', name: t.default },
-                  ...[1, 2, 3, 4, 5, 6].map((rarity) => ({ id: String(rarity), name: t.stars({ count: rarity }) })),
+                  ...[1, 2, 3, 4, 5, 6].map((rarity) => ({ id: String(rarity), name: String(rarity) })),
                 ]}
                 value={rarity}
                 onChange={(value) => patch('rarity', value)}
