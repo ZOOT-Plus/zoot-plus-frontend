@@ -1,4 +1,15 @@
-import { Button, Callout, Checkbox, HTMLSelect, InputGroup, Menu, MenuItem, Spinner, Tag } from '@blueprintjs/core'
+import {
+  Button,
+  Callout,
+  Checkbox,
+  HTMLSelect,
+  Icon,
+  InputGroup,
+  Menu,
+  MenuItem,
+  Spinner,
+  Tag,
+} from '@blueprintjs/core'
 import { cloneElement, memo, ReactElement, useDeferredValue, useId, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -9,11 +20,11 @@ import { useTranslation } from 'i18n/i18n'
 import { CopilotDocV1 } from 'models/copilot.schema'
 import { findOperatorById, getModuleName, useLocalizedOperatorName } from 'models/operator'
 import { OperatorRecommendation, TrainingBranch, recommendationParams } from 'models/recommendation'
+import 'styles/recommendations.css'
 
 const ROLES = ['Pioneer', 'Warrior', 'Tank', 'Sniper', 'Caster', 'Medic', 'Support', 'Special'] as const
 const percent = (value: number) => Math.round(value * 100)
 
-// Hallmark: Workbench layout, existing Blueprint theme and system typography; no decorative motion.
 export const RecommendationsPage = () => {
   const t = useTranslation().pages.recommendations
   const translations = useTranslation()
@@ -102,17 +113,18 @@ export const RecommendationsPage = () => {
   const filterKey = JSON.stringify([params, query, role, rarity])
 
   return (
-    <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 min-w-0">
-      <header className="mb-6 max-w-3xl">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2 break-words">{t.title}</h1>
+    <main id="recommendations" className="recommendations-page max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 min-w-0">
+      <header className="mb-7 max-w-3xl">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-3 break-words">{t.title}</h1>
         <p className="text-zinc-600 dark:text-slate-300 leading-relaxed">{t.intro}</p>
       </header>
-      <div className="grid grid-cols-1 lg:grid-cols-[15rem_minmax(0,1fr)] gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] gap-5 xl:gap-7 items-start">
         <aside className="lg:sticky lg:top-20 min-w-0" aria-label={t.filters}>
           <Button
-            className="lg:!hidden"
+            className="recommendations-filter-toggle lg:!hidden"
             fill
             icon="filter"
+            rightIcon={filtersVisible ? 'chevron-up' : 'chevron-down'}
             aria-expanded={filtersVisible}
             aria-controls={filterPanelId}
             onClick={() => setFiltersVisible((value) => !value)}
@@ -121,10 +133,19 @@ export const RecommendationsPage = () => {
           </Button>
           <div
             id={filterPanelId}
-            className={`${filtersVisible ? 'grid mt-3 lg:mt-0' : 'hidden lg:grid'} grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 p-4 bg-white dark:bg-slate-800 border border-zinc-200 dark:border-slate-700 rounded lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto`}
+            className={`recommendations-filters ${filtersVisible ? 'grid mt-3 lg:mt-0' : 'hidden lg:grid'} grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 p-5 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto`}
           >
+            <div className="sm:col-span-2 lg:col-span-1 flex items-center gap-2 pb-1">
+              <Icon icon="filter" className="text-violet-600 dark:text-violet-300" />
+              <h2 className="font-semibold">{t.filters}</h2>
+            </div>
             <Filter label={t.scope}>
-              <HTMLSelect fill value={params.scope} onChange={(event) => patch('scope', event.target.value)}>
+              <HTMLSelect
+                iconName="caret-down"
+                fill
+                value={params.scope}
+                onChange={(event) => patch('scope', event.target.value)}
+              >
                 {(['RECENT', 'PERMANENT', 'HISTORY'] as const).map((scope) => (
                   <option key={scope} value={scope}>
                     {t.scopes[scope]}
@@ -133,7 +154,12 @@ export const RecommendationsPage = () => {
               </HTMLSelect>
             </Filter>
             <Filter label={t.days}>
-              <HTMLSelect fill value={params.days} onChange={(event) => patch('days', event.target.value)}>
+              <HTMLSelect
+                iconName="caret-down"
+                fill
+                value={params.days}
+                onChange={(event) => patch('days', event.target.value)}
+              >
                 {(params.scope === 'HISTORY' ? [90, 180, 365, 0] : [90, 180, 365]).map((days) => (
                   <option key={days} value={days}>
                     {days ? t.day_count({ count: days }) : t.all_time}
@@ -142,7 +168,12 @@ export const RecommendationsPage = () => {
               </HTMLSelect>
             </Filter>
             <Filter label={t.coverage}>
-              <HTMLSelect fill value={params.coverage} onChange={(event) => patch('coverage', event.target.value)}>
+              <HTMLSelect
+                iconName="caret-down"
+                fill
+                value={params.coverage}
+                onChange={(event) => patch('coverage', event.target.value)}
+              >
                 <option value={0.6}>{t.basic}</option>
                 <option value={0.8}>{t.practical}</option>
                 <option value={0.9}>{t.extensive}</option>
@@ -150,6 +181,7 @@ export const RecommendationsPage = () => {
             </Filter>
             <Filter label={t.category}>
               <HTMLSelect
+                iconName="caret-down"
                 fill
                 value={params.category ?? ''}
                 onChange={(event) => patch('category', event.target.value)}
@@ -180,7 +212,7 @@ export const RecommendationsPage = () => {
                 label={t.stage}
               />
             </Filter>
-            <div className="sm:col-span-2 lg:col-span-1 pt-2">
+            <div className="recommendations-options sm:col-span-2 lg:col-span-1 pt-4">
               <Checkbox
                 checked={params.includeAlternatives}
                 onChange={(event) => patch('alternatives', event.currentTarget.checked ? '' : '0')}
@@ -199,25 +231,31 @@ export const RecommendationsPage = () => {
               >
                 {t.uncertain}
               </Checkbox>
-              <Button minimal icon="reset" onClick={() => setSearch({})}>
+              <Button className="recommendations-reset" fill minimal icon="reset" onClick={() => setSearch({})}>
                 {t.reset}
               </Button>
             </div>
           </div>
         </aside>
         <section className="min-w-0" aria-label={t.title} aria-busy={isValidating}>
-          <div className="flex flex-wrap gap-3 mb-4 items-end">
-            <div className="flex-1 min-w-0 basis-44">
+          <div className="recommendations-toolbar grid grid-cols-2 sm:grid-cols-[minmax(0,1fr)_8rem_7rem] gap-3 p-4 mb-4 items-end">
+            <div className="col-span-2 sm:col-span-1 min-w-0">
               <Filter label={t.search}>
                 <InputGroup
                   value={search.get('q') ?? ''}
                   onChange={(event) => patch('q', event.target.value)}
                   leftIcon="search"
+                  placeholder={t.search}
                 />
               </Filter>
             </div>
             <Filter label={t.profession}>
-              <HTMLSelect value={role} onChange={(event) => patch('role', event.target.value)}>
+              <HTMLSelect
+                iconName="caret-down"
+                fill
+                value={role}
+                onChange={(event) => patch('role', event.target.value)}
+              >
                 <option value="">{t.all}</option>
                 {ROLES.map((value) => (
                   <option key={value} value={value}>
@@ -227,7 +265,12 @@ export const RecommendationsPage = () => {
               </HTMLSelect>
             </Filter>
             <Filter label={t.rarity}>
-              <HTMLSelect value={rarity} onChange={(event) => patch('rarity', event.target.value)}>
+              <HTMLSelect
+                iconName="caret-down"
+                fill
+                value={rarity}
+                onChange={(event) => patch('rarity', event.target.value)}
+              >
                 <option value="">{t.all}</option>
                 {[1, 2, 3, 4, 5, 6].map((value) => (
                   <option key={value} value={value}>
@@ -237,11 +280,13 @@ export const RecommendationsPage = () => {
               </HTMLSelect>
             </Filter>
           </div>
-          <p className="text-sm text-zinc-600 dark:text-slate-300 mb-5 leading-relaxed">{t.note}</p>
+          <p className="text-xs text-zinc-500 dark:text-slate-400 mb-5 leading-relaxed">{t.note}</p>
           {error && (
             <Callout className="mb-4" intent="danger" title={t.error}>
               {data && <p className="mb-2">{t.previous_results}</p>}
-              <Button onClick={() => mutate()}>{t.retry}</Button>
+              <Button intent="primary" icon="refresh" onClick={() => mutate()}>
+                {t.retry}
+              </Button>
             </Callout>
           )}
           {!data && !error && (
@@ -257,7 +302,7 @@ export const RecommendationsPage = () => {
                   {t.updating}
                 </output>
               )}
-              <div className="flex flex-wrap justify-between gap-2 text-sm mb-4" aria-live="polite">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-sm mb-5" aria-live="polite">
                 <strong>{t.results({ count: recommendations.length })}</strong>
                 <span className="text-zinc-500 dark:text-slate-400">
                   {t.summary({ operations: data.operationCount, families: data.familyCount })}
@@ -266,7 +311,7 @@ export const RecommendationsPage = () => {
               {recommendations.length === 0 ? (
                 <Callout title={t.empty}>{t.empty_help}</Callout>
               ) : (
-                <div className="space-y-8">
+                <div className="space-y-7">
                   {groups
                     .filter((group) => group.items.length > 0)
                     .map((group) => (
@@ -305,8 +350,12 @@ const Filter = ({
 }) => {
   const id = useId()
   return (
-    <div className="block min-w-0 [&_input]:!h-11 [&_select]:!h-11 [&_.bp6-input-group>.bp6-icon]:!my-3.5">
-      <label id={`${id}-label`} htmlFor={id} className="block text-sm font-medium mb-1.5">
+    <div className="min-w-0">
+      <label
+        id={`${id}-label`}
+        htmlFor={id}
+        className="block text-xs font-medium text-zinc-500 dark:text-slate-400 mb-2"
+      >
         {label}
       </label>
       {cloneElement(children, { id, 'aria-labelledby': `${id}-label` })}
@@ -314,7 +363,6 @@ const Filter = ({
   )
 }
 
-// Hallmark · component: searchable filter · theme: existing Blueprint · states: default, focus, empty, selected.
 const SearchFilter = ({
   items,
   value,
@@ -349,12 +397,12 @@ const SearchFilter = ({
       itemListPredicate={() => matches.slice(0, 50)}
       selectedItem={selected}
       onReset={() => onChange('')}
-      resetButtonProps={{ 'aria-label': t.clear_filter({ filter: label }), className: '!min-h-11 !min-w-11' }}
+      resetButtonProps={{ 'aria-label': t.clear_filter({ filter: label }), className: 'recommendations-clear' }}
       resetOnClose
       resetOnSelect
       onItemSelect={(item) => onChange(item.id)}
       inputProps={{ placeholder, 'aria-label': placeholder }}
-      popoverProps={{ minimal: true, matchTargetWidth: true }}
+      popoverProps={{ minimal: true, matchTargetWidth: true, popoverClassName: 'recommendations-popover' }}
       itemListRenderer={({ filteredItems, renderItem, itemsParentRef, menuProps }) => (
         // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Blueprint QueryList requires a Menu listbox for keyboard navigation.
         <Menu {...menuProps} role="listbox" ulRef={itemsParentRef} className="max-h-64 overflow-y-auto">
@@ -393,9 +441,9 @@ const SearchFilter = ({
         {...buttonProps}
         fill
         alignText="left"
-        rightIcon="chevron-down"
+        rightIcon="caret-down"
         title={selected?.name || value || t.all}
-        className="!min-h-11 [&_.bp6-button-text]:truncate"
+        className="[&_.bp6-button-text]:truncate"
       >
         {selected?.name || value || t.all}
       </Button>
@@ -421,19 +469,24 @@ const RecommendationGroup = ({
   if (pagination.key !== filterKey) setPagination({ key: filterKey, visible: 30 })
   return (
     <section aria-labelledby={headingId}>
-      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-        <h2 id={headingId} className="text-lg font-semibold break-words">
+      <div className="flex flex-wrap items-center gap-3 mb-3">
+        <h2 id={headingId} className="text-base font-semibold break-words">
           {title}
         </h2>
-        <span className="text-sm text-zinc-500 dark:text-slate-400">{t.results({ count: items.length })}</span>
+        <span className="recommendations-count text-xs tabular-nums">{t.results({ count: items.length })}</span>
       </div>
-      <div className="divide-y divide-zinc-200 dark:divide-slate-700 border-y border-zinc-200 dark:border-slate-700">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
         {items.slice(0, visible).map((item) => (
           <RecommendationRow key={item.operator.id} item={item} stageNames={stageNames} />
         ))}
       </div>
       {items.length > visible && (
-        <Button className="mt-4 !min-h-11" onClick={() => setPagination({ key: filterKey, visible: visible + 30 })}>
+        <Button
+          className="mt-4"
+          fill
+          rightIcon="chevron-down"
+          onClick={() => setPagination({ key: filterKey, visible: visible + 30 })}
+        >
           {t.show_more}
         </Button>
       )}
@@ -448,64 +501,78 @@ const RecommendationRow = memo(
     const name = useLocalizedOperatorName(item.operator.name)
     const [expanded, setExpanded] = useState(false)
     return (
-      <article className="py-6 min-w-0" aria-label={name}>
-        <div className="flex gap-4 sm:gap-5 items-start min-w-0">
+      <article className="recommendations-card min-w-0" aria-label={name}>
+        <div className="flex gap-3 items-center min-w-0 p-5 pb-4">
           <OperatorAvatar
             id={item.operator.id}
             rarity={item.operator.rarity}
             fallback={name}
             sourceSize={96}
-            className="!w-14 !h-14 sm:!w-16 sm:!h-16 shrink-0"
+            className="!w-14 !h-14 !rounded-xl shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap gap-2 items-center mb-2">
-              <h3 className="text-lg font-semibold break-words">{name}</h3>
-              <Tag minimal intent={item.status === 'CURRENT' ? 'success' : undefined}>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 items-center justify-between mb-1.5">
+              <h3 className="text-lg font-semibold break-words leading-tight">{name}</h3>
+              <Tag
+                className="recommendations-status"
+                minimal
+                intent={item.status === 'CURRENT' ? 'success' : undefined}
+              >
                 {t.status[item.status]}
               </Tag>
             </div>
-            <p className="text-xs mb-3 text-zinc-500 dark:text-slate-400">
+            <p className="text-xs text-zinc-500 dark:text-slate-400">
               {translations.models.operator.role[
                 item.operator.role as keyof typeof translations.models.operator.role
               ] ?? item.operator.role}
               {' · '}
               {t.stars({ count: item.operator.rarity })}
             </p>
-            {item.branches[0] && <Branch branch={item.branches[0]} />}
-            <p className="text-sm mt-3 text-zinc-600 dark:text-slate-300">
-              {t.evidence({ stages: item.stageCount, families: item.familyCount })}
-            </p>
           </div>
         </div>
-        <details className="mt-3 min-w-0" onToggle={(event) => setExpanded(event.currentTarget.open)}>
-          <summary className="cursor-pointer text-sm font-medium py-3 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-            {t.details}
+        <div className="px-5 pb-4">
+          {item.branches[0] && (
+            <div className="recommendations-target p-3.5">
+              <Branch branch={item.branches[0]} />
+            </div>
+          )}
+          <p className="text-xs mt-3.5 text-zinc-500 dark:text-slate-400 leading-relaxed">
+            {t.evidence({ stages: item.stageCount, families: item.familyCount })}
+          </p>
+        </div>
+        <details
+          className="recommendations-details min-w-0"
+          onToggle={(event) => setExpanded(event.currentTarget.open)}
+        >
+          <summary className="flex flex-wrap items-center gap-2 cursor-pointer text-sm font-medium px-5 py-3">
+            <span>{t.details}</span>
             {item.branches.length > 1 && (
-              <span className="ml-2 text-xs text-zinc-500 dark:text-slate-400">
+              <span className="text-xs text-zinc-500 dark:text-slate-400">
                 {t.target_count({ count: item.branches.length })}
               </span>
             )}
+            <Icon icon="chevron-down" className="recommendations-details-chevron ml-auto" size={14} />
           </summary>
           {expanded && (
-            <>
-              <p className="text-xs mt-1 text-zinc-500 dark:text-slate-400">
+            <div className="px-5 pb-5 pt-1">
+              <p className="text-xs text-zinc-500 dark:text-slate-400">
                 {t.recent_evidence({ stages: item.recentStageCount, families: item.recentFamilyCount })}
               </p>
-              <div className="grid gap-3 mt-2 sm:grid-cols-2">
+              <div className="grid gap-2 mt-3">
                 {item.branches.map((branch, index) => (
-                  <div
-                    key={index}
-                    className="p-3 bg-white dark:bg-slate-800 border border-zinc-200 dark:border-slate-700 rounded min-w-0"
-                  >
+                  <div key={index} className="recommendations-target p-3.5 min-w-0">
                     <Branch branch={branch} detailed />
                   </div>
                 ))}
               </div>
               <h4 className="text-sm font-semibold mt-5 mb-2">{t.sources}</h4>
-              <ul className="space-y-3">
+              <ul className="recommendations-sources space-y-3">
                 {item.sources.map((source) => (
                   <li key={source.id} className="text-sm min-w-0">
-                    <Link to={`/operation/${source.id}`} className="break-words underline underline-offset-2">
+                    <Link
+                      to={`/operation/${source.id}`}
+                      className="font-medium break-words underline-offset-4 hover:underline"
+                    >
                       {source.title || `#${source.id}`}
                     </Link>
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs mt-1 text-zinc-500 dark:text-slate-400">
@@ -518,7 +585,7 @@ const RecommendationRow = memo(
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           )}
         </details>
       </article>
@@ -555,10 +622,11 @@ const Branch = ({ branch, detailed }: { branch: TrainingBranch; detailed?: boole
         : t.module_target({ name: getModuleName(moduleType as CopilotDocV1.Module) })
   return (
     <div className="min-w-0 text-sm leading-relaxed">
-      <p className="font-medium">{level}</p>
-      <p>
-        {target.skill > 0 ? t.skill_target({ skill: target.skill, level: skillLevel }) : t.no_skill} · {module}
-      </p>
+      <p className="font-semibold mb-1.5">{level}</p>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-600 dark:text-slate-300">
+        <span>{target.skill > 0 ? t.skill_target({ skill: target.skill, level: skillLevel }) : t.no_skill}</span>
+        <span>{module}</span>
+      </div>
       {detailed && (
         <>
           <p className="text-xs mt-2 text-zinc-600 dark:text-slate-300">

@@ -1,0 +1,206 @@
+/* Hallmark · card catalog · existing violet palette and system type · P4 H5 E4 S4 R5 V4 */
+.recommendations-page,
+.recommendations-popover {
+  --recommendations-surface: theme('colors.white');
+  --recommendations-muted: theme('colors.zinc.50');
+  --recommendations-border: theme('colors.zinc.200');
+  --recommendations-ink: theme('colors.slate.800');
+  --recommendations-accent: theme('colors.violet.600');
+  --recommendations-accent-soft: theme('colors.violet.50');
+  --recommendations-focus: theme('colors.violet.500');
+}
+
+.dark .recommendations-page,
+.dark .recommendations-popover {
+  --recommendations-surface: theme('colors.slate.800');
+  --recommendations-muted: theme('colors.slate.900');
+  --recommendations-border: theme('colors.slate.700');
+  --recommendations-ink: theme('colors.slate.100');
+  --recommendations-accent: theme('colors.violet.300');
+  --recommendations-accent-soft: theme('colors.violet.950');
+  --recommendations-focus: theme('colors.violet.400');
+}
+
+.recommendations-page {
+  color: var(--recommendations-ink);
+  overflow-wrap: anywhere;
+}
+
+.recommendations-filters,
+.recommendations-toolbar,
+.recommendations-card {
+  background: var(--recommendations-surface);
+  border: 1px solid var(--recommendations-border);
+  border-radius: 16px;
+}
+
+.recommendations-options,
+.recommendations-details {
+  border-top: 1px solid var(--recommendations-border);
+}
+
+.recommendations-target {
+  background: var(--recommendations-muted);
+  border-radius: 10px;
+}
+
+.recommendations-count {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--recommendations-accent-soft);
+  color: var(--recommendations-accent);
+}
+
+/* Scope Blueprint overrides to this page and its portaled filter menus. */
+#recommendations .bp6-button,
+#recommendations .bp6-html-select select,
+#recommendations .bp6-input,
+body .recommendations-popover .bp6-input {
+  min-height: 44px;
+  height: 44px;
+  border: 1px solid var(--recommendations-border);
+  border-radius: 9px;
+  background: var(--recommendations-surface);
+  color: var(--recommendations-ink);
+  box-shadow: none;
+  font-weight: 400;
+  transition:
+    border-color 150ms,
+    background-color 150ms,
+    box-shadow 150ms;
+}
+
+#recommendations .bp6-button {
+  white-space: nowrap;
+  background-image: none;
+}
+
+#recommendations .bp6-button:not(:disabled):hover,
+#recommendations .bp6-html-select select:hover {
+  border-color: var(--recommendations-focus);
+  background: var(--recommendations-muted);
+  box-shadow: none;
+}
+
+#recommendations .bp6-button:not(:disabled):active {
+  background: var(--recommendations-accent-soft);
+}
+
+#recommendations .bp6-button .bp6-button-text,
+#recommendations .bp6-button .bp6-icon {
+  color: inherit;
+}
+
+#recommendations .bp6-button:focus-visible,
+#recommendations .bp6-html-select select:focus-visible,
+#recommendations .bp6-input:focus,
+body .recommendations-popover .bp6-input:focus,
+.recommendations-details summary:focus-visible {
+  outline: 2px solid var(--recommendations-focus);
+  outline-offset: 2px;
+  border-color: var(--recommendations-accent);
+  box-shadow: none;
+}
+
+#recommendations .bp6-input::placeholder {
+  font-style: normal;
+}
+
+#recommendations .bp6-input-group > .bp6-icon {
+  margin: 0 10px;
+}
+
+#recommendations .bp6-html-select > .bp6-icon {
+  top: 15px;
+  right: 12px;
+}
+
+#recommendations .bp6-button.recommendations-clear {
+  min-width: 44px;
+  padding: 0;
+  margin-left: 4px;
+  border-color: transparent;
+  background: transparent;
+}
+
+#recommendations .bp6-button.recommendations-reset,
+#recommendations .bp6-button.recommendations-filter-toggle,
+#recommendations .bp6-button.bp6-intent-primary {
+  color: var(--recommendations-accent);
+  background: var(--recommendations-accent-soft);
+  font-weight: 500;
+}
+
+#recommendations .bp6-control {
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+#recommendations .bp6-control-indicator {
+  border: 1px solid var(--recommendations-focus);
+  box-shadow: none;
+}
+
+#recommendations .recommendations-status {
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 18px;
+  padding: 1px 6px;
+}
+
+.recommendations-details summary {
+  min-height: 46px;
+  color: var(--recommendations-accent);
+  border-radius: 0 0 16px 16px;
+  list-style: none;
+  transition: background-color 150ms;
+}
+
+.recommendations-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.recommendations-details summary:hover,
+.recommendations-details[open] summary {
+  background: var(--recommendations-accent-soft);
+}
+
+.recommendations-details[open] summary {
+  border-radius: 0;
+  margin-bottom: 12px;
+}
+
+.recommendations-details[open] .recommendations-details-chevron {
+  transform: rotate(180deg);
+}
+
+.recommendations-sources a {
+  color: var(--recommendations-accent);
+}
+
+body .recommendations-popover .bp6-popover-content,
+body .recommendations-popover .bp6-menu {
+  background: var(--recommendations-surface);
+  color: var(--recommendations-ink);
+  border-radius: 10px;
+}
+
+body .recommendations-popover .bp6-menu-item {
+  border-radius: 6px;
+}
+
+.high-contrast-theme .recommendations-page,
+.high-contrast-theme .recommendations-popover {
+  --recommendations-border: theme('colors.slate.500');
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #recommendations .bp6-button,
+  #recommendations .bp6-html-select select,
+  #recommendations .bp6-input,
+  body .recommendations-popover .bp6-input,
+  .recommendations-details summary {
+    transition: none;
+  }
+}
