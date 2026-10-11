@@ -88,9 +88,9 @@ body .recommendations-popover .bp6-input {
   color: var(--recommendations-ink);
 }
 
-#recommendations .bp6-button:not(:disabled):hover,
-#recommendations .bp6-html-select select:hover {
-  border-color: var(--recommendations-focus);
+#recommendations .bp6-button:not(:disabled):not(:focus-visible):hover,
+#recommendations .bp6-html-select select:not(:disabled):not(:is(:focus-visible, :open)):hover {
+  border-color: var(--recommendations-border);
   background: var(--recommendations-muted);
   box-shadow: none;
 }
@@ -105,7 +105,7 @@ body .recommendations-popover .bp6-input {
 }
 
 #recommendations .bp6-button:focus-visible,
-#recommendations .bp6-html-select select:focus-visible,
+#recommendations .bp6-html-select select:is(:focus-visible, :open),
 #recommendations .bp6-input:focus,
 body .recommendations-popover .bp6-input:focus,
 .recommendations-details summary:focus-visible {
@@ -113,6 +113,52 @@ body .recommendations-popover .bp6-input:focus,
   outline-offset: 2px;
   border-color: var(--recommendations-accent);
   box-shadow: none;
+}
+
+@supports (appearance: base-select) {
+  #recommendations .bp6-html-select select,
+  #recommendations .bp6-html-select select::picker(select) {
+    appearance: base-select;
+  }
+
+  #recommendations .bp6-html-select select:open {
+    background: var(--recommendations-surface);
+  }
+
+  #recommendations .bp6-html-select select::picker-icon {
+    display: none;
+  }
+
+  #recommendations .bp6-html-select select::picker(select) {
+    padding: 4px;
+    margin-top: 6px;
+    border: 1px solid var(--recommendations-border);
+    border-radius: 10px;
+    background: var(--recommendations-surface);
+    color: var(--recommendations-ink);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 15%);
+  }
+
+  #recommendations .bp6-html-select option {
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    outline: none;
+  }
+
+  #recommendations .bp6-html-select option:not(:checked):hover,
+  #recommendations .bp6-html-select option:not(:checked):focus-visible {
+    background: var(--recommendations-muted);
+  }
+
+  #recommendations .bp6-html-select option:checked {
+    background: var(--recommendations-accent-soft);
+  }
+
+  #recommendations .bp6-html-select option:focus-visible {
+    outline: 2px solid var(--recommendations-focus);
+    outline-offset: -2px;
+  }
 }
 
 #recommendations .bp6-input::placeholder,
@@ -275,7 +321,10 @@ body .recommendations-popover .bp6-menu-item {
   border-radius: 6px;
 }
 
-body .recommendations-popover .bp6-menu-item:hover,
+body .recommendations-popover .bp6-menu-item:not(.bp6-disabled):not(.bp6-active):not(.bp6-selected):hover {
+  background: var(--recommendations-muted);
+}
+
 body .recommendations-popover .bp6-menu-item.bp6-active,
 body .recommendations-popover .bp6-menu-item.bp6-selected {
   background: var(--recommendations-accent-soft);
