@@ -82,7 +82,8 @@ describe('recommendation filters', () => {
   it('restores filters and updates the server query when scope changes', () => {
     mount('/recommendations?scope=HISTORY&days=0')
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ scope: 'HISTORY', days: 0 }))
-    fireEvent.change(screen.getByLabelText('Use case'), { target: { value: 'PERMANENT' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Use case' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Permanent stages' }).querySelector('a')!)
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ scope: 'PERMANENT' }))
   })
 
@@ -167,7 +168,9 @@ describe('recommendation filters', () => {
       },
     })
     mount('/recommendations?category=主题曲&activity=第一章&stageId=s1')
-    fireEvent.change(screen.getByLabelText('Stage category'), { target: { value: '活动关卡' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Stage category' }))
+    fireEvent.click(screen.getByRole('option', { name: '活动关卡' }).querySelector('a')!)
+    await waitFor(() => expect(screen.queryByRole('option', { name: '活动关卡' })).toBeNull())
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(
       expect.objectContaining({ category: '活动关卡', activity: undefined, stageId: undefined }),
     )
@@ -218,10 +221,12 @@ describe('recommendation rarity groups', () => {
     ).toEqual(['Hibiscus', 'Lancet-2', 'Durin'])
     expect(screen.getByText('6 operators')).toBeTruthy()
 
-    fireEvent.change(screen.getByLabelText('Class'), { target: { value: 'Medic' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Class' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Medic' }).querySelector('a')!)
     expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(1)
     expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(2)
-    fireEvent.change(screen.getByLabelText('Rarity'), { target: { value: '3' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
+    fireEvent.click(screen.getByRole('option', { name: '3 stars' }).querySelector('a')!)
     expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
     expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(1)
     fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'Hibiscus' } })
@@ -254,7 +259,8 @@ describe('recommendation rarity groups', () => {
     expect(within(lower).getAllByRole('article')).toHaveLength(30)
     fireEvent.click(within(lower).getByRole('button', { name: 'Show more' }))
     expect(within(lower).getAllByRole('article')).toHaveLength(31)
-    fireEvent.change(screen.getByLabelText('Class'), { target: { value: 'Sniper' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Class' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Sniper' }).querySelector('a')!)
     expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(30)
     expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(30)
   })

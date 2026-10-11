@@ -1,15 +1,4 @@
-import {
-  Button,
-  Callout,
-  Checkbox,
-  HTMLSelect,
-  Icon,
-  InputGroup,
-  Menu,
-  MenuItem,
-  Spinner,
-  Tag,
-} from '@blueprintjs/core'
+import { Button, Callout, Checkbox, Icon, InputGroup, Menu, MenuItem, Spinner, Tag } from '@blueprintjs/core'
 import { cloneElement, memo, ReactElement, useDeferredValue, useId, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -140,62 +129,46 @@ export const RecommendationsPage = () => {
               <h2 className="font-semibold">{t.filters}</h2>
             </div>
             <Filter label={t.scope}>
-              <HTMLSelect
-                iconName="caret-down"
-                fill
+              <FilterSelect
+                items={(['RECENT', 'PERMANENT', 'HISTORY'] as const).map((id) => ({ id, name: t.scopes[id] }))}
                 value={params.scope}
-                onChange={(event) => patch('scope', event.target.value)}
-              >
-                {(['RECENT', 'PERMANENT', 'HISTORY'] as const).map((scope) => (
-                  <option key={scope} value={scope}>
-                    {t.scopes[scope]}
-                  </option>
-                ))}
-              </HTMLSelect>
+                onChange={(value) => patch('scope', value)}
+                label={t.scope}
+              />
             </Filter>
             <Filter label={t.days}>
-              <HTMLSelect
-                iconName="caret-down"
-                fill
-                value={params.days}
-                onChange={(event) => patch('days', event.target.value)}
-              >
-                {(params.scope === 'HISTORY' ? [90, 180, 365, 0] : [90, 180, 365]).map((days) => (
-                  <option key={days} value={days}>
-                    {days ? t.day_count({ count: days }) : t.all_time}
-                  </option>
-                ))}
-              </HTMLSelect>
+              <FilterSelect
+                items={(params.scope === 'HISTORY' ? [90, 180, 365, 0] : [90, 180, 365]).map((days) => ({
+                  id: String(days),
+                  name: days ? t.day_count({ count: days }) : t.all_time,
+                }))}
+                value={String(params.days)}
+                onChange={(value) => patch('days', value)}
+                label={t.days}
+              />
             </Filter>
             <Filter label={t.coverage}>
-              <HTMLSelect
-                iconName="caret-down"
-                fill
-                value={params.coverage}
-                onChange={(event) => patch('coverage', event.target.value)}
-              >
-                <option value={0.6}>{t.basic}</option>
-                <option value={0.8}>{t.practical}</option>
-                <option value={0.9}>{t.extensive}</option>
-              </HTMLSelect>
+              <FilterSelect
+                items={[
+                  { id: '0.6', name: t.basic },
+                  { id: '0.8', name: t.practical },
+                  { id: '0.9', name: t.extensive },
+                ]}
+                value={String(params.coverage)}
+                onChange={(value) => patch('coverage', value)}
+                label={t.coverage}
+              />
             </Filter>
             <Filter label={t.category}>
-              <HTMLSelect
-                iconName="caret-down"
-                fill
+              <FilterSelect
+                items={[{ id: '', name: t.all }, ...(data?.categories ?? []).map((id) => ({ id, name: id }))]}
                 value={params.category ?? ''}
-                onChange={(event) => patch('category', event.target.value)}
-              >
-                <option value="">{t.all}</option>
-                {data?.categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </HTMLSelect>
+                onChange={(value) => patch('category', value)}
+                label={t.category}
+              />
             </Filter>
             <Filter label={t.activity}>
-              <SearchFilter
+              <FilterSelect
                 items={activities}
                 value={params.activity ?? ''}
                 onChange={(value) => patch('activity', value)}
@@ -204,7 +177,7 @@ export const RecommendationsPage = () => {
               />
             </Filter>
             <Filter label={t.stage}>
-              <SearchFilter
+              <FilterSelect
                 items={stages}
                 value={params.stageId ?? ''}
                 onChange={(value) => patch('stageId', value)}
@@ -250,34 +223,26 @@ export const RecommendationsPage = () => {
               </Filter>
             </div>
             <Filter label={t.profession}>
-              <HTMLSelect
-                iconName="caret-down"
-                fill
+              <FilterSelect
+                items={[
+                  { id: '', name: t.all },
+                  ...ROLES.map((id) => ({ id, name: translations.models.operator.role[id] })),
+                ]}
                 value={role}
-                onChange={(event) => patch('role', event.target.value)}
-              >
-                <option value="">{t.all}</option>
-                {ROLES.map((value) => (
-                  <option key={value} value={value}>
-                    {translations.models.operator.role[value]}
-                  </option>
-                ))}
-              </HTMLSelect>
+                onChange={(value) => patch('role', value)}
+                label={t.profession}
+              />
             </Filter>
             <Filter label={t.rarity}>
-              <HTMLSelect
-                iconName="caret-down"
-                fill
+              <FilterSelect
+                items={[
+                  { id: '', name: t.all },
+                  ...[1, 2, 3, 4, 5, 6].map((rarity) => ({ id: String(rarity), name: t.stars({ count: rarity }) })),
+                ]}
                 value={rarity}
-                onChange={(event) => patch('rarity', event.target.value)}
-              >
-                <option value="">{t.all}</option>
-                {[1, 2, 3, 4, 5, 6].map((value) => (
-                  <option key={value} value={value}>
-                    {t.stars({ count: value })}
-                  </option>
-                ))}
-              </HTMLSelect>
+                onChange={(value) => patch('rarity', value)}
+                label={t.rarity}
+              />
             </Filter>
           </div>
           <p className="text-xs text-zinc-500 dark:text-slate-400 mb-5 leading-relaxed">{t.note}</p>
@@ -363,7 +328,7 @@ const Filter = ({
   )
 }
 
-const SearchFilter = ({
+const FilterSelect = ({
   items,
   value,
   onChange,
@@ -374,7 +339,7 @@ const SearchFilter = ({
   items: { id: string; name: string }[]
   value: string
   onChange: (value: string) => void
-  placeholder: string
+  placeholder?: string
   label: string
   id?: string
   'aria-labelledby'?: string
@@ -389,24 +354,33 @@ const SearchFilter = ({
   return (
     <Select
       fill
-      className="!flex w-full min-w-0 [&>.bp6-select]:min-w-0 [&>.bp6-select]:flex-1"
+      className={`recommendations-select ${placeholder && value ? 'recommendations-select-clearable' : ''}`}
+      filterable={!!placeholder}
+      canReset={!!placeholder && !!value}
       items={items}
       itemsEqual="id"
       query={query}
       onQueryChange={setQuery}
-      itemListPredicate={() => matches.slice(0, 50)}
+      itemListPredicate={() => (placeholder ? matches.slice(0, 50) : matches)}
       selectedItem={selected}
       onReset={() => onChange('')}
       resetButtonProps={{ 'aria-label': t.clear_filter({ filter: label }), className: 'recommendations-clear' }}
       resetOnClose
       resetOnSelect
       onItemSelect={(item) => onChange(item.id)}
-      inputProps={{ placeholder, 'aria-label': placeholder }}
-      popoverProps={{ minimal: true, matchTargetWidth: true, popoverClassName: 'recommendations-popover' }}
+      inputProps={{ placeholder, 'aria-label': placeholder, className: 'recommendations-menu-search' }}
+      popoverTargetProps={placeholder ? undefined : { 'aria-labelledby': buttonProps['aria-labelledby'] }}
+      popoverProps={{
+        minimal: true,
+        matchTargetWidth: true,
+        placement: 'bottom-start',
+        modifiers: { offset: { options: { offset: [0, 8] } } },
+        popoverClassName: 'recommendations-popover',
+      }}
       itemListRenderer={({ filteredItems, renderItem, itemsParentRef, menuProps }) => (
         // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Blueprint QueryList requires a Menu listbox for keyboard navigation.
-        <Menu {...menuProps} role="listbox" ulRef={itemsParentRef} className="max-h-64 overflow-y-auto">
-          {(matches.length === 0 || matches.length > 50) && (
+        <Menu {...menuProps} role="listbox" ulRef={itemsParentRef} className="recommendations-menu">
+          {(matches.length === 0 || (placeholder && matches.length > 50)) && (
             <li role="presentation" className="px-2 py-3 text-sm text-zinc-600 dark:text-slate-300">
               <output>{matches.length === 0 ? t.no_matches : t.refine_search}</output>
             </li>
@@ -424,12 +398,11 @@ const SearchFilter = ({
           selected={item.id === value}
           onClick={handleClick}
           onFocus={handleFocus}
-          className="!min-h-11"
-          htmlTitle={`${item.name || item.id}${item.name && item.name !== item.id ? ` · ${item.id}` : ''}`}
+          htmlTitle={`${item.name || item.id}${placeholder && item.name && item.name !== item.id ? ` · ${item.id}` : ''}`}
           text={
             <>
               <div className="truncate">{item.name || item.id}</div>
-              {item.name && item.name !== item.id && (
+              {placeholder && item.name && item.name !== item.id && (
                 <div className="truncate text-xs text-zinc-600 dark:text-slate-300">{item.id}</div>
               )}
             </>
@@ -443,7 +416,7 @@ const SearchFilter = ({
         alignText="left"
         rightIcon="caret-down"
         title={selected?.name || value || t.all}
-        className="[&_.bp6-button-text]:truncate"
+        className="recommendations-select-trigger"
       >
         {selected?.name || value || t.all}
       </Button>
@@ -500,6 +473,7 @@ const RecommendationRow = memo(
     const t = translations.pages.recommendations
     const name = useLocalizedOperatorName(item.operator.name)
     const [expanded, setExpanded] = useState(false)
+    const branches = item.branches.filter((branch) => percent(branch.usageShare) > 0)
     return (
       <article className="recommendations-card min-w-0" aria-label={name}>
         <div className="flex gap-3 items-center min-w-0 p-5 pb-4">
@@ -531,9 +505,9 @@ const RecommendationRow = memo(
           </div>
         </div>
         <div className="px-5 pb-4">
-          {item.branches[0] && (
+          {branches[0] && (
             <div className="recommendations-target p-3.5">
-              <Branch branch={item.branches[0]} />
+              <Branch branch={branches[0]} />
             </div>
           )}
           <p className="text-xs mt-3.5 text-zinc-500 dark:text-slate-400 leading-relaxed">
@@ -546,9 +520,9 @@ const RecommendationRow = memo(
         >
           <summary className="flex flex-wrap items-center gap-2 cursor-pointer text-sm font-medium px-5 py-3">
             <span>{t.details}</span>
-            {item.branches.length > 1 && (
+            {branches.length > 1 && (
               <span className="text-xs text-zinc-500 dark:text-slate-400">
-                {t.target_count({ count: item.branches.length })}
+                {t.target_count({ count: branches.length })}
               </span>
             )}
             <Icon icon="chevron-down" className="recommendations-details-chevron ml-auto" size={14} />
@@ -559,7 +533,7 @@ const RecommendationRow = memo(
                 {t.recent_evidence({ stages: item.recentStageCount, families: item.recentFamilyCount })}
               </p>
               <div className="grid gap-2 mt-3">
-                {item.branches.map((branch, index) => (
+                {branches.map((branch, index) => (
                   <div key={index} className="recommendations-target p-3.5 min-w-0">
                     <Branch branch={branch} detailed />
                   </div>
