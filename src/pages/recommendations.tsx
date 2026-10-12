@@ -372,10 +372,10 @@ const FilterSelect = ({
       popoverTargetProps={placeholder ? undefined : { 'aria-labelledby': buttonProps['aria-labelledby'] }}
       popoverProps={{
         minimal: true,
-        matchTargetWidth: true,
+        matchTargetWidth: !!placeholder,
         placement: 'bottom-start',
         modifiers: { offset: { options: { offset: [0, 8] } } },
-        popoverClassName: 'recommendations-popover',
+        popoverClassName: `recommendations-popover ${placeholder ? '' : 'recommendations-popover-options'}`,
       }}
       itemListRenderer={({ filteredItems, renderItem, itemsParentRef, menuProps }) => (
         // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Blueprint QueryList requires a Menu listbox for keyboard navigation.
@@ -394,6 +394,7 @@ const FilterSelect = ({
           id={id}
           ref={ref}
           roleStructure="listoption"
+          multiline={!placeholder}
           active={modifiers.active}
           selected={item.id === value}
           onClick={handleClick}
@@ -401,7 +402,7 @@ const FilterSelect = ({
           htmlTitle={`${item.name || item.id}${placeholder && item.name && item.name !== item.id ? ` · ${item.id}` : ''}`}
           text={
             <>
-              <div className="truncate">{item.name || item.id}</div>
+              <div className={placeholder ? 'truncate' : 'whitespace-nowrap'}>{item.name || item.id}</div>
               {placeholder && item.name && item.name !== item.id && (
                 <div className="truncate text-xs text-zinc-600 dark:text-slate-300">{item.id}</div>
               )}

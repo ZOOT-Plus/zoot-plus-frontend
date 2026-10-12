@@ -85,7 +85,8 @@ body .recommendations-popover .bp6-input {
   background-image: none;
 }
 
-#recommendations .bp6-button:not(:disabled):not(:focus-visible):hover {
+#recommendations .bp6-button:not(.recommendations-select-trigger):not(:disabled):not(:focus-visible):hover,
+#recommendations .recommendations-select:hover .recommendations-select-trigger:not(:disabled):not(:focus-visible) {
   border-color: var(--recommendations-border);
   background: var(--recommendations-muted);
   box-shadow: none;
@@ -315,7 +316,7 @@ body .recommendations-popover .bp6-menu {
 }
 
 body .bp6-popover.recommendations-popover {
-  min-width: 10rem;
+  min-width: 0;
   max-width: calc(100vw - 32px);
   border: 1px solid var(--recommendations-border);
   box-shadow: var(--recommendations-menu-shadow);
@@ -379,6 +380,12 @@ body .recommendations-popover .recommendations-menu {
   overscroll-behavior: contain;
 }
 
+body .recommendations-popover-options .recommendations-menu {
+  width: max-content;
+  max-width: 100%;
+  scrollbar-gutter: stable;
+}
+
 body .recommendations-popover .bp6-menu:not(:first-child) {
   padding-top: 0;
 }
@@ -393,6 +400,10 @@ body .recommendations-popover .bp6-menu-item.bp6-menu-item-is-selectable {
 
 body .recommendations-popover .bp6-menu-item .bp6-fill {
   min-width: 0;
+}
+
+body .recommendations-popover-options .bp6-menu-item .bp6-fill {
+  flex-shrink: 0;
 }
 
 body .recommendations-popover .bp6-menu-item .bp6-menu-item-selected-icon {
