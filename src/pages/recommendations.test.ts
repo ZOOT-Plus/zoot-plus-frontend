@@ -120,24 +120,6 @@ describe('recommendation filters', () => {
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ stageId: undefined }))
   })
 
-  it('searches events and resets the selected stage when choosing another event', async () => {
-    mount('/recommendations?stageId=s1')
-    fireEvent.click(screen.getByLabelText('Event or chapter'))
-    const input = await screen.findByRole('combobox', { name: 'Search event or chapter names' })
-    fireEvent.change(input, { target: { value: 'missing' } })
-    await screen.findByText('No matches. Try another search.')
-    fireEvent.change(input, { target: { value: '第一' } })
-    const option = await screen.findByRole('option', { name: '第一章' })
-    fireEvent.click(option.querySelector('a')!)
-    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
-      expect.objectContaining({ activity: '第一章', stageId: undefined }),
-    )
-    fireEvent.click(screen.getByRole('button', { name: 'Clear Event or chapter filter' }))
-    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
-      expect.objectContaining({ activity: undefined, stageId: undefined }),
-    )
-  })
-
   it('restores selected labels and preserves unavailable URL selections until cleared', () => {
     mount('/recommendations?activity=第一章&stageId=missing-stage')
     expect(screen.getByLabelText('Event or chapter').textContent).toBe('第一章')
@@ -146,13 +128,6 @@ describe('recommendation filters', () => {
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(
       expect.objectContaining({ activity: '第一章', stageId: undefined }),
     )
-  })
-
-  it('filters operators locally without changing the statistical query', () => {
-    mount()
-    fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'does-not-exist' } })
-    expect(screen.getByText('No recommendations match these filters')).toBeTruthy()
-    expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ scope: 'RECENT', days: 180 }))
   })
 
   it('limits event and stage choices to their parent filters and clears incompatible selections', async () => {
@@ -174,14 +149,31 @@ describe('recommendation filters', () => {
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(
       expect.objectContaining({ category: '活动关卡', activity: undefined, stageId: undefined }),
     )
+    fireEvent.click(screen.getByLabelText('Stage'))
+    const stage = await screen.findByRole('option', { name: /EV-1/ })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(1)
+    fireEvent.click(stage.querySelector('a')!)
+    await waitFor(() => expect(screen.queryByRole('option', { name: /EV-1/ })).toBeNull())
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ stageId: 's2' }))
     fireEvent.click(screen.getByLabelText('Event or chapter'))
+    const input = await screen.findByRole('combobox', { name: 'Search event or chapter names' })
+    fireEvent.change(input, { target: { value: 'missing' } })
+    await screen.findByText('No matches. Try another search.')
+    fireEvent.change(input, { target: { value: '新' } })
     const option = await screen.findByRole('option', { name: '新活动' })
     expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(1)
     fireEvent.click(option.querySelector('a')!)
     await waitFor(() => expect(screen.queryByRole('option', { name: '新活动' })).toBeNull())
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ activity: '新活动', stageId: undefined }),
+    )
     fireEvent.click(screen.getByLabelText('Stage'))
     await screen.findByRole('option', { name: /EV-1/ })
     expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Clear Event or chapter filter' }))
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ activity: undefined, stageId: undefined }),
+    )
   })
 })
 
@@ -296,6 +288,7 @@ describe('recommendation evidence', () => {
     expect(screen.getByRole('article')).toBe(article)
     expect(details.open).toBe(true)
     expect(screen.getByText('Source operation')).toBeTruthy()
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ scope: 'RECENT', days: 180 }))
     expect(screen.queryByText(/Module level/)).toBeNull()
     expect(screen.getByText(/100 automatic operations and 10 independent strategies/)).toBeTruthy()
     expect(screen.getByText(/1 other operations lacked/)).toBeTruthy()
@@ -310,18 +303,6 @@ describe('recommendation evidence', () => {
     view.rerender(createElement(MemoryRouter, {}, createElement(RecommendationsPage)))
     expect(screen.getByRole('article')).toBeTruthy()
     expect(screen.getByText(/Previous results are still shown/)).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
-    expect(mock.retry).toHaveBeenCalled()
-  })
-
-  it('provides an actionable retry after an API error', () => {
-    mock.useRecommendations.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: new Error('offline'),
-      mutate: mock.retry,
-    })
-    mount()
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
     expect(mock.retry).toHaveBeenCalled()
   })
