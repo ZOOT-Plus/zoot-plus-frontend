@@ -8,6 +8,7 @@ import { useCurrentSize } from '../../utils/useCurrenSize'
 import { useAutosave } from './core/autosave'
 import { editorAtoms } from './core/editor-state'
 import { useEditorHistoryKeyboard } from './core/hotkey'
+import { LegacyEditor } from './ui-legacy/LegacyEditor'
 import { ActionEditor } from './ui/action/ActionEditor'
 import { EditorToolbar } from './ui/EditorToolbar'
 import { InfoEditor } from './ui/info/InfoEditor'
@@ -26,6 +27,7 @@ export const OperationEditor: FC<OperationEditorProps> = memo(({ subtitle, submi
   useEditorHistoryKeyboard()
   const { isMD } = useCurrentSize()
   const metadata = useAtomValue(editorAtoms.metadata)
+  const { legacyUI } = useAtomValue(editorAtoms.config)
   const isVideo = metadata.type === CopilotType.VIDEO
 
   return (
@@ -33,7 +35,9 @@ export const OperationEditor: FC<OperationEditorProps> = memo(({ subtitle, submi
       <Validator />
       <EditorToolbar subtitle={subtitle} submitAction={submitAction} onSubmit={onSubmit} />
       <div className={clsx('grow min-h-0')}>
-        {isMD ? (
+        {legacyUI ? (
+          <LegacyEditor />
+        ) : isMD ? (
           <div className="panel-shadow">
             <InfoEditor />
             <OperatorEditor />
