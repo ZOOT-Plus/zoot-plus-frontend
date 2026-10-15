@@ -80,12 +80,12 @@ describe('recommendation filters', () => {
   })
 
   it.each([
-    ['role=bad', 'All', 'Default'],
-    ['rarity=7', 'All', 'Default'],
-    ['rarity=6.0', 'All', 'Default'],
-    ['rarity=6%0A', 'All', 'Default'],
-    ['role=bad&rarity=6', 'All', '6'],
-    ['role=Sniper&rarity=NaN', 'Sniper', 'Default'],
+    ['role=bad', 'All', '4+ stars'],
+    ['rarity=7', 'All', '4+ stars'],
+    ['rarity=6.0', 'All', '4+ stars'],
+    ['rarity=6%0A', 'All', '4+ stars'],
+    ['role=bad&rarity=6', 'All', '6 stars'],
+    ['role=Sniper&rarity=NaN', 'Sniper', '4+ stars'],
   ])('falls back for unsupported local URL filters: %s', (query, role, rarity) => {
     mount(`/recommendations?${query}`)
     expect(screen.getByRole('article', { name: 'Exusiai' })).toBeTruthy()
@@ -225,8 +225,8 @@ describe('recommendation filters', () => {
   })
 })
 
-describe('recommendation rarity groups', () => {
-  it('shows four stars and above by default and lower rarities when selected', () => {
+describe('recommendation rarity filters', () => {
+  it('labels the default and exact rarities and shows the result count once', () => {
     const operators = [
       { id: 'char_120_hibisc', name: '芙蓉', role: 'Medic', rarity: 3 },
       { id: 'char_103_angel', name: '能天使', role: 'Sniper', rarity: 6 },
@@ -247,45 +247,47 @@ describe('recommendation rarity groups', () => {
       isLoading: false,
     })
     mount()
-    const higher = screen.getByRole('region', { name: '4 stars and above' })
-    expect(
-      within(higher)
-        .getAllByRole('article')
-        .map((item) => item.getAttribute('aria-label')),
-    ).toEqual(['Exusiai', 'Gummy', 'Ptilopsis'])
-    expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
-    expect(screen.getAllByText('3 operators')).toHaveLength(2)
-    expect(screen.getByRole('button', { name: 'Rarity' }).textContent).toBe('Default')
+    expect(screen.getAllByRole('article').map((item) => item.getAttribute('aria-label'))).toEqual([
+      'Exusiai',
+      'Gummy',
+      'Ptilopsis',
+    ])
+    expect(screen.getAllByText('3 operators')).toHaveLength(1)
+    expect(screen.getAllByText('4+ stars')).toHaveLength(1)
+    expect(screen.getByRole('button', { name: 'Rarity' }).textContent).toBe('4+ stars')
 
     for (const [stars, name] of [
       [1, 'Lancet-2'],
       [2, 'Durin'],
       [3, 'Hibiscus'],
+      [4, 'Gummy'],
+      [5, 'Ptilopsis'],
+      [6, 'Exusiai'],
     ] as const) {
+      const label = stars === 1 ? '1 star' : `${stars} stars`
       fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-      fireEvent.click(screen.getByRole('option', { name: String(stars) }).querySelector('a')!)
-      expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
+      fireEvent.click(screen.getByRole('option', { name: label }).querySelector('a')!)
+      expect(screen.getByRole('button', { name: 'Rarity' }).textContent).toBe(label)
       expect(screen.getAllByRole('article').map((item) => item.getAttribute('aria-label'))).toEqual([name])
     }
     fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-    fireEvent.click(screen.getByRole('option', { name: 'Default' }).querySelector('a')!)
+    fireEvent.click(screen.getByRole('option', { name: '4+ stars' }).querySelector('a')!)
 
     fireEvent.click(screen.getByRole('button', { name: 'Class' }))
     fireEvent.click(screen.getByRole('option', { name: 'Medic' }).querySelector('a')!)
-    expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(1)
-    expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
+    expect(screen.getAllByRole('article')).toHaveLength(1)
+    expect(screen.getByRole('article', { name: 'Ptilopsis' })).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-    fireEvent.click(screen.getByRole('option', { name: '3' }).querySelector('a')!)
-    expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
-    expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(1)
+    fireEvent.click(screen.getByRole('option', { name: '3 stars' }).querySelector('a')!)
+    expect(screen.getAllByRole('article')).toHaveLength(1)
     fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'Hibiscus' } })
     expect(screen.getByRole('article', { name: 'Hibiscus' })).toBeTruthy()
     fireEvent.change(screen.getByLabelText('Search operators'), { target: { value: 'does-not-exist' } })
     expect(screen.getByText('No recommendations match these filters')).toBeTruthy()
-    expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
+    expect(screen.queryByRole('article')).toBeNull()
   })
 
-  it('paginates the selected rarity group and resets pagination when filters change', () => {
+  it('paginates the results and resets pagination when filters change', () => {
     mock.useRecommendations.mockReturnValue({
       data: {
         ...data,
@@ -299,25 +301,20 @@ describe('recommendation rarity groups', () => {
       isLoading: false,
     })
     mount()
-    const higher = screen.getByRole('region', { name: '4 stars and above' })
-    expect(within(higher).getAllByRole('article')).toHaveLength(30)
-    expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
-    fireEvent.click(within(higher).getByRole('button', { name: 'Show more' }))
-    expect(within(higher).getAllByRole('article')).toHaveLength(31)
+    expect(screen.getAllByRole('article')).toHaveLength(30)
+    fireEvent.click(screen.getByRole('button', { name: 'Show more' }))
+    expect(screen.getAllByRole('article')).toHaveLength(31)
     fireEvent.click(screen.getByRole('button', { name: 'Rarity' }))
-    fireEvent.click(screen.getByRole('option', { name: '3' }).querySelector('a')!)
-    expect(screen.queryByRole('region', { name: '4 stars and above' })).toBeNull()
-    const lower = screen.getByRole('region', { name: '3 stars and below' })
-    expect(within(lower).getAllByRole('article')).toHaveLength(30)
-    fireEvent.click(within(lower).getByRole('button', { name: 'Show more' }))
-    expect(within(lower).getAllByRole('article')).toHaveLength(31)
+    fireEvent.click(screen.getByRole('option', { name: '3 stars' }).querySelector('a')!)
+    expect(screen.getAllByRole('article')).toHaveLength(30)
+    fireEvent.click(screen.getByRole('button', { name: 'Show more' }))
+    expect(screen.getAllByRole('article')).toHaveLength(31)
     fireEvent.click(screen.getByRole('button', { name: 'Class' }))
     fireEvent.click(screen.getByRole('option', { name: 'Sniper' }).querySelector('a')!)
-    expect(within(screen.getByRole('region', { name: '3 stars and below' })).getAllByRole('article')).toHaveLength(30)
+    expect(screen.getAllByRole('article')).toHaveLength(30)
     fireEvent.click(screen.getByRole('button', { name: 'Reset filters' }))
-    expect(within(screen.getByRole('region', { name: '4 stars and above' })).getAllByRole('article')).toHaveLength(30)
-    expect(screen.queryByRole('region', { name: '3 stars and below' })).toBeNull()
-    expect(screen.getByRole('button', { name: 'Rarity' }).textContent).toBe('Default')
+    expect(screen.getAllByRole('article')).toHaveLength(30)
+    expect(screen.getByRole('button', { name: 'Rarity' }).textContent).toBe('4+ stars')
   })
 })
 

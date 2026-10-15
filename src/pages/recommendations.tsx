@@ -70,13 +70,6 @@ export const RecommendationsPage = () => {
         .map(({ item }) => item),
     [searchable, role, rarity, query],
   )
-  const groups = useMemo(
-    () => [
-      { id: 'higher', items: recommendations.filter((item) => item.operator.rarity > 3) },
-      { id: 'lower', items: recommendations.filter((item) => item.operator.rarity <= 3) },
-    ],
-    [recommendations],
-  )
   const stages = useMemo(
     () =>
       data?.stages.filter(
@@ -213,7 +206,7 @@ export const RecommendationsPage = () => {
           </div>
         </aside>
         <section className="min-w-0" aria-label={t.title} aria-busy={isValidating}>
-          <div className="recommendations-toolbar grid grid-cols-2 sm:grid-cols-[minmax(0,1fr)_8rem_7rem] gap-3 p-4 mb-4 items-end">
+          <div className="recommendations-toolbar grid grid-cols-2 sm:grid-cols-[minmax(0,1fr)_8rem_8rem] gap-3 p-4 mb-4 items-end">
             <div className="col-span-2 sm:col-span-1 min-w-0">
               <Filter label={t.search}>
                 <InputGroup
@@ -237,7 +230,10 @@ export const RecommendationsPage = () => {
             </Filter>
             <Filter label={t.rarity}>
               <FilterSelect
-                items={[{ id: '', name: t.default }, ...RARITIES.map((id) => ({ id, name: id }))]}
+                items={[
+                  { id: '', name: t.four_stars_and_above },
+                  ...RARITIES.map((id) => ({ id, name: t.stars({ count: Number(id) }) })),
+                ]}
                 value={rarity}
                 onChange={(value) => patch('rarity', value)}
                 label={t.rarity}
@@ -275,19 +271,7 @@ export const RecommendationsPage = () => {
               {recommendations.length === 0 ? (
                 <Callout title={t.empty}>{t.empty_help}</Callout>
               ) : (
-                <div className="space-y-7">
-                  {groups
-                    .filter((group) => group.items.length > 0)
-                    .map((group) => (
-                      <RecommendationGroup
-                        key={group.id}
-                        title={group.id === 'higher' ? t.four_stars_and_above : t.three_stars_and_below}
-                        items={group.items}
-                        filterKey={filterKey}
-                        stageNames={stageNames}
-                      />
-                    ))}
-                </div>
+                <RecommendationList items={recommendations} filterKey={filterKey} stageNames={stageNames} />
               )}
               <p className="text-xs text-zinc-500 dark:text-slate-400 mt-5">
                 {t.updated({ time: data.generatedAt.replace('T', ' ').slice(0, 19) })}
@@ -424,30 +408,21 @@ const FilterSelect = ({
   )
 }
 
-const RecommendationGroup = ({
-  title,
+const RecommendationList = ({
   items,
   filterKey,
   stageNames,
 }: {
-  title: string
   items: OperatorRecommendation[]
   filterKey: string
   stageNames: Map<string, string>
 }) => {
   const t = useTranslation().pages.recommendations
-  const headingId = useId()
   const [pagination, setPagination] = useState({ key: filterKey, visible: 30 })
   const visible = pagination.key === filterKey ? pagination.visible : 30
   if (pagination.key !== filterKey) setPagination({ key: filterKey, visible: 30 })
   return (
-    <section aria-labelledby={headingId}>
-      <div className="flex flex-wrap items-center gap-3 mb-3">
-        <h2 id={headingId} className="text-base font-semibold break-words">
-          {title}
-        </h2>
-        <span className="recommendations-count text-xs tabular-nums">{t.results({ count: items.length })}</span>
-      </div>
+    <div>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
         {items.slice(0, visible).map((item) => (
           <RecommendationRow key={item.operator.id} item={item} stageNames={stageNames} />
@@ -463,7 +438,7 @@ const RecommendationGroup = ({
           {t.show_more}
         </Button>
       )}
-    </section>
+    </div>
   )
 }
 

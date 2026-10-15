@@ -55,13 +55,6 @@
   border-radius: 10px;
 }
 
-.recommendations-count {
-  padding: 3px 9px;
-  border-radius: 6px;
-  background: var(--recommendations-accent-soft);
-  color: var(--recommendations-accent);
-}
-
 /* Scope Blueprint overrides to this page and its portaled filter menus. */
 #recommendations .bp6-button,
 #recommendations .bp6-input,
