@@ -120,6 +120,24 @@ describe('recommendation filters', () => {
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ stageId: undefined }))
   })
 
+  it('excludes stages without matching category and activity metadata from parent filters', async () => {
+    mock.useRecommendations.mockReturnValue({
+      data: {
+        ...data,
+        stages: [
+          { id: 's1', name: '1-7', category: '主题曲', activity: '第一章' },
+          { id: 'no-category', name: 'Missing category', activity: '第一章' },
+          { id: 'no-activity', name: 'Missing activity', category: '主题曲' },
+          { id: 'no-metadata', name: 'Missing metadata' },
+        ],
+      },
+    })
+    mount('/recommendations?category=主题曲&activity=第一章')
+    fireEvent.click(screen.getByLabelText('Stage'))
+    await screen.findByRole('option', { name: /1-7/ })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(1)
+  })
+
   it('restores selected labels and preserves unavailable URL selections until cleared', () => {
     mount('/recommendations?activity=第一章&stageId=missing-stage')
     expect(screen.getByLabelText('Event or chapter').textContent).toBe('第一章')

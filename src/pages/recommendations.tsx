@@ -79,8 +79,8 @@ export const RecommendationsPage = () => {
     () =>
       data?.stages.filter(
         (stage) =>
-          (!params.category || !stage.category || stage.category === params.category) &&
-          (!params.activity || !stage.activity || stage.activity === params.activity),
+          (!params.category || stage.category === params.category) &&
+          (!params.activity || stage.activity === params.activity),
       ) ?? [],
     [data?.stages, params.category, params.activity],
   )
