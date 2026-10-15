@@ -54,7 +54,7 @@ function pageResponse(ids: number[], { page, limit }: Query) {
   }
 }
 
-function openEditor(ids: number[]) {
+function openEditor(ids: number[], isOpen = true) {
   const operationSet = {
     id: 1,
     name: 'My collection',
@@ -76,9 +76,19 @@ function openEditor(ids: number[]) {
       },
       children,
     )
-  return render(createElement(OperationSetEditorDialog, { isOpen: true, operationSet, onClose: vi.fn() }), {
+  const editor = (copilotIds: number[], open: boolean) =>
+    createElement(OperationSetEditorDialog, {
+      isOpen: open,
+      operationSet: { ...operationSet, copilotIds },
+      onClose: vi.fn(),
+    })
+  const result = render(editor(ids, isOpen), {
     wrapper,
   })
+  return {
+    ...result,
+    refreshMembership: (copilotIds: number[]) => result.rerender(editor(copilotIds, true)),
+  }
 }
 
 async function save() {
@@ -96,6 +106,35 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('operation set membership editing', () => {
+  it('does not request job details for a closed dialog', async () => {
+    api.query.mockImplementation((query: Query) => Promise.resolve(pageResponse(query.copilotIds, query)))
+    openEditor(
+      Array.from({ length: 60 }, (_, index) => index + 1),
+      false,
+    )
+
+    await act(async () => undefined)
+    expect(api.query).not.toHaveBeenCalled()
+  })
+
+  it.each([{ ids: [2, 3, 4] }, { ids: [2, 3, 4, 5] }])(
+    'uses refreshed membership $ids without losing local edits',
+    async ({ ids: refreshedIds }) => {
+      api.query.mockImplementation((query: Query) => Promise.resolve(pageResponse(query.copilotIds, query)))
+      const editor = openEditor([1, 2, 3])
+      await screen.findByText('Job 1')
+      fireEvent.click(
+        screen.getByRole('button', { name: i18n.components.operationSet.OperationSetEditor.reverse_list }),
+      )
+      fireEvent.click(screen.getByRole('checkbox', { name: /^2:/ }))
+
+      editor.refreshMembership(refreshedIds)
+      await screen.findByText('Job 4')
+
+      expect(await save()).toEqual([3, ...refreshedIds.filter((id) => id > 3)])
+    },
+  )
+
   it.each([50, 51, 60, 100])('loads all pages and preserves the original order of %s jobs', async (count) => {
     const ids = Array.from({ length: count }, (_, index) => index + 1)
     api.query.mockImplementation((query: Query) => Promise.resolve(pageResponse(ids, query)))

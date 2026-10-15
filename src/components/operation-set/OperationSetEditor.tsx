@@ -307,7 +307,14 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
   const { data: levels, isLoading: levelLoading, error: levelError } = useLevels()
 
   // Membership and ordering must not depend on which detail pages have loaded.
-  const [orderedIds, setOrderedIds] = useState(() => [...operationSet.copilotIds])
+  const [draftOrder, setDraftOrder] = useState(() => [...operationSet.copilotIds])
+  const orderedIds = useMemo(() => {
+    const currentIds = new Set(operationSet.copilotIds)
+    const retainedIds = draftOrder.filter((id) => currentIds.has(id))
+    const retained = new Set(retainedIds)
+    // Keep local ordering, discard removed members, and append newly added members.
+    return [...retainedIds, ...operationSet.copilotIds.filter((id) => !retained.has(id))]
+  }, [draftOrder, operationSet.copilotIds])
   const operationsById = useMemo(() => new Map(operations.map((operation) => [operation.id, operation])), [operations])
   const detailsLoading = !error && (!isReachingEnd || isValidating)
 
@@ -341,23 +348,22 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
     const { active, over } = event
 
     if (over && active.id !== over.id) {
-      setOrderedIds((items) => {
-        const oldIndex = items.indexOf(Number(active.id))
-        const newIndex = items.indexOf(Number(over.id))
-        if (oldIndex === -1 || newIndex === -1) return items
+      const oldIndex = orderedIds.indexOf(Number(active.id))
+      const newIndex = orderedIds.indexOf(Number(over.id))
+      if (oldIndex === -1 || newIndex === -1) return
 
-        return arrayMove(items, oldIndex, newIndex)
-      })
+      setDraftOrder(arrayMove(orderedIds, oldIndex, newIndex))
     }
   }
 
   const sort = (type: 'title' | 'level' | 'id' | 'reverse') => {
     const levelCache: Record<string, Level | undefined> = {}
-    setOrderedIds((items) => {
-      if (type === 'reverse') {
-        return [...items].reverse()
-      }
-      return [...items].sort((aId, bId) => {
+    if (type === 'reverse') {
+      setDraftOrder([...orderedIds].reverse())
+      return
+    }
+    setDraftOrder(
+      [...orderedIds].sort((aId, bId) => {
         if (type === 'id') return aId - bId
         const a = operationsById.get(aId)
         const b = operationsById.get(bId)
@@ -387,8 +393,8 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
           }
         }
         return aId - bId
-      })
-    })
+      }),
+    )
   }
 
   return (
