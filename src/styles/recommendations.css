@@ -383,7 +383,6 @@ body .recommendations-popover .recommendations-menu {
 body .recommendations-popover-options .recommendations-menu {
   width: max-content;
   max-width: 100%;
-  scrollbar-gutter: stable;
 }
 
 body .recommendations-popover .bp6-menu:not(:first-child) {
