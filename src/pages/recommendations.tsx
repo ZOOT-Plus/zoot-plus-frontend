@@ -12,6 +12,8 @@ import { OperatorRecommendation, TrainingBranch, recommendationParams } from 'mo
 import 'styles/recommendations.css'
 
 const ROLES = ['Pioneer', 'Warrior', 'Tank', 'Sniper', 'Caster', 'Medic', 'Support', 'Special'] as const
+const RARITIES = ['1', '2', '3', '4', '5', '6'] as const
+const MIN_BRANCH_USAGE_SHARE = 0.005
 const percent = (value: number) => Math.round(value * 100)
 
 export const RecommendationsPage = () => {
@@ -33,15 +35,15 @@ export const RecommendationsPage = () => {
           next.delete('activity')
           next.delete('stageId')
         }
-        if (key === 'activity' && value) next.delete('stageId')
+        if (key === 'activity' && value !== (previous.get('activity') ?? '')) next.delete('stageId')
         return next
       },
       { replace: true },
     )
   }
   const query = useDeferredValue(search.get('q')?.trim().toLowerCase() ?? '')
-  const role = search.get('role') ?? ''
-  const rarity = search.get('rarity') ?? ''
+  const role = ROLES.find((role) => role === search.get('role')) ?? ''
+  const rarity = RARITIES.find((rarity) => rarity === search.get('rarity')) ?? ''
   const searchable = useMemo(
     () =>
       data?.recommendations.map((item) => {
@@ -235,10 +237,7 @@ export const RecommendationsPage = () => {
             </Filter>
             <Filter label={t.rarity}>
               <FilterSelect
-                items={[
-                  { id: '', name: t.default },
-                  ...[1, 2, 3, 4, 5, 6].map((rarity) => ({ id: String(rarity), name: String(rarity) })),
-                ]}
+                items={[{ id: '', name: t.default }, ...RARITIES.map((id) => ({ id, name: id }))]}
                 value={rarity}
                 onChange={(value) => patch('rarity', value)}
                 label={t.rarity}
@@ -474,7 +473,7 @@ const RecommendationRow = memo(
     const t = translations.pages.recommendations
     const name = useLocalizedOperatorName(item.operator.name)
     const [expanded, setExpanded] = useState(false)
-    const branches = item.branches.filter((branch) => percent(branch.usageShare) > 0)
+    const branches = item.branches.filter((branch) => branch.usageShare >= MIN_BRANCH_USAGE_SHARE)
     return (
       <article className="recommendations-card min-w-0" aria-label={name}>
         <div className="flex gap-3 items-center min-w-0 p-5 pb-4">

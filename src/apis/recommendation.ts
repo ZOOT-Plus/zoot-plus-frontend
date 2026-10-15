@@ -12,12 +12,15 @@ class RecommendationApi extends BaseAPI {
   }
 
   async get(params: RecommendationParams): Promise<RecommendationResult> {
-    const response = await this.request({
-      path: '/copilot/recommendations',
-      method: 'GET',
-      headers: {},
-      query: { ...params },
-    })
+    const response = await this.request(
+      {
+        path: '/copilot/recommendations',
+        method: 'GET',
+        headers: {},
+        query: { ...params },
+      },
+      { signal: AbortSignal.timeout(30_000) },
+    )
     const result = await new JSONApiResponse(response, (raw) => camelcaseKeys(raw, { deep: true })).value()
     return (result as { data: RecommendationResult }).data
   }

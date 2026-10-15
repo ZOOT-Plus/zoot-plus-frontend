@@ -79,6 +79,20 @@ describe('recommendation filters', () => {
     })
   })
 
+  it.each([
+    ['role=bad', 'All', 'Default'],
+    ['rarity=7', 'All', 'Default'],
+    ['rarity=6.0', 'All', 'Default'],
+    ['rarity=6%0A', 'All', 'Default'],
+    ['role=bad&rarity=6', 'All', '6'],
+    ['role=Sniper&rarity=NaN', 'Sniper', 'Default'],
+  ])('falls back for unsupported local URL filters: %s', (query, role, rarity) => {
+    mount(`/recommendations?${query}`)
+    expect(screen.getByRole('article', { name: 'Exusiai' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Class' }).textContent).toBe(role)
+    expect(screen.getByRole('button', { name: 'Rarity' }).textContent).toBe(rarity)
+  })
+
   it('restores filters and updates the server query when scope changes', () => {
     mount('/recommendations?scope=HISTORY&days=0')
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ scope: 'HISTORY', days: 0 }))
@@ -146,6 +160,22 @@ describe('recommendation filters', () => {
     expect(mock.useRecommendations).toHaveBeenLastCalledWith(
       expect.objectContaining({ activity: '第一章', stageId: undefined }),
     )
+  })
+
+  it('preserves the stage when the activity is unchanged and clears it when the activity is cleared', async () => {
+    mount('/recommendations?activity=第一章&stageId=s1')
+    fireEvent.click(screen.getByLabelText('Event or chapter'))
+    const option = await screen.findByRole('option', { name: '第一章' })
+    fireEvent.click(option.querySelector('a')!)
+    await waitFor(() => expect(screen.queryByRole('option', { name: '第一章' })).toBeNull())
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ activity: '第一章', stageId: 's1' }),
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Clear Event or chapter filter' }))
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ activity: undefined, stageId: undefined }),
+    )
+    expect(screen.queryByRole('button', { name: 'Clear Stage filter' })).toBeNull()
   })
 
   it('limits event and stage choices to their parent filters and clears incompatible selections', async () => {
@@ -292,6 +322,35 @@ describe('recommendation rarity groups', () => {
 })
 
 describe('recommendation evidence', () => {
+  it('hides branches below 0.5% usage and includes branches at the threshold', async () => {
+    const item = data.recommendations[0]
+    mock.useRecommendations.mockReturnValue({
+      data: {
+        ...data,
+        recommendations: [
+          {
+            ...item,
+            branches: [0, 0.004999, 0.005, 0.005001].map((usageShare, index) => ({
+              ...item.branches[0],
+              target: { ...item.branches[0].target, level: 20 + index * 10 },
+              usageShare,
+            })),
+          },
+        ],
+      },
+    })
+    mount()
+    expect(screen.getByText('E2 Lv.40')).toBeTruthy()
+    expect(screen.getByText('2 targets')).toBeTruthy()
+    const details = screen.getByRole('article').querySelector('details')!
+    details.open = true
+    fireEvent(details, new Event('toggle'))
+    await screen.findByText('E2 Lv.50')
+    expect(screen.getAllByText('E2 Lv.40')).toHaveLength(2)
+    expect(screen.queryByText('E2 Lv.20')).toBeNull()
+    expect(screen.queryByText('E2 Lv.30')).toBeNull()
+  })
+
   it('renders sources on expansion and retains the row while searching', async () => {
     mount()
     expect(screen.getAllByText(/Module unspecified/).length).toBeGreaterThan(0)
