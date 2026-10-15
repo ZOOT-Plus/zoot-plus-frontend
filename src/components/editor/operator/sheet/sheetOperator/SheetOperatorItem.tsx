@@ -65,7 +65,7 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
     const { skill, skillUsage, skillTimes, ...rest } = operator
     const formattedValue = {
       ...rest,
-      skill: skill || 1,
+      skill: skill ?? 1,
       skillUsage: skillUsage || 0,
       skillTimes: skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes ? skillTimes || 1 : undefined,
     }
