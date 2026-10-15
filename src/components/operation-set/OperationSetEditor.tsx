@@ -24,13 +24,13 @@ import {
 } from 'apis/operation-set'
 import clsx from 'clsx'
 import { UpdateCopilotSetRequest } from 'zoot-plus-client'
-import { Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { Ref, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Controller, UseFormSetError, useForm } from 'react-hook-form'
 
 import { FormField } from 'components/FormField'
 import { AppToaster } from 'components/Toaster'
 import { Sortable } from 'components/dnd'
-import { Level, Operation } from 'models/operation'
+import { Level } from 'models/operation'
 import { OperationSet } from 'models/operation-set'
 import { formatError } from 'utils/error'
 
@@ -300,16 +300,23 @@ interface OperationSelectorRef {
 
 function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps) {
   const t = useTranslation()
-  const { operations, error } = useOperations({
+  const { operations, error, isValidating, isReachingEnd, setSize } = useOperations({
     operationIds: operationSet.copilotIds,
+    revalidateFirstPage: false,
   })
   const { data: levels, isLoading: levelLoading, error: levelError } = useLevels()
 
-  const [renderedOperations, setRenderedOperations] = useState<Operation[]>([])
+  // Membership and ordering must not depend on which detail pages have loaded.
+  const [orderedIds, setOrderedIds] = useState(() => [...operationSet.copilotIds])
+  const operationsById = useMemo(() => new Map(operations.map((operation) => [operation.id, operation])), [operations])
+  const detailsLoading = !error && (!isReachingEnd || isValidating)
+
   useEffect(() => {
-    setRenderedOperations([...(operations ?? [])])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [operations.length])
+    if (!error && !isValidating && !isReachingEnd) {
+      // The API accepts at most 50 jobs per page, including queries by id.
+      void setSize((size) => size + 1).catch(() => undefined)
+    }
+  }, [error, isValidating, isReachingEnd, setSize])
 
   const [checkboxOverrides, setCheckboxOverrides] = useState({} as Record<number, boolean>)
 
@@ -322,15 +329,10 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
     selectorRef,
     () => ({
       getValues() {
-        const copilotIds: number[] = []
-        copilotIds.push(
-          ...renderedOperations.map(({ id }) => (checkboxOverrides[id] === false ? 0 : id)).filter((id) => !!id),
-        )
-
-        return { copilotIds }
+        return { copilotIds: orderedIds.filter((id) => checkboxOverrides[id] !== false) }
       },
     }),
-    [checkboxOverrides, renderedOperations],
+    [checkboxOverrides, orderedIds],
   )
 
   const sensors = useSensors(useSensor(PointerSensor))
@@ -338,10 +340,11 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
-    if (active.id !== over?.id) {
-      setRenderedOperations((items) => {
-        const oldIndex = items.findIndex((v) => v.id === active.id)
-        const newIndex = items.findIndex((v) => v.id === over?.id)
+    if (over && active.id !== over.id) {
+      setOrderedIds((items) => {
+        const oldIndex = items.indexOf(Number(active.id))
+        const newIndex = items.indexOf(Number(over.id))
+        if (oldIndex === -1 || newIndex === -1) return items
 
         return arrayMove(items, oldIndex, newIndex)
       })
@@ -350,11 +353,15 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
 
   const sort = (type: 'title' | 'level' | 'id' | 'reverse') => {
     const levelCache: Record<string, Level | undefined> = {}
-    setRenderedOperations((items) => {
+    setOrderedIds((items) => {
       if (type === 'reverse') {
         return [...items].reverse()
       }
-      return [...items].sort((a, b) => {
+      return [...items].sort((aId, bId) => {
+        if (type === 'id') return aId - bId
+        const a = operationsById.get(aId)
+        const b = operationsById.get(bId)
+        if (!a || !b) return a ? -1 : b ? 1 : 0
         if (type === 'title') {
           return a.parsedContent.doc.title.localeCompare(b.parsedContent.doc.title)
         } else if (type === 'level') {
@@ -379,7 +386,7 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
             return -1
           }
         }
-        return a.id - b.id
+        return aId - bId
       })
     })
   }
@@ -395,7 +402,7 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
           content={
             <Menu>
               <MenuItem
-                disabled={levelLoading}
+                disabled={levelLoading || detailsLoading || !!error}
                 icon="sort-alphabetical"
                 text={
                   t.components.operationSet.OperationSetEditor.sort_by_level +
@@ -408,6 +415,7 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
                 onClick={() => sort('level')}
               />
               <MenuItem
+                disabled={detailsLoading || !!error}
                 icon="sort-alphabetical"
                 text={t.components.operationSet.OperationSetEditor.sort_by_title}
                 onClick={() => sort('title')}
@@ -437,9 +445,15 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
         </Callout>
       )}
 
+      {detailsLoading && (
+        <Callout intent="primary" icon="time" className="mb-2">
+          {t.components.operationSet.OperationSetEditor.loading}
+        </Callout>
+      )}
+
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <SortableContext items={(renderedOperations ?? []).map(({ id }) => id)} strategy={verticalListSortingStrategy}>
-          {renderedOperations?.map(({ id, parsedContent }) => (
+        <SortableContext items={orderedIds} strategy={verticalListSortingStrategy}>
+          {orderedIds.map((id) => (
             <Sortable key={id} id={id}>
               {({ listeners, attributes }) => (
                 <div key={id} className="flex items-center hover:bg-slate-200 dark:hover:bg-slate-800">
@@ -464,7 +478,12 @@ function OperationSelector({ operationSet, selectorRef }: OperationSelectorProps
                     }}
                   >
                     <div className="tabular-nums text-slate-500">{id}:&nbsp;</div>
-                    <div className="truncate text-ellipsis">{parsedContent.doc.title}</div>
+                    <div className="truncate text-ellipsis">
+                      {operationsById.get(id)?.parsedContent.doc.title ??
+                        (detailsLoading
+                          ? t.components.operationSet.OperationSetEditor.loading
+                          : t.components.operationSet.OperationSetEditor.operation_unavailable)}
+                    </div>
                   </Checkbox>
                 </div>
               )}
