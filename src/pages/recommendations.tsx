@@ -21,7 +21,7 @@ export const RecommendationsPage = () => {
   const translations = useTranslation()
   const [search, setSearch] = useSearchParams()
   const params = recommendationParams(search)
-  const { data, error, isLoading, isValidating, mutate } = useRecommendations(params)
+  const { data, activities, error, isLoading, isValidating, mutate } = useRecommendations(params)
   const [filtersVisible, setFiltersVisible] = useState(false)
   const filterPanelId = useId()
   const patch = (key: string, value: string) => {
@@ -79,7 +79,7 @@ export const RecommendationsPage = () => {
       ) ?? [],
     [data?.stages, params.category, params.activity],
   )
-  const activities = useMemo(() => (data?.activities ?? []).map((name) => ({ id: name, name })), [data?.activities])
+  const activityItems = useMemo(() => (activities ?? []).map((name) => ({ id: name, name })), [activities])
   const stageNames = useMemo(() => new Map(data?.stages.map((stage) => [stage.id, stage.name])), [data?.stages])
   const filterKey = JSON.stringify([params, query, role, rarity])
 
@@ -151,7 +151,8 @@ export const RecommendationsPage = () => {
             </Filter>
             <Filter label={t.activity}>
               <FilterSelect
-                items={activities}
+                items={activityItems}
+                disabled={activities === undefined}
                 value={params.activity ?? ''}
                 onChange={(value) => patch('activity', value)}
                 placeholder={t.activity_search}
@@ -304,6 +305,7 @@ const FilterSelect = ({
   onChange,
   placeholder,
   label,
+  disabled,
   ...buttonProps
 }: {
   items: { id: string; name: string }[]
@@ -311,6 +313,7 @@ const FilterSelect = ({
   onChange: (value: string) => void
   placeholder?: string
   label: string
+  disabled?: boolean
   id?: string
   'aria-labelledby'?: string
 }) => {
@@ -324,6 +327,7 @@ const FilterSelect = ({
   return (
     <Select
       fill
+      disabled={disabled}
       className={`recommendations-select ${placeholder && value ? 'recommendations-select-clearable' : ''}`}
       filterable={!!placeholder}
       canReset={!!placeholder && !!value}
@@ -384,6 +388,7 @@ const FilterSelect = ({
       <Button
         {...buttonProps}
         fill
+        disabled={disabled}
         alignText="left"
         rightIcon="caret-down"
         title={selected?.name || value || t.all}

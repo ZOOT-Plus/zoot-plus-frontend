@@ -27,5 +27,14 @@ class RecommendationApi extends BaseAPI {
 }
 
 export function useRecommendations(params: RecommendationParams) {
-  return useSWR(['recommendations', params], () => new RecommendationApi().get(params), { keepPreviousData: true })
+  const response = useSWR(
+    ['recommendations', params],
+    async ([, query]) => ({ params: query, result: await new RecommendationApi().get(query) }),
+    { keepPreviousData: true },
+  )
+  return {
+    ...response,
+    data: response.data?.result,
+    activities: response.data?.params.category === params.category ? response.data?.result.activities : undefined,
+  }
 }

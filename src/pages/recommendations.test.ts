@@ -1,6 +1,7 @@
 import { createElement } from 'react'
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { MemoryRouter, useLocation } from 'react-router-dom'
+import { SWRConfig } from 'swr'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { recommendationParams, RecommendationResult } from '../models/recommendation'
@@ -56,16 +57,20 @@ const data: RecommendationResult = {
 
 const mount = (url = '/recommendations') =>
   render(createElement(MemoryRouter, { initialEntries: [url] }, createElement(RecommendationsPage)))
-afterEach(cleanup)
-beforeEach(() =>
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
+beforeEach(() => {
   mock.useRecommendations.mockReturnValue({
     data,
+    activities: data.activities,
     isLoading: false,
     isValidating: false,
     error: undefined,
     mutate: mock.retry,
-  }),
-)
+  })
+})
 
 describe('recommendation filters', () => {
   it('restores validated URL filters and ignores unsupported values', () => {
@@ -104,12 +109,83 @@ describe('recommendation filters', () => {
           { id: 'rune', name: 'Internal stage', category: '主题曲', activity: 'level_crisis_v2_03-01' },
         ],
       },
+      activities: ['第一章', '聚合活动'],
     })
     mount('/recommendations?category=主题曲')
     fireEvent.click(screen.getByLabelText('Event or chapter'))
     await screen.findByRole('option', { name: '聚合活动' })
     expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(2)
     expect(screen.queryByRole('option', { name: 'level_crisis_v2_03-01' })).toBeNull()
+  })
+
+  it('blocks stale activities until the new category response arrives without hiding previous results', async () => {
+    const { useRecommendations } =
+      await vi.importActual<typeof import('../apis/recommendation')>('../apis/recommendation')
+    mock.useRecommendations.mockImplementation(useRecommendations)
+    const response = (activities: string[]) =>
+      new Response(
+        JSON.stringify({ status_code: 200, data: { ...data, categories: ['主题曲', '活动关卡'], activities } }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+        },
+      )
+    let resolveCategory!: (response: Response) => void
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(response(['第一章']))
+      .mockImplementationOnce(() => new Promise<Response>((resolve) => (resolveCategory = resolve)))
+      .mockResolvedValue(response(['新活动']))
+    vi.stubGlobal('fetch', fetchMock)
+    const Location = () => createElement('output', { 'data-testid': 'location' }, useLocation().search)
+    render(
+      createElement(
+        SWRConfig,
+        { value: { provider: () => new Map(), shouldRetryOnError: false, revalidateOnFocus: false } },
+        createElement(
+          MemoryRouter,
+          { initialEntries: ['/recommendations?category=主题曲&activity=第一章&stageId=s1'] },
+          createElement(RecommendationsPage),
+          createElement(Location),
+        ),
+      ),
+    )
+    await waitFor(() => expect((screen.getByLabelText('Event or chapter') as HTMLButtonElement).disabled).toBe(false))
+    fireEvent.click(screen.getByLabelText('Event or chapter'))
+    await screen.findByRole('option', { name: '第一章' })
+    fireEvent.click(screen.getByRole('option', { name: '第一章' }).querySelector('a')!)
+    await waitFor(() => expect(screen.queryByRole('option', { name: '第一章' })).toBeNull())
+
+    fireEvent.click(screen.getByRole('button', { name: 'Stage category' }))
+    fireEvent.click(screen.getByRole('option', { name: '活动关卡' }).querySelector('a')!)
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
+    const activitySelect = screen.getByLabelText('Event or chapter') as HTMLButtonElement
+    expect(activitySelect.disabled).toBe(true)
+    fireEvent.click(activitySelect)
+    expect(screen.queryByRole('option', { name: '第一章' })).toBeNull()
+    expect(screen.queryByRole('combobox', { name: 'Search event or chapter names' })).toBeNull()
+    expect(screen.getByRole('article', { name: 'Exusiai' })).toBeTruthy()
+    expect(activitySelect.textContent).toBe('All')
+    let search = new URLSearchParams(screen.getByTestId('location').textContent!)
+    expect(search.get('category')).toBe('活动关卡')
+    expect(search.has('activity')).toBe(false)
+    expect(search.has('stageId')).toBe(false)
+
+    await act(async () => resolveCategory(response(['新活动'])))
+    await waitFor(() => expect(activitySelect.disabled).toBe(false))
+    fireEvent.click(activitySelect)
+    const option = await screen.findByRole('option', { name: '新活动' })
+    expect(screen.queryByRole('option', { name: '第一章' })).toBeNull()
+    fireEvent.click(option.querySelector('a')!)
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3))
+    search = new URLSearchParams(screen.getByTestId('location').textContent!)
+    expect(search.get('category')).toBe('活动关卡')
+    expect(search.get('activity')).toBe('新活动')
+    expect(
+      fetchMock.mock.calls.some(([url]) => {
+        const query = new URL(url as string).searchParams
+        return query.get('category') === '活动关卡' && query.get('activity') === '第一章'
+      }),
+    ).toBe(false)
   })
 
   it.each([
@@ -222,6 +298,7 @@ describe('recommendation filters', () => {
           { id: 's2', name: 'EV-1', category: '活动关卡', activity: '新活动' },
         ],
       },
+      activities: ['第一章', '新活动'],
     })
     mount('/recommendations?category=主题曲&activity=第一章&stageId=s1')
     fireEvent.click(screen.getByRole('button', { name: 'Stage category' }))
