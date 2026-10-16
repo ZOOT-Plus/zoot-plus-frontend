@@ -79,20 +79,7 @@ export const RecommendationsPage = () => {
       ) ?? [],
     [data?.stages, params.category, params.activity],
   )
-  const activities = useMemo(() => {
-    const names =
-      params.category && data?.stages.some((stage) => stage.category)
-        ? [
-            ...new Set(
-              data.stages
-                .filter((stage) => stage.category === params.category)
-                .map((stage) => stage.activity)
-                .filter((value): value is string => !!value),
-            ),
-          ].sort()
-        : (data?.activities ?? [])
-    return names.map((name) => ({ id: name, name }))
-  }, [data?.activities, data?.stages, params.category])
+  const activities = useMemo(() => (data?.activities ?? []).map((name) => ({ id: name, name })), [data?.activities])
   const stageNames = useMemo(() => new Map(data?.stages.map((stage) => [stage.id, stage.name])), [data?.stages])
   const filterKey = JSON.stringify([params, query, role, rarity])
 

@@ -4,6 +4,7 @@ export interface RecommendationParams {
   days: number
   scope: RecommendationScope
   coverage: number
+  minOperationCount: number
   stageId?: string
   category?: string
   activity?: string
@@ -71,10 +72,15 @@ export function recommendationParams(search: URLSearchParams): RecommendationPar
   const scope = search.get('scope')
   const days = Number(search.get('days') ?? (scope === 'HISTORY' ? 0 : 180))
   const coverage = Number(search.get('coverage') ?? 0.8)
+  const minOperationCount = Number(search.get('minOperationCount') ?? 5)
   return {
     scope: scope === 'PERMANENT' || scope === 'HISTORY' ? scope : 'RECENT',
     days: (scope === 'HISTORY' ? [0, 90, 180, 365] : [90, 180, 365]).includes(days) ? days : 180,
     coverage: [0.6, 0.8, 0.9].includes(coverage) ? coverage : 0.8,
+    minOperationCount:
+      Number.isInteger(minOperationCount) && minOperationCount >= 1 && minOperationCount <= 2_147_483_647
+        ? minOperationCount
+        : 5,
     stageId: search.get('stageId')?.slice(0, 200) || undefined,
     category: search.get('category')?.slice(0, 200) || undefined,
     activity: search.get('activity')?.slice(0, 200) || undefined,

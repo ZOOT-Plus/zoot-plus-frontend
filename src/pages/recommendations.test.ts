@@ -76,7 +76,40 @@ describe('recommendation filters', () => {
       scope: 'RECENT',
       days: 180,
       coverage: 0.8,
+      minOperationCount: 5,
     })
+  })
+
+  it('validates the minimum operation count and passes it to the server', () => {
+    for (const value of ['0', '-1', '1.5', 'bad', 'Infinity', '2147483648']) {
+      expect(recommendationParams(new URLSearchParams({ minOperationCount: value })).minOperationCount).toBe(5)
+    }
+    expect(recommendationParams(new URLSearchParams('minOperationCount=1')).minOperationCount).toBe(1)
+    mount('/recommendations?minOperationCount=10')
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(expect.objectContaining({ minOperationCount: 10 }))
+    fireEvent.click(screen.getByRole('button', { name: 'Use case' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Permanent stages' }).querySelector('a')!)
+    expect(mock.useRecommendations).toHaveBeenLastCalledWith(
+      expect.objectContaining({ scope: 'PERMANENT', minOperationCount: 10 }),
+    )
+  })
+
+  it('uses server-approved activities independently of the stage count threshold', async () => {
+    mock.useRecommendations.mockReturnValue({
+      data: {
+        ...data,
+        activities: ['第一章', '聚合活动'],
+        stages: [
+          { id: 's1', name: '1-7', category: '主题曲', activity: '第一章' },
+          { id: 'rune', name: 'Internal stage', category: '主题曲', activity: 'level_crisis_v2_03-01' },
+        ],
+      },
+    })
+    mount('/recommendations?category=主题曲')
+    fireEvent.click(screen.getByLabelText('Event or chapter'))
+    await screen.findByRole('option', { name: '聚合活动' })
+    expect(within(screen.getByRole('listbox')).getAllByRole('option')).toHaveLength(2)
+    expect(screen.queryByRole('option', { name: 'level_crisis_v2_03-01' })).toBeNull()
   })
 
   it.each([
