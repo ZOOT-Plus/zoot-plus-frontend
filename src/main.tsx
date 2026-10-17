@@ -73,6 +73,9 @@ clearOutdatedSwrCache()
 // 图标注册表，但本仓库多处图标名是数据驱动（icon={icon}/{type.icon}），静态注册脆弱，
 // 取舍后选择当前的「按尺寸懒加载」方案。
 
+const RecommendationsPageLazy = withSuspensable(
+  lazy(() => import('./pages/recommendations').then((m) => ({ default: m.RecommendationsPage }))),
+)
 const CreatePageLazy = withSuspensable(lazy(() => import('./pages/create').then((m) => ({ default: m.CreatePage }))))
 const EditorPageLazy = withSuspensable(lazy(() => import('./pages/editor').then((m) => ({ default: m.EditorPage }))))
 const AboutPageLazy = withSuspensable(lazy(() => import('./pages/about').then((m) => ({ default: m.AboutPage }))))
@@ -84,6 +87,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AppLayout>
         <Routes>
           <Route path="/" element={<IndexPage />} />
+          <Route path="/recommendations" element={<RecommendationsPageLazy />} />
           <Route path="/create/:id" element={<CreatePageLazy />} />
           <Route path="/create" element={<CreatePageLazy />} />
           <Route path="/about" element={<AboutPageLazy />} />
