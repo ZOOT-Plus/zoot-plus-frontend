@@ -257,8 +257,12 @@ const OperatorTags = ({ operation }: { operation: Operation }) => {
           className="mr-2 last:mr-0 mb-1 last:mb-0"
           placement="top"
           content={
-            opers?.map(({ name, skill }) => `${getLocalizedOperatorName(name, language)} ${skill ?? 1}`).join(', ') ||
-            t.components.OperationCard.no_operators
+            opers
+              ?.map(
+                ({ name, skill }) =>
+                  `${getLocalizedOperatorName(name, language)}${skill === 0 ? '' : ' ' + (skill ?? 1)}`,
+              )
+              .join(', ') || t.components.OperationCard.no_operators
           }
         >
           <Tag>[{name}]</Tag>
