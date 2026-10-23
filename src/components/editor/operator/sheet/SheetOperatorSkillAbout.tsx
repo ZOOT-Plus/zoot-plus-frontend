@@ -44,7 +44,7 @@ export const SkillAboutTrigger = ({ operator, onSkillChange }: SkillAboutProps) 
         onSkillChange?.({
           ...operator!,
           ...{
-            skill: skill || 1,
+            skill: skill ?? 1,
             skillUsage: skillUsage || 0,
             skillTimes: needSkillTime ? skillTimes || 1 : undefined,
           },
