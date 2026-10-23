@@ -22,6 +22,11 @@ export const NAV_CONFIG = [
     icon: <Icon icon="annotation" />,
   },
   {
+    to: '/recommendations',
+    labelKey: i18nDefer.links.recommendations,
+    icon: <Icon icon="trending-up" />,
+  },
+  {
     to: '/about',
     labelKey: i18nDefer.links.about,
     icon: <Icon icon="info-sign" />,
