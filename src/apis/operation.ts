@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash-es'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'zoot-plus-client'
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
@@ -49,6 +50,9 @@ export function useOperations({
   suspense,
   revalidateFirstPage,
 }: UseOperationsParams) {
+  const [loadRequest, setLoadRequest] = useState<{ automatic: boolean; scheduled: boolean }>()
+  const loadPending = useRef(false)
+  const startedRequest = useRef<typeof loadRequest>()
   const {
     error,
     data: pages,
@@ -114,13 +118,10 @@ export function useOperations({
         requireData: true,
       }).queriesCopilot(req)
 
-      let parsedOperations: Operation[] = res.data.data.map((operation) => ({
+      const parsedOperations: Operation[] = res.data.data.map((operation) => ({
         ...operation,
         parsedContent: toCopilotOperation(operation),
       }))
-
-      // 如果 revalidateFirstPage=false，从第二页开始可能会有重复数据，需要去重
-      parsedOperations = uniqBy(parsedOperations, (o) => o.id)
 
       return {
         ...res.data,
@@ -130,14 +131,39 @@ export function useOperations({
     {
       suspense,
       focusThrottleInterval: 1000 * 60 * 30,
-      revalidateFirstPage,
+      revalidateFirstPage: loadRequest?.automatic ? false : revalidateFirstPage,
     },
   )
+
+  const loadMore = useCallback((automatic = false) => {
+    if (loadPending.current) return false
+    loadPending.current = true
+    setLoadRequest({ automatic, scheduled: false })
+    return true
+  }, [])
+
+  useEffect(() => {
+    if (!loadRequest || loadRequest.scheduled || startedRequest.current === loadRequest) return
+    startedRequest.current = loadRequest
+
+    void setSize((size) => size + 1)
+      .catch(() => undefined)
+      .then(() => {
+        setLoadRequest((current) => (current === loadRequest ? { ...current, scheduled: true } : current))
+      })
+  }, [loadRequest, setSize])
+
+  useEffect(() => {
+    if (loadRequest?.scheduled && !isValidating) {
+      loadPending.current = false
+      setLoadRequest(undefined)
+    }
+  }, [loadRequest, isValidating])
 
   const isReachingEnd = !!pages?.some((page) => !page.hasNext)
   const total = pages?.[0]?.total ?? 0
 
-  const _operations = pages?.map((page) => page.data).flat() ?? []
+  const _operations = uniqBy(pages?.flatMap((page) => page.data) ?? [], (operation) => operation.id)
 
   // 按 operationIds 的顺序排序
   const operations = operationIds?.length
@@ -149,6 +175,8 @@ export function useOperations({
     operations,
     total,
     setSize,
+    loadMore,
+    isLoadingMore: !!loadRequest,
     isValidating,
     isReachingEnd,
   }

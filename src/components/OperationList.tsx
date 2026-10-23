@@ -14,6 +14,8 @@ import { withSuspensable } from './Suspensable'
 import { AddToOperationSetButton } from './operation-set/AddToOperationSet'
 import { OperationsData } from 'apis/operation'
 
+const MAX_AUTO_LOAD_COUNT = 5
+
 interface OperationListProps extends UseOperationsParams {
   multiselect?: boolean
   onUpdate?: (params: { total: number }) => void
@@ -28,7 +30,14 @@ export const OperationList: ComponentType<OperationListProps> = withSuspensable(
     })
 
     return (
-      <OperationListView multiselect={multiselect} onUpdate={onUpdate} operatorMatcher={operatorMatcher} data={data} />
+      <OperationListView
+        multiselect={multiselect}
+        onUpdate={onUpdate}
+        operatorMatcher={operatorMatcher}
+        data={data}
+        limit={params.limit}
+        queryKey={JSON.stringify(params)}
+      />
     )
   },
   {
@@ -41,16 +50,20 @@ export function OperationListView({
   onUpdate,
   operatorMatcher,
   data,
+  limit = 50,
+  queryKey,
 }: {
   multiselect?: boolean
   onUpdate?: (params: { total: number }) => void
   operatorMatcher?: OperatorMatcherFilter
   data: OperationsData
+  limit?: number
+  queryKey?: string
 }) {
   const t = useTranslation()
   const neoLayout = useAtomValue(neoLayoutAtom)
 
-  const { operations, total, setSize, isValidating, isReachingEnd } = data
+  const { operations, total, loadMore, isLoadingMore, isValidating, isReachingEnd, error } = data
 
   // make TS happy: we got Suspense out there
   if (!operations) throw new Error('unreachable')
@@ -70,6 +83,7 @@ export function OperationListView({
         : resolvedOperations,
     [operatorMatcher, resolvedOperations],
   )
+  const visibleTarget = useRef(limit)
   const autoLoadCount = useRef(0)
 
   useEffect(() => {
@@ -77,23 +91,35 @@ export function OperationListView({
   }, [total, onUpdate])
 
   useEffect(() => {
+    visibleTarget.current = limit
     autoLoadCount.current = 0
-  }, [operatorMatcher])
+  }, [operatorMatcher, queryKey, limit])
 
   useEffect(() => {
     if (
       !operatorMatcher ||
-      visibleOperations.length > 0 ||
+      visibleOperations.length >= visibleTarget.current ||
       isReachingEnd ||
       isValidating ||
-      autoLoadCount.current >= 2
+      isLoadingMore ||
+      autoLoadCount.current >= MAX_AUTO_LOAD_COUNT ||
+      error
     ) {
       return
     }
 
-    autoLoadCount.current += 1
-    void setSize((size) => size + 1)
-  }, [isReachingEnd, isValidating, operatorMatcher, setSize, visibleOperations.length])
+    if (loadMore(true)) autoLoadCount.current += 1
+  }, [
+    error,
+    isReachingEnd,
+    isValidating,
+    isLoadingMore,
+    operatorMatcher,
+    queryKey,
+    limit,
+    loadMore,
+    visibleOperations.length,
+  ])
 
   const [selectedOperations, setSelectedOperations] = useState<Operation[]>([])
   const updateSelection = (add: Operation[], remove: Operation[]) => {
@@ -213,13 +239,17 @@ export function OperationListView({
 
       {!isReachingEnd && (
         <Button
-          loading={isValidating}
+          loading={isValidating || isLoadingMore}
           text={t.components.OperationList.load_more}
           icon="more"
           className="mt-2"
           large
           fill
-          onClick={() => setSize((size) => size + 1)}
+          onClick={() => {
+            visibleTarget.current = visibleOperations.length + limit
+            autoLoadCount.current = 0
+            loadMore()
+          }}
         />
       )}
     </>
