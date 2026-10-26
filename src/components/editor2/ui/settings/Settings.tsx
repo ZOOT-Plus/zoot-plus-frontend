@@ -36,6 +36,11 @@ export const Settings = (props: SettingsProps) => {
               label={t.components.editor2.Settings.show_errors_by_default}
               onChange={(e) => setConfig({ showErrorsByDefault: e.currentTarget.checked })}
             />
+            <Switch
+              checked={config.legacyUI}
+              label={t.components.editor2.Settings.legacy_ui}
+              onChange={(e) => setConfig({ legacyUI: e.currentTarget.checked })}
+            />
           </FormGroup>
           <FormGroup label={t.components.editor2.Settings.operator_presets}>
             <OperatorPresetSettings />
