@@ -401,6 +401,20 @@
       ]
     },
     {
+      "id": "char_4245_alga",
+      "prof": "WARRIOR",
+      "subProf": "instructor",
+      "name_en": "Ольга",
+      "name": "奥尔佳",
+      "alias": "aoerjia yuerjia aej yej 奧爾佳",
+      "rarity": 5,
+      "alt_name": "Ольга",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
       "id": "char_346_aosta",
       "prof": "SNIPER",
       "subProf": "reaperrange",
@@ -1215,6 +1229,16 @@
       ]
     },
     {
+      "id": "char_4244_tocka",
+      "prof": "SUPPORT",
+      "subProf": "supportiveranger",
+      "name_en": "Тоска",
+      "name": "冻河",
+      "alias": "donghe dh 凍河",
+      "rarity": 6,
+      "alt_name": "Тоска"
+    },
+    {
       "id": "char_4208_wintim",
       "prof": "PIONEER",
       "subProf": "agent",
@@ -1664,6 +1688,20 @@
       ]
     },
     {
+      "id": "char_4246_dminon",
+      "prof": "SPECIAL",
+      "subProf": "stalker",
+      "name_en": "Территория",
+      "name": "国度",
+      "alias": "guodu guoduo gd 國度",
+      "rarity": 6,
+      "alt_name": "Территория",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
       "id": "char_394_hadiya",
       "prof": "WARRIOR",
       "subProf": "mercenary",
@@ -1769,7 +1807,8 @@
       "modules": [
         "",
         "X",
-        "Y"
+        "Y",
+        "A"
       ]
     },
     {
@@ -2483,6 +2522,20 @@
       ]
     },
     {
+      "id": "char_4169_caledo",
+      "prof": "TANK",
+      "subProf": "primprotector",
+      "name_en": "Caleido",
+      "name": "镜匠",
+      "alias": "jingjiang jj 鏡匠",
+      "rarity": 5,
+      "alt_name": "Caleido",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
       "id": "char_306_leizi",
       "prof": "CASTER",
       "subProf": "chain",
@@ -3151,7 +3204,11 @@
       "name": "凛御银灰",
       "alias": "linyuyinhui lyyh 凜禦銀灰",
       "rarity": 6,
-      "alt_name": "SilverAsh the Reignfrost"
+      "alt_name": "SilverAsh the Reignfrost",
+      "modules": [
+        "",
+        "X"
+      ]
     },
     {
       "id": "char_2023_ling",
@@ -3716,7 +3773,8 @@
       "modules": [
         "",
         "X",
-        "Y"
+        "Y",
+        "D"
       ]
     },
     {
@@ -4967,7 +5025,11 @@
       "name": "松桐",
       "alias": "songtong st 鬆桐",
       "rarity": 5,
-      "alt_name": "Matsukiri"
+      "alt_name": "Matsukiri",
+      "modules": [
+        "",
+        "X"
+      ]
     },
     {
       "id": "char_279_excu",
@@ -5018,6 +5080,7 @@
       "alt_name": "Astgenne the Lightchaser",
       "modules": [
         "",
+        "X",
         "Y"
       ]
     },
@@ -5091,6 +5154,16 @@
         "",
         "X"
       ]
+    },
+    {
+      "id": "char_4247_oxi",
+      "prof": "WARRIOR",
+      "subProf": "primguard",
+      "name_en": "Talulah",
+      "name": "塔露拉",
+      "alias": "talula taloula tll 塔露拉",
+      "rarity": 6,
+      "alt_name": "Talulah"
     },
     {
       "id": "char_4077_palico",
@@ -5763,6 +5836,16 @@
         "",
         "Y"
       ]
+    },
+    {
+      "id": "char_4170_hdbell",
+      "prof": "SPECIAL",
+      "subProf": "dispatcher",
+      "name_en": "Herdbells",
+      "name": "行铃",
+      "alias": "xingling hangling hengling xl hl 行鈴",
+      "rarity": 4,
+      "alt_name": "Herdbells"
     },
     {
       "id": "char_4105_almond",
@@ -7455,6 +7538,11 @@
           "id": "skywalker",
           "name": "巡空者",
           "name_en": "Skyranger"
+        },
+        {
+          "id": "dispatcher",
+          "name": "调度者",
+          "name_en": "Dispatcher"
         }
       ]
     }
