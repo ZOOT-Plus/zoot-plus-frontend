@@ -176,7 +176,6 @@ export function useOperations({
     total,
     setSize,
     loadMore,
-    isLoadingMore: !!loadRequest,
     isValidating,
     isReachingEnd,
   }

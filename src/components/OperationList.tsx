@@ -63,7 +63,7 @@ export function OperationListView({
   const t = useTranslation()
   const neoLayout = useAtomValue(neoLayoutAtom)
 
-  const { operations, total, loadMore, isLoadingMore, isValidating, isReachingEnd, error } = data
+  const { operations, total, loadMore, isValidating, isReachingEnd, error } = data
 
   // make TS happy: we got Suspense out there
   if (!operations) throw new Error('unreachable')
@@ -101,7 +101,6 @@ export function OperationListView({
       visibleOperations.length >= visibleTarget.current ||
       isReachingEnd ||
       isValidating ||
-      isLoadingMore ||
       autoLoadCount.current >= MAX_AUTO_LOAD_COUNT ||
       error
     ) {
@@ -109,17 +108,7 @@ export function OperationListView({
     }
 
     if (loadMore(true)) autoLoadCount.current += 1
-  }, [
-    error,
-    isReachingEnd,
-    isValidating,
-    isLoadingMore,
-    operatorMatcher,
-    queryKey,
-    limit,
-    loadMore,
-    visibleOperations.length,
-  ])
+  }, [error, isReachingEnd, isValidating, operatorMatcher, limit, loadMore, visibleOperations])
 
   const [selectedOperations, setSelectedOperations] = useState<Operation[]>([])
   const updateSelection = (add: Operation[], remove: Operation[]) => {
@@ -239,7 +228,7 @@ export function OperationListView({
 
       {!isReachingEnd && (
         <Button
-          loading={isValidating || isLoadingMore}
+          loading={isValidating}
           text={t.components.OperationList.load_more}
           icon="more"
           className="mt-2"
