@@ -1,5 +1,5 @@
 import { uniqBy } from 'lodash-es'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'zoot-plus-client'
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
@@ -35,6 +35,12 @@ export interface UseOperationsParams {
   revalidateFirstPage?: boolean
 }
 
+interface OperationsPage {
+  data: Operation[]
+  hasNext: boolean
+  total: number
+}
+
 export function useOperations({
   limit = 50,
   orderBy,
@@ -50,9 +56,7 @@ export function useOperations({
   suspense,
   revalidateFirstPage,
 }: UseOperationsParams) {
-  const [loadRequest, setLoadRequest] = useState<{ automatic: boolean; scheduled: boolean }>()
-  const loadPending = useRef(false)
-  const startedRequest = useRef<typeof loadRequest>()
+  const automaticLoad = useRef(false)
   const {
     error,
     data: pages,
@@ -106,7 +110,10 @@ export function useOperations({
         } satisfies QueriesCopilotRequest,
       ]
     },
-    async ([, req]) => {
+    async ([, req]: [string, QueriesCopilotRequest]): Promise<OperationsPage> => {
+      if ((req.page ?? 1) === 1 && automaticLoad.current && pages?.[0]) {
+        return pages[0]
+      }
       // 如果指定了 id 列表，但是列表为空，就直接返回空数据。不然要是直接传空列表，就相当于没有这个参数，
       // 会导致后端返回所有数据
       if (req.copilotIds?.length === 0) {
@@ -131,34 +138,15 @@ export function useOperations({
     {
       suspense,
       focusThrottleInterval: 1000 * 60 * 30,
-      revalidateFirstPage: loadRequest?.automatic ? false : revalidateFirstPage,
+      revalidateFirstPage,
     },
   )
 
-  const loadMore = useCallback((automatic = false) => {
-    if (loadPending.current) return false
-    loadPending.current = true
-    setLoadRequest({ automatic, scheduled: false })
-    return true
-  }, [])
-
-  useEffect(() => {
-    if (!loadRequest || loadRequest.scheduled || startedRequest.current === loadRequest) return
-    startedRequest.current = loadRequest
-
+  const loadMore = useCallback(() => {
+    automaticLoad.current = true
     void setSize((size) => size + 1)
-      .catch(() => undefined)
-      .then(() => {
-        setLoadRequest((current) => (current === loadRequest ? { ...current, scheduled: true } : current))
-      })
-  }, [loadRequest, setSize])
-
-  useEffect(() => {
-    if (loadRequest?.scheduled && !isValidating) {
-      loadPending.current = false
-      setLoadRequest(undefined)
-    }
-  }, [loadRequest, isValidating])
+    automaticLoad.current = false
+  }, [setSize])
 
   const isReachingEnd = !!pages?.some((page) => !page.hasNext)
   const total = pages?.[0]?.total ?? 0

@@ -63,7 +63,7 @@ export function OperationListView({
   const t = useTranslation()
   const neoLayout = useAtomValue(neoLayoutAtom)
 
-  const { operations, total, loadMore, isValidating, isReachingEnd, error } = data
+  const { operations, total, setSize, loadMore, isValidating, isReachingEnd, error } = data
 
   // make TS happy: we got Suspense out there
   if (!operations) throw new Error('unreachable')
@@ -107,7 +107,8 @@ export function OperationListView({
       return
     }
 
-    if (loadMore(true)) autoLoadCount.current += 1
+    loadMore()
+    autoLoadCount.current += 1
   }, [error, isReachingEnd, isValidating, operatorMatcher, limit, loadMore, visibleOperations])
 
   const [selectedOperations, setSelectedOperations] = useState<Operation[]>([])
@@ -237,7 +238,7 @@ export function OperationListView({
           onClick={() => {
             visibleTarget.current = visibleOperations.length + limit
             autoLoadCount.current = 0
-            loadMore()
+            void setSize((size) => size + 1)
           }}
         />
       )}
