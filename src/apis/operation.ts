@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash-es'
+import { useCallback, useRef } from 'react'
 import { BanCommentsStatusEnum, CopilotSetStatus, QueriesCopilotRequest } from 'zoot-plus-client'
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRInfinite from 'swr/infinite'
@@ -34,6 +35,12 @@ export interface UseOperationsParams {
   revalidateFirstPage?: boolean
 }
 
+interface OperationsPage {
+  data: Operation[]
+  hasNext: boolean
+  total: number
+}
+
 export function useOperations({
   limit = 50,
   orderBy,
@@ -49,6 +56,7 @@ export function useOperations({
   suspense,
   revalidateFirstPage,
 }: UseOperationsParams) {
+  const automaticLoad = useRef(false)
   const {
     error,
     data: pages,
@@ -102,7 +110,10 @@ export function useOperations({
         } satisfies QueriesCopilotRequest,
       ]
     },
-    async ([, req]) => {
+    async ([, req]: [string, QueriesCopilotRequest]): Promise<OperationsPage> => {
+      if ((req.page ?? 1) === 1 && automaticLoad.current && pages?.[0]) {
+        return pages[0]
+      }
       // 如果指定了 id 列表，但是列表为空，就直接返回空数据。不然要是直接传空列表，就相当于没有这个参数，
       // 会导致后端返回所有数据
       if (req.copilotIds?.length === 0) {
@@ -114,13 +125,10 @@ export function useOperations({
         requireData: true,
       }).queriesCopilot(req)
 
-      let parsedOperations: Operation[] = res.data.data.map((operation) => ({
+      const parsedOperations: Operation[] = res.data.data.map((operation) => ({
         ...operation,
         parsedContent: toCopilotOperation(operation),
       }))
-
-      // 如果 revalidateFirstPage=false，从第二页开始可能会有重复数据，需要去重
-      parsedOperations = uniqBy(parsedOperations, (o) => o.id)
 
       return {
         ...res.data,
@@ -134,10 +142,16 @@ export function useOperations({
     },
   )
 
+  const loadMore = useCallback(() => {
+    automaticLoad.current = true
+    void setSize((size) => size + 1)
+    automaticLoad.current = false
+  }, [setSize])
+
   const isReachingEnd = !!pages?.some((page) => !page.hasNext)
   const total = pages?.[0]?.total ?? 0
 
-  const _operations = pages?.map((page) => page.data).flat() ?? []
+  const _operations = uniqBy(pages?.flatMap((page) => page.data) ?? [], (operation) => operation.id)
 
   // 按 operationIds 的顺序排序
   const operations = operationIds?.length
@@ -149,6 +163,7 @@ export function useOperations({
     operations,
     total,
     setSize,
+    loadMore,
     isValidating,
     isReachingEnd,
   }
