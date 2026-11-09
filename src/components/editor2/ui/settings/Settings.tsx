@@ -11,6 +11,8 @@ interface SettingsProps extends ButtonProps {}
 
 export const Settings = (props: SettingsProps) => {
   const [isOpen, setIsOpen] = useState(false)
+  // 历史框被清空时的本地空态：清空不写配置，重新聚焦时再显示真实值
+  const [historyLimitCleared, setHistoryLimitCleared] = useState(false)
   const [config, setConfig] = useAtom(editorAtoms.config)
   const t = useTranslation()
 
@@ -47,8 +49,18 @@ export const Settings = (props: SettingsProps) => {
             <NumericInput2
               intOnly
               clampValueOnBlur
-              value={config.historyLimit}
-              onValueChange={(value) => setConfig({ historyLimit: Math.max(value, 5) })}
+              // 清空时 NumericInput2 回调 NaN：Math.max(NaN, 5) 仍是 NaN 并会写进持久化配置，
+              // 而直接回填下限 5 又会让后续输入被拼接成 530 之类，所以清空只走本地空态
+              value={historyLimitCleared ? '' : config.historyLimit}
+              onFocus={() => setHistoryLimitCleared(false)}
+              onValueChange={(value) => {
+                if (Number.isNaN(value)) {
+                  setHistoryLimitCleared(true)
+                  return
+                }
+                setHistoryLimitCleared(false)
+                setConfig({ historyLimit: Math.max(value, 5) })
+              }}
               min={5}
               stepSize={5}
             />

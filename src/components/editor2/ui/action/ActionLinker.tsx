@@ -282,7 +282,8 @@ const ConditionNode: FC<ConditionNodeProps> = ({ title, unit, inputProps, index,
         onValueChange={(v) => {
           edit(() => {
             setAction((draft) => {
-              draft[conditionKey] = v
+              // 清空时回落为 0 而不是 undefined：条件节点按 !== undefined 渲染，置空会让整个节点消失、无法继续输入
+              draft[conditionKey] = Number.isNaN(v) ? 0 : v
             })
             return {
               action: `set-action-${conditionKey}`,

@@ -321,13 +321,16 @@ const OperatorSkillUsage: FC<{
                     min={1}
                     className="inline-flex"
                     inputClassName="!p-0 !w-8 text-center font-semibold"
-                    value={operator.skillTimes ?? 1}
+                    // 未设置时留空并用 placeholder 表达默认值 1：回填 1 会让清空后的输入被拼接成 12 之类
+                    value={operator.skillTimes ?? ''}
+                    placeholder="1"
                     wheelStepSize={1}
                     onValueChange={(v) => {
                       edit(() => {
                         onChange?.({
                           ...operator,
-                          skillTimes: v,
+                          // 清空时删除该字段，交由 UI 与 MAA 回落到默认次数 1，而不是写入 NaN
+                          skillTimes: Number.isNaN(v) ? undefined : v,
                         })
                         return {
                           action: 'set-operator-skillTimes',
