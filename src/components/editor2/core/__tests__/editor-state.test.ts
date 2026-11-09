@@ -3,7 +3,14 @@ import { atom, createStore } from 'jotai'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { createStoreWrapper } from '../../../../../tests/jotai'
-import { defaultEditorState, editorAtoms, useActiveState, type EditorGroup } from '../editor-state'
+import {
+  HISTORY_LIMIT_MIN,
+  defaultEditorState,
+  editorAtoms,
+  historyAtom,
+  useActiveState,
+  type EditorGroup,
+} from '../editor-state'
 
 afterEach(cleanup)
 
@@ -65,5 +72,18 @@ describe('editor atoms', () => {
     rerender()
     expect(result.current[0]).toBe(false)
     expect(store.get(activeIdAtom)).toBeUndefined()
+  })
+
+  it('normalizes a corrupted persisted history limit', () => {
+    const store = createStore()
+    // 旧版本把 NaN 写进过配置，JSON 往返后落在存储里就是 null
+    store.set(editorAtoms.config, { historyLimit: null as unknown as number })
+
+    expect(store.get(editorAtoms.config).historyLimit).toBe(HISTORY_LIMIT_MIN)
+    expect(store.get(historyAtom).limit).toBe(HISTORY_LIMIT_MIN)
+
+    store.set(editorAtoms.config, { historyLimit: 30 })
+    expect(store.get(editorAtoms.config).historyLimit).toBe(30)
+    expect(store.get(historyAtom).limit).toBe(30)
   })
 })

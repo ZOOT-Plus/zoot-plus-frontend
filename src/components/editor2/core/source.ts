@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es'
-import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { ZodError } from 'zod'
 
 import { i18n } from '../../../i18n/i18n'
@@ -63,9 +63,11 @@ export function useSourceEditorSync(workspaceRef: RefObject<SourceEditorSubmitte
   const edit = useEdit()
   const [syncState, setSyncState] = useState<'idle' | 'pending' | 'failed'>('idle')
   const latestTimeoutRef = useRef(timeout)
-  // 在渲染期同步最新值：timeout 变化时，上一个 effect 的 cleanup 会先于所有 effect 的 setup 执行，
-  // 若改在 effect 里赋值，cleanup 读到的还是旧 timeout，判断就反了
-  latestTimeoutRef.current = timeout
+  // 在 layout effect 中同步「已提交」的最新值：layout effect 的 setup 先于 passive effect 的 cleanup 执行，
+  // 因此 cleanup 能读到本次提交后的 timeout；若在渲染期赋值，被并发渲染中断的渲染可能留下未提交的值
+  useLayoutEffect(() => {
+    latestTimeoutRef.current = timeout
+  }, [timeout])
 
   const sync = useMemo(
     () =>

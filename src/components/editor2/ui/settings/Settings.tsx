@@ -11,35 +11,38 @@ interface SettingsProps extends ButtonProps {}
 
 export const Settings = (props: SettingsProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  // 历史框被清空时的本地空态：清空不写配置，重新聚焦时再显示真实值
-  const [historyLimitCleared, setHistoryLimitCleared] = useState(false)
+  // 编辑中的值只保存在本地，失焦或关窗时才写入配置：
+  // 逐键写入会把「想输 30 时的 3」这类中间值立即应用到 historyAtom，
+  // 若此时发生编辑，撤销记录会按这个临时上限被裁剪，中间值也可能被持久化
+  const [historyLimitDraft, setHistoryLimitDraft] = useState<number | ''>()
   const [config, setConfig] = useAtom(editorAtoms.config)
   const t = useTranslation()
 
-  // 清空态是编辑中间态，开关对话框时都要丢弃，否则下次打开显示的还是上一次的空框
-  const setOpen = (next: boolean) => {
-    setHistoryLimitCleared(false)
-    setIsOpen(next)
+  // 提交编辑中的值。清空是编辑中间态：不写配置，失焦后字段回显当前配置值
+  const commitHistoryLimit = () => {
+    // 点击失焦时 clampValueOnBlur 会以当前值再回调一次 onValueChange，
+    // 这里先丢弃草稿，避免那次回调把「未编辑」的当前值留在本地状态里
+    setHistoryLimitDraft(undefined)
+    if (historyLimitDraft === undefined || historyLimitDraft === '') return
+    // clampValueOnBlur 的夹取回调与本次渲染不在同一批，这里再兜一次下限
+    setConfig({ historyLimit: Math.max(historyLimitDraft, HISTORY_LIMIT_MIN) })
+  }
+
+  const openSettings = () => {
+    setHistoryLimitDraft(undefined)
+    setIsOpen(true)
+  }
+
+  const closeSettings = () => {
+    commitHistoryLimit()
+    setIsOpen(false)
   }
 
   return (
     <>
-      <Button icon="cog" {...props} onClick={() => setOpen(true)} title={t.components.editor2.Settings.title} />
+      <Button icon="cog" {...props} onClick={openSettings} title={t.components.editor2.Settings.title} />
 
-      <Dialog
-        isOpen={isOpen}
-        onClose={() => {
-          setOpen(false)
-          // 未失焦就关窗时等不到 clampValueOnBlur 的夹取回调，这里兜底回下限，
-          // 顺带修掉历史版本写坏并持久化成 null 的配置
-          const limit =
-            Number.isFinite(config.historyLimit) && config.historyLimit >= HISTORY_LIMIT_MIN
-              ? config.historyLimit
-              : HISTORY_LIMIT_MIN
-          if (limit !== config.historyLimit) setConfig({ historyLimit: limit })
-        }}
-        title={t.components.editor2.Settings.title}
-      >
+      <Dialog isOpen={isOpen} onClose={closeSettings} title={t.components.editor2.Settings.title}>
         <DialogBody>
           <FormGroup label={t.components.editor2.Settings.ui}>
             <Switch
@@ -68,21 +71,10 @@ export const Settings = (props: SettingsProps) => {
             <NumericInput2
               intOnly
               clampValueOnBlur
-              // 清空时 NumericInput2 回调 NaN：Math.max(NaN, 5) 仍是 NaN 并会写进持久化配置，
-              // 而直接回填下限 5 又会让后续输入被拼接成 530 之类，所以清空只走本地空态
-              value={historyLimitCleared ? '' : config.historyLimit}
-              onFocus={() => setHistoryLimitCleared(false)}
-              onValueChange={(value) => {
-                if (Number.isNaN(value)) {
-                  setHistoryLimitCleared(true)
-                  return
-                }
-                setHistoryLimitCleared(false)
-                // 输入过程中原样写入：提前夹到 5 会让受控值在敲第一个数字时就跳成 5，
-                // 后续数字被拼接，最终存下的和输入的不是同一个数。
-                // 下限由 clampValueOnBlur 在失焦时以夹取后的值再次回调来兜底
-                setConfig({ historyLimit: value })
-              }}
+              // 编辑期间只更新本地草稿，不写配置
+              value={historyLimitDraft ?? config.historyLimit}
+              onValueChange={(value) => setHistoryLimitDraft(Number.isNaN(value) ? '' : value)}
+              onBlur={commitHistoryLimit}
               min={HISTORY_LIMIT_MIN}
               stepSize={5}
             />

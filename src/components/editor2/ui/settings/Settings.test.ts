@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { getDefaultStore } from 'jotai'
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -21,16 +21,20 @@ const openSettings = (historyLimit: number) => {
 const closeSettings = () => fireEvent.click(screen.getByRole('button', { name: 'Close' }))
 
 describe('history limit input', () => {
-  it('keeps the value typed so far instead of clamping on every keystroke', () => {
+  it('keeps the typed value local until the field loses focus', () => {
     const { store, input } = openSettings(20)
 
     fireEvent.change(input, { target: { value: '1' } })
-    expect(store.get(editorAtoms.config).historyLimit).toBe(1)
     expect(input.value).toBe('1')
+    expect(store.get(editorAtoms.config).historyLimit).toBe(20)
 
-    fireEvent.change(input, { target: { value: `${input.value}2` } })
-    expect(store.get(editorAtoms.config).historyLimit).toBe(12)
-    expect(input.value).toBe('12')
+    fireEvent.change(input, { target: { value: '15' } })
+    expect(input.value).toBe('15')
+    expect(store.get(editorAtoms.config).historyLimit).toBe(20)
+
+    fireEvent.blur(input)
+    expect(input.value).toBe('15')
+    expect(store.get(editorAtoms.config).historyLimit).toBe(15)
   })
 
   it('enforces the minimum when the field loses focus', () => {
@@ -39,32 +43,27 @@ describe('history limit input', () => {
     fireEvent.change(input, { target: { value: '1' } })
     fireEvent.blur(input)
 
+    expect(input.value).toBe(String(HISTORY_LIMIT_MIN))
     expect(store.get(editorAtoms.config).historyLimit).toBe(HISTORY_LIMIT_MIN)
   })
 
-  it('does not write the cleared field into the config', () => {
+  it('does not write a cleared field into the config', () => {
     const { store, input } = openSettings(20)
 
     fireEvent.change(input, { target: { value: '' } })
-
     expect(input.value).toBe('')
+    expect(store.get(editorAtoms.config).historyLimit).toBe(20)
+
+    // 失焦后字段恢复显示当前配置值
+    fireEvent.blur(input)
+    expect(input.value).toBe('20')
     expect(store.get(editorAtoms.config).historyLimit).toBe(20)
   })
 
-  it('restores the minimum when the dialog closes without a blur', () => {
+  it('commits the drafted value when the dialog closes without a blur', () => {
     const { store, input } = openSettings(20)
 
     fireEvent.change(input, { target: { value: '1' } })
-    closeSettings()
-
-    expect(store.get(editorAtoms.config).historyLimit).toBe(HISTORY_LIMIT_MIN)
-  })
-
-  it('repairs a limit persisted by the version that wrote NaN', () => {
-    const { store } = openSettings(HISTORY_LIMIT_MIN)
-    // 旧版本把 NaN 写进过配置，JSON 往返后落在 localStorage 里就是 null
-    act(() => store.set(editorAtoms.config, { historyLimit: null as unknown as number }))
-
     closeSettings()
 
     expect(store.get(editorAtoms.config).historyLimit).toBe(HISTORY_LIMIT_MIN)
