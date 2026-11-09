@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es'
-import { RefObject, useEffect, useMemo, useState } from 'react'
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { ZodError } from 'zod'
 
 import { i18n } from '../../../i18n/i18n'
@@ -62,6 +62,10 @@ export function parseSourceText(text: string): {
 export function useSourceEditorSync(workspaceRef: RefObject<SourceEditorSubmitter | null>, timeout: number) {
   const edit = useEdit()
   const [syncState, setSyncState] = useState<'idle' | 'pending' | 'failed'>('idle')
+  const latestTimeoutRef = useRef(timeout)
+  // 在渲染期同步最新值：timeout 变化时，上一个 effect 的 cleanup 会先于所有 effect 的 setup 执行，
+  // 若改在 effect 里赋值，cleanup 读到的还是旧 timeout，判断就反了
+  latestTimeoutRef.current = timeout
 
   const sync = useMemo(
     () =>
@@ -92,9 +96,24 @@ export function useSourceEditorSync(workspaceRef: RefObject<SourceEditorSubmitte
 
   useEffect(() => {
     return () => {
-      sync.flush()
+      // 超时被改成 0 表示用户关掉了自动同步，此时排队中的这次同步要丢弃：
+      // flush 会把挂起的源码缓冲照样提交，等于关开关之后还改动作业。
+      // 仍启用时保持 flush，避免离开编辑器时丢掉最后一次改动。
+      if (latestTimeoutRef.current > 0) {
+        sync.flush()
+      } else {
+        sync.cancel()
+      }
     }
   }, [sync])
+
+  useEffect(() => {
+    // 上面 cancel 掉的挂起同步不会把状态推回 idle：关闭自动同步期间 syncState 会一直停在
+    // 'pending'，之后仅把超时调大而没有再编辑源码时，工具栏就渲染一个卡在满圈的倒计时
+    if (timeout <= 0) {
+      setSyncState('idle')
+    }
+  }, [timeout])
 
   const requestSync = () => {
     if (timeout > 0) {

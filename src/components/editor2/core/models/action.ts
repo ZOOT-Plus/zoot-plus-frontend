@@ -16,6 +16,30 @@ export function createAction(initialValues: SetRequired<Partial<Omit<EditorActio
   return action
 }
 
+/**
+ * 逐位编辑坐标元组（location / distance / rect 共用）。
+ *
+ * value 为 NaN 表示该位被清空；所有位都空时返回 undefined，由调用方删除整个字段。
+ * 未填的位统一归一化成 undefined：导入与序列化链路里 JSON 往返会把 undefined 变成 null，
+ * 只认 undefined 会留下 [undefined, null] 这种输入框显示为空、却因元组校验不过而无法导出的字段。
+ *
+ * 前置条件：index < size，且 T 是长度恰为 size 的固定元组（location/distance 传 2，rect 传 4）。
+ * 返回值的运行时长度由 size 保证，但 TS 无法从数组建出定长元组，故末位断言为 T。
+ */
+export function updateCoordinate<T extends (number | undefined | null)[]>(
+  tuple: T | undefined,
+  index: number,
+  value: number,
+  size: number,
+): T | undefined {
+  const next: (number | undefined)[] = Array.from(
+    { length: Math.max(tuple?.length ?? 0, size) },
+    (_, i) => tuple?.[i] ?? undefined,
+  )
+  next[index] = Number.isNaN(value) ? undefined : value
+  return next.every((axis) => axis === undefined) ? undefined : (next as unknown as T)
+}
+
 export function useActionDragEnd() {
   const edit = useEdit()
   return useAtomCallback(

@@ -181,6 +181,9 @@ interface OperatorPresetPerRarity {
   level: number
   elite: number
 }
+// 撤销记录的下限：输入框的 min、失焦夹取与关窗兜底都依据它
+export const HISTORY_LIMIT_MIN = 5
+
 const defaultConfig: EditorConfig = {
   showLinkerButtons: false,
   toggleSelectorPanel: true,
