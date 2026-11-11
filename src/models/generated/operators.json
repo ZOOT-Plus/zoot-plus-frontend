@@ -1,6 +1,20 @@
 {
   "OPERATORS": [
     {
+      "id": "char_618_acrbot",
+      "prof": "TANK",
+      "subProf": "unyield",
+      "name_en": "Rage Ironhide",
+      "name": "“暴躁铁皮”",
+      "alias": "baozaotiepi puzaotiepi bztp pztp “暴躁鐵皮” 暴躁鐵皮",
+      "rarity": 6,
+      "alt_name": "Rage Ironhide",
+      "modules": [
+        "",
+        "X"
+      ]
+    },
+    {
       "id": "token_10026_bgsnow_subbow",
       "prof": "TOKEN",
       "subProf": "notchar1",
