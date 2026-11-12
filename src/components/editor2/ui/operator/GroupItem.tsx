@@ -80,6 +80,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           content={
             <Menu>
               <MenuItem icon="star" text={t.components.editor2.GroupItem.add_to_favorites} onClick={addToFavorite} />
+              <RemoveFavoriteGroupMenuItem groupName={baseGroup.name} />
               <MenuItem
                 icon="arrow-left"
                 text={t.components.editor2.GroupItem.move_left}
@@ -251,6 +252,21 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
 })
 GroupItem.displayName = 'GroupItem'
 
+const RemoveFavoriteGroupMenuItem: FC<{ groupName: string }> = ({ groupName }) => {
+  const t = useTranslation()
+  const favGroups = useAtomValue(editorFavGroupsAtom)
+  const { removeFavoriteGroup } = useFavoriteGroupControls()
+  const matched = groupName ? favGroups.find((g) => g.name === groupName) : undefined
+  if (!matched) return null
+  return (
+    <MenuItem
+      icon="star-empty"
+      text={t.components.editor2.GroupItem.remove_from_favorites}
+      onClick={() => removeFavoriteGroup(matched.id)}
+    />
+  )
+}
+
 interface GroupItemProps {
   baseGroupAtom: PrimitiveAtom<BaseEditorGroup>
 }
@@ -258,6 +274,7 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
   const t = useTranslation()
   const edit = useEdit()
   const favGroups = useAtomValue(editorFavGroupsAtom)
+  const { removeFavoriteGroup } = useFavoriteGroupControls()
   const [baseGroup, setBaseGroup] = useAtom(baseGroupAtom)
   const id = baseGroup.id
   const applyFavoriteGroup = useApplyFavoriteGroup()
@@ -341,6 +358,23 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
               <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
                 <Icon icon="person" size={12} />
                 {item.opers?.length ?? 0}
+                <Button
+                  small
+                  minimal
+                  icon="trash"
+                  intent="danger"
+                  className="!p-0 min-h-5 min-w-5 ml-1"
+                  title={t.components.editor2.GroupItem.remove_from_favorites}
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    removeFavoriteGroup(item.id)
+                  }}
+                />
               </div>
             }
             onClick={handleClick}

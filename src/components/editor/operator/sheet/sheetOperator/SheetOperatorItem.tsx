@@ -33,20 +33,17 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
     .find(({ name: existedName }) => existedName === name)
   const selected = operatorNoneGroupedIndex !== -1
   const grouped = !!operatorInGroup
+  const favOper = favOperators.find(({ name: exsitedName }) => exsitedName === name)
+  const isFav = !!favOper
   const operator = existedOperators?.[operatorNoneGroupedIndex] ||
     operatorInGroup ||
-    favOperators.find(({ name: exsitedName }) => exsitedName === name) || {
+    favOper || {
       name,
     }
   const selectedInView = selected || grouped
 
-  const pinned = isEqual(
-    omit(operator, [...ignoreKeyDic]),
-    omit(
-      favOperators.find(({ name: exsitedName }) => exsitedName === name),
-      [...ignoreKeyDic],
-    ),
-  )
+  const pinned = isFav && isEqual(omit(operator, [...ignoreKeyDic]), omit(favOper, [...ignoreKeyDic]))
+  const showPinned = isFav && (!selected || pinned)
 
   const onOperatorSelect = () => {
     if (grouped)
@@ -73,8 +70,12 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
     submitOperatorInSheet(formattedValue)
   }
 
+  const removeFavOperator = () => {
+    setFavOperators([...favOperators].filter(({ name: existedName }) => existedName !== name))
+  }
+
   const onPinnedChange = () => {
-    if (pinned) setFavOperators([...favOperators].filter(({ name: existedName }) => existedName !== name))
+    if (pinned) removeFavOperator()
     else updateFavOperator()
   }
 
@@ -99,32 +100,42 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
           {useLocalizedOperatorName(name)}
         </p>
 
-        {selected && (
+        {(selected || isFav) && (
           <div className="absolute top-2 right-2" onClick={(e) => e.stopPropagation()} role="presentation">
-            {(() => {
-              const isFavDuplicate = favOperators.find(({ name: existedName }) => existedName === name)
-              return (
-                <PopoverNext
-                  content={
+            <PopoverNext
+              content={
+                showPinned ? (
+                  <Button minimal onClick={removeFavOperator}>
+                    <Icon icon="pin" className="-rotate-45" />
+                    <span>
+                      {t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.remove_from_favorites}
+                    </span>
+                  </Button>
+                ) : (
+                  <div className="flex flex-col items-start">
                     <Button minimal onClick={onPinnedChange}>
-                      <Icon icon={pinned ? 'pin' : 'warning-sign'} className={clsx(pinned && '-rotate-45')} />
+                      <Icon icon="warning-sign" />
                       <span>
-                        {pinned
-                          ? t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.remove_from_favorites
-                          : t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.will_replace_operator}
+                        {t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.will_replace_operator}
                       </span>
                     </Button>
-                  }
-                  disabled={!pinned && !isFavDuplicate}
-                >
-                  <Icon
-                    icon={pinned ? 'pin' : 'unpin'}
-                    className={clsx(pinned && '-rotate-45')}
-                    onClick={!pinned && !isFavDuplicate ? onPinnedChange : undefined}
-                  />
-                </PopoverNext>
-              )
-            })()}
+                    <Button minimal intent="danger" onClick={removeFavOperator}>
+                      <Icon icon="trash" />
+                      <span>
+                        {t.components.editor.operator.sheet.sheetOperator.SheetOperatorItem.remove_from_favorites}
+                      </span>
+                    </Button>
+                  </div>
+                )
+              }
+              disabled={!isFav}
+            >
+              <Icon
+                icon={showPinned ? 'pin' : 'unpin'}
+                className={clsx(showPinned && '-rotate-45')}
+                onClick={!isFav ? onPinnedChange : undefined}
+              />
+            </PopoverNext>
           </div>
         )}
       </>

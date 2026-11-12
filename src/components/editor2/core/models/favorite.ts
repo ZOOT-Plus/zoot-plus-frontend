@@ -117,7 +117,18 @@ export function useFavoriteOperatorControls() {
     [setEditorFavOperators],
   )
 
-  return { addFavoriteOperator }
+  const removeFavoriteOperator = useCallback(
+    (name: string) => {
+      setEditorFavOperators((prev) => prev.filter((item) => item.name !== name))
+      AppToaster.show({
+        message: i18n.components.editor2.OperatorItem.removed_from_favorites,
+        intent: 'success',
+      })
+    },
+    [setEditorFavOperators],
+  )
+
+  return { addFavoriteOperator, removeFavoriteOperator }
 }
 
 export function useFavoriteGroupControls() {
@@ -133,7 +144,18 @@ export function useFavoriteGroupControls() {
     [setEditorFavGroups],
   )
 
-  return { addFavoriteGroup }
+  const removeFavoriteGroup = useCallback(
+    (id: string) => {
+      setEditorFavGroups((prev) => prev.filter((item) => item.id !== id))
+      AppToaster.show({
+        message: i18n.components.editor2.GroupItem.removed_from_favorites,
+        intent: 'success',
+      })
+    },
+    [setEditorFavGroups],
+  )
+
+  return { addFavoriteGroup, removeFavoriteGroup }
 }
 
 export function useApplyFavoriteGroup() {

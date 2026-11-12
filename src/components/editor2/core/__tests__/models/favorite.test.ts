@@ -58,6 +58,13 @@ describe('favorite controls', () => {
     expect(toaster.show).toHaveBeenCalledTimes(2)
     expect(toaster.show).toHaveBeenNthCalledWith(1, expect.objectContaining({ intent: 'success' }))
     expect(toaster.show).toHaveBeenNthCalledWith(2, expect.objectContaining({ intent: 'success' }))
+
+    act(() => operatorControls.result.current.removeFavoriteOperator(operator.name))
+    act(() => groupControls.result.current.removeFavoriteGroup(store.get(editorFavGroupsAtom)[0].id))
+
+    expect(store.get(favOperatorAtom)).toEqual([])
+    expect(store.get(favGroupAtom)).toEqual([])
+    expect(toaster.show).toHaveBeenCalledTimes(4)
   })
 
   it('round-trips editor favorite operators through generated IDs', () => {
