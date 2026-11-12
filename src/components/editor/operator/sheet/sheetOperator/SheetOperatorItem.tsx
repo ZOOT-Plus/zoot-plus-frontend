@@ -33,10 +33,13 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
     .find(({ name: existedName }) => existedName === name)
   const selected = operatorNoneGroupedIndex !== -1
   const grouped = !!operatorInGroup
-  const favOper = favOperators.find(({ name: exsitedName }) => exsitedName === name)
+  const candidateOperator = existedOperators?.[operatorNoneGroupedIndex] || operatorInGroup
+  const favOper =
+    (candidateOperator &&
+      favOperators.find((fav) => isEqual(omit(candidateOperator, [...ignoreKeyDic]), omit(fav, [...ignoreKeyDic])))) ||
+    favOperators.find(({ name: exsitedName }) => exsitedName === name)
   const isFav = !!favOper
-  const operator = existedOperators?.[operatorNoneGroupedIndex] ||
-    operatorInGroup ||
+  const operator = candidateOperator ||
     favOper || {
       name,
     }
@@ -66,12 +69,18 @@ export const SheetOperatorItem: FC<SheetOperatorItemProp> = ({ name }) => {
       skillUsage: skillUsage || 0,
       skillTimes: skillUsage === CopilotDocV1.SkillUsageType.ReadyToUseTimes ? skillTimes || 1 : undefined,
     }
-    setFavOperators([...[...favOperators].filter(({ name }) => name !== formattedValue.name), { ...formattedValue }])
+    setFavOperators((prev) => [...prev.filter(({ name }) => name !== formattedValue.name), { ...formattedValue }])
     submitOperatorInSheet(formattedValue)
   }
 
   const removeFavOperator = () => {
-    setFavOperators([...favOperators].filter(({ name: existedName }) => existedName !== name))
+    const target = favOper ? omit(favOper, [...ignoreKeyDic]) : undefined
+    setFavOperators((prev) => {
+      const idx = target
+        ? prev.findIndex((item) => isEqual(omit(item, [...ignoreKeyDic]), target))
+        : prev.findIndex(({ name: existedName }) => existedName === name)
+      return idx === -1 ? prev : prev.filter((_, i) => i !== idx)
+    })
   }
 
   const onPinnedChange = () => {

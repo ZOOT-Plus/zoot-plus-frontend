@@ -2,7 +2,7 @@ import { Button, Card, Classes, Icon, Menu, MenuItem, PopoverNext } from '@bluep
 
 import clsx from 'clsx'
 import { useAtom, useAtomValue } from 'jotai'
-import { clamp, uniq } from 'lodash-es'
+import { clamp, isEqual, uniq } from 'lodash-es'
 import { FC, memo } from 'react'
 
 import { i18n, useTranslation } from '../../../../i18n/i18n'
@@ -27,7 +27,7 @@ import { SortableItemProps } from '../../../dnd'
 import { DetailedSelect } from '../../../editor/DetailedSelect'
 import { NumericInput2 } from '../../../editor/NumericInput2'
 import { EditorOperator, editorAtoms, useEdit } from '../../core/editor-state'
-import { editorFavOperatorsAtom, useFavoriteOperatorControls } from '../../core/models/favorite'
+import { editorFavOperatorsAtom, toFavOperator, useFavoriteOperatorControls } from '../../core/models/favorite'
 
 interface OperatorItemProps extends Partial<SortableItemProps> {
   operator: EditorOperator
@@ -112,7 +112,8 @@ const OperatorMenu: FC<{
   const edit = useEdit()
   const favOperators = useAtomValue(editorFavOperatorsAtom)
   const { addFavoriteOperator, removeFavoriteOperator } = useFavoriteOperatorControls()
-  const isFav = favOperators.some((item) => item.name === operator.name)
+  const targetFav = toFavOperator(operator)
+  const matchedFav = favOperators.find((item) => isEqual(toFavOperator(item), targetFav))
   const roles = uniq([operator.role, ...getRolesByName(operator.name)]).filter((r): r is string => r !== undefined)
   return (
     <Menu>
@@ -121,11 +122,11 @@ const OperatorMenu: FC<{
         text={t.components.editor2.OperatorItem.add_to_favorites}
         onClick={() => addFavoriteOperator(operator)}
       />
-      {isFav && (
+      {matchedFav && (
         <MenuItem
           icon="star-empty"
           text={t.components.editor2.OperatorItem.remove_from_favorites}
-          onClick={() => removeFavoriteOperator(operator.name)}
+          onClick={() => removeFavoriteOperator(matchedFav)}
         />
       )}
       {(roles.length > 1 || operator.role !== undefined) && (
