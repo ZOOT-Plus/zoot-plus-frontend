@@ -705,6 +705,10 @@
           "cn": "默认显示验证错误",
           "en": "Show Validation Errors by Default"
         },
+        "legacy_ui": {
+          "cn": "使用旧版编辑器布局",
+          "en": "Use Legacy Editor Layout"
+        },
         "operator_presets": {
           "cn": "干员预设",
           "en": "Operator Presets"
