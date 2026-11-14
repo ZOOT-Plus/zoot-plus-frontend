@@ -37,7 +37,7 @@ import { NumericInput2 } from '../../../editor/NumericInput2'
 import { OperatorAvatar } from '../../../OperatorAvatar'
 import { Select } from '../../../Select'
 import { EditorAction, EditorActionByType, editorAtoms, useActiveState, useEdit } from '../../core/editor-state'
-import { createAction } from '../../core/models/action'
+import { createAction, updateCoordinate } from '../../core/models/action'
 import { useEntityErrors, useEntityWarnings } from '../../core/validation'
 import { OperatorSelect } from '../operator/OperatorSelect'
 import { IssuesDisplay } from '../Validator'
@@ -187,7 +187,12 @@ export const ActionItem: FC<ActionItemProps> = memo(
                         onValueChange={(v) => {
                           edit(() => {
                             setAction((draft) => {
-                              draft.location = [v, draft.location?.[1] ?? 0]
+                              const next = updateCoordinate(draft.location, 0, v, 2)
+                              if (next === undefined) {
+                                delete draft.location
+                              } else {
+                                draft.location = next
+                              }
                             })
                             return {
                               action: 'set-action-location-x',
@@ -210,7 +215,12 @@ export const ActionItem: FC<ActionItemProps> = memo(
                         onValueChange={(v) => {
                           edit(() => {
                             setAction((draft) => {
-                              draft.location = [draft.location?.[0] ?? 0, v]
+                              const next = updateCoordinate(draft.location, 1, v, 2)
+                              if (next === undefined) {
+                                delete draft.location
+                              } else {
+                                draft.location = next
+                              }
                             })
                             return {
                               action: 'set-action-location-y',
@@ -244,13 +254,11 @@ export const ActionItem: FC<ActionItemProps> = memo(
                       onValueChange={(v) => {
                         edit(() => {
                           setAction((draft) => {
-                            // 清空输入时 NumericInput2 回调 NaN，转成 undefined 以免 NaN 落进状态与序列化；
-                            // 两位都空时删除整个字段，半填是编辑中间态（导出会被校验拦下要求补全）
-                            const x = Number.isNaN(v) ? undefined : v
-                            if (x === undefined && draft.location?.[1] === undefined) {
+                            const next = updateCoordinate(draft.location, 0, v, 2)
+                            if (next === undefined) {
                               delete draft.location
                             } else {
-                              draft.location = [x, draft.location?.[1]]
+                              draft.location = next
                             }
                           })
                           return {
@@ -274,11 +282,11 @@ export const ActionItem: FC<ActionItemProps> = memo(
                       onValueChange={(v) => {
                         edit(() => {
                           setAction((draft) => {
-                            const y = Number.isNaN(v) ? undefined : v
-                            if (y === undefined && draft.location?.[0] === undefined) {
+                            const next = updateCoordinate(draft.location, 1, v, 2)
+                            if (next === undefined) {
                               delete draft.location
                             } else {
-                              draft.location = [draft.location?.[0], y]
+                              draft.location = next
                             }
                           })
                           return {
@@ -343,7 +351,12 @@ export const ActionItem: FC<ActionItemProps> = memo(
                       onValueChange={(v) => {
                         edit(() => {
                           setAction((draft) => {
-                            draft.distance = [v, draft.distance?.[1] ?? 0]
+                            const next = updateCoordinate(draft.distance, 0, v, 2)
+                            if (next === undefined) {
+                              delete draft.distance
+                            } else {
+                              draft.distance = next
+                            }
                           })
                           return {
                             action: 'set-action-distance-x',
@@ -365,7 +378,12 @@ export const ActionItem: FC<ActionItemProps> = memo(
                       onValueChange={(v) => {
                         edit(() => {
                           setAction((draft) => {
-                            draft.distance = [draft.distance?.[0] ?? 0, v]
+                            const next = updateCoordinate(draft.distance, 1, v, 2)
+                            if (next === undefined) {
+                              delete draft.distance
+                            } else {
+                              draft.distance = next
+                            }
                           })
                           return {
                             action: 'set-action-distance-y',
@@ -542,12 +560,20 @@ export const ActionItem: FC<ActionItemProps> = memo(
                                       min={1}
                                       className="inline-flex"
                                       inputClassName="!p-0 !w-8 text-center font-semibold"
-                                      value={action.skillTimes ?? 1}
+                                      // 未设置时留空并用 placeholder 表达默认值 1：若直接回填 1，
+                                      // 用户清空后接着输入会被拼接成 12 之类的错误值
+                                      value={action.skillTimes ?? ''}
+                                      placeholder="1"
                                       wheelStepSize={1}
                                       onValueChange={(v) => {
                                         edit(() => {
                                           setAction((draft) => {
-                                            draft.skillTimes = v
+                                            // 清空时删除该字段，交由 UI 与 MAA 回落到默认次数 1，而不是写入 NaN
+                                            if (Number.isNaN(v)) {
+                                              delete draft.skillTimes
+                                            } else {
+                                              draft.skillTimes = v
+                                            }
                                           })
                                           return {
                                             action: 'set-action-skillTimes',
@@ -1033,11 +1059,7 @@ const RectInput: FC<{
           style={{ width: String(value?.[index] ?? 0).length + 'ch' }}
           value={value?.[index] ?? ''}
           wheelStepSize={1}
-          onValueChange={(v) => {
-            const next: Rect = [value?.[0], value?.[1], value?.[2], value?.[3]]
-            next[index] = Number.isNaN(v) ? undefined : v
-            onChange(next.every((x) => x === undefined) ? undefined : next)
-          }}
+          onValueChange={(v) => onChange(updateCoordinate(value, index, v, 4))}
         />
       </Fragment>
     ))}

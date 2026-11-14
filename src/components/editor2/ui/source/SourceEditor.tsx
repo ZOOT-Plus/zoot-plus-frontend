@@ -88,7 +88,10 @@ const SourceEditor = forwardRef<SourceEditorHandle>((_, ref) => {
                 majorStepSize={1000}
                 stepSize={100}
                 wheelStepSize={100}
-                onValueChange={(v) => setConfig((c) => ({ sourceEditorSyncTimeout: v }))}
+                onValueChange={(v) =>
+                  // 清空时 NumericInput2 回调 NaN，会让 debounce 时间变成 NaN，这里回落到 0（即不自动同步）
+                  setConfig((c) => ({ sourceEditorSyncTimeout: Number.isNaN(v) ? 0 : v }))
+                }
               />
             </FormGroup>
           }

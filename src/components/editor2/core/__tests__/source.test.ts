@@ -120,4 +120,35 @@ describe('useSourceEditorSync', () => {
     expect(submit).toHaveBeenCalledTimes(1)
     expect(store.get(editorAtoms.operation).stageName).toBe('stage-on-unmount')
   })
+
+  it('drops a pending submission when auto-sync is turned off before it fires', () => {
+    vi.useFakeTimers()
+    const store = createStore()
+    const originalOperation = store.get(editorAtoms.operation)
+    const parsed = operationForParsing.parse({
+      stage_name: 'stage-dropped',
+      doc: { title: 'Pending operation' },
+    })
+    const submit = vi.fn((onSubmit: (operation: ParsedOperation) => void) => {
+      onSubmit(parsed)
+      return true
+    })
+    const workspaceRef: RefObject<SourceEditorSubmitter | null> = { current: { submit } }
+    const { result, rerender } = renderHook(
+      ({ timeout }: { timeout: number }) => useSourceEditorSync(workspaceRef, timeout),
+      { wrapper: createStoreWrapper(store), initialProps: { timeout: 100 } },
+    )
+
+    act(() => result.current.requestSync())
+    expect(result.current.syncState).toBe('pending')
+
+    // 用户在 debounce 触发前把超时改成 0，即关闭自动同步
+    act(() => rerender({ timeout: 0 }))
+    act(() => void vi.advanceTimersByTime(1000))
+
+    expect(submit).not.toHaveBeenCalled()
+    expect(store.get(editorAtoms.operation)).toEqual(originalOperation)
+    // 被丢弃的这次同步不能把状态留在 pending，否则之后仅调大超时会渲染出残留的倒计时
+    expect(result.current.syncState).toBe('idle')
+  })
 })

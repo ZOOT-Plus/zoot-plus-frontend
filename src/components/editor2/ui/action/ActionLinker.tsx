@@ -5,7 +5,7 @@ import { Draft } from 'immer'
 import { PrimitiveAtom, useAtomValue } from 'jotai'
 import { useImmerAtom } from 'jotai-immer'
 import { compact } from 'lodash-es'
-import { FC } from 'react'
+import { FC, useRef, useState } from 'react'
 import { ValueOf } from 'type-fest'
 
 import { i18n, useTranslation } from '../../../../i18n/i18n'
@@ -235,9 +235,37 @@ interface ConditionNodeProps {
 const ConditionNode: FC<ConditionNodeProps> = ({ title, unit, inputProps, index, conditionKey, action, setAction }) => {
   const t = useTranslation()
   const edit = useEdit()
+  // 清空是编辑中间态：字段保持为空，但动作里仍保留旧值，条件节点按 !== undefined 渲染所以不会消失
+  const [cleared, setCleared] = useState(false)
+  // 记录清空时的值：清空期间若动作值被外部修改（例如撤销），失焦时不要用 0 覆盖
+  const clearedValueRef = useRef<number>()
   const value = action[conditionKey]!
+  const displayValue = cleared ? '' : value
   const typeInfo = ACTION_CONDITIONS[conditionKey]
   title ??= typeInfo.title()
+
+  const commit = (next: number) => {
+    edit(() => {
+      setAction((draft) => {
+        draft[conditionKey] = next
+      })
+      return {
+        action: `set-action-${conditionKey}`,
+        desc: i18n.actions.editor2.set_action_condition({
+          title: typeInfo.title(),
+        }),
+        squashBy: action.id,
+      }
+    })
+  }
+
+  // 结束编辑仍为空时写回默认值 0，避免动作里悬着一个与输入框不一致的旧值
+  const commitCleared = () => {
+    if (!cleared) return
+    setCleared(false)
+    if (action[conditionKey] === clearedValueRef.current) commit(0)
+  }
+
   return (
     <div className="flex items-baseline">
       <PopoverNext
@@ -275,24 +303,24 @@ const ConditionNode: FC<ConditionNodeProps> = ({ title, unit, inputProps, index,
         inputClassName={clsx(
           'min-w-5 !p-0 !h-5 !leading-none !bg-transparent hover:!bg-gray-200 focus:!bg-gray-200 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none text-center font-semibold !text-inherit !text-[length:inherit]',
         )}
-        style={{ width: String(value).length + 0.5 + 'ch' }}
-        value={value}
+        style={{ width: String(displayValue).length + 0.5 + 'ch' }}
+        value={displayValue}
         wheelStepSize={1}
         {...inputProps}
         onValueChange={(v) => {
-          edit(() => {
-            setAction((draft) => {
-              draft[conditionKey] = v
-            })
-            return {
-              action: `set-action-${conditionKey}`,
-              desc: i18n.actions.editor2.set_action_condition({
-                title: typeInfo.title(),
-              }),
-              squashBy: action.id,
-            }
-          })
+          if (Number.isNaN(v)) {
+            setCleared(true)
+            clearedValueRef.current = action[conditionKey]
+            return
+          }
+          setCleared(false)
+          commit(v)
         }}
+        onKeyDown={(e) => {
+          // 快捷键不会让输入框失焦，Enter 也要把清空态落地
+          if (e.key === 'Enter') commitCleared()
+        }}
+        onBlur={commitCleared}
       />
       {unit}
     </div>
