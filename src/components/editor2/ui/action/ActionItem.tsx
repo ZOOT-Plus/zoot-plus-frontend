@@ -333,7 +333,6 @@ export const ActionItem: FC<ActionItemProps> = memo(
                   <div className="flex items-center text-3xl">
                     <span className="text-gray-300 dark:text-gray-600">{'('}</span>
                     <NumericInput2
-                      intOnly
                       buttonPosition="none"
                       inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
                       value={action.distance?.[0] ?? ''}
@@ -356,7 +355,6 @@ export const ActionItem: FC<ActionItemProps> = memo(
                     />
                     <span className="mt-3 text-gray-300 dark:text-gray-600 text-xl font-serif">,</span>
                     <NumericInput2
-                      intOnly
                       buttonPosition="none"
                       inputClassName="!min-w-[2ch] mx-px mt-1 !p-0 !leading-3 hover:!bg-gray-100 focus:!bg-gray-100 dark:hover:!bg-gray-600 dark:focus:!bg-gray-600 !border-0 !rounded [&:not(:focus)]:!shadow-none !text-inherit text-3xl font-semibold text-center"
                       value={action.distance?.[1] ?? ''}

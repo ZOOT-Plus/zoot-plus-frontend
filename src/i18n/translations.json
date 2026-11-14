@@ -2768,6 +2768,10 @@
         }
       },
       "OperationSetEditor": {
+        "operation_unavailable": {
+          "cn": "作业详情不可用",
+          "en": "Job details unavailable"
+        },
         "create_job_set": {
           "cn": "创建作业集",
           "en": "Create Job Set"

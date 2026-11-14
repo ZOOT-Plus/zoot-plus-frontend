@@ -40,7 +40,7 @@ export function splitTranslations() {
   for (const language of languages) {
     const languageTranslations = JSON.parse(translationsJson, (key, value) => {
       if (isObject(value) && Object.keys(value).some((key) => languages.includes(key))) {
-        return value[language] || '__NOT_TRANSLATED__'
+        return (value as Record<string, unknown>)[language] || '__NOT_TRANSLATED__'
       }
       return value
     })

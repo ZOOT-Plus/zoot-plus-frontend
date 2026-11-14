@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises'
 import process from 'process'
 
-import { getOperators } from './shared'
+import { getOperators } from './shared.ts'
 
 async function main() {
   console.info('Fetching operators...')
