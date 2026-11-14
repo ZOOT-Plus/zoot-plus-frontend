@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import Fuse from 'fuse.js'
 import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai'
 import { selectAtom, useAtomCallback } from 'jotai/utils'
+import { isEqual } from 'lodash-es'
 import { FC, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { i18n, useTranslation } from '../../../../i18n/i18n'
@@ -15,6 +16,7 @@ import { BaseEditorGroup, editorAtoms, useActiveState, useEdit } from '../../cor
 import {
   FavoriteGroupOperatorsConflictError,
   editorFavGroupsAtom,
+  toFavGroup,
   useApplyFavoriteGroup,
   useFavoriteGroupControls,
 } from '../../core/models/favorite'
@@ -80,6 +82,7 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
           content={
             <Menu>
               <MenuItem icon="star" text={t.components.editor2.GroupItem.add_to_favorites} onClick={addToFavorite} />
+              <RemoveFavoriteGroupMenuItem baseGroupAtom={baseGroupAtom} />
               <MenuItem
                 icon="arrow-left"
                 text={t.components.editor2.GroupItem.move_left}
@@ -251,6 +254,29 @@ export const GroupItem: FC<GroupItemProps> = memo(({ baseGroupAtom }) => {
 })
 GroupItem.displayName = 'GroupItem'
 
+const RemoveFavoriteGroupMenuItem: FC<{ baseGroupAtom: PrimitiveAtom<BaseEditorGroup> }> = ({ baseGroupAtom }) => {
+  const t = useTranslation()
+  const baseGroupAtoms = useAtomValue(editorAtoms.baseGroupAtoms)
+  const groups = useAtomValue(editorAtoms.groups)
+  const favGroups = useAtomValue(editorFavGroupsAtom)
+  const { removeFavoriteGroup } = useFavoriteGroupControls()
+  const index = baseGroupAtoms.indexOf(baseGroupAtom)
+  const group = index !== -1 ? groups[index] : undefined
+  const matched = useMemo(() => {
+    if (!group) return undefined
+    const target = toFavGroup(group)
+    return favGroups.find((g) => isEqual(toFavGroup(g), target))
+  }, [favGroups, group])
+  if (!matched) return null
+  return (
+    <MenuItem
+      icon="star-empty"
+      text={t.components.editor2.GroupItem.remove_from_favorites}
+      onClick={() => removeFavoriteGroup(matched)}
+    />
+  )
+}
+
 interface GroupItemProps {
   baseGroupAtom: PrimitiveAtom<BaseEditorGroup>
 }
@@ -258,6 +284,7 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
   const t = useTranslation()
   const edit = useEdit()
   const favGroups = useAtomValue(editorFavGroupsAtom)
+  const { removeFavoriteGroup } = useFavoriteGroupControls()
   const [baseGroup, setBaseGroup] = useAtom(baseGroupAtom)
   const id = baseGroup.id
   const applyFavoriteGroup = useApplyFavoriteGroup()
@@ -341,6 +368,23 @@ const GroupTitle = memo(({ baseGroupAtom }: GroupItemProps) => {
               <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
                 <Icon icon="person" size={12} />
                 {item.opers?.length ?? 0}
+                <Button
+                  small
+                  minimal
+                  icon="trash"
+                  intent="danger"
+                  className="!p-0 min-h-5 min-w-5 ml-1"
+                  title={t.components.editor2.GroupItem.remove_from_favorites}
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    removeFavoriteGroup(item)
+                  }}
+                />
               </div>
             }
             onClick={handleClick}

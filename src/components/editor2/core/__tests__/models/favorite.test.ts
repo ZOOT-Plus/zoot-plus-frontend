@@ -60,6 +60,97 @@ describe('favorite controls', () => {
     expect(toaster.show).toHaveBeenNthCalledWith(2, expect.objectContaining({ intent: 'success' }))
   })
 
+  it('removes only the matching favorite variant or group while preserving other favorites', () => {
+    const store = createStore()
+    store.set(favOperatorAtom, [])
+    store.set(favGroupAtom, [])
+
+    const operatorVariantA: EditorOperator = { id: 'op-a', name: 'Amiya', role: 'caster', skill: 3 }
+    const operatorVariantB: EditorOperator = { id: 'op-b', name: 'Amiya', role: 'guard', skill: 2 }
+    const anotherOperator: EditorOperator = { id: 'op-c', name: 'Bagpipe', skill: 3 }
+
+    const groupA: EditorGroup = {
+      id: 'group-a',
+      name: 'Vanguards',
+      opers: [{ id: 'g-op-1', name: 'Bagpipe' }],
+    }
+    const groupSameNameDifferentOpers: EditorGroup = {
+      id: 'group-b',
+      name: 'Vanguards',
+      opers: [{ id: 'g-op-2', name: 'Myrtle' }],
+    }
+    const blankNameGroup: EditorGroup = {
+      id: 'group-c',
+      name: '',
+      opers: [{ id: 'g-op-3', name: 'Ines' }],
+    }
+
+    const operatorControls = renderHook(() => useFavoriteOperatorControls(), {
+      wrapper: createStoreWrapper(store),
+    })
+    const groupControls = renderHook(() => useFavoriteGroupControls(), {
+      wrapper: createStoreWrapper(store),
+    })
+
+    act(() => {
+      operatorControls.result.current.addFavoriteOperator(operatorVariantA)
+      operatorControls.result.current.addFavoriteOperator(operatorVariantB)
+      operatorControls.result.current.addFavoriteOperator(anotherOperator)
+      groupControls.result.current.addFavoriteGroup(groupA)
+      groupControls.result.current.addFavoriteGroup(groupSameNameDifferentOpers)
+      groupControls.result.current.addFavoriteGroup(blankNameGroup)
+    })
+
+    act(() => operatorControls.result.current.removeFavoriteOperator(operatorVariantA))
+    act(() => groupControls.result.current.removeFavoriteGroup(groupA))
+
+    expect(store.get(favOperatorAtom)).toEqual([
+      { name: 'Amiya', role: 'guard', skill: 2 },
+      { name: 'Bagpipe', skill: 3 },
+    ])
+    expect(store.get(favGroupAtom)).toEqual([
+      { name: 'Vanguards', opers: [{ name: 'Myrtle' }] },
+      { name: '', opers: [{ name: 'Ines' }] },
+    ])
+
+    act(() => groupControls.result.current.removeFavoriteGroup(blankNameGroup))
+    expect(store.get(favGroupAtom)).toEqual([{ name: 'Vanguards', opers: [{ name: 'Myrtle' }] }])
+  })
+
+  it('reconciles with concurrent localStorage updates before removing favorites', () => {
+    const store = createStore()
+    store.set(favOperatorAtom, [{ name: 'Operator 1' }])
+    store.set(favGroupAtom, [{ name: 'Group 1', opers: [{ name: 'Operator 1' }] }])
+
+    const operatorControls = renderHook(() => useFavoriteOperatorControls(), {
+      wrapper: createStoreWrapper(store),
+    })
+    const groupControls = renderHook(() => useFavoriteGroupControls(), {
+      wrapper: createStoreWrapper(store),
+    })
+
+    // Simulate another browser tab writing new favorites to localStorage before storage event arrives
+    localStorage.setItem('zoot-plus-fav-operator', JSON.stringify([{ name: 'Operator 1' }, { name: 'From other tab' }]))
+    localStorage.setItem(
+      'zoot-plus-fav-groups',
+      JSON.stringify([
+        { name: 'Group 1', opers: [{ name: 'Operator 1' }] },
+        { name: 'Group from other tab', opers: [{ name: 'From other tab' }] },
+      ]),
+    )
+
+    act(() => operatorControls.result.current.removeFavoriteOperator({ name: 'Operator 1' }))
+    act(() =>
+      groupControls.result.current.removeFavoriteGroup({
+        name: 'Group 1',
+        opers: [{ name: 'Operator 1' }],
+      }),
+    )
+
+    expect(store.get(favOperatorAtom)).toEqual([{ name: 'From other tab' }])
+    expect(store.get(favGroupAtom)).toEqual([{ name: 'Group from other tab', opers: [{ name: 'From other tab' }] }])
+  })
+
   it('round-trips editor favorite operators through generated IDs', () => {
     const store = createStore()
     store.set(favOperatorAtom, [{ name: 'Favorite operator' }])
