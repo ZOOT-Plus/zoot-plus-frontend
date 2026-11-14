@@ -36,7 +36,7 @@ function pinyinify(name: string) {
 function transformOperatorName(name: string) {
   const cleanedName = name.replace(/[”“"]/g, '')
 
-  const traditional = simplebig.s2t(name) as string
+  const traditional = simplebig.s2t(name)
   const cleanedTraditional = traditional.replace(/[”“"]/g, '')
 
   return {

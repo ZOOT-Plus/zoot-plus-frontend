@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 import sharp from 'sharp'
 
-import { fileExists, getOperators } from './shared'
+import { fileExists, getOperators } from './shared.ts'
 
 const avatarsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public/assets/operator-avatars')
 

@@ -3,6 +3,7 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "rewriteRelativeImportExtensions": true,
     "allowSyntheticDefaultImports": true
   },
   "include": ["./*.ts", "scripts"]

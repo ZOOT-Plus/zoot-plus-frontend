@@ -1,13 +1,15 @@
 import { mkdir, writeFile } from 'fs/promises'
 
-import { fileExists, getOperators } from './shared'
+import { fileExists, getOperators } from './shared.ts'
 
 const outDir = 'public/assets/prof-icons'
 
 async function getProfIconsFromPrtsWiki() {
   console.info('fetching all sub-profession icons from prts wiki...')
   const baseUrl = `https://prts.wiki/api.php?action=query&format=json&list=allimages&continue=-%7C%7C&aiprefix=%E5%9B%BE%E6%A0%87_%E8%81%8C%E4%B8%9A_%E9%80%8F%E6%98%8E_`
-  const resp = (await (await fetch(baseUrl)).json()) as any
+  const resp = (await (await fetch(baseUrl)).json()) as {
+    query: { allimages: { name: string; url: string }[] }
+  }
   const results = resp.query.allimages
 
   console.info(`fetched ${results.length} sub-profession icons.`)
