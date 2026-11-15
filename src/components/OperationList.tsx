@@ -7,7 +7,7 @@ import { ComponentType, ReactNode, useEffect, useMemo, useRef, useState } from '
 import { neoLayoutAtom } from 'store/pref'
 
 import { useTranslation } from '../i18n/i18n'
-import { OperatorMatcherFilter, getOperationMatchResult } from '../models/operatorMatcher'
+import { OperatorMatcherFilter, getOperationMatchResult, matchesOperationModes } from '../models/operatorMatcher'
 import { Operation } from '../models/operation'
 import { NeoOperationCard, OperationCard } from './OperationCard'
 import { withSuspensable } from './Suspensable'
@@ -79,7 +79,7 @@ export function OperationListView({
   const visibleOperations = useMemo(
     () =>
       operatorMatcher
-        ? resolvedOperations.filter(({ match }) => match && operatorMatcher.modes.includes(match.mode))
+        ? resolvedOperations.filter(({ match }) => match && matchesOperationModes(match, operatorMatcher.modes))
         : resolvedOperations,
     [operatorMatcher, resolvedOperations],
   )
