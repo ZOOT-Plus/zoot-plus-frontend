@@ -944,6 +944,14 @@
           "cn": "已添加到收藏",
           "en": "Added to favorites"
         },
+        "remove_from_favorites": {
+          "cn": "从收藏中移除",
+          "en": "Remove from Favorites"
+        },
+        "removed_from_favorites": {
+          "cn": "已从收藏中移除",
+          "en": "Removed from favorites"
+        },
         "move_left": {
           "cn": "左移",
           "en": "Move Left"
@@ -1009,6 +1017,14 @@
         "added_to_favorites": {
           "cn": "已添加到收藏",
           "en": "Added to favorites"
+        },
+        "remove_from_favorites": {
+          "cn": "从收藏中移除",
+          "en": "Remove from Favorites"
+        },
+        "removed_from_favorites": {
+          "cn": "已从收藏中移除",
+          "en": "Removed from favorites"
         },
         "select_role": {
           "cn": "选择角色",
