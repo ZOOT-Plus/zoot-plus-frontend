@@ -1,0 +1,509 @@
+/* Hallmark · card catalog · existing violet palette and system type · P4 H5 E4 S4 R5 V4 */
+.recommendations-page,
+.recommendations-popover {
+  --recommendations-surface: theme('colors.white');
+  --recommendations-muted: theme('colors.zinc.50');
+  --recommendations-border: theme('colors.zinc.200');
+  --recommendations-checkbox-border: theme('colors.zinc.500');
+  --recommendations-ink: theme('colors.slate.800');
+  --recommendations-secondary: theme('colors.zinc.600');
+  --recommendations-accent: theme('colors.violet.600');
+  --recommendations-accent-soft: theme('colors.violet.50');
+  --recommendations-focus: theme('colors.violet.500');
+  --recommendations-menu-hover: color-mix(in srgb, var(--recommendations-ink) 5%, var(--recommendations-surface));
+  --recommendations-menu-selected: color-mix(
+    in srgb,
+    var(--recommendations-accent) 12%,
+    var(--recommendations-surface)
+  );
+  --recommendations-menu-shadow: 0 8px 24px rgb(0 0 0 / 15%);
+}
+
+.dark .recommendations-page,
+.dark .recommendations-popover {
+  --recommendations-surface: theme('colors.slate.800');
+  --recommendations-muted: theme('colors.slate.900');
+  --recommendations-border: theme('colors.slate.700');
+  --recommendations-checkbox-border: theme('colors.slate.500');
+  --recommendations-ink: theme('colors.slate.100');
+  --recommendations-secondary: theme('colors.slate.400');
+  --recommendations-accent: theme('colors.violet.300');
+  --recommendations-accent-soft: theme('colors.violet.950');
+  --recommendations-focus: theme('colors.violet.400');
+}
+
+.recommendations-page {
+  color: var(--recommendations-ink);
+  overflow-wrap: anywhere;
+}
+
+.recommendations-filters,
+.recommendations-toolbar,
+.recommendations-card {
+  background: var(--recommendations-surface);
+  border: 1px solid var(--recommendations-border);
+  border-radius: 16px;
+}
+
+.recommendations-options,
+.recommendations-details {
+  border-top: 1px solid var(--recommendations-border);
+}
+
+.recommendations-target {
+  background: var(--recommendations-muted);
+  border-radius: 10px;
+}
+
+/* Scope Blueprint overrides to this page and its portaled filter menus. */
+#recommendations .bp6-button,
+#recommendations .bp6-input,
+body .recommendations-popover .bp6-input {
+  min-height: 44px;
+  height: 44px;
+  border: 1px solid var(--recommendations-border);
+  border-radius: 9px;
+  background: var(--recommendations-surface);
+  color: var(--recommendations-ink);
+  box-shadow: none;
+  font-weight: 400;
+  transition:
+    border-color 150ms,
+    background-color 150ms,
+    box-shadow 150ms;
+}
+
+#recommendations .bp6-button {
+  white-space: nowrap;
+  background-image: none;
+}
+
+#recommendations .bp6-button:not(.recommendations-select-trigger):not(:disabled):not(:focus-visible):hover,
+#recommendations .recommendations-select:hover .recommendations-select-trigger:not(:disabled):not(:focus-visible) {
+  border-color: var(--recommendations-border);
+  background: var(--recommendations-muted);
+  box-shadow: none;
+}
+
+#recommendations .bp6-button:not(:disabled):active {
+  background: var(--recommendations-accent-soft);
+}
+
+#recommendations .bp6-button .bp6-button-text,
+#recommendations .bp6-button .bp6-icon {
+  color: inherit;
+}
+
+#recommendations .bp6-button:focus-visible,
+#recommendations .bp6-input:focus,
+body .recommendations-popover .bp6-input:focus,
+.recommendations-details summary:focus-visible {
+  outline: 2px solid var(--recommendations-focus);
+  outline-offset: 2px;
+  border-color: var(--recommendations-accent);
+  box-shadow: none;
+}
+
+#recommendations .bp6-input:focus,
+body .recommendations-popover .bp6-input:focus {
+  outline-offset: -2px;
+}
+
+#recommendations .bp6-input::placeholder,
+body .recommendations-popover .bp6-input::placeholder {
+  color: var(--recommendations-secondary);
+  font-style: normal;
+}
+
+#recommendations .bp6-input-group > .bp6-icon {
+  color: var(--recommendations-secondary);
+  margin: 0 10px;
+}
+
+#recommendations .recommendations-select {
+  position: relative;
+  display: flex !important;
+  width: 100%;
+  min-width: 0;
+}
+
+#recommendations .recommendations-select > .bp6-popover-target {
+  flex: 1;
+  min-width: 0;
+}
+
+#recommendations .recommendations-select-trigger {
+  padding: 0 12px;
+  text-align: left;
+}
+
+#recommendations .recommendations-select-trigger .bp6-button-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#recommendations .recommendations-select-trigger > .bp6-icon {
+  flex-shrink: 0;
+  color: var(--recommendations-secondary);
+}
+
+#recommendations .recommendations-select-clearable .recommendations-select-trigger {
+  padding-right: 56px;
+}
+
+#recommendations .recommendations-select > [aria-expanded='true'] .recommendations-select-trigger {
+  border-color: var(--recommendations-accent);
+  background: var(--recommendations-surface);
+}
+
+#recommendations .bp6-button.recommendations-clear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44px;
+  min-width: 44px;
+  margin: 0 !important;
+  padding: 0;
+  border-color: transparent;
+  border-radius: 0 9px 9px 0;
+  background: transparent;
+  color: var(--recommendations-secondary);
+}
+
+#recommendations .bp6-button.recommendations-clear:focus-visible {
+  outline-offset: -3px;
+}
+
+#recommendations .bp6-button.recommendations-reset,
+#recommendations .bp6-button.recommendations-filter-toggle,
+#recommendations .bp6-button.bp6-intent-primary {
+  color: var(--recommendations-accent);
+  background: var(--recommendations-accent-soft);
+  font-weight: 500;
+}
+
+.dark #recommendations .bp6-button.recommendations-reset {
+  color: var(--recommendations-secondary);
+  background: transparent;
+  border-color: transparent;
+  font-weight: 400;
+}
+
+.dark #recommendations .bp6-button.recommendations-reset:not(:disabled):hover {
+  color: var(--recommendations-ink);
+  background: var(--recommendations-muted);
+}
+
+#recommendations .bp6-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  transition: background-color 150ms;
+}
+
+#recommendations .bp6-checkbox:not(.bp6-disabled):hover {
+  background: var(--recommendations-muted);
+}
+
+#recommendations .bp6-checkbox .bp6-control-indicator {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid var(--recommendations-checkbox-border);
+  border-radius: 5px;
+  background: var(--recommendations-surface);
+  box-shadow: none;
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+
+#recommendations .bp6-checkbox:hover input:not(:disabled) ~ .bp6-control-indicator {
+  border-color: var(--recommendations-accent);
+}
+
+#recommendations .bp6-checkbox input:checked ~ .bp6-control-indicator {
+  background: var(--recommendations-accent);
+  border-color: var(--recommendations-accent);
+  color: var(--recommendations-surface);
+}
+
+#recommendations .bp6-checkbox input:checked ~ .bp6-control-indicator::before {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  background-image: none;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 8 3 3 6-6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+#recommendations .bp6-checkbox input:focus ~ .bp6-control-indicator {
+  outline: none;
+}
+
+#recommendations .bp6-checkbox input:focus-visible ~ .bp6-control-indicator {
+  outline: 2px solid var(--recommendations-focus);
+  outline-offset: 2px;
+}
+
+#recommendations .bp6-checkbox.bp6-disabled .bp6-control-indicator {
+  opacity: 0.5;
+}
+
+#recommendations .recommendations-status {
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 18px;
+  padding: 1px 6px;
+}
+
+.recommendations-details summary {
+  min-height: 46px;
+  color: var(--recommendations-accent);
+  border-radius: 0 0 16px 16px;
+  list-style: none;
+  transition: background-color 150ms;
+}
+
+.recommendations-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.recommendations-details summary > .text-xs {
+  color: var(--recommendations-secondary);
+}
+
+.recommendations-details summary:hover,
+.recommendations-details[open] summary {
+  background: var(--recommendations-accent-soft);
+}
+
+.recommendations-details[open] summary {
+  border-radius: 0;
+  margin-bottom: 12px;
+}
+
+.recommendations-details[open] .recommendations-details-chevron {
+  transform: rotate(180deg);
+}
+
+.recommendations-sources a {
+  color: var(--recommendations-accent);
+}
+
+body .bp6-popover.recommendations-popover .bp6-popover-content,
+body .recommendations-popover .bp6-menu {
+  background: var(--recommendations-surface);
+  color: var(--recommendations-ink);
+  border-radius: 10px;
+}
+
+body .bp6-popover.recommendations-popover {
+  min-width: 0;
+  max-width: calc(100vw - 32px);
+  border: 1px solid var(--recommendations-border);
+  box-shadow: var(--recommendations-menu-shadow);
+}
+
+body .bp6-popover.recommendations-popover .bp6-popover-content {
+  padding: 8px;
+}
+
+body .recommendations-popover .recommendations-menu-search {
+  margin-bottom: 8px;
+}
+
+body .recommendations-popover .bp6-input-group > .bp6-icon {
+  top: 0;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  width: 16px;
+  height: 44px;
+  margin: 0 !important;
+  color: var(--recommendations-secondary);
+}
+
+body .recommendations-popover .bp6-input-action {
+  top: 0;
+  right: 0;
+}
+
+body .recommendations-popover .bp6-input-action .bp6-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--recommendations-secondary);
+  box-shadow: none;
+}
+
+body .recommendations-popover .bp6-input-action .bp6-button:hover {
+  background: var(--recommendations-menu-hover);
+  color: var(--recommendations-ink);
+}
+
+body .recommendations-popover .bp6-input-action .bp6-button:focus-visible {
+  outline: 2px solid var(--recommendations-focus);
+  outline-offset: -2px;
+}
+
+body .recommendations-popover .recommendations-menu {
+  min-width: 0;
+  max-height: min(256px, 45dvh);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+body .recommendations-popover-options .recommendations-menu {
+  width: max-content;
+  max-width: 100%;
+}
+
+body .recommendations-popover .bp6-menu:not(:first-child) {
+  padding-top: 0;
+}
+
+body .recommendations-popover .bp6-menu-item.bp6-menu-item-is-selectable {
+  position: relative;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 36px 10px 12px;
+  border-radius: 6px;
+}
+
+body .recommendations-popover .bp6-menu-item .bp6-fill {
+  min-width: 0;
+}
+
+body .recommendations-popover-options .bp6-menu-item .bp6-fill {
+  flex-shrink: 0;
+}
+
+body .recommendations-popover .bp6-menu-item .bp6-menu-item-selected-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  margin: 0;
+  color: var(--recommendations-accent);
+  transform: translateY(-50%);
+}
+
+body .recommendations-popover .bp6-menu-item:focus-visible {
+  outline: 2px solid var(--recommendations-focus);
+  outline-offset: -2px;
+}
+
+body .recommendations-popover .recommendations-menu-search .bp6-input {
+  padding-left: 40px;
+  padding-right: 44px;
+}
+
+body .recommendations-popover .bp6-menu-item:not(.bp6-disabled):not(.bp6-active):not(.bp6-selected):hover {
+  background: var(--recommendations-menu-hover);
+}
+
+body .recommendations-popover .bp6-menu-item.bp6-active {
+  background: var(--recommendations-menu-hover);
+  color: var(--recommendations-ink);
+}
+
+body .recommendations-popover .bp6-menu-item.bp6-selected {
+  background: var(--recommendations-menu-selected);
+  color: var(--recommendations-ink);
+}
+
+.high-contrast-theme .recommendations-page,
+.high-contrast-theme .recommendations-popover {
+  --recommendations-surface: #232326;
+  --recommendations-muted: #2d2d30;
+  --recommendations-border: theme('colors.zinc.500');
+  --recommendations-checkbox-border: theme('colors.zinc.500');
+  --recommendations-ink: theme('colors.slate.50');
+  --recommendations-secondary: theme('colors.slate.300');
+  --recommendations-success: theme('colors.emerald.300');
+  --recommendations-success-soft: theme('colors.emerald.950');
+}
+
+/* The global high-contrast theme forces Blueprint styles with !important. */
+body.high-contrast-theme #recommendations .bp6-input,
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group .bp6-input {
+  background: var(--recommendations-surface) !important;
+  color: var(--recommendations-ink) !important;
+  border-color: var(--recommendations-border) !important;
+  box-shadow: none !important;
+}
+
+body.high-contrast-theme #recommendations .bp6-input::placeholder,
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group .bp6-input::placeholder {
+  color: var(--recommendations-secondary) !important;
+}
+
+body.high-contrast-theme #recommendations .bp6-input:focus,
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group .bp6-input:focus {
+  outline: 2px solid var(--recommendations-focus) !important;
+  border-color: var(--recommendations-accent) !important;
+}
+
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-popover-content {
+  background: var(--recommendations-surface) !important;
+  color: var(--recommendations-ink) !important;
+  border: 0 !important;
+}
+
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-input-group > .bp6-icon {
+  color: var(--recommendations-secondary);
+}
+
+body.bp6-dark.high-contrast-theme .bp6-popover.recommendations-popover .bp6-menu-item.bp6-selected {
+  background: var(--recommendations-menu-selected) !important;
+}
+
+body.high-contrast-theme #recommendations .recommendations-status.bp6-intent-success {
+  background: var(--recommendations-success-soft) !important;
+  color: var(--recommendations-success) !important;
+  border-color: var(--recommendations-success) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #recommendations .bp6-button,
+  #recommendations .bp6-input,
+  body .recommendations-popover .bp6-input,
+  #recommendations .bp6-checkbox,
+  #recommendations .bp6-checkbox .bp6-control-indicator,
+  .recommendations-details summary {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  #recommendations .bp6-checkbox .bp6-control-indicator {
+    forced-color-adjust: none;
+    background: Canvas;
+    border-color: ButtonText;
+  }
+
+  #recommendations .bp6-checkbox input:checked ~ .bp6-control-indicator {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+}

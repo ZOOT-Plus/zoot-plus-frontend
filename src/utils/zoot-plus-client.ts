@@ -103,7 +103,7 @@ export class FollowApi<T extends ApiOptions> extends (UserFollowApi as WithOptio
   }
 }
 
-function createConfiguration(options?: ApiOptions) {
+export function createConfiguration(options?: ApiOptions) {
   options = {
     validateStatusCode: 'if-object',
     requireData: false,
