@@ -35,9 +35,10 @@ export interface OperatorMatcherFilter {
 }
 
 export interface OperationMatchResult {
+  blocked: boolean
   missingSlots: string[]
-  mode: OperatorMatchMode
-  totalSlots: number
+  needsBorrow: boolean
+  needsTraining: boolean
   trainingSlots: string[]
 }
 
@@ -217,6 +218,22 @@ function evaluateGroup(group: CopilotDocV1.Group, ownedOperators: Map<string, Ow
   return ownedCandidates.length > 0 ? 'train' : 'missing'
 }
 
+export function matchesOperationModes(result: OperationMatchResult, modes: OperatorMatchMode[]) {
+  if (result.blocked) {
+    return modes.includes('blocked')
+  }
+  if (!result.needsBorrow && !result.needsTraining) {
+    return modes.includes('ready')
+  }
+  const allowBorrow = modes.includes('borrow')
+  if (result.needsBorrow && !allowBorrow) return false
+  if (result.needsTraining && !modes.includes('train')) {
+    if (allowBorrow && result.missingSlots.length === 0 && result.trainingSlots.length === 1) return true
+    return false
+  }
+  return true
+}
+
 export function getOperationMatchResult(
   operation: Operation,
   ownedOperators: Map<string, OwnedOperator>,
@@ -248,32 +265,11 @@ export function getOperationMatchResult(
 
   const totalSlots = operators.length + groups.length
 
-  if (totalSlots > 13 || missingSlots.length >= 2) {
-    return { mode: 'blocked', missingSlots, trainingSlots, totalSlots }
-  }
-
-  if (missingSlots.length === 1) {
-    return {
-      mode: trainingSlots.length > 0 ? 'train' : 'borrow',
-      missingSlots,
-      trainingSlots,
-      totalSlots,
-    }
-  }
-
-  if (trainingSlots.length === 0) {
-    return {
-      mode: totalSlots === 13 ? 'borrow' : 'ready',
-      missingSlots,
-      trainingSlots,
-      totalSlots,
-    }
-  }
-
   return {
-    mode: trainingSlots.length === 1 && totalSlots < 13 ? 'borrow' : 'train',
+    blocked: totalSlots > 13 || missingSlots.length >= 2 || groups.some((group) => !group.opers?.length),
     missingSlots,
+    needsBorrow: missingSlots.length > 0 || totalSlots === 13,
+    needsTraining: trainingSlots.length > 0,
     trainingSlots,
-    totalSlots,
   }
 }
