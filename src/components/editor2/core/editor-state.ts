@@ -181,6 +181,9 @@ interface OperatorPresetPerRarity {
   level: number
   elite: number
 }
+// 撤销记录的下限：输入框的 min、失焦夹取与配置读取时的归一化都依据它
+export const HISTORY_LIMIT_MIN = 5
+
 const defaultConfig: EditorConfig = {
   showLinkerButtons: false,
   toggleSelectorPanel: true,
@@ -188,16 +191,31 @@ const defaultConfig: EditorConfig = {
   showErrorsByDefault: false,
   sourceEditorSyncTimeout: 1000,
 }
+
+// 旧版本曾把 NaN 写进配置，JSON 往返后落盘的值会变成 null。
+// 读取时统一归一化，避免把非法值交给 createHistoryAtom（会让 slice 的边界变成负数，错误裁剪撤销记录）
+function normalizeHistoryLimit(value: number | null | undefined): number {
+  if (value === undefined) return defaultConfig.historyLimit
+  if (value === null || !Number.isFinite(value) || value < HISTORY_LIMIT_MIN) return HISTORY_LIMIT_MIN
+  return value
+}
+
 const localConfigAtom = atomWithStorage<Partial<EditorConfig>>('prts-editor-config', {}, undefined, { getOnInit: true })
+const storedConfig = getDefaultStore().get(localConfigAtom)
 const initialConfig = {
   ...defaultConfig,
-  ...getDefaultStore().get(localConfigAtom),
+  ...storedConfig,
+  historyLimit: normalizeHistoryLimit(storedConfig.historyLimit),
 }
 const configAtom = atom(
-  (get) => ({
-    ...defaultConfig,
-    ...get(localConfigAtom),
-  }),
+  (get) => {
+    const stored = get(localConfigAtom)
+    return {
+      ...defaultConfig,
+      ...stored,
+      historyLimit: normalizeHistoryLimit(stored.historyLimit),
+    }
+  },
   (get, set, update: SetStateAction<Partial<EditorConfig>>) => {
     if (typeof update === 'function') {
       update = update(get(configAtom))
@@ -210,7 +228,7 @@ const configAtom = atom(
     if (update.historyLimit !== undefined) {
       set(historyAtom, (prev) => ({
         ...prev,
-        limit: update.historyLimit!,
+        limit: normalizeHistoryLimit(update.historyLimit),
       }))
     }
   },

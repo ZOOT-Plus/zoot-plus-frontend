@@ -30,6 +30,7 @@ export const NumericInput2 = ({
   value,
   onValueChange,
   onFocus,
+  onBlur,
   onWheelFocused,
   wheelStepSize,
   inputClassName,
@@ -101,6 +102,9 @@ export const NumericInput2 = ({
           e.currentTarget.removeEventListener('wheel', handleWheel as any)
           handleWheelRegistered.current = false
         }
+        // 与 onFocus 一致：先做内部清理再回调调用方。
+        // v1 传入 onBlur 的字段（距离 / 矩形 / 技能次数）因此也会执行上面的清理
+        onBlur?.(e)
       }}
       onButtonClick={(num, str) => onValueChange?.(num, str, inputRef.current)}
       onValueChange={(num, str, inputEl) => {
